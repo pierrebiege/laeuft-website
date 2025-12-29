@@ -49,3 +49,107 @@ body {
   background: var(--foreground);
   color: var(--background);
 }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Pulse animation for the dot */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+.pulse-dot {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Gradient background animation */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    #f5f5f5 25%,
+    var(--background) 50%,
+    #f0f0f0 75%,
+    var(--background) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .gradient-bg {
+    background: linear-gradient(
+      135deg,
+      var(--background) 0%,
+      #111113 25%,
+      var(--background) 50%,
+      #0f0f11 75%,
+      var(--background) 100%
+    );
+    background-size: 400% 400%;
+  }
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glow {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Button hover gradient */
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #18181b 0%, #3f3f46 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-gradient:hover {
+    background: linear-gradient(135deg, #fafafa 0%, #d4d4d8 100%);
+  }
+}
