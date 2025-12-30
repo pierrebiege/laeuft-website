@@ -67,6 +67,7 @@ function PricingCard({
   description,
   features,
   cta,
+  example,
   featured = false,
   delay = 0,
 }: {
@@ -76,6 +77,7 @@ function PricingCard({
   description: string;
   features: string[];
   cta: string;
+  example: string;
   featured?: boolean;
   delay?: number;
 }) {
@@ -107,7 +109,7 @@ function PricingCard({
       <p className={`mb-6 ${featured ? "text-background/70" : "text-muted"}`}>
         {description}
       </p>
-      <ul className="space-y-3 mb-8 flex-grow">
+      <ul className="space-y-3 mb-8">
         {features.map((feature, index) => (
           <li key={index} className="flex items-start gap-3 text-sm">
             <span
@@ -129,6 +131,11 @@ function PricingCard({
       >
         {cta}
       </a>
+      <div className={`mt-6 pt-6 border-t ${featured ? "border-background/20" : "border-border"}`}>
+        <p className={`text-xs ${featured ? "text-background/50" : "text-muted"}`}>
+          <span className="font-medium">Beispiel:</span> {example}
+        </p>
+      </div>
     </motion.div>
   );
 }
@@ -440,9 +447,9 @@ export default function Home() {
       </section>
 
       {/* What I do Section */}
-      <section className="py-32 px-6 border-t border-border">
+      <section className="py-32 px-6 bg-foreground text-background">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -456,9 +463,20 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-muted text-lg"
+              className="text-background/70 text-lg mb-8"
             >
               Ein Ansprechpartner. Keine Agentur. Kein Chaos.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="text-background/60 max-w-2xl mx-auto"
+            >
+              Die meisten KMU haben 4 Anbieter. Einen für die Website. Einen fürs Logo.
+              Einen für Social. Und niemanden, der alles verbindet.
+              Ich mache das Ganze. Weil alles zusammenhängt.
             </motion.p>
           </div>
 
@@ -468,11 +486,11 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
+              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
               <Cog className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Automatisierung</p>
-              <p className="text-muted text-sm">Systeme, die arbeiten</p>
+              <p className="text-background/60 text-sm">Systeme, die arbeiten</p>
             </motion.div>
 
             <motion.div
@@ -481,11 +499,11 @@ export default function Home() {
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.05 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
+              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
               <Globe className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Web</p>
-              <p className="text-muted text-sm">Seiten & Shops</p>
+              <p className="text-background/60 text-sm">Seiten & Shops</p>
             </motion.div>
 
             <motion.div
@@ -494,11 +512,11 @@ export default function Home() {
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
+              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
               <Sparkles className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Branding</p>
-              <p className="text-muted text-sm">Logo & Identität</p>
+              <p className="text-background/60 text-sm">Logo & Identität</p>
             </motion.div>
 
             <motion.div
@@ -507,11 +525,11 @@ export default function Home() {
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.15 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
+              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
               <Smartphone className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Social</p>
-              <p className="text-muted text-sm">Strategie & Content</p>
+              <p className="text-background/60 text-sm">Strategie & Content</p>
             </motion.div>
           </div>
         </div>
@@ -626,6 +644,7 @@ export default function Home() {
                 "Support inklusive",
               ]}
               cta="Projekt besprechen"
+              example="Automatische Angebotserstellung für einen Handwerksbetrieb. Vorher 45 Min pro Angebot, nachher 5 Min."
               delay={0}
             />
 
@@ -640,6 +659,7 @@ export default function Home() {
                 "Pausieren jederzeit",
               ]}
               cta="Abo starten"
+              example="Laufende Betreuung für einen Treuhänder. 2-3 Automationen pro Monat. Spart ca. 8-10 Stunden pro Woche."
               featured
               delay={0.1}
             />
@@ -655,6 +675,7 @@ export default function Home() {
                 "Grössere Projekte",
               ]}
               cta="Alles-Abo starten"
+              example="Full-Service für eine Garage. Website, Automationen, Branding – alles aus einer Hand."
               delay={0.2}
             />
           </div>
@@ -687,34 +708,36 @@ export default function Home() {
                 Ich bin Pierre.
               </motion.h2>
 
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="text-muted text-lg mb-6"
+                className="space-y-4 text-muted"
               >
-                15 Jahre digitales Handwerk. Vom Grafikdesign zu Automationen.
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.15 }}
-                className="text-foreground font-medium"
-              >
-                Du redest mit mir. Nicht mit einem Verkäufer.
-                <br />
-                Mit dem, der es baut.
-              </motion.p>
+                <p>
+                  15 Jahre digitales Handwerk. Vom Grafikdesign zu Automationen.
+                </p>
+                <p>
+                  Ich habe mit Pixeln angefangen. Dann kamen Shops. Dann Datenbanken.
+                  Dann Systeme, die ganze Betriebe schneller machen.
+                </p>
+                <p>
+                  Heute weiss ich: Die beste Technologie ist die, die du nicht merkst.
+                  Sie läuft einfach. Im Hintergrund. Während du dich um dein Geschäft kümmerst.
+                </p>
+                <p className="text-foreground font-medium pt-2">
+                  Du redest mit mir. Nicht mit einem Verkäufer.
+                  Nicht mit einem Projektmanager. Mit dem, der es baut.
+                </p>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-32 px-6 border-t border-border">
+      <section className="py-32 px-6 bg-foreground text-background">
         <div className="max-w-3xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -727,18 +750,28 @@ export default function Home() {
 
           <div>
             {faqs.map((faq, index) => (
-              <FAQItem
-                key={index}
-                question={faq.question}
-                answer={faq.answer}
-              />
+              <div key={index} className="border-b border-background/20">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById(`faq-${index}`);
+                    if (el) el.classList.toggle("hidden");
+                  }}
+                  className="w-full py-6 flex items-center justify-between text-left hover:opacity-70 transition-opacity"
+                >
+                  <span className="text-lg sm:text-xl font-medium pr-8">{faq.question}</span>
+                  <span className="text-2xl flex-shrink-0">+</span>
+                </button>
+                <div id={`faq-${index}`} className="hidden pb-6">
+                  <p className="text-background/70 max-w-2xl">{faq.answer}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section id="kontakt" className="py-32 px-6 bg-foreground text-background">
+      <section id="kontakt" className="py-32 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -756,7 +789,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="text-background/70 text-lg"
+                className="text-muted text-lg"
               >
                 20 Minuten. Unverbindlich.
               </motion.p>
@@ -767,16 +800,16 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-background text-foreground rounded-3xl p-8"
+              className="bg-foreground text-background rounded-3xl p-8"
             >
-              <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6">
+              <div className="aspect-[4/3] bg-background/10 rounded-2xl flex items-center justify-center mb-6">
                 <div className="text-center">
-                  <p className="text-muted text-sm mb-2">Kalender-Widget</p>
+                  <p className="text-background/60 text-sm mb-2">Kalender-Widget</p>
                   <p className="font-semibold">Cal.com / Calendly</p>
                 </div>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Lieber per E-Mail?</span>
+                <span className="text-background/60">Lieber per E-Mail?</span>
                 <a
                   href="mailto:hallo@laeuft.ch"
                   className="font-medium hover:underline"
