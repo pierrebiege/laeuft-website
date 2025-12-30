@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,13 +12,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
-  title: "Läuft. | Betriebssystem für KMU",
-  description: "Wir machen euren Betrieb schneller. Keine Beratung. Keine Workshops. Direkte Umsetzung.",
-  keywords: ["KMU", "Automatisierung", "Betrieb", "Schweiz", "Wallis", "Effizienz"],
+  title: "Läuft. | Alles für KMU. Aus einer Hand.",
+  description: "Web, Branding, Social Media, Automatisierung – ein Abo, ein Ansprechpartner. Pausieren oder kündigen jederzeit.",
+  keywords: ["KMU", "Webdesign", "Branding", "Social Media", "Automatisierung", "Schweiz", "Wallis"],
   openGraph: {
-    title: "Läuft. | Betriebssystem für KMU",
-    description: "Wir machen euren Betrieb schneller. Punkt.",
+    title: "Läuft. | Alles für KMU. Aus einer Hand.",
+    description: "Web, Branding, Social Media, Automatisierung – ein Abo, ein Ansprechpartner.",
     locale: "de_CH",
     type: "website",
   },
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
       >
         {children}
       </body>
