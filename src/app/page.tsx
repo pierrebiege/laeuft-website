@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useState, useRef } from "react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -48,126 +48,193 @@ function ServiceTag({ children }: { children: string }) {
   );
 }
 
-// Benefit Card
-function BenefitCard({
+// Word component for scroll-based reveal
+function Word({
+  children,
+  progress,
+  range,
+}: {
+  children: string;
+  progress: any;
+  range: [number, number];
+}) {
+  const opacity = useTransform(progress, range, [0.15, 1]);
+
+  return (
+    <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">
+      {children}
+    </motion.span>
+  );
+}
+
+// Pricing Card
+function PricingCard({
   title,
+  price,
+  period,
   description,
-  index,
+  features,
+  cta,
+  featured = false,
+  delay = 0,
 }: {
   title: string;
+  price: string;
+  period: string;
   description: string;
-  index: number;
+  features: string[];
+  cta: string;
+  featured?: boolean;
+  delay?: number;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className="flex-shrink-0 w-64 sm:w-72"
+      transition={{ delay }}
+      className={`rounded-3xl p-8 h-full flex flex-col ${
+        featured
+          ? "bg-foreground text-background"
+          : "bg-white dark:bg-zinc-900 border border-border"
+      }`}
     >
-      {/* Placeholder Image */}
-      <div className="aspect-square bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 rounded-2xl mb-4 flex items-center justify-center">
-        <div className="w-16 h-16 bg-foreground/10 rounded-xl" />
+      {featured && (
+        <div className="text-sm bg-background/20 text-background px-3 py-1 rounded-full w-fit mb-4">
+          Beliebt
+        </div>
+      )}
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <div className="mb-4">
+        <span className="text-4xl font-bold">{price}</span>
+        <span className={featured ? "text-background/70" : "text-muted"}>
+          {period}
+        </span>
       </div>
-      <h3 className="font-semibold text-lg mb-2">{title}</h3>
-      <p className="text-muted text-sm">{description}</p>
+      <p className={`mb-6 ${featured ? "text-background/70" : "text-muted"}`}>
+        {description}
+      </p>
+      <ul className="space-y-3 mb-8 flex-grow">
+        {features.map((feature, index) => (
+          <li key={index} className="flex items-start gap-3 text-sm">
+            <span
+              className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${
+                featured ? "bg-background" : "bg-foreground"
+              }`}
+            />
+            {feature}
+          </li>
+        ))}
+      </ul>
+      <a
+        href="#kontakt"
+        className={`block w-full text-center py-4 rounded-xl font-medium transition-opacity hover:opacity-90 ${
+          featured
+            ? "bg-background text-foreground"
+            : "bg-foreground text-background"
+        }`}
+      >
+        {cta}
+      </a>
     </motion.div>
   );
 }
 
 // Portfolio Item
-function PortfolioItem({ index }: { index: number }) {
+function PortfolioItem({
+  title,
+  category,
+  index,
+}: {
+  title: string;
+  category: string;
+  index: number;
+}) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       className="group cursor-pointer"
     >
       <div className="aspect-[4/3] bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 rounded-2xl mb-4 overflow-hidden relative">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-4xl font-bold text-foreground/10">
-            {index + 1}
-          </span>
-        </div>
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors" />
       </div>
+      <p className="text-sm text-muted mb-1">{category}</p>
+      <h3 className="font-semibold">{title}</h3>
     </motion.div>
   );
 }
 
 export default function Home() {
-  const services = [
-    "Webseiten",
-    "Webshops",
-    "Branding",
-    "Logos",
-    "Social Media",
-    "Automationen",
-    "KI-Assistenten",
-    "Präsentationen",
-    "Flyer",
-    "Visitenkarten",
-    "Newsletter",
-    "SEO",
+  const problemRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: problemRef,
+    offset: ["start start", "end end"],
+  });
+
+  const problemStatements = [
+    "Montagmorgen.",
+    "47 E-Mails.",
+    "Die Hälfte davon hättest du nicht gebraucht.",
+    "Daten kopieren.",
+    "Von Hand.",
+    "Jeden Tag.",
+    "Der Chef entscheidet alles.",
+    "Weil das System es nicht kann.",
+    "Du bist nicht langsam.",
+    "Deine Systeme sind es.",
   ];
 
-  const benefits = [
-    {
-      title: "Fixpreis",
-      description: "Keine Überraschungen. Du weisst vorher, was es kostet.",
-    },
-    {
-      title: "Schnelle Lieferung",
-      description: "Die meisten Anfragen sind in wenigen Tagen erledigt.",
-    },
-    {
-      title: "Alles aus einer Hand",
-      description: "Web, Branding, Social, Automatisierung. Ein Ansprechpartner.",
-    },
-    {
-      title: "Flexibel",
-      description: "Pausieren oder kündigen jederzeit. Keine Knebelverträge.",
-    },
-    {
-      title: "Senior-Qualität",
-      description: "15 Jahre Erfahrung. Kein Junior, kein Outsourcing.",
-    },
-  ];
+  const allWords = problemStatements.join(" ").split(" ");
+  const totalWords = allWords.length;
 
   const faqs = [
     {
-      question: "Wie schnell bekomme ich meine Anfrage?",
+      question: "Was genau automatisiert ihr?",
       answer:
-        "Die meisten Anfragen sind innerhalb von 2-5 Werktagen erledigt. Komplexere Projekte wie komplette Webseiten dauern entsprechend länger – das besprechen wir vorab.",
+        "Alles, was sich wiederholt und Zeit frisst. E-Mail-Workflows, Angebotserstellung, Kundenkommunikation, Datenübertragung zwischen Systemen, Terminbuchungen, Rechnungsstellung. Wir schauen uns deinen Alltag an und finden die Stellen, wo du Stunden verlierst.",
     },
     {
-      question: "Was ist, wenn mir das Ergebnis nicht gefällt?",
+      question: "Brauche ich technisches Wissen?",
       answer:
-        "Kein Problem. Wir überarbeiten so lange, bis du zufrieden bist. Revisionen sind im Preis inbegriffen.",
+        "Nein. Du erzählst mir, was nervt. Ich baue die Lösung. Du bekommst etwas, das funktioniert – keine Schulung, kein Handbuch, kein Selbststudium nötig.",
     },
     {
-      question: "Wie funktioniert die Zusammenarbeit?",
+      question: "Wie schnell sehe ich Resultate?",
       answer:
-        "Du schickst mir deine Anfrage per E-Mail oder über ein einfaches Board. Ich arbeite daran und liefere. Keine komplizierten Tools, keine unnötigen Meetings.",
+        "Die meisten Automatisierungen sind in 1-2 Wochen live. Ab Tag 1 sparst du Zeit. Bei grösseren Projekten wie Shops oder Datenbanksystemen reden wir von 4-8 Wochen.",
     },
     {
-      question: "Kann ich auch einzelne Projekte beauftragen?",
+      question: "Was ist der Unterschied zwischen Projekt und Abo?",
       answer:
-        "Ja. Neben dem monatlichen Abo biete ich auch Einzelprojekte an. Ideal für einmalige Sachen wie ein Logo oder eine Landingpage.",
+        "Projekt = einmalig. Du hast ein konkretes Problem, wir lösen es, fertig. Abo = laufend. Du hast regelmässig Bedarf, ich bin dein Mann für alles Digitale. Die meisten starten mit einem Projekt und wechseln dann ins Abo.",
     },
     {
-      question: "Wer steckt hinter Läuft?",
+      question: "Kann ich das Abo pausieren oder kündigen?",
       answer:
-        "Ich bin Pierre. Seit 15 Jahren im digitalen Handwerk. Ich arbeite allein – das heisst, du redest immer direkt mit dem, der es umsetzt.",
+        "Jederzeit. Monatlich kündbar, keine Mindestlaufzeit. Wenn du einen Monat weniger brauchst, pausierst du einfach. Die restlichen Tage verfallen nicht.",
     },
     {
-      question: "Arbeitest du auch mit Unternehmen ausserhalb des Wallis?",
+      question: "Macht ihr auch Webseiten und Branding?",
       answer:
-        "Klar. Die meiste Kommunikation läuft digital. Ob Zürich, Bern oder sonstwo – funktioniert genauso gut.",
+        "Ja. Webseiten, Shops, Logos, Branding, Social Media – alles was ein KMU digital braucht. Aber das Besondere an Läuft. ist die Automatisierung. Die Webseite macht dich sichtbar. Die Automatisierung macht dich schnell.",
     },
+    {
+      question: "Für wen ist das nichts?",
+      answer:
+        "Wenn du jemanden suchst, der dir erklärt, was du tun solltest – such dir einen Berater. Wenn du jemanden suchst, der PowerPoint-Präsentationen macht – such dir eine Agentur. Ich baue Dinge, die funktionieren. Keine Theorie, nur Resultate.",
+    },
+  ];
+
+  const portfolioItems = [
+    { title: "Automatische Angebotserstellung", category: "Automatisierung" },
+    { title: "E-Commerce mit Lagersystem", category: "Shop" },
+    { title: "KI-Kundenassistent", category: "KI" },
+    { title: "Handwerksbetrieb Rebrand", category: "Branding" },
+    { title: "Buchungssystem Praxis", category: "Automatisierung" },
+    { title: "Startup Webseite", category: "Web" },
   ];
 
   return (
@@ -178,7 +245,7 @@ export default function Home() {
           <span className="text-xl font-semibold tracking-tight">Läuft.</span>
           <div className="flex items-center gap-4">
             <a
-              href="#pricing"
+              href="#preise"
               className="hidden sm:block text-sm text-muted hover:text-foreground transition-colors"
             >
               Preise
@@ -199,63 +266,107 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left: Text */}
             <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block bg-foreground/10 text-sm px-4 py-2 rounded-full mb-6"
+              >
+                Für KMU, die keine Zeit zu verlieren haben
+              </motion.div>
+
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
                 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
               >
-                Alles für KMU.
+                Dein Betrieb.
                 <br />
-                <span className="italic font-serif font-normal">Aus einer Hand.</span>
+                <span className="italic font-serif font-normal">Automatisiert.</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-lg text-muted mb-2"
+                transition={{ delay: 0.2 }}
+                className="text-xl text-muted mb-8 max-w-lg"
               >
-                Pausieren oder kündigen jederzeit.
+                Ich baue Systeme, die arbeiten. Damit du es nicht musst.
+                Weniger Handarbeit. Mehr Zeit fürs Wesentliche.
               </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <a
+                  href="#kontakt"
+                  className="inline-flex items-center justify-center h-14 px-8 bg-foreground text-background font-medium rounded-full hover:opacity-90 transition-opacity"
+                >
+                  Gespräch buchen
+                </a>
+                <a
+                  href="#so-funktionierts"
+                  className="inline-flex items-center justify-center h-14 px-8 border border-border font-medium rounded-full hover:border-foreground/30 transition-colors"
+                >
+                  So funktioniert&apos;s
+                </a>
+              </motion.div>
             </div>
 
-            {/* Right: Card */}
+            {/* Right: Value Props Card */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="relative"
+              transition={{ delay: 0.3 }}
             >
               <div className="bg-foreground text-background rounded-3xl p-8 sm:p-10">
-                {/* Placeholder Image Area */}
-                <div className="absolute -top-6 -right-6 w-32 h-24 bg-zinc-300 dark:bg-zinc-600 rounded-2xl rotate-6 hidden lg:block" />
+                <h2 className="text-2xl font-bold mb-6">Was du bekommst:</h2>
 
-                <div className="relative">
-                  <div className="inline-block bg-background/20 text-sm px-3 py-1 rounded-full mb-6">
-                    Jetzt starten
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
+                      <span className="text-sm">1</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">Systeme, die Arbeit abnehmen</p>
+                      <p className="text-background/60 text-sm">
+                        Automatisierte Abläufe statt Handarbeit
+                      </p>
+                    </div>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl font-bold mb-2">
-                    Läuft.
-                  </h2>
-                  <p className="text-background/70 mb-8">
-                    Ein Abo. Alles drin.
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
+                      <span className="text-sm">2</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">Zeit zurück</p>
+                      <p className="text-background/60 text-sm">
+                        Stunden pro Woche, nicht Minuten
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
+                      <span className="text-sm">3</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">Einen Ansprechpartner</p>
+                      <p className="text-background/60 text-sm">
+                        Kein Agentur-Chaos, keine Praktikanten
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-background/20">
+                  <p className="text-background/60 text-sm mb-2">
+                    Projekte ab CHF 1&apos;500 · Abo ab CHF 990/Monat
                   </p>
-
-                  <a
-                    href="#pricing"
-                    className="block w-full bg-background text-foreground text-center py-4 rounded-xl font-medium hover:opacity-90 transition-opacity mb-4"
-                  >
-                    Preise ansehen
-                  </a>
-
-                  <a
-                    href="#kontakt"
-                    className="flex items-center justify-between text-sm text-background/70 hover:text-background transition-colors"
-                  >
-                    <span>15-Minuten Intro-Call buchen</span>
-                    <span>→</span>
-                  </a>
                 </div>
               </div>
             </motion.div>
@@ -263,138 +374,293 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tagline */}
-      <section className="py-16 px-6 border-t border-border">
+      {/* Problem Section - Word by Word Reveal */}
+      <section
+        ref={problemRef}
+        className="relative h-[300vh] border-t border-border"
+      >
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-sm uppercase tracking-widest text-muted mb-8"
+          >
+            Das Problem
+          </motion.p>
+
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-center max-w-5xl leading-relaxed">
+            {allWords.map((word, index) => {
+              const start = index / totalWords;
+              const end = (index + 1) / totalWords;
+
+              return (
+                <Word key={index} progress={scrollYProgress} range={[start, end]}>
+                  {word}
+                </Word>
+              );
+            })}
+          </p>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section className="py-24 px-6 bg-foreground text-background">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-            So{" "}
-            <span className="italic font-serif font-normal">hätte es</span>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-sm uppercase tracking-widest text-background/60 mb-4"
+          >
+            Die Lösung
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8"
+          >
+            Was wäre, wenn es
             <br />
-            schon immer sein sollen
-          </h2>
+            <span className="italic font-serif font-normal">einfach läuft?</span>
+          </motion.h2>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4 text-xl text-background/80 max-w-2xl mx-auto"
+          >
+            <p>Kundenanfrage rein. System antwortet. Du siehst nur, was wichtig ist.</p>
+            <p>Angebot nötig? Drei Klicks. Raus.</p>
+            <p>Daten fliessen automatisch. Kein Kopieren. Kein Suchen.</p>
+            <p className="text-background font-medium pt-4">
+              Das ist keine Zukunftsmusik. Das baue ich. In Wochen, nicht Monaten.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* What I do Section */}
+      <section className="py-24 px-6 border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Left: Main service */}
+            <div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="text-sm uppercase tracking-widest text-muted mb-4"
+              >
+                Was ich mache
+              </motion.p>
+
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-3xl sm:text-4xl font-bold tracking-tight mb-6"
+              >
+                Automatisierung
+                <br />
+                <span className="italic font-serif font-normal">ist der Kern</span>
+              </motion.h2>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="space-y-4 text-muted mb-8"
+              >
+                <p>
+                  Ich schaue mir an, wo du Zeit verlierst. Dann baue ich Systeme,
+                  die diese Arbeit übernehmen. Keine Theorie, keine Beratung –
+                  funktionierende Lösungen.
+                </p>
+                <p>
+                  E-Mail-Workflows. Automatische Angebote. KI-Assistenten.
+                  Datenbank-Systeme. Alles, was sich wiederholt und Zeit frisst.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
+              >
+                <p className="font-medium mb-2">Typisches Resultat:</p>
+                <p className="text-muted text-sm">
+                  &quot;Ich spare 8 Stunden pro Woche. Das System macht jetzt, was
+                  ich früher von Hand gemacht habe.&quot;
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Right: Additional services */}
+            <div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="text-sm uppercase tracking-widest text-muted mb-4"
+              >
+                Und sonst noch
+              </motion.p>
+
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-2xl font-bold mb-6"
+              >
+                Alles, was ein KMU
+                <br />
+                digital braucht
+              </motion.h3>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="flex flex-wrap gap-2 mb-6"
+              >
+                {[
+                  "Webseiten",
+                  "Webshops",
+                  "Branding",
+                  "Logos",
+                  "Social Media",
+                  "KI-Assistenten",
+                  "Datenbanken",
+                  "Präsentationen",
+                  "Newsletter",
+                ].map((service) => (
+                  <ServiceTag key={service}>{service}</ServiceTag>
+                ))}
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="text-muted"
+              >
+                Die Webseite macht dich sichtbar. Das Branding macht dich
+                erkennbar. Aber die Automatisierung macht dich schnell.{" "}
+                <span className="text-foreground font-medium">
+                  Das ist der Unterschied.
+                </span>
+              </motion.p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-16 px-6">
+      <section id="so-funktionierts" className="py-24 px-6 border-t border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Step 1 */}
+          <div className="text-center mb-16">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-sm uppercase tracking-widest text-muted mb-4"
+            >
+              So funktioniert&apos;s
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl sm:text-4xl font-bold tracking-tight"
+            >
+              Drei Schritte.{" "}
+              <span className="italic font-serif font-normal">Dann läuft&apos;s.</span>
+            </motion.h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-zinc-200 dark:bg-zinc-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8"
             >
-              <div className="aspect-video bg-zinc-300 dark:bg-zinc-700 rounded-2xl mb-6 flex items-center justify-center">
-                <span className="text-4xl font-bold text-foreground/20">1</span>
+              <div className="w-12 h-12 bg-foreground text-background rounded-full flex items-center justify-center text-lg font-bold mb-6">
+                1
               </div>
-              <h3 className="text-xl font-bold mb-2">Anfragen</h3>
-              <p className="text-muted text-sm">
-                Schick mir so viele Anfragen wie du willst. Web, Branding, Social – alles.
+              <h3 className="text-xl font-bold mb-3">Gespräch</h3>
+              <p className="text-muted">
+                Du erzählst mir, was nervt. Wo du Zeit verlierst. Was besser
+                laufen müsste. 20 Minuten reichen.
               </p>
             </motion.div>
 
-            {/* Step 2 */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-zinc-300 dark:bg-zinc-700 rounded-3xl p-6 sm:p-8 relative overflow-hidden"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8"
             >
-              <div className="aspect-video bg-zinc-400 dark:bg-zinc-600 rounded-2xl mb-6 flex items-center justify-center flex-wrap gap-2 p-4">
-                {["Web", "Logo", "Social", "Flyer"].map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-background/80 rounded-full text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <div className="w-12 h-12 bg-foreground text-background rounded-full flex items-center justify-center text-lg font-bold mb-6">
+                2
               </div>
-              <h3 className="text-xl font-bold mb-2">Umsetzen</h3>
-              <p className="text-muted text-sm">
-                Ich arbeite daran. Eine Anfrage nach der anderen. Schnell und gründlich.
+              <h3 className="text-xl font-bold mb-3">Umsetzung</h3>
+              <p className="text-muted">
+                Ich baue die Lösung. Du schaust zu oder machst was anderes.
+                Keine Workshops, keine Schulungen.
               </p>
             </motion.div>
 
-            {/* Step 3 */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-foreground text-background rounded-3xl p-6 sm:p-8 relative overflow-hidden"
+              className="bg-foreground text-background rounded-3xl p-8"
             >
-              <div className="aspect-video bg-background/10 rounded-2xl mb-6 flex items-center justify-center">
-                <span className="text-4xl">✓</span>
+              <div className="w-12 h-12 bg-background text-foreground rounded-full flex items-center justify-center text-lg font-bold mb-6">
+                3
               </div>
-              <h3 className="text-xl font-bold mb-2">Erhalten</h3>
-              <p className="text-background/70 text-sm">
-                Du bekommst dein Ergebnis. Revisionen inklusive. Bis du zufrieden bist.
+              <h3 className="text-xl font-bold mb-3">Läuft</h3>
+              <p className="text-background/70">
+                Das System arbeitet. Du hast Zeit für das, wofür du mal
+                angetreten bist. Ab Tag 1.
               </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Client Logos */}
-      <section className="py-12 px-6 border-t border-border">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-50">
-            {["Kunde 1", "Kunde 2", "Kunde 3", "Kunde 4", "Kunde 5"].map(
-              (client) => (
-                <span key={client} className="text-lg font-semibold">
-                  {client}
-                </span>
-              )
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* About */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 sm:p-12 text-center border border-border">
-            <p className="text-lg sm:text-xl text-muted leading-relaxed">
-              Läuft. ist eine Ein-Mann-Agentur, geführt von{" "}
-              <span className="text-foreground font-medium underline">Pierre</span>.
-              Ich arbeite nicht mit anderen Designern oder Entwicklern zusammen und
-              outsource nichts. Du arbeitest direkt mit mir – von Anfang bis Ende.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="py-20 px-6">
+      {/* Portfolio Preview */}
+      <section className="py-24 px-6 border-t border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-sm uppercase tracking-widest text-muted mb-4">
-              Vorteile
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Es ist{" "}
-              <span className="italic font-serif font-normal">
-                &quot;nie wieder anders&quot;
-              </span>{" "}
-              gut
-            </h2>
-            <p className="text-muted mt-4 max-w-xl mx-auto">
-              Läuft. ersetzt unzuverlässige Freelancer und teure Agenturen.
-              Für einen fixen Monatspreis.
-            </p>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <p className="text-sm uppercase tracking-widest text-muted mb-2">
+                Referenzen
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-bold">Letzte Arbeiten</h2>
+            </div>
           </div>
 
-          {/* Horizontal scroll on mobile */}
-          <div className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 snap-x">
-            {benefits.map((benefit, index) => (
-              <BenefitCard
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {portfolioItems.map((item, index) => (
+              <PortfolioItem
                 key={index}
-                title={benefit.title}
-                description={benefit.description}
+                title={item.title}
+                category={item.category}
                 index={index}
               />
             ))}
@@ -402,193 +668,191 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-20 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Portfolio preview */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="grid grid-cols-2 gap-4">
-                <div className="aspect-[3/4] bg-zinc-200 dark:bg-zinc-800 rounded-2xl" />
-                <div className="aspect-[3/4] bg-zinc-300 dark:bg-zinc-700 rounded-2xl mt-8" />
-              </div>
-            </motion.div>
-
-            {/* Right: Services */}
-            <div>
-              <div className="flex flex-wrap gap-2 mb-8">
-                {services.map((service) => (
-                  <ServiceTag key={service}>{service}</ServiceTag>
-                ))}
-                <span className="inline-block px-4 py-2 text-sm text-muted">
-                  + mehr
-                </span>
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Web, Branding,
-                <br />
-                Automatisierung & mehr
-              </h2>
-              <p className="text-muted">
-                Alles was du brauchst. Unter einem Dach.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Work */}
-      <section className="py-20 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold">Letzte Arbeiten</h2>
-              <p className="text-muted mt-2">
-                Ein Auszug aus aktuellen Projekten.
-              </p>
-            </div>
-            <a
-              href="#"
-              className="hidden sm:inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              Alle ansehen
-            </a>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[0, 1, 2, 3, 4, 5].map((index) => (
-              <PortfolioItem key={index} index={index} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Pricing */}
-      <section id="pricing" className="py-20 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-sm uppercase tracking-widest text-muted mb-4">
+      <section id="preise" className="py-24 px-6 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-sm uppercase tracking-widest text-muted mb-4"
+            >
               Preise
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Ein Abo,
-              <br />
-              <span className="italic font-serif font-normal">
-                endlose Möglichkeiten
-              </span>
-            </h2>
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4"
+            >
+              Klar.{" "}
+              <span className="italic font-serif font-normal">Fair.</span>{" "}
+              Transparent.
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-muted max-w-xl mx-auto"
+            >
+              Keine versteckten Kosten. Du weisst vorher, was es kostet –
+              und was es dir bringt.
+            </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
-            {/* Left: Visual */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <PricingCard
+              title="Projekt"
+              price="Ab 1'500"
+              period=" CHF"
+              description="Einmalig. Ein Problem, eine Lösung. Ideal für konkrete Vorhaben."
+              features={[
+                "Fixpreis nach Gespräch",
+                "Automatisierung, Web oder Branding",
+                "Revisionen inklusive",
+                "Support nach Abschluss",
+              ]}
+              cta="Projekt besprechen"
+              delay={0}
+            />
+
+            <PricingCard
+              title="Starter-Abo"
+              price="990"
+              period=" CHF/Monat"
+              description="Für regelmässigen Bedarf. Ideal zum Einstieg."
+              features={[
+                "Laufende Anfragen",
+                "Eine Anfrage zur Zeit",
+                "Durchschnittlich 48h Lieferung",
+                "Pausieren jederzeit",
+                "Monatlich kündbar",
+              ]}
+              cta="Abo starten"
+              featured
+              delay={0.1}
+            />
+
+            <PricingCard
+              title="Alles-Abo"
+              price="2'500"
+              period=" CHF/Monat"
+              description="Für Vielnutzer. Ich bin dein Mann für alles Digitale."
+              features={[
+                "Unbegrenzte Anfragen",
+                "Priorität bei Umsetzung",
+                "Grössere Projekte inklusive",
+                "Strategische Beratung",
+                "Direkte Kommunikation",
+              ]}
+              cta="Alles-Abo starten"
+              delay={0.2}
+            />
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center text-muted mt-8 text-sm"
+          >
+            Nicht sicher, was passt? Lass uns reden. 20 Minuten, unverbindlich.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* About */}
+      <section className="py-24 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Photo placeholder */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               className="aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-3xl flex items-center justify-center"
             >
-              <span className="text-6xl font-bold text-foreground/10">Läuft.</span>
+              <span className="text-6xl font-bold text-foreground/10">P</span>
             </motion.div>
 
-            {/* Right: Pricing Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-foreground text-background rounded-3xl p-8 sm:p-10"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold">Monats-Abo</h3>
-                <span className="text-sm bg-background/20 px-3 py-1 rounded-full">
-                  Jederzeit kündbar
-                </span>
-              </div>
-
-              <div className="border-t border-background/20 pt-6 mb-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl sm:text-6xl font-bold">CHF 2&apos;500</span>
-                  <span className="text-background/70">/Monat</span>
-                </div>
-              </div>
-
-              <div className="bg-background/10 rounded-2xl p-6 mb-6">
-                <p className="text-sm uppercase tracking-widest text-background/50 mb-4">
-                  Inklusive
-                </p>
-                <ul className="space-y-3 text-sm">
-                  <li className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-background rounded-full" />
-                    Unbegrenzte Anfragen
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-background rounded-full" />
-                    Eine Anfrage zur Zeit
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-background rounded-full" />
-                    Durchschnittlich 48h Lieferung
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-background rounded-full" />
-                    Unbegrenzte Revisionen
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-background rounded-full" />
-                    Pausieren jederzeit möglich
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href="#kontakt"
-                className="block w-full bg-background text-foreground text-center py-4 rounded-xl font-medium hover:opacity-90 transition-opacity"
+            {/* Text */}
+            <div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="text-sm uppercase tracking-widest text-muted mb-4"
               >
-                Jetzt starten
-              </a>
-            </motion.div>
-          </div>
+                Über mich
+              </motion.p>
 
-          {/* Additional options */}
-          <div className="grid sm:grid-cols-2 gap-6 mt-8 max-w-5xl mx-auto">
-            <div className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6">
-              <h4 className="font-semibold mb-2">Pausieren jederzeit</h4>
-              <p className="text-muted text-sm">
-                Nicht genug Arbeit für einen Monat? Pausiere dein Abo und nutze
-                die restlichen Tage später.
-              </p>
-            </div>
-            <div className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6">
-              <h4 className="font-semibold mb-2">Einzelprojekte</h4>
-              <p className="text-muted text-sm">
-                Nur ein Logo oder eine Landingpage? Kein Problem. Fixpreis,
-                einmalig.
-              </p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-3xl font-bold mb-6"
+              >
+                Ich bin Pierre.
+              </motion.h2>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="space-y-4 text-muted"
+              >
+                <p>
+                  15 Jahre digitales Handwerk. Angefangen mit Pixeln. Heute:
+                  Systeme, die Betriebe schneller machen.
+                </p>
+                <p>
+                  Der Weg war nie geplant: Grafikdesign führte zu Shops. Shops zu
+                  Datenbanken. Datenbanken zu Automationen.
+                </p>
+                <p>
+                  Ich habe gesehen, wie Unternehmen an ihren eigenen Systemen
+                  scheitern. Nicht weil sie schlecht sind. Sondern weil niemand
+                  Zeit hatte, es richtig aufzusetzen.
+                </p>
+                <p className="text-foreground font-medium">
+                  Ich arbeite allein. Das bedeutet: Du redest mit mir. Nicht mit
+                  einem Verkäufer. Mit dem, der es baut.
+                </p>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-6 border-t border-border">
+      <section className="py-24 px-6 border-t border-border">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Left: Title */}
             <div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight sticky top-24">
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="text-sm uppercase tracking-widest text-muted mb-4"
+              >
+                FAQ
+              </motion.p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight sticky top-24"
+              >
                 <span className="italic font-serif font-normal">Häufig</span>{" "}
                 gestellte
                 <br />
                 Fragen
-              </h2>
+              </motion.h2>
             </div>
 
-            {/* Right: FAQ Items */}
             <div>
               {faqs.map((faq, index) => (
                 <FAQItem
@@ -603,36 +867,54 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section
-        id="kontakt"
-        className="py-20 px-6 bg-foreground text-background"
-      >
+      <section id="kontakt" className="py-24 px-6 bg-foreground text-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text */}
             <div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                Finde heraus, ob
-                <br />
-                <span className="italic font-serif font-normal">
-                  Läuft. zu dir passt
-                </span>
-              </h2>
-              <p className="text-background/70 text-lg">
-                15 Minuten. Unverbindlich. Ich zeige dir, wie es funktioniert.
-              </p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
+              >
+                Bereit?
+              </motion.h2>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="space-y-4 text-background/70 text-lg"
+              >
+                <p>Ein Gespräch. 20 Minuten. Kein Verkaufspitch.</p>
+                <p>
+                  Du erzählst, was nervt. Ich sage dir ehrlich, ob ich helfen
+                  kann – und was es kosten würde.
+                </p>
+                <p className="text-background">
+                  Wenn ja: In wenigen Wochen läuft&apos;s.
+                  <br />
+                  Wenn nein: Du hast 20 Minuten investiert und weisst Bescheid.
+                </p>
+              </motion.div>
             </div>
 
-            {/* Right: Calendar Placeholder */}
-            <div className="bg-background text-foreground rounded-3xl p-6 sm:p-8">
+            {/* Calendar Placeholder */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-background text-foreground rounded-3xl p-8"
+            >
               <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6">
                 <div className="text-center">
                   <p className="text-muted text-sm mb-2">Kalender-Widget</p>
-                  <p className="font-semibold">Calendly / Cal.com</p>
+                  <p className="font-semibold">Cal.com / Calendly</p>
                 </div>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Oder per E-Mail:</span>
+                <span className="text-muted">Lieber per E-Mail?</span>
                 <a
                   href="mailto:hallo@laeuft.ch"
                   className="font-medium hover:underline"
@@ -640,7 +922,7 @@ export default function Home() {
                   hallo@laeuft.ch
                 </a>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -650,10 +932,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-background/60">
           <span>Läuft. – Wallis, Schweiz</span>
           <div className="flex items-center gap-6">
-            <a href="/impressum" className="hover:text-background transition-colors">
+            <a
+              href="/impressum"
+              className="hover:text-background transition-colors"
+            >
               Impressum
             </a>
-            <a href="/datenschutz" className="hover:text-background transition-colors">
+            <a
+              href="/datenschutz"
+              className="hover:text-background transition-colors"
+            >
               Datenschutz
             </a>
           </div>
