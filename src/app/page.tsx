@@ -75,9 +75,9 @@ function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="mb-16"
         >
-          <span className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight">
+          <span className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight inline-flex items-baseline">
             Läuft
-            <span className="pulse-dot inline-block w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 bg-foreground rounded-full ml-1 align-middle" />
+            <span className="pulse-dot inline-block w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 bg-foreground rounded-full ml-1" />
           </span>
         </motion.div>
 
@@ -143,39 +143,32 @@ function HeroSection() {
   );
 }
 
-// Problem Statement Component
-function ProblemStatement({
+// Word component for scroll-based reveal
+function Word({
   children,
-  index,
+  progress,
+  range,
 }: {
-  children: React.ReactNode;
-  index: number;
+  children: string;
+  progress: any;
+  range: [number, number];
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-20%" });
+  const opacity = useTransform(progress, range, [0.15, 1]);
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="min-h-[50vh] flex items-center justify-center px-6"
-      style={{
-        background: `rgba(0, 0, 0, ${0.02 + index * 0.015})`,
-      }}
-    >
-      <p className="text-2xl sm:text-3xl md:text-4xl font-medium text-center max-w-3xl leading-relaxed">
-        {children}
-      </p>
-    </motion.div>
+    <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">
+      {children}
+    </motion.span>
   );
 }
 
-// Problem Section
+// Problem Section with Word-by-Word Reveal
 function ProblemSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
   const statements = [
     "Montagmorgen. 47 E-Mails. Die Hälfte davon hättest du nicht gebraucht.",
@@ -183,40 +176,60 @@ function ProblemSection() {
     "Irgendwo gibt es ein Dokument. Niemand weiss wo.",
     "Der Chef entscheidet alles. Weil das System es nicht kann.",
     "Ihr seid schnell. Eure Systeme nicht.",
+    "Am Ende des Tages hast du gearbeitet. Aber nicht das, wofür du angetreten bist.",
   ];
 
+  // Combine all statements into words with their indices
+  const allWords: { word: string; isLastStatement: boolean }[] = [];
+  statements.forEach((statement, statementIndex) => {
+    const words = statement.split(" ");
+    words.forEach((word) => {
+      allWords.push({
+        word,
+        isLastStatement: statementIndex === statements.length - 1,
+      });
+    });
+  });
+
+  const totalWords = allWords.length;
+
   return (
-    <section className="border-t border-border">
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-        className="py-24 px-6"
-      >
-        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-4 max-w-4xl mx-auto">
-          Das kennt ihr.
-        </h2>
-      </motion.div>
-
-      {statements.map((statement, index) => (
-        <ProblemStatement key={index} index={index}>
-          {statement}
-        </ProblemStatement>
-      ))}
-
-      {/* Final statement - larger */}
-      <div className="min-h-[60vh] flex items-center justify-center px-6 bg-foreground/[0.08]">
-        <motion.p
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+    <section ref={containerRef} className="relative h-[400vh] border-t border-border">
+      {/* Sticky container */}
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6 py-20">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-3xl"
+          className="text-xl sm:text-2xl font-medium text-muted mb-12"
         >
-          Am Ende des Tages hast du gearbeitet.
-          <br />
-          <span className="text-muted">Aber nicht das, wofür du angetreten bist.</span>
-        </motion.p>
+          Das kennt ihr.
+        </motion.h2>
+
+        <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-center max-w-5xl leading-relaxed">
+          {allWords.map((item, index) => {
+            const start = index / totalWords;
+            const end = (index + 1) / totalWords;
+
+            return (
+              <span
+                key={index}
+                className={item.isLastStatement ? "font-bold" : ""}
+              >
+                <Word progress={scrollYProgress} range={[start, end]}>
+                  {item.word}
+                </Word>
+                {/* Add line break before last statement */}
+                {index === totalWords - 14 && (
+                  <>
+                    <br className="hidden sm:block" />
+                    <br className="hidden sm:block" />
+                  </>
+                )}
+              </span>
+            );
+          })}
+        </p>
       </div>
     </section>
   );
