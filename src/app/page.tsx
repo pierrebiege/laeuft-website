@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useState, useRef } from "react";
-import { Zap, User, Cog, Globe, Database, ArrowUp } from "lucide-react";
+import { Zap, User, Cog, Globe, Database, ArrowUp, X, Plus, Quote } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -168,6 +168,103 @@ function PortfolioItem({
   );
 }
 
+// Service Card with Modal
+function ServiceCard({
+  icon: Icon,
+  title,
+  shortDesc,
+  example,
+  details,
+  index,
+}: {
+  icon: React.ElementType;
+  title: string;
+  shortDesc: string;
+  example: string;
+  details: string[];
+  index: number;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1 }}
+        className="flex-shrink-0 w-[320px] sm:w-[380px] bg-background/10 rounded-3xl p-8 cursor-pointer hover:bg-background/15 transition-all duration-300 group"
+        onClick={() => setIsOpen(true)}
+      >
+        <Icon className="w-10 h-10 mb-6" />
+        <h3 className="text-2xl font-bold mb-3">{title}</h3>
+        <p className="text-background/70 mb-6">{shortDesc}</p>
+        <p className="text-background/50 text-sm italic mb-6">&ldquo;{example}&rdquo;</p>
+        <div className="flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all">
+          <span>Mehr erfahren</span>
+          <Plus className="w-4 h-4" />
+        </div>
+      </motion.div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80"
+            onClick={() => setIsOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-foreground text-background rounded-3xl p-8 sm:p-12 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between mb-8">
+                <Icon className="w-12 h-12" />
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 hover:bg-background/10 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <h3 className="text-3xl font-bold mb-4">{title}</h3>
+              <p className="text-background/70 text-lg mb-8">{shortDesc}</p>
+
+              <div className="space-y-4 mb-8">
+                {details.map((detail, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-background mt-2.5 shrink-0" />
+                    <p className="text-background/80">{detail}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-6 bg-background/10 rounded-2xl">
+                <p className="text-sm text-background/50 mb-2">Beispiel aus der Praxis:</p>
+                <p className="text-background/90">{example}</p>
+              </div>
+
+              <a
+                href="#kontakt"
+                onClick={() => setIsOpen(false)}
+                className="block w-full text-center py-4 mt-8 bg-background text-foreground rounded-xl font-medium hover:bg-background/90 transition-colors"
+              >
+                Projekt besprechen
+              </a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 export default function Home() {
   const problemRef = useRef<HTMLDivElement>(null);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
@@ -244,6 +341,57 @@ export default function Home() {
     { title: "7 WordPress-Sites verbunden", category: "Automatisierung" },
     { title: "Event-Buchungssystem", category: "System" },
     { title: "Multi-Standort Dashboard", category: "Datenbank" },
+  ];
+
+  const serviceItems = [
+    {
+      icon: Cog,
+      title: "Systeme",
+      shortDesc: "Dashboards, Buchungssysteme, interne Tools – alles, was dein Business zusammenhält.",
+      example: "Für ParkourONE baue ich das AcademyBoard – ein System, das Trainer, Kurse und Teilnehmer an einem Ort verwaltet.",
+      details: [
+        "Massgeschneiderte Dashboards für deine Daten",
+        "Buchungssysteme mit Zahlungsintegration",
+        "Interne Tools, die genau das tun, was du brauchst",
+        "Anbindung an bestehende Software",
+      ],
+    },
+    {
+      icon: Database,
+      title: "Datenbanken",
+      shortDesc: "Strukturierte Daten statt Excel-Chaos. Alles an einem Ort, sauber organisiert.",
+      example: "Ein Betrieb mit 3 Standorten – alle Daten in einer Supabase-Datenbank, zugänglich von überall.",
+      details: [
+        "Supabase, PostgreSQL, moderne Datenbanken",
+        "Migration von Excel und alten Systemen",
+        "Berechtigungen und Zugriffssteuerung",
+        "Echtzeit-Synchronisation zwischen Standorten",
+      ],
+    },
+    {
+      icon: Globe,
+      title: "Shops",
+      shortDesc: "Shopify-Stores, die verkaufen. Mit Lager, Versand und allem, was dazugehört.",
+      example: "Mein eigener Shop 'Ein richtig guter Tag' läuft auf Shopify – mit automatisiertem Fulfillment.",
+      details: [
+        "Shopify-Setup und Customization",
+        "Anbindung an Lagersysteme",
+        "Automatisierter Versand und Fulfillment",
+        "Internationale Shops mit Steuern und Währungen",
+      ],
+    },
+    {
+      icon: Zap,
+      title: "Automationen",
+      shortDesc: "Workflows, die dir Stunden sparen. Was sich wiederholt, läuft automatisch.",
+      example: "7 WordPress-Sites, die automatisch synchronisiert werden. Einmal ändern, überall aktualisiert.",
+      details: [
+        "n8n und Make für komplexe Workflows",
+        "Verbindung zwischen allen deinen Tools",
+        "Automatische E-Mails, Benachrichtigungen, Reports",
+        "Datenübertragung ohne manuelles Kopieren",
+      ],
+    },
   ];
 
   return (
@@ -394,108 +542,76 @@ export default function Home() {
       </section>
 
       {/* What I build Section */}
-      <section className="py-32 px-6 bg-foreground text-background">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
-            >
-              Was ich <span className="italic font-serif font-normal">baue</span>
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-background/70 text-lg"
-            >
-              Nicht Teile. Das Ganze.
-            </motion.p>
+      <section className="py-32 bg-foreground text-background">
+        <div className="max-w-7xl mx-auto px-6 mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
+          >
+            Was ich <span className="italic font-serif font-normal">baue</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-background/70 text-lg"
+          >
+            Nicht Teile. Das Ganze.
+          </motion.p>
+        </div>
+
+        {/* Horizontal Scroll */}
+        <div className="overflow-x-auto pb-6">
+          <div className="flex gap-6 px-6 w-max">
+            {serviceItems.map((service, index) => (
+              <ServiceCard
+                key={index}
+                icon={service.icon}
+                title={service.title}
+                shortDesc={service.shortDesc}
+                example={service.example}
+                details={service.details}
+                index={index}
+              />
+            ))}
           </div>
+        </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              viewport={{ once: true }}
-              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
-            >
-              <Cog className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Systeme</p>
-              <p className="text-background/60 text-sm">Dashboards, Buchung, Abläufe</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.05 }}
-              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
-            >
-              <Database className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Datenbanken</p>
-              <p className="text-background/60 text-sm">Supabase, strukturiert</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
-            >
-              <Globe className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Shops</p>
-              <p className="text-background/60 text-sm">Shopify, Lager, Versand</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
-              className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
-            >
-              <Zap className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Automationen</p>
-              <p className="text-background/60 text-sm">n8n, Make, verbunden</p>
-            </motion.div>
-          </div>
+        <div className="max-w-7xl mx-auto px-6 mt-6">
+          <p className="text-background/40 text-sm">← Scroll für mehr</p>
         </div>
       </section>
 
       {/* How it works */}
       <section id="so-funktionierts" className="py-32 px-6 border-t border-border">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-12"
+            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-16"
           >
             So funktioniert&apos;s
           </motion.h2>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-10 hover:shadow-xl transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
+              <div className="w-14 h-14 bg-foreground text-background rounded-2xl flex items-center justify-center text-xl font-bold mb-8">
                 1
               </div>
-              <h3 className="text-lg font-bold mb-2">Gespräch</h3>
-              <p className="text-muted text-sm">20 Minuten. Du erzählst, was nervt.</p>
+              <h3 className="text-2xl font-bold mb-4">Gespräch</h3>
+              <p className="text-muted">
+                20 Minuten. Du erzählst, was nervt und was fehlt. Ich höre zu und stelle Fragen. Kein Pitch, kein Bullshit.
+              </p>
             </motion.div>
 
             <motion.div
@@ -504,13 +620,15 @@ export default function Home() {
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-10 hover:shadow-xl transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
+              <div className="w-14 h-14 bg-foreground text-background rounded-2xl flex items-center justify-center text-xl font-bold mb-8">
                 2
               </div>
-              <h3 className="text-lg font-bold mb-2">Umsetzung</h3>
-              <p className="text-muted text-sm">Ich baue. Du machst was anderes.</p>
+              <h3 className="text-2xl font-bold mb-4">Umsetzung</h3>
+              <p className="text-muted">
+                Ich baue. Du machst was anderes. Regelmässige Updates, keine Überraschungen. Du siehst den Fortschritt.
+              </p>
             </motion.div>
 
             <motion.div
@@ -519,14 +637,103 @@ export default function Home() {
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-foreground text-background rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
+              className="bg-foreground text-background rounded-3xl p-10 hover:shadow-xl transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-background text-foreground rounded-full flex items-center justify-center text-sm font-bold mb-4">
+              <div className="w-14 h-14 bg-background text-foreground rounded-2xl flex items-center justify-center text-xl font-bold mb-8">
                 3
               </div>
-              <h3 className="text-lg font-bold mb-2">Läuft</h3>
-              <p className="text-background/70 text-sm">System arbeitet. Ab Tag 1.</p>
+              <h3 className="text-2xl font-bold mb-4">Läuft</h3>
+              <p className="text-background/70">
+                System arbeitet. Ab Tag 1. Ich zeige dir alles, beantworte Fragen und bin da, wenn was ist.
+              </p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-24 px-6 bg-foreground text-background">
+        <div className="max-w-6xl mx-auto">
+          {/* Numbers */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <p className="text-5xl sm:text-6xl font-bold mb-2">100+</p>
+              <p className="text-background/60">Webseiten</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-center"
+            >
+              <p className="text-5xl sm:text-6xl font-bold mb-2">15</p>
+              <p className="text-background/60">Jahre Erfahrung</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <p className="text-5xl sm:text-6xl font-bold mb-2">1</p>
+              <p className="text-background/60">Ansprechpartner</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="text-center"
+            >
+              <p className="text-5xl sm:text-6xl font-bold mb-2">48h</p>
+              <p className="text-background/60">Lieferung</p>
+            </motion.div>
+          </div>
+
+          {/* Quote Placeholder */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-background/10 rounded-3xl p-10 sm:p-14 mb-16"
+          >
+            <Quote className="w-10 h-10 text-background/30 mb-6" />
+            <p className="text-2xl sm:text-3xl font-medium leading-relaxed mb-8 text-background/80">
+              &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-background/20" />
+              <div>
+                <p className="font-semibold">Kundenname</p>
+                <p className="text-background/60 text-sm">Firma / Position</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Logo Placeholders */}
+          <div className="text-center">
+            <p className="text-background/40 text-sm uppercase tracking-widest mb-8">Projekte für</p>
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="w-24 h-12 bg-background/10 rounded-lg flex items-center justify-center"
+                >
+                  <span className="text-background/30 text-xs">Logo {i}</span>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -670,6 +877,24 @@ export default function Home() {
               </motion.div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Full-Width Statement */}
+      <section className="py-32 px-6 bg-zinc-100 dark:bg-zinc-900 border-y border-border">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+          >
+            Keine Agentur.
+            <br />
+            <span className="text-muted">Kein Team.</span>
+            <br />
+            <span className="italic font-serif font-normal">Nur ich.</span>
+          </motion.p>
         </div>
       </section>
 
