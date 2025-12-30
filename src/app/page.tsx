@@ -889,11 +889,9 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
           >
-            Keine Agentur.
+            Du sagst, was fehlt.
             <br />
-            <span className="text-muted">Kein Team.</span>
-            <br />
-            <span className="italic font-serif font-normal">Nur ich.</span>
+            <span className="italic font-serif font-normal">Ich baue es.</span>
           </motion.p>
         </div>
       </section>
