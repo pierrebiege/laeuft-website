@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useState, useRef } from "react";
-import { Zap, Clock, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone } from "lucide-react";
+import { Zap, Clock, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone, ArrowUp } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -83,9 +83,10 @@ function PricingCard({
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className={`rounded-3xl p-8 h-full flex flex-col ${
+      className={`rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 ${
         featured
           ? "bg-foreground text-background"
           : "bg-white dark:bg-zinc-900 border border-border"
@@ -120,10 +121,10 @@ function PricingCard({
       </ul>
       <a
         href="#kontakt"
-        className={`block w-full text-center py-4 rounded-xl font-medium transition-opacity hover:opacity-90 ${
+        className={`block w-full text-center py-4 rounded-xl font-medium transition-all hover:scale-[1.02] active:scale-[0.98] ${
           featured
-            ? "bg-background text-foreground"
-            : "bg-foreground text-background"
+            ? "bg-background text-foreground hover:bg-background/90"
+            : "bg-foreground text-background hover:bg-foreground/90"
         }`}
       >
         {cta}
@@ -146,24 +147,33 @@ function PortfolioItem({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       className="group cursor-pointer"
     >
-      <div className="aspect-[4/3] bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 rounded-2xl mb-4 overflow-hidden relative">
+      <div className="aspect-[4/3] bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 rounded-2xl mb-4 overflow-hidden relative group-hover:shadow-lg transition-shadow duration-300">
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors" />
       </div>
       <p className="text-sm text-muted mb-1">{category}</p>
-      <h3 className="font-semibold">{title}</h3>
+      <h3 className="font-semibold group-hover:text-foreground/80 transition-colors">{title}</h3>
     </motion.div>
   );
 }
 
 export default function Home() {
   const problemRef = useRef<HTMLDivElement>(null);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: problemRef,
     offset: ["start start", "end end"],
+  });
+
+  // Track scroll for floating CTA
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setShowFloatingCTA(latest > 500);
   });
 
   const problemStatements = [
@@ -456,8 +466,9 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
             >
               <Cog className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Automatisierung</p>
@@ -467,9 +478,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.05 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
             >
               <Globe className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Web</p>
@@ -479,9 +491,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
             >
               <Sparkles className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Branding</p>
@@ -491,9 +504,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.15 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center cursor-default hover:border-foreground/20 hover:shadow-lg transition-all duration-300"
             >
               <Smartphone className="w-8 h-8 mx-auto mb-4" />
               <p className="font-semibold mb-1">Social</p>
@@ -519,8 +533,9 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
             >
               <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 1
@@ -532,9 +547,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
             >
               <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 2
@@ -546,9 +562,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-foreground text-background rounded-2xl p-6"
+              className="bg-foreground text-background rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
             >
               <div className="w-10 h-10 bg-background text-foreground rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 3
@@ -792,6 +809,24 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating CTA */}
+      <AnimatePresence>
+        {showFloatingCTA && (
+          <motion.a
+            href="#kontakt"
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="fixed bottom-6 right-6 z-50 bg-foreground text-background px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2"
+          >
+            Gespräch buchen
+            <ArrowUp className="w-4 h-4 rotate-45" />
+          </motion.a>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
