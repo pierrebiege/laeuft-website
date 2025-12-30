@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useState, useRef } from "react";
+import { Zap, Clock, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -315,15 +316,15 @@ export default function Home() {
               <div className="bg-foreground text-background rounded-3xl p-8 sm:p-10">
                 <div className="space-y-6 mb-8">
                   <div className="flex items-center gap-4">
-                    <span className="text-2xl">⚡</span>
+                    <Zap className="w-5 h-5" />
                     <p className="font-medium">Weniger Handarbeit</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-2xl">⏱️</span>
+                    <Clock className="w-5 h-5" />
                     <p className="font-medium">Stunden zurück pro Woche</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-2xl">👤</span>
+                    <User className="w-5 h-5" />
                     <p className="font-medium">Ein Ansprechpartner</p>
                   </div>
                 </div>
@@ -390,8 +391,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <span className="text-2xl">⚡</span>
+              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <Zap className="w-6 h-6" />
               </div>
               <p className="text-lg font-medium">Anfrage rein, Antwort raus</p>
               <p className="text-background/60 text-sm mt-2">Automatisch</p>
@@ -404,8 +405,8 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <span className="text-2xl">🔄</span>
+              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <RefreshCw className="w-6 h-6" />
               </div>
               <p className="text-lg font-medium">Daten fliessen von selbst</p>
               <p className="text-background/60 text-sm mt-2">Kein Kopieren</p>
@@ -418,8 +419,8 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <span className="text-2xl">✓</span>
+              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <Check className="w-6 h-6" />
               </div>
               <p className="text-lg font-medium">Du siehst nur, was zählt</p>
               <p className="text-background/60 text-sm mt-2">Kein Rauschen</p>
@@ -452,25 +453,52 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: "⚙️", title: "Automatisierung", desc: "Systeme, die arbeiten" },
-              { icon: "🌐", title: "Web", desc: "Seiten & Shops" },
-              { icon: "✨", title: "Branding", desc: "Logo & Identität" },
-              { icon: "📱", title: "Social", desc: "Strategie & Content" },
-            ].map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
-              >
-                <span className="text-3xl mb-4 block">{service.icon}</span>
-                <p className="font-semibold mb-1">{service.title}</p>
-                <p className="text-muted text-sm">{service.desc}</p>
-              </motion.div>
-            ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+            >
+              <Cog className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Automatisierung</p>
+              <p className="text-muted text-sm">Systeme, die arbeiten</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+            >
+              <Globe className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Web</p>
+              <p className="text-muted text-sm">Seiten & Shops</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+            >
+              <Sparkles className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Branding</p>
+              <p className="text-muted text-sm">Logo & Identität</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
+            >
+              <Smartphone className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Social</p>
+              <p className="text-muted text-sm">Strategie & Content</p>
+            </motion.div>
           </div>
         </div>
       </section>
