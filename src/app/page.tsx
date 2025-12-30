@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useState, useRef } from "react";
-import { Zap, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone, ArrowUp } from "lucide-react";
+import { Zap, User, Cog, Globe, Database, ArrowUp } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -201,39 +201,39 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Was genau automatisiert ihr?",
+      question: "Was baust du genau?",
       answer:
-        "Alles, was sich wiederholt und Zeit frisst. E-Mail-Workflows, Angebotserstellung, Kundenkommunikation, Datenübertragung zwischen Systemen, Terminbuchungen, Rechnungsstellung. Wir schauen uns deinen Alltag an und finden die Stellen, wo du Stunden verlierst.",
+        "Systeme, die dein Business zusammenhalten. Dashboards, die Daten aus 5 Tools an einem Ort zeigen. Buchungssysteme, die mit Zahlung und Kommunikation verbunden sind. Shops, die automatisch ans Lager und den Versand gekoppelt sind. Keine Einzellösungen – alles verbunden.",
     },
     {
       question: "Brauche ich technisches Wissen?",
       answer:
-        "Nein. Du erzählst mir, was nervt. Ich baue die Lösung. Du bekommst etwas, das funktioniert – keine Schulung, kein Handbuch, kein Selbststudium nötig.",
+        "Nein. Du erzählst mir, was fehlt. Ich baue es. Du bekommst etwas, das funktioniert – keine Schulung, kein Handbuch, kein Selbststudium nötig.",
     },
     {
-      question: "Wie schnell sehe ich Resultate?",
+      question: "Wie lange dauert ein Projekt?",
       answer:
-        "Die meisten Automatisierungen sind in 1-2 Wochen live. Ab Tag 1 sparst du Zeit. Bei grösseren Projekten wie Shops oder Datenbanksystemen reden wir von 4-8 Wochen.",
+        "Kommt drauf an. Eine Automatisierung: 1-2 Wochen. Ein Shop mit Lageranbindung: 4-6 Wochen. Ein Komplettsystem mit Dashboard und Datenbank: 6-10 Wochen. Ich sage dir nach dem ersten Gespräch, was realistisch ist.",
     },
     {
       question: "Was ist der Unterschied zwischen Projekt und Abo?",
       answer:
-        "Projekt = einmalig. Du hast ein konkretes Problem, wir lösen es, fertig. Abo = laufend. Du hast regelmässig Bedarf, ich bin dein Mann für alles Digitale. Die meisten starten mit einem Projekt und wechseln dann ins Abo.",
+        "Projekt = einmalig. Du brauchst ein System, ich baue es, fertig. Abo = laufend. Dein Business entwickelt sich, ich entwickle das System mit. Die meisten starten mit einem Projekt und wechseln dann ins Abo.",
     },
     {
-      question: "Kann ich das Abo pausieren oder kündigen?",
+      question: "Kann ich das Abo pausieren?",
       answer:
-        "Jederzeit. Monatlich kündbar, keine Mindestlaufzeit. Wenn du einen Monat weniger brauchst, pausierst du einfach. Die restlichen Tage verfallen nicht.",
+        "Jederzeit. Monatlich kündbar, keine Mindestlaufzeit. Wenn du einen Monat weniger brauchst, pausierst du. Die restlichen Tage verfallen nicht.",
     },
     {
-      question: "Macht ihr auch Webseiten und Branding?",
+      question: "Arbeitest du alleine?",
       answer:
-        "Ja. Webseiten, Shops, Logos, Branding, Social Media – alles was ein KMU digital braucht. Aber das Besondere an Läuft. ist die Automatisierung. Die Webseite macht dich sichtbar. Die Automatisierung macht dich schnell.",
+        "Ja. Du redest immer mit mir. Ich baue alles selbst. Kein Projektmanager dazwischen, kein Junior, der die Arbeit macht. Das hält die Qualität hoch und die Kommunikation kurz.",
     },
     {
       question: "Für wen ist das nichts?",
       answer:
-        "Wenn du jemanden suchst, der dir erklärt, was du tun solltest – such dir einen Berater. Wenn du jemanden suchst, der PowerPoint-Präsentationen macht – such dir eine Agentur. Ich baue Dinge, die funktionieren. Keine Theorie, nur Resultate.",
+        "Wenn du ein bestehendes Tool suchst, das du einfach kaufen kannst – Google es. Wenn du eine Beratung willst, die dir sagt, was du tun solltest – such dir einen Berater. Ich bin für Leute, die wissen, was sie brauchen, und jemanden suchen, der es baut.",
     },
   ];
 
@@ -253,6 +253,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <span className="text-xl font-semibold tracking-tight">Läuft.</span>
           <div className="flex items-center gap-4">
+            <a
+              href="#arbeiten"
+              className="hidden sm:block text-sm text-muted hover:text-foreground transition-colors"
+            >
+              Arbeiten
+            </a>
             <a
               href="#preise"
               className="hidden sm:block text-sm text-muted hover:text-foreground transition-colors"
@@ -348,7 +354,7 @@ export default function Home() {
 
                 <div className="pt-6 border-t border-background/20">
                   <p className="text-background/60 text-sm">
-                    Ab CHF 1&apos;500 (Projekt) · Ab CHF 990/Mt (Abo)
+                    Ab CHF 1&apos;500 (Projekt) · Ab CHF 990/Mt (Monatlich)
                   </p>
                 </div>
               </div>
@@ -387,66 +393,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Solution Section */}
-      <section className="py-32 px-6 bg-foreground text-background">
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-center mb-20"
-          >
-            Was wäre, wenn es
-            <br />
-            <span className="italic font-serif font-normal">einfach läuft?</span>
-          </motion.h2>
-
-          <div className="grid sm:grid-cols-3 gap-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <Zap className="w-6 h-6" />
-              </div>
-              <p className="text-lg font-medium">Anfrage rein, Antwort raus</p>
-              <p className="text-background/60 text-sm mt-2">Automatisch</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-center"
-            >
-              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <RefreshCw className="w-6 h-6" />
-              </div>
-              <p className="text-lg font-medium">Daten fliessen von selbst</p>
-              <p className="text-background/60 text-sm mt-2">Kein Kopieren</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
-                <Check className="w-6 h-6" />
-              </div>
-              <p className="text-lg font-medium">Du siehst nur, was zählt</p>
-              <p className="text-background/60 text-sm mt-2">Kein Rauschen</p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* What I do Section */}
+      {/* What I build Section */}
       <section className="py-32 px-6 bg-foreground text-background">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
@@ -456,27 +403,16 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
             >
-              Alles aus <span className="italic font-serif font-normal">einer Hand</span>
+              Was ich <span className="italic font-serif font-normal">baue</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-background/70 text-lg mb-8"
+              className="text-background/70 text-lg"
             >
-              Ein Ansprechpartner. Keine Agentur. Kein Chaos.
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
-              className="text-background/60 max-w-2xl mx-auto"
-            >
-              Die meisten KMU haben 4 Anbieter. Einen für die Website. Einen fürs Logo.
-              Einen für Social. Und niemanden, der alles verbindet.
-              Ich mache das Ganze. Weil alles zusammenhängt.
+              Nicht Teile. Das Ganze.
             </motion.p>
           </div>
 
@@ -489,8 +425,8 @@ export default function Home() {
               className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
               <Cog className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Automatisierung</p>
-              <p className="text-background/60 text-sm">Systeme, die arbeiten</p>
+              <p className="font-semibold mb-1">Systeme</p>
+              <p className="text-background/60 text-sm">Dashboards, Buchung, Abläufe</p>
             </motion.div>
 
             <motion.div
@@ -501,9 +437,9 @@ export default function Home() {
               transition={{ delay: 0.05 }}
               className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
-              <Globe className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Web</p>
-              <p className="text-background/60 text-sm">Seiten & Shops</p>
+              <Database className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Datenbanken</p>
+              <p className="text-background/60 text-sm">Supabase, strukturiert</p>
             </motion.div>
 
             <motion.div
@@ -514,9 +450,9 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
-              <Sparkles className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Branding</p>
-              <p className="text-background/60 text-sm">Logo & Identität</p>
+              <Globe className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Shops</p>
+              <p className="text-background/60 text-sm">Shopify, Lager, Versand</p>
             </motion.div>
 
             <motion.div
@@ -527,9 +463,9 @@ export default function Home() {
               transition={{ delay: 0.15 }}
               className="bg-background/10 rounded-2xl p-6 text-center cursor-default hover:bg-background/15 transition-all duration-300"
             >
-              <Smartphone className="w-8 h-8 mx-auto mb-4" />
-              <p className="font-semibold mb-1">Social</p>
-              <p className="text-background/60 text-sm">Strategie & Content</p>
+              <Zap className="w-8 h-8 mx-auto mb-4" />
+              <p className="font-semibold mb-1">Automationen</p>
+              <p className="text-background/60 text-sm">n8n, Make, verbunden</p>
             </motion.div>
           </div>
         </div>
@@ -596,7 +532,7 @@ export default function Home() {
       </section>
 
       {/* Portfolio Preview */}
-      <section className="py-32 px-6 border-t border-border">
+      <section id="arbeiten" className="py-32 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -637,45 +573,45 @@ export default function Home() {
               title="Projekt"
               price="Ab 1'500"
               period=" CHF"
-              description="Einmalig"
+              description="Einmal richtig."
               features={[
                 "Fixpreis",
                 "Revisionen inklusive",
                 "Support inklusive",
               ]}
               cta="Projekt besprechen"
-              example="Shopify-Store mit Lageranbindung und automatischem Fulfillment. International versandfertig ab Tag 1."
+              example="Website für einen Schreinerbetrieb. Design, Texte, Bilder – in einer Woche online."
               delay={0}
             />
 
             <PricingCard
-              title="Starter-Abo"
+              title="Monatlich"
               price="990"
               period=" CHF/Mt"
-              description="Laufend"
+              description="Ich wachse mit."
               features={[
                 "Eine Anfrage zur Zeit",
                 "48h Lieferung",
                 "Pausieren jederzeit",
               ]}
-              cta="Abo starten"
-              example="Laufende Systempflege für einen Eventveranstalter. Buchungssystem, Zahlungen, Kommunikation – alles verbunden."
+              cta="Monatlich starten"
+              example="Laufende Betreuung für einen Eventveranstalter. Buchungen, Zahlungen, Support – ich halte alles am Laufen."
               featured
               delay={0.1}
             />
 
             <PricingCard
-              title="Alles-Abo"
+              title="Partner"
               price="2'500"
               period=" CHF/Mt"
-              description="Unbegrenzt"
+              description="Dein Mann fürs Digitale."
               features={[
                 "Unbegrenzte Anfragen",
                 "Priorität",
                 "Grössere Projekte",
               ]}
-              cta="Alles-Abo starten"
-              example="Komplettsystem für einen Betrieb mit 3 Standorten. Dashboard, Datenbank, Automationen – alles an einem Ort."
+              cta="Partner werden"
+              example="Komplettsystem für einen Betrieb mit 3 Standorten. Dashboard, Datenbank, Automationen – plus alles, was noch kommt."
               delay={0.2}
             />
           </div>
@@ -782,7 +718,9 @@ export default function Home() {
                 viewport={{ once: true }}
                 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
               >
-                Bereit?
+                Du weisst, was
+                <br />
+                <span className="italic font-serif font-normal">du brauchst.</span>
               </motion.h2>
 
               <motion.p
@@ -792,7 +730,7 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-muted text-lg"
               >
-                20 Minuten. Unverbindlich.
+                20 Minuten. Ich höre zu. Dann sag ich dir, ob ich der Richtige bin.
               </motion.p>
             </div>
 
