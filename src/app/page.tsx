@@ -39,15 +39,6 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-// Service Tag
-function ServiceTag({ children }: { children: string }) {
-  return (
-    <span className="inline-block px-4 py-2 bg-white dark:bg-zinc-800 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors cursor-default">
-      {children}
-    </span>
-  );
-}
-
 // Word component for scroll-based reveal
 function Word({
   children,
@@ -291,8 +282,7 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xl text-muted mb-8 max-w-lg"
               >
-                Ich baue Systeme, die arbeiten. Damit du es nicht musst.
-                Weniger Handarbeit. Mehr Zeit fürs Wesentliche.
+                Systeme, die arbeiten. Damit du es nicht musst.
               </motion.p>
 
               <motion.div
@@ -323,49 +313,24 @@ export default function Home() {
               transition={{ delay: 0.3 }}
             >
               <div className="bg-foreground text-background rounded-3xl p-8 sm:p-10">
-                <h2 className="text-2xl font-bold mb-6">Was du bekommst:</h2>
-
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
-                      <span className="text-sm">1</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">Systeme, die Arbeit abnehmen</p>
-                      <p className="text-background/60 text-sm">
-                        Automatisierte Abläufe statt Handarbeit
-                      </p>
-                    </div>
+                <div className="space-y-6 mb-8">
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">⚡</span>
+                    <p className="font-medium">Weniger Handarbeit</p>
                   </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
-                      <span className="text-sm">2</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">Zeit zurück</p>
-                      <p className="text-background/60 text-sm">
-                        Stunden pro Woche, nicht Minuten
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">⏱️</span>
+                    <p className="font-medium">Stunden zurück pro Woche</p>
                   </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center shrink-0 mt-1">
-                      <span className="text-sm">3</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">Einen Ansprechpartner</p>
-                      <p className="text-background/60 text-sm">
-                        Kein Agentur-Chaos, keine Praktikanten
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">👤</span>
+                    <p className="font-medium">Ein Ansprechpartner</p>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t border-background/20">
-                  <p className="text-background/60 text-sm mb-2">
-                    Projekte ab CHF 1&apos;500 · Abo ab CHF 990/Monat
+                  <p className="text-background/60 text-sm">
+                    Ab CHF 1&apos;500 (Projekt) · Ab CHF 990/Mt (Abo)
                   </p>
                 </div>
               </div>
@@ -405,205 +370,135 @@ export default function Home() {
       </section>
 
       {/* Solution Section */}
-      <section className="py-24 px-6 bg-foreground text-background">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-sm uppercase tracking-widest text-background/60 mb-4"
-          >
-            Die Lösung
-          </motion.p>
-
+      <section className="py-32 px-6 bg-foreground text-background">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-center mb-20"
           >
             Was wäre, wenn es
             <br />
             <span className="italic font-serif font-normal">einfach läuft?</span>
           </motion.h2>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4 text-xl text-background/80 max-w-2xl mx-auto"
-          >
-            <p>Kundenanfrage rein. System antwortet. Du siehst nur, was wichtig ist.</p>
-            <p>Angebot nötig? Drei Klicks. Raus.</p>
-            <p>Daten fliessen automatisch. Kein Kopieren. Kein Suchen.</p>
-            <p className="text-background font-medium pt-4">
-              Das ist keine Zukunftsmusik. Das baue ich. In Wochen, nicht Monaten.
-            </p>
-          </motion.div>
+          <div className="grid sm:grid-cols-3 gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <p className="text-lg font-medium">Anfrage rein, Antwort raus</p>
+              <p className="text-background/60 text-sm mt-2">Automatisch</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <span className="text-2xl">🔄</span>
+              </div>
+              <p className="text-lg font-medium">Daten fliessen von selbst</p>
+              <p className="text-background/60 text-sm mt-2">Kein Kopieren</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-background/10 flex items-center justify-center">
+                <span className="text-2xl">✓</span>
+              </div>
+              <p className="text-lg font-medium">Du siehst nur, was zählt</p>
+              <p className="text-background/60 text-sm mt-2">Kein Rauschen</p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* What I do Section */}
-      <section className="py-24 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left: Main service */}
-            <div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="text-sm uppercase tracking-widest text-muted mb-4"
-              >
-                Was ich mache
-              </motion.p>
+      <section className="py-32 px-6 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-20">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
+            >
+              Alles aus <span className="italic font-serif font-normal">einer Hand</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-muted text-lg"
+            >
+              Ein Ansprechpartner. Keine Agentur. Kein Chaos.
+            </motion.p>
+          </div>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-3xl sm:text-4xl font-bold tracking-tight mb-6"
-              >
-                Automatisierung
-                <br />
-                <span className="italic font-serif font-normal">ist der Kern</span>
-              </motion.h2>
-
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: "⚙️", title: "Automatisierung", desc: "Systeme, die arbeiten" },
+              { icon: "🌐", title: "Web", desc: "Seiten & Shops" },
+              { icon: "✨", title: "Branding", desc: "Logo & Identität" },
+              { icon: "📱", title: "Social", desc: "Strategie & Content" },
+            ].map((service, index) => (
               <motion.div
+                key={service.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="space-y-4 text-muted mb-8"
+                transition={{ delay: index * 0.05 }}
+                className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 text-center"
               >
-                <p>
-                  Ich schaue mir an, wo du Zeit verlierst. Dann baue ich Systeme,
-                  die diese Arbeit übernehmen. Keine Theorie, keine Beratung –
-                  funktionierende Lösungen.
-                </p>
-                <p>
-                  E-Mail-Workflows. Automatische Angebote. KI-Assistenten.
-                  Datenbank-Systeme. Alles, was sich wiederholt und Zeit frisst.
-                </p>
+                <span className="text-3xl mb-4 block">{service.icon}</span>
+                <p className="font-semibold mb-1">{service.title}</p>
+                <p className="text-muted text-sm">{service.desc}</p>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
-              >
-                <p className="font-medium mb-2">Typisches Resultat:</p>
-                <p className="text-muted text-sm">
-                  &quot;Ich spare 8 Stunden pro Woche. Das System macht jetzt, was
-                  ich früher von Hand gemacht habe.&quot;
-                </p>
-              </motion.div>
-            </div>
-
-            {/* Right: Additional services */}
-            <div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="text-sm uppercase tracking-widest text-muted mb-4"
-              >
-                Und sonst noch
-              </motion.p>
-
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-2xl font-bold mb-6"
-              >
-                Alles, was ein KMU
-                <br />
-                digital braucht
-              </motion.h3>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="flex flex-wrap gap-2 mb-6"
-              >
-                {[
-                  "Webseiten",
-                  "Webshops",
-                  "Branding",
-                  "Logos",
-                  "Social Media",
-                  "KI-Assistenten",
-                  "Datenbanken",
-                  "Präsentationen",
-                  "Newsletter",
-                ].map((service) => (
-                  <ServiceTag key={service}>{service}</ServiceTag>
-                ))}
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-muted"
-              >
-                Die Webseite macht dich sichtbar. Das Branding macht dich
-                erkennbar. Aber die Automatisierung macht dich schnell.{" "}
-                <span className="text-foreground font-medium">
-                  Das ist der Unterschied.
-                </span>
-              </motion.p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section id="so-funktionierts" className="py-24 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-sm uppercase tracking-widest text-muted mb-4"
-            >
-              So funktioniert&apos;s
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-3xl sm:text-4xl font-bold tracking-tight"
-            >
-              Drei Schritte.{" "}
-              <span className="italic font-serif font-normal">Dann läuft&apos;s.</span>
-            </motion.h2>
-          </div>
+      <section id="so-funktionierts" className="py-32 px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-12"
+          >
+            So funktioniert&apos;s
+          </motion.h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
             >
-              <div className="w-12 h-12 bg-foreground text-background rounded-full flex items-center justify-center text-lg font-bold mb-6">
+              <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 1
               </div>
-              <h3 className="text-xl font-bold mb-3">Gespräch</h3>
-              <p className="text-muted">
-                Du erzählst mir, was nervt. Wo du Zeit verlierst. Was besser
-                laufen müsste. 20 Minuten reichen.
-              </p>
+              <h3 className="text-lg font-bold mb-2">Gespräch</h3>
+              <p className="text-muted text-sm">20 Minuten. Du erzählst, was nervt.</p>
             </motion.div>
 
             <motion.div
@@ -611,16 +506,13 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8"
+              className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6"
             >
-              <div className="w-12 h-12 bg-foreground text-background rounded-full flex items-center justify-center text-lg font-bold mb-6">
+              <div className="w-10 h-10 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 2
               </div>
-              <h3 className="text-xl font-bold mb-3">Umsetzung</h3>
-              <p className="text-muted">
-                Ich baue die Lösung. Du schaust zu oder machst was anderes.
-                Keine Workshops, keine Schulungen.
-              </p>
+              <h3 className="text-lg font-bold mb-2">Umsetzung</h3>
+              <p className="text-muted text-sm">Ich baue. Du machst was anderes.</p>
             </motion.div>
 
             <motion.div
@@ -628,34 +520,31 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-foreground text-background rounded-3xl p-8"
+              className="bg-foreground text-background rounded-2xl p-6"
             >
-              <div className="w-12 h-12 bg-background text-foreground rounded-full flex items-center justify-center text-lg font-bold mb-6">
+              <div className="w-10 h-10 bg-background text-foreground rounded-full flex items-center justify-center text-sm font-bold mb-4">
                 3
               </div>
-              <h3 className="text-xl font-bold mb-3">Läuft</h3>
-              <p className="text-background/70">
-                Das System arbeitet. Du hast Zeit für das, wofür du mal
-                angetreten bist. Ab Tag 1.
-              </p>
+              <h3 className="text-lg font-bold mb-2">Läuft</h3>
+              <p className="text-background/70 text-sm">System arbeitet. Ab Tag 1.</p>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Portfolio Preview */}
-      <section className="py-24 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <p className="text-sm uppercase tracking-widest text-muted mb-2">
-                Referenzen
-              </p>
-              <h2 className="text-3xl sm:text-4xl font-bold">Letzte Arbeiten</h2>
-            </div>
-          </div>
+      <section className="py-32 px-6 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold text-center mb-12"
+          >
+            Arbeiten
+          </motion.h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolioItems.map((item, index) => (
               <PortfolioItem
                 key={index}
@@ -669,50 +558,27 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section id="preise" className="py-24 px-6 border-t border-border">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-sm uppercase tracking-widest text-muted mb-4"
-            >
-              Preise
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4"
-            >
-              Klar.{" "}
-              <span className="italic font-serif font-normal">Fair.</span>{" "}
-              Transparent.
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-muted max-w-xl mx-auto"
-            >
-              Keine versteckten Kosten. Du weisst vorher, was es kostet –
-              und was es dir bringt.
-            </motion.p>
-          </div>
+      <section id="preise" className="py-32 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-12"
+          >
+            Preise
+          </motion.h2>
 
           <div className="grid md:grid-cols-3 gap-6">
             <PricingCard
               title="Projekt"
               price="Ab 1'500"
               period=" CHF"
-              description="Einmalig. Ein Problem, eine Lösung. Ideal für konkrete Vorhaben."
+              description="Einmalig"
               features={[
-                "Fixpreis nach Gespräch",
-                "Automatisierung, Web oder Branding",
+                "Fixpreis",
                 "Revisionen inklusive",
-                "Support nach Abschluss",
+                "Support inklusive",
               ]}
               cta="Projekt besprechen"
               delay={0}
@@ -721,14 +587,12 @@ export default function Home() {
             <PricingCard
               title="Starter-Abo"
               price="990"
-              period=" CHF/Monat"
-              description="Für regelmässigen Bedarf. Ideal zum Einstieg."
+              period=" CHF/Mt"
+              description="Laufend"
               features={[
-                "Laufende Anfragen",
                 "Eine Anfrage zur Zeit",
-                "Durchschnittlich 48h Lieferung",
+                "48h Lieferung",
                 "Pausieren jederzeit",
-                "Monatlich kündbar",
               ]}
               cta="Abo starten"
               featured
@@ -738,35 +602,25 @@ export default function Home() {
             <PricingCard
               title="Alles-Abo"
               price="2'500"
-              period=" CHF/Monat"
-              description="Für Vielnutzer. Ich bin dein Mann für alles Digitale."
+              period=" CHF/Mt"
+              description="Unbegrenzt"
               features={[
                 "Unbegrenzte Anfragen",
-                "Priorität bei Umsetzung",
-                "Grössere Projekte inklusive",
-                "Strategische Beratung",
-                "Direkte Kommunikation",
+                "Priorität",
+                "Grössere Projekte",
               ]}
               cta="Alles-Abo starten"
               delay={0.2}
             />
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center text-muted mt-8 text-sm"
-          >
-            Nicht sicher, was passt? Lass uns reden. 20 Minuten, unverbindlich.
-          </motion.p>
         </div>
       </section>
 
       {/* About */}
-      <section className="py-24 px-6 border-t border-border">
+      <section className="py-32 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             {/* Photo placeholder */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -779,97 +633,69 @@ export default function Home() {
 
             {/* Text */}
             <div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="text-sm uppercase tracking-widest text-muted mb-4"
-              >
-                Über mich
-              </motion.p>
-
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-3xl font-bold mb-6"
+                className="text-3xl sm:text-4xl font-bold mb-6"
               >
                 Ich bin Pierre.
               </motion.h2>
 
-              <motion.div
+              <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="space-y-4 text-muted"
+                className="text-muted text-lg mb-6"
               >
-                <p>
-                  15 Jahre digitales Handwerk. Angefangen mit Pixeln. Heute:
-                  Systeme, die Betriebe schneller machen.
-                </p>
-                <p>
-                  Der Weg war nie geplant: Grafikdesign führte zu Shops. Shops zu
-                  Datenbanken. Datenbanken zu Automationen.
-                </p>
-                <p>
-                  Ich habe gesehen, wie Unternehmen an ihren eigenen Systemen
-                  scheitern. Nicht weil sie schlecht sind. Sondern weil niemand
-                  Zeit hatte, es richtig aufzusetzen.
-                </p>
-                <p className="text-foreground font-medium">
-                  Ich arbeite allein. Das bedeutet: Du redest mit mir. Nicht mit
-                  einem Verkäufer. Mit dem, der es baut.
-                </p>
-              </motion.div>
+                15 Jahre digitales Handwerk. Vom Grafikdesign zu Automationen.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.15 }}
+                className="text-foreground font-medium"
+              >
+                Du redest mit mir. Nicht mit einem Verkäufer.
+                <br />
+                Mit dem, der es baut.
+              </motion.p>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-24 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-            <div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="text-sm uppercase tracking-widest text-muted mb-4"
-              >
-                FAQ
-              </motion.p>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight sticky top-24"
-              >
-                <span className="italic font-serif font-normal">Häufig</span>{" "}
-                gestellte
-                <br />
-                Fragen
-              </motion.h2>
-            </div>
+      <section className="py-32 px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold tracking-tight mb-12 text-center"
+          >
+            Fragen
+          </motion.h2>
 
-            <div>
-              {faqs.map((faq, index) => (
-                <FAQItem
-                  key={index}
-                  question={faq.question}
-                  answer={faq.answer}
-                />
-              ))}
-            </div>
+          <div>
+            {faqs.map((faq, index) => (
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section id="kontakt" className="py-24 px-6 bg-foreground text-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section id="kontakt" className="py-32 px-6 bg-foreground text-background">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
@@ -880,24 +706,15 @@ export default function Home() {
                 Bereit?
               </motion.h2>
 
-              <motion.div
+              <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="space-y-4 text-background/70 text-lg"
+                className="text-background/70 text-lg"
               >
-                <p>Ein Gespräch. 20 Minuten. Kein Verkaufspitch.</p>
-                <p>
-                  Du erzählst, was nervt. Ich sage dir ehrlich, ob ich helfen
-                  kann – und was es kosten würde.
-                </p>
-                <p className="text-background">
-                  Wenn ja: In wenigen Wochen läuft&apos;s.
-                  <br />
-                  Wenn nein: Du hast 20 Minuten investiert und weisst Bescheid.
-                </p>
-              </motion.div>
+                20 Minuten. Unverbindlich.
+              </motion.p>
             </div>
 
             {/* Calendar Placeholder */}
