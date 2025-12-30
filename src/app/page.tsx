@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useState, useRef } from "react";
-import { Zap, Clock, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone, ArrowUp } from "lucide-react";
+import { Zap, User, RefreshCw, Check, Cog, Globe, Sparkles, Smartphone, ArrowUp } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -184,16 +184,16 @@ export default function Home() {
   });
 
   const problemStatements = [
-    "Montagmorgen.",
-    "47 E-Mails.",
-    "Die Hälfte davon hättest du nicht gebraucht.",
-    "Daten kopieren.",
-    "Von Hand.",
-    "Jeden Tag.",
-    "Der Chef entscheidet alles.",
-    "Weil das System es nicht kann.",
-    "Du bist nicht langsam.",
-    "Deine Systeme sind es.",
+    "Du hast gebaut.",
+    "Es läuft.",
+    "Aber es skaliert nicht.",
+    "Drei Standorte.",
+    "Fünf Tools.",
+    "Nichts redet miteinander.",
+    "Du weisst, was fehlt.",
+    "Ein System, das mitwächst.",
+    "Kein Tool. Kein Plugin.",
+    "Etwas, das es noch nicht gibt.",
   ];
 
   const allWords = problemStatements.join(" ").split(" ");
@@ -238,12 +238,12 @@ export default function Home() {
   ];
 
   const portfolioItems = [
-    { title: "Automatische Angebotserstellung", category: "Automatisierung" },
-    { title: "E-Commerce mit Lagersystem", category: "Shop" },
-    { title: "KI-Kundenassistent", category: "KI" },
-    { title: "Handwerksbetrieb Rebrand", category: "Branding" },
-    { title: "Buchungssystem Praxis", category: "Automatisierung" },
-    { title: "Startup Webseite", category: "Web" },
+    { title: "ParkourONE AcademyBoard", category: "System" },
+    { title: "RubikONE", category: "Plattform" },
+    { title: "Ein richtig guter Tag", category: "Shop" },
+    { title: "7 WordPress-Sites verbunden", category: "Automatisierung" },
+    { title: "Event-Buchungssystem", category: "System" },
+    { title: "Multi-Standort Dashboard", category: "Datenbank" },
   ];
 
   return (
@@ -280,7 +280,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 className="inline-block bg-foreground/10 text-sm px-4 py-2 rounded-full mb-6"
               >
-                Für KMU, die keine Zeit zu verlieren haben
+                Für Unternehmer, die mehr brauchen als Tools
               </motion.div>
 
               <motion.h1
@@ -289,9 +289,9 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
               >
-                Dein Betrieb.
+                Ich baue Systeme,
                 <br />
-                <span className="italic font-serif font-normal">Automatisiert.</span>
+                <span className="italic font-serif font-normal">die es noch nicht gibt.</span>
               </motion.h1>
 
               <motion.p
@@ -300,7 +300,7 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xl text-muted mb-8 max-w-lg"
               >
-                Systeme, die arbeiten. Damit du es nicht musst.
+                Datenbanken. Automationen. Shops. Alles verbunden.
               </motion.p>
 
               <motion.div
@@ -333,16 +333,16 @@ export default function Home() {
               <div className="bg-foreground text-background rounded-3xl p-8 sm:p-10">
                 <div className="space-y-6 mb-8">
                   <div className="flex items-center gap-4">
-                    <Zap className="w-5 h-5" />
-                    <p className="font-medium">Weniger Handarbeit</p>
+                    <Cog className="w-5 h-5" />
+                    <p className="font-medium">Supabase, n8n, Shopify</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Clock className="w-5 h-5" />
-                    <p className="font-medium">Stunden zurück pro Woche</p>
+                    <Zap className="w-5 h-5" />
+                    <p className="font-medium">Systeme, die mitwachsen</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <User className="w-5 h-5" />
-                    <p className="font-medium">Ein Ansprechpartner</p>
+                    <p className="font-medium">Ein Entwickler, kein Team</p>
                   </div>
                 </div>
 
@@ -644,7 +644,7 @@ export default function Home() {
                 "Support inklusive",
               ]}
               cta="Projekt besprechen"
-              example="Automatische Angebotserstellung für einen Handwerksbetrieb. Vorher 45 Min pro Angebot, nachher 5 Min."
+              example="Shopify-Store mit Lageranbindung und automatischem Fulfillment. International versandfertig ab Tag 1."
               delay={0}
             />
 
@@ -659,7 +659,7 @@ export default function Home() {
                 "Pausieren jederzeit",
               ]}
               cta="Abo starten"
-              example="Laufende Betreuung für einen Treuhänder. 2-3 Automationen pro Monat. Spart ca. 8-10 Stunden pro Woche."
+              example="Laufende Systempflege für einen Eventveranstalter. Buchungssystem, Zahlungen, Kommunikation – alles verbunden."
               featured
               delay={0.1}
             />
@@ -675,7 +675,7 @@ export default function Home() {
                 "Grössere Projekte",
               ]}
               cta="Alles-Abo starten"
-              example="Full-Service für eine Garage. Website, Automationen, Branding – alles aus einer Hand."
+              example="Komplettsystem für einen Betrieb mit 3 Standorten. Dashboard, Datenbank, Automationen – alles an einem Ort."
               delay={0.2}
             />
           </div>
@@ -716,19 +716,20 @@ export default function Home() {
                 className="space-y-4 text-muted"
               >
                 <p>
-                  15 Jahre digitales Handwerk. Vom Grafikdesign zu Automationen.
+                  Ich baue das AcademyBoard für ParkourONE. RubikONE habe ich entwickelt.
+                  Mein eigener Shop läuft auf Shopify mit eigener Marke.
                 </p>
                 <p>
-                  Ich habe mit Pixeln angefangen. Dann kamen Shops. Dann Datenbanken.
-                  Dann Systeme, die ganze Betriebe schneller machen.
+                  Supabase. n8n. Make. Shopify. Next.js. Das ist mein Stack.
+                  Keine PowerPoints. Keine Beratung. Ich baue.
                 </p>
                 <p>
-                  Heute weiss ich: Die beste Technologie ist die, die du nicht merkst.
-                  Sie läuft einfach. Im Hintergrund. Während du dich um dein Geschäft kümmerst.
+                  Wenn du ein Tool suchst, das es schon gibt – Google es.
+                  Wenn du ein System brauchst, das es noch nicht gibt – ruf mich an.
                 </p>
                 <p className="text-foreground font-medium pt-2">
                   Du redest mit mir. Nicht mit einem Verkäufer.
-                  Nicht mit einem Projektmanager. Mit dem, der es baut.
+                  Mit dem, der es baut.
                 </p>
               </motion.div>
             </div>
