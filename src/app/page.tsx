@@ -267,11 +267,11 @@ function WalliserdeutschModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [activeWordIndex, setActiveWordIndex] = useState(0);
 
   const walliserWords = [
-    { word: "Gschpängschtli", meaning: "kleine Freundin/Freund", type: "N. n." },
-    { word: "Riibisee", meaning: "Johannisbeere", type: "N. f." },
-    { word: "Hööschrig", meaning: "Heuschrecke", type: "N. f." },
-    { word: "Chüöchli", meaning: "kleiner Kuchen", type: "N. n." },
-    { word: "Ziger", meaning: "Quark, Topfen", type: "N. m." },
+    { word: "BLACHTA", meaning: "Sauerampfer", type: "N. f." },
+    { word: "Chäller", meaning: "Keller", type: "N. m." },
+    { word: "ichromu", meaning: "einzäunen", type: "V." },
+    { word: "Donschtag", meaning: "Donnerstag", type: "N. m." },
+    { word: "gämmillich", meaning: "schrecklich, sehr", type: "Adj." },
   ];
 
   // Rotate words
@@ -582,9 +582,9 @@ function PortfolioCard({
   const isWalliserdeutsch = type === "walliserdeutsch";
 
   const walliserWords = [
-    { word: "Gschpängschtli", meaning: "kleine Freundin/Freund" },
-    { word: "Riibisee", meaning: "Johannisbeere" },
-    { word: "Ziger", meaning: "Quark, Topfen" },
+    { word: "BLACHTA", meaning: "Sauerampfer" },
+    { word: "Chäller", meaning: "Keller" },
+    { word: "ichromu", meaning: "einzäunen" },
   ];
 
   useEffect(() => {
@@ -850,9 +850,9 @@ function WalliserdeutschShowcase() {
   const [activeWordIndex, setActiveWordIndex] = useState(0);
 
   const walliserWords = [
-    { word: "Gschpängschtli", meaning: "kleine Freundin/Freund" },
-    { word: "Riibisee", meaning: "Johannisbeere" },
-    { word: "Hööschrig", meaning: "Heuschrecke" },
+    { word: "BLACHTA", meaning: "Sauerampfer" },
+    { word: "Chäller", meaning: "Keller" },
+    { word: "Donschtag", meaning: "Donnerstag" },
   ];
 
   useEffect(() => {
@@ -1754,6 +1754,16 @@ export default function Home() {
               category="Datenbank"
               description="3'300+ Wörter zur Bewahrung des Walliser Dialekts"
               type="walliserdeutsch"
+              thumbnail="/projekte/walliserdeutsch/1-hero.png"
+              images={[
+                "/projekte/walliserdeutsch/1-hero.png",
+                "/projekte/walliserdeutsch/2-wort.png",
+                "/projekte/walliserdeutsch/3-liste.png",
+                "/projekte/walliserdeutsch/4-wort-detail.png",
+                "/projekte/walliserdeutsch/5-suche.png",
+                "/projekte/walliserdeutsch/6-mobile.png",
+                "/projekte/walliserdeutsch/7-mobile-detail.png",
+              ]}
               index={0}
               longDescription="Eine lebendige Datenbank zur Bewahrung des Walliser Dialekts. Jedes Wort ein Stück Heimat – gesammelt, dokumentiert und für die Zukunft bewahrt."
               features={[
