@@ -1624,74 +1624,115 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Social Proof + Services */}
       <section className="py-24 px-6 bg-foreground text-background">
-        <div className="max-w-6xl mx-auto">
-          {/* Numbers */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <p className="text-5xl sm:text-6xl font-bold mb-2">100+</p>
-              <p className="text-background/60">Webseiten</p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-center"
-            >
-              <p className="text-5xl sm:text-6xl font-bold mb-2">15</p>
-              <p className="text-background/60">Jahre Erfahrung</p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <p className="text-5xl sm:text-6xl font-bold mb-2">1</p>
-              <p className="text-background/60">Ansprechpartner</p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="text-center"
-            >
-              <p className="text-5xl sm:text-6xl font-bold mb-2">48h</p>
-              <p className="text-background/60">Lieferung</p>
-            </motion.div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+            {/* Left 2/3: Stats + Quote */}
+            <div className="lg:col-span-2">
+              {/* Numbers */}
+              <div className="grid grid-cols-3 gap-6 sm:gap-8 mb-12">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-center"
+                >
+                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">100+</p>
+                  <p className="text-background/60 text-sm sm:text-base">Webseiten</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="text-center"
+                >
+                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">15</p>
+                  <p className="text-background/60 text-sm sm:text-base">Jahre Erfahrung</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="text-center"
+                >
+                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">1</p>
+                  <p className="text-background/60 text-sm sm:text-base">Ansprechpartner</p>
+                </motion.div>
+              </div>
+
+              {/* Quote */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-background/10 rounded-3xl p-8 sm:p-12"
+              >
+                <Quote className="w-8 h-8 text-background/30 mb-4" />
+                <p className="text-xl sm:text-2xl font-medium leading-relaxed mb-6 text-background/80">
+                  &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-background/20" />
+                  <div>
+                    <p className="font-semibold text-sm">Kundenname</p>
+                    <p className="text-background/60 text-xs">Firma / Position</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right 1/3: Services */}
+            <div className="lg:col-span-1">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-sm uppercase tracking-widest text-background/40 mb-4"
+              >
+                Alles unter einem Dach
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="flex flex-wrap gap-2"
+              >
+                {[
+                  "Web Apps",
+                  "Datenbanken",
+                  "Web Design",
+                  "Logos",
+                  "Branding",
+                  "UI/UX Design",
+                  "Shopify",
+                  "Mobile Apps",
+                  "Automationen",
+                  "Social Media",
+                  "Print Design",
+                  "Icons",
+                  "Brand Guides",
+                ].map((service, i) => (
+                  <motion.span
+                    key={service}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.03 * i }}
+                    className="px-3 py-1.5 rounded-full border border-background/20 text-xs sm:text-sm text-background/70 hover:text-background hover:border-background/40 transition-colors cursor-default"
+                  >
+                    {service}
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
           </div>
 
-          {/* Quote Placeholder */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-background/10 rounded-3xl p-10 sm:p-14 mb-16"
-          >
-            <Quote className="w-10 h-10 text-background/30 mb-6" />
-            <p className="text-2xl sm:text-3xl font-medium leading-relaxed mb-8 text-background/80">
-              &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
-            </p>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-background/20" />
-              <div>
-                <p className="font-semibold">Kundenname</p>
-                <p className="text-background/60 text-sm">Firma / Position</p>
-              </div>
-            </div>
-          </motion.div>
-
           {/* Logo Placeholders */}
-          <div className="text-center">
+          <div className="text-center mt-16">
             <p className="text-background/40 text-sm uppercase tracking-widest mb-8">Projekte für</p>
             <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -1708,66 +1749,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section className="py-24 sm:py-32 px-6 border-t border-border">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-sm uppercase tracking-widest text-muted mb-4"
-          >
-            Was ich mache
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-12"
-          >
-            Alles unter einem Dach.
-          </motion.h2>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-3"
-          >
-            {[
-              "Web Apps",
-              "Datenbanken",
-              "Web Design",
-              "Logos",
-              "Branding",
-              "UI/UX Design",
-              "Shopify",
-              "Mobile Apps",
-              "Automationen",
-              "Social Media",
-              "Print Design",
-              "Icons",
-              "Brand Guides",
-              "Slide Decks",
-              "Email Design",
-            ].map((service, i) => (
-              <motion.span
-                key={service}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.05 * i }}
-                className="px-4 py-2 rounded-full border border-border text-sm sm:text-base text-muted hover:text-foreground hover:border-foreground/30 transition-colors cursor-default"
-              >
-                {service}
-              </motion.span>
-            ))}
-          </motion.div>
         </div>
       </section>
 
@@ -1914,18 +1895,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits */}
-      <section className="py-24 sm:py-32 px-6 border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-sm uppercase tracking-widest text-muted mb-4"
-            >
-              Warum so arbeiten
-            </motion.p>
+      {/* Benefits - Horizontal Swipe Cards */}
+      <section className="py-24 sm:py-32 border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+        {/* Section Header */}
+        <div className="max-w-7xl mx-auto px-6 mb-12">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-sm uppercase tracking-widest text-muted mb-4"
+          >
+            Warum so arbeiten
+          </motion.p>
+          <div className="flex items-end justify-between gap-8">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1933,35 +1915,48 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight"
             >
-              Einfach. Direkt. Flexibel.
+              Kein Bullshit.
             </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="hidden sm:block text-muted text-sm"
+            >
+              ← Scrollen →
+            </motion.p>
           </div>
+        </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Horizontal Scroll Container */}
+        <div className="overflow-x-auto pb-8 scrollbar-hide">
+          <div className="flex gap-6 px-6 w-max">
             {[
               {
-                title: "Fixer Preis",
-                description: "Keine Überraschungen. Du weisst vorher, was es kostet.",
+                title: "Du redest mit dem, der baut.",
+                description: "Kein Verkäufer. Kein Projektmanager. Du sprichst direkt mit mir – und ich bin der, der dein System baut.",
+                highlight: "1 Ansprechpartner",
               },
               {
-                title: "48h Lieferung",
-                description: "Schnell, weil ich nicht in Meetings sitze.",
+                title: "Ich arbeite alleine.",
+                description: "Kein Junior, der die Arbeit macht. Das hält die Qualität hoch und die Kommunikation kurz.",
+                highlight: "Qualität",
               },
               {
-                title: "Ein Ansprechpartner",
-                description: "Du redest mit dem, der es baut. Nicht mit einem Verkäufer.",
+                title: "Keine Beratung. Ich baue.",
+                description: "Keine PowerPoints. Keine Workshops. Du sagst, was fehlt – ich baue es. Ergebnisse statt Slides.",
+                highlight: "Macher",
               },
               {
-                title: "Jederzeit pausieren",
-                description: "Keine Laufzeiten. Pausiere oder kündige, wann du willst.",
+                title: "Jederzeit pausieren.",
+                description: "Monatlich kündbar. Keine Mindestlaufzeit. Die restlichen Tage verfallen nicht. Dein Tempo.",
+                highlight: "Flexibel",
               },
               {
-                title: "Senior-Level",
-                description: "9+ Jahre Erfahrung. Kein Junior, der noch lernt.",
-              },
-              {
-                title: "Alles inklusive",
-                description: "Revisionen, Support, Updates. Keine versteckten Kosten.",
+                title: "15 Jahre Erfahrung.",
+                description: "100+ Webseiten. Komplexe Systeme. Von Shopify bis Supabase. Kein Anfänger, der noch lernt.",
+                highlight: "Senior-Level",
               },
             ].map((benefit, i) => (
               <motion.div
@@ -1969,10 +1964,14 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 * i }}
-                className="group"
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                className="flex-shrink-0 w-[300px] sm:w-[360px] bg-white dark:bg-zinc-800 rounded-3xl p-8 sm:p-10 border border-border hover:shadow-xl transition-shadow duration-500 cursor-default"
               >
-                <h3 className="text-lg sm:text-xl font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
+                <span className="inline-block px-3 py-1 rounded-full bg-foreground/5 text-xs font-medium text-muted mb-6">
+                  {benefit.highlight}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4 leading-tight">
                   {benefit.title}
                 </h3>
                 <p className="text-muted text-sm sm:text-base leading-relaxed">
@@ -2019,7 +2018,7 @@ export default function Home() {
               description="Ich wachse mit."
               features={[
                 "Eine Anfrage zur Zeit",
-                "48h Lieferung",
+                "Schnelle Umsetzung",
                 "Pausieren jederzeit",
               ]}
               cta="Monatlich starten"
