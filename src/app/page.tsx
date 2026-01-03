@@ -1711,6 +1711,66 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Services */}
+      <section className="py-24 sm:py-32 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-sm uppercase tracking-widest text-muted mb-4"
+          >
+            Was ich mache
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-12"
+          >
+            Alles unter einem Dach.
+          </motion.h2>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-3"
+          >
+            {[
+              "Web Apps",
+              "Datenbanken",
+              "Web Design",
+              "Logos",
+              "Branding",
+              "UI/UX Design",
+              "Shopify",
+              "Mobile Apps",
+              "Automationen",
+              "Social Media",
+              "Print Design",
+              "Icons",
+              "Brand Guides",
+              "Slide Decks",
+              "Email Design",
+            ].map((service, i) => (
+              <motion.span
+                key={service}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.05 * i }}
+                className="px-4 py-2 rounded-full border border-border text-sm sm:text-base text-muted hover:text-foreground hover:border-foreground/30 transition-colors cursor-default"
+              >
+                {service}
+              </motion.span>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* Portfolio - Horizontal Slide Cards */}
       <section id="arbeiten" className="py-32 border-t border-border">
         {/* Section Header */}
@@ -1850,6 +1910,76 @@ export default function Home() {
               ]}
               techStack={["WordPress", "Illustrator", "InDesign", "Photoshop"]}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section className="py-24 sm:py-32 px-6 border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-sm uppercase tracking-widest text-muted mb-4"
+            >
+              Warum so arbeiten
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight"
+            >
+              Einfach. Direkt. Flexibel.
+            </motion.h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Fixer Preis",
+                description: "Keine Überraschungen. Du weisst vorher, was es kostet.",
+              },
+              {
+                title: "48h Lieferung",
+                description: "Schnell, weil ich nicht in Meetings sitze.",
+              },
+              {
+                title: "Ein Ansprechpartner",
+                description: "Du redest mit dem, der es baut. Nicht mit einem Verkäufer.",
+              },
+              {
+                title: "Jederzeit pausieren",
+                description: "Keine Laufzeiten. Pausiere oder kündige, wann du willst.",
+              },
+              {
+                title: "Senior-Level",
+                description: "9+ Jahre Erfahrung. Kein Junior, der noch lernt.",
+              },
+              {
+                title: "Alles inklusive",
+                description: "Revisionen, Support, Updates. Keine versteckten Kosten.",
+              },
+            ].map((benefit, i) => (
+              <motion.div
+                key={benefit.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * i }}
+                className="group"
+              >
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
+                  {benefit.title}
+                </h3>
+                <p className="text-muted text-sm sm:text-base leading-relaxed">
+                  {benefit.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
