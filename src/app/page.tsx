@@ -1558,6 +1558,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Services Marquee */}
+      <section className="py-8 overflow-hidden border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="relative">
+          {/* Gradient Overlays */}
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-50 dark:from-zinc-900/50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-zinc-50 dark:from-zinc-900/50 to-transparent z-10 pointer-events-none" />
+
+          {/* Marquee */}
+          <motion.div
+            animate={{ x: [0, -1920] }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 30,
+                ease: "linear",
+              },
+            }}
+            className="flex gap-8 w-max"
+          >
+            {[...Array(2)].map((_, setIndex) => (
+              <div key={setIndex} className="flex gap-8">
+                {[
+                  "Web Apps",
+                  "Datenbanken",
+                  "Web Design",
+                  "Logos",
+                  "Branding",
+                  "UI/UX Design",
+                  "Shopify",
+                  "Mobile Apps",
+                  "Automationen",
+                  "Social Media",
+                  "Print Design",
+                  "Icons",
+                  "Brand Guides",
+                ].map((service) => (
+                  <span
+                    key={`${setIndex}-${service}`}
+                    className="text-lg sm:text-xl font-medium text-muted whitespace-nowrap"
+                  >
+                    {service}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* How it works */}
       <section id="so-funktionierts" className="py-32 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
@@ -1620,134 +1670,6 @@ export default function Home() {
                 System arbeitet. Ab Tag 1. Ich zeige dir alles, beantworte Fragen und bin da, wenn was ist.
               </p>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof + Services */}
-      <section className="py-24 px-6 bg-foreground text-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
-            {/* Left 2/3: Stats + Quote */}
-            <div className="lg:col-span-2">
-              {/* Numbers */}
-              <div className="grid grid-cols-3 gap-6 sm:gap-8 mb-12">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="text-center"
-                >
-                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">100+</p>
-                  <p className="text-background/60 text-sm sm:text-base">Webseiten</p>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                  className="text-center"
-                >
-                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">15</p>
-                  <p className="text-background/60 text-sm sm:text-base">Jahre Erfahrung</p>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="text-center"
-                >
-                  <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">1</p>
-                  <p className="text-background/60 text-sm sm:text-base">Ansprechpartner</p>
-                </motion.div>
-              </div>
-
-              {/* Quote */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-background/10 rounded-3xl p-8 sm:p-12"
-              >
-                <Quote className="w-8 h-8 text-background/30 mb-4" />
-                <p className="text-xl sm:text-2xl font-medium leading-relaxed mb-6 text-background/80">
-                  &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-background/20" />
-                  <div>
-                    <p className="font-semibold text-sm">Kundenname</p>
-                    <p className="text-background/60 text-xs">Firma / Position</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Right 1/3: Services */}
-            <div className="lg:col-span-1">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-sm uppercase tracking-widest text-background/40 mb-4"
-              >
-                Alles unter einem Dach
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="flex flex-wrap gap-2"
-              >
-                {[
-                  "Web Apps",
-                  "Datenbanken",
-                  "Web Design",
-                  "Logos",
-                  "Branding",
-                  "UI/UX Design",
-                  "Shopify",
-                  "Mobile Apps",
-                  "Automationen",
-                  "Social Media",
-                  "Print Design",
-                  "Icons",
-                  "Brand Guides",
-                ].map((service, i) => (
-                  <motion.span
-                    key={service}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.03 * i }}
-                    className="px-3 py-1.5 rounded-full border border-background/20 text-xs sm:text-sm text-background/70 hover:text-background hover:border-background/40 transition-colors cursor-default"
-                  >
-                    {service}
-                  </motion.span>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Logo Placeholders */}
-          <div className="text-center mt-16">
-            <p className="text-background/40 text-sm uppercase tracking-widest mb-8">Projekte für</p>
-            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="w-24 h-12 bg-background/10 rounded-lg flex items-center justify-center"
-                >
-                  <span className="text-background/30 text-xs">Logo {i}</span>
-                </motion.div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -1980,6 +1902,74 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-24 sm:py-32 px-6 bg-foreground text-background">
+        <div className="max-w-6xl mx-auto">
+          {/* Stats - Kompakte Zeile */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-8 sm:gap-16 mb-16"
+          >
+            <div className="text-center">
+              <p className="text-4xl sm:text-5xl font-bold">100+</p>
+              <p className="text-background/50 text-sm mt-1">Webseiten</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl sm:text-5xl font-bold">15</p>
+              <p className="text-background/50 text-sm mt-1">Jahre</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl sm:text-5xl font-bold">1</p>
+              <p className="text-background/50 text-sm mt-1">Ansprechpartner</p>
+            </div>
+          </motion.div>
+
+          {/* Quote */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="max-w-3xl mx-auto text-center mb-16"
+          >
+            <Quote className="w-10 h-10 text-background/20 mx-auto mb-6" />
+            <p className="text-2xl sm:text-3xl font-medium leading-relaxed mb-8 text-background/80">
+              &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-background/20" />
+              <div className="text-left">
+                <p className="font-semibold">Kundenname</p>
+                <p className="text-background/50 text-sm">Firma / Position</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Logos */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-center"
+          >
+            <p className="text-background/30 text-xs uppercase tracking-widest mb-6">Projekte für</p>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="w-20 h-10 bg-background/10 rounded-lg flex items-center justify-center"
+                >
+                  <span className="text-background/20 text-xs">Logo {i}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
