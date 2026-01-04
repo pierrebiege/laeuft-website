@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useInView } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
-import { Zap, User, Cog, Globe, Database, ArrowUp, X, Plus, Quote } from "lucide-react";
+import { Zap, User, Cog, Globe, Database, ArrowUp, X, Plus } from "lucide-react";
 
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -1926,48 +1926,6 @@ export default function Home() {
             <div className="text-center">
               <p className="text-4xl sm:text-5xl font-bold">1</p>
               <p className="text-background/50 text-sm mt-1">Ansprechpartner</p>
-            </div>
-          </motion.div>
-
-          {/* Quote */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="max-w-3xl mx-auto text-center mb-16"
-          >
-            <Quote className="w-10 h-10 text-background/20 mx-auto mb-6" />
-            <p className="text-2xl sm:text-3xl font-medium leading-relaxed mb-8 text-background/80">
-              &ldquo;Hier kommt ein Kundenzitat hin. Etwas Echtes von jemandem, der mit Pierre gearbeitet hat.&rdquo;
-            </p>
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-background/20" />
-              <div className="text-left">
-                <p className="font-semibold">Kundenname</p>
-                <p className="text-background/50 text-sm">Firma / Position</p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Logos */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-center"
-          >
-            <p className="text-background/30 text-xs uppercase tracking-widest mb-6">Projekte für</p>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="w-20 h-10 bg-background/10 rounded-lg flex items-center justify-center"
-                >
-                  <span className="text-background/20 text-xs">Logo {i}</span>
-                </div>
-              ))}
             </div>
           </motion.div>
         </div>
