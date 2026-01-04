@@ -1711,6 +1711,32 @@ export default function Home() {
         {/* Horizontal Scroll Container */}
         <div className="overflow-x-auto pb-8 scrollbar-hide">
           <div className="flex gap-6 px-6 w-max">
+            {/* Zykluswissen Card */}
+            <PortfolioCard
+              title="Zykluswissen"
+              category="Lernplattform"
+              description="Interaktive Lernplattform mit 400+ Karten und personalisierten Lernpfaden"
+              thumbnail="/projekte/zykluswissen/1-hero.png"
+              images={[
+                "/projekte/zykluswissen/1-hero.png",
+                "/projekte/zykluswissen/2-zielgruppen.png",
+                "/projekte/zykluswissen/3-module.png",
+                "/projekte/zykluswissen/4-dashboard.png",
+                "/projekte/zykluswissen/5-quiz.png",
+              ]}
+              index={0}
+              longDescription="Eine Lernplattform, die Wissen interaktiv vermittelt. Mit verschiedenen Zielgruppen, personalisierten Dashboards und 7 unterschiedlichen Kartentypen für maximales Engagement."
+              features={[
+                "400+ interaktive Lernkarten entwickelt",
+                "7 verschiedene Kartentypen (Quiz, Mythos, Wissen, Zuordnen...)",
+                "Personalisiertes Dashboard mit Fortschrittstracking",
+                "4 Zielgruppen mit eigenen Lernpfaden",
+                "Blog-Sektion für zusätzliche Inhalte",
+              ]}
+              techStack={["Next.js", "Supabase", "Tailwind", "Vercel"]}
+              liveUrl="https://dein-zyklus.vercel.app"
+            />
+
             {/* Walliserdeutsch Card */}
             <PortfolioCard
               title="Walliserdeutsch.ch"
@@ -1727,7 +1753,7 @@ export default function Home() {
                 "/projekte/walliserdeutsch/6-mobile.png",
                 "/projekte/walliserdeutsch/7-mobile-detail.png",
               ]}
-              index={0}
+              index={1}
               longDescription="Eine lebendige Datenbank zur Bewahrung des Walliser Dialekts. Jedes Wort ein Stück Heimat – gesammelt, dokumentiert und für die Zukunft bewahrt."
               features={[
                 "Datenbank mit über 3'300 Dialektwörtern",
@@ -1753,7 +1779,7 @@ export default function Home() {
                 "/projekte/ergt/4-kalender.png",
                 "/projekte/ergt/5-produkt.png",
               ]}
-              index={1}
+              index={2}
               longDescription="Was bedeutet es, wirklich zu leben? Diese Frage führte zu einer eigenen Marke – mit Produkten, die täglich daran erinnern, jeden Tag bewusst zu gestalten."
               features={[
                 "Komplettes Branding von Grund auf entwickelt",
@@ -1777,7 +1803,7 @@ export default function Home() {
                 "/projekte/kult-branding/2.jpg",
                 "/projekte/kult-branding/3.jpg",
               ]}
-              index={2}
+              index={3}
               longDescription="KULT bringt Musik, Theater und Tanz für Klein bis Gross nach Brig. Eine Kampagne, die auffällt – von der Idee bis zum Plakat an der Strasse."
               features={[
                 "Logo-Design und Konzept entwickelt",
@@ -1802,7 +1828,7 @@ export default function Home() {
                 "/projekte/curto/cda97c28615069.55c985bee87b6.webp",
                 "/projekte/curto/b03bc928615069.55c985bf3062a.webp",
               ]}
-              index={3}
+              index={4}
               longDescription="Ein traditionsreiches Schuhgeschäft verdient einen Auftritt, der Handwerk und Qualität widerspiegelt. Vom Logo bis zur Website – alles aus einem Guss."
               features={[
                 "Logo und Markenidentität neu entwickelt",
@@ -1812,32 +1838,6 @@ export default function Home() {
                 "Print-Materialien für den Store",
               ]}
               techStack={["WordPress", "Illustrator", "InDesign", "Photoshop"]}
-            />
-
-            {/* Zykluswissen Card */}
-            <PortfolioCard
-              title="Zykluswissen"
-              category="Lernplattform"
-              description="Interaktive Lernplattform mit 400+ Karten und personalisierten Lernpfaden"
-              thumbnail="/projekte/zykluswissen/1-hero.png"
-              images={[
-                "/projekte/zykluswissen/1-hero.png",
-                "/projekte/zykluswissen/2-zielgruppen.png",
-                "/projekte/zykluswissen/3-module.png",
-                "/projekte/zykluswissen/4-dashboard.png",
-                "/projekte/zykluswissen/5-quiz.png",
-              ]}
-              index={4}
-              longDescription="Eine Lernplattform, die Wissen interaktiv vermittelt. Mit verschiedenen Zielgruppen, personalisierten Dashboards und 7 unterschiedlichen Kartentypen für maximales Engagement."
-              features={[
-                "400+ interaktive Lernkarten entwickelt",
-                "7 verschiedene Kartentypen (Quiz, Mythos, Wissen, Zuordnen...)",
-                "Personalisiertes Dashboard mit Fortschrittstracking",
-                "4 Zielgruppen mit eigenen Lernpfaden",
-                "Blog-Sektion für zusätzliche Inhalte",
-              ]}
-              techStack={["Next.js", "Supabase", "Tailwind", "Vercel"]}
-              liveUrl="https://dein-zyklus.vercel.app"
             />
           </div>
         </div>
