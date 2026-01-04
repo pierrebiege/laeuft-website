@@ -2040,14 +2040,18 @@ export default function Home() {
       <section className="py-32 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Photo placeholder */}
+            {/* Photo */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-3xl flex items-center justify-center"
+              className="aspect-square rounded-3xl overflow-hidden"
             >
-              <span className="text-6xl font-bold text-foreground/10">P</span>
+              <img
+                src="/pierre.jpg"
+                alt="Pierre beim Ultralauf"
+                className="w-full h-full object-cover"
+              />
             </motion.div>
 
             {/* Text */}
@@ -2069,20 +2073,22 @@ export default function Home() {
                 className="space-y-4 text-muted"
               >
                 <p>
-                  Ich baue das AcademyBoard für ParkourONE. RubikONE habe ich entwickelt.
-                  Mein eigener Shop läuft auf Shopify mit eigener Marke.
+                  Bei mir läuft vieles. Drei Kinder. Ultralauf-Rennen durch die Nacht.{" "}
+                  <a
+                    href="https://schweiz.parkourone.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground hover:opacity-70 transition-opacity"
+                  >
+                    Parkour Coach bei ParkourONE
+                  </a>
+                  . Und seit 15 Jahren nur ein Ziel: Dinge zum Laufen bringen.
                 </p>
                 <p>
-                  Supabase. n8n. Make. Shopify. Next.js. Das ist mein Stack.
-                  Keine PowerPoints. Keine Beratung. Ich baue.
-                </p>
-                <p>
-                  Wenn du ein Tool suchst, das es schon gibt – Google es.
-                  Wenn du ein System brauchst, das es noch nicht gibt – ruf mich an.
+                  Ich lebe im Wallis und baue, bis es läuft. Aufgeben ist keine Option – weder auf Kilometer 80 noch bei deinem Projekt.
                 </p>
                 <p className="text-foreground font-medium pt-2">
-                  Du redest mit mir. Nicht mit einem Verkäufer.
-                  Mit dem, der es baut.
+                  Du redest mit mir. Nicht mit einem Verkäufer. Mit dem, der es baut.
                 </p>
               </motion.div>
             </div>
