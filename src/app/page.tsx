@@ -1813,6 +1813,32 @@ export default function Home() {
               ]}
               techStack={["WordPress", "Illustrator", "InDesign", "Photoshop"]}
             />
+
+            {/* Zykluswissen Card */}
+            <PortfolioCard
+              title="Zykluswissen"
+              category="Lernplattform"
+              description="Interaktive Lernplattform mit 400+ Karten und personalisierten Lernpfaden"
+              thumbnail="/projekte/zykluswissen/1-hero.png"
+              images={[
+                "/projekte/zykluswissen/1-hero.png",
+                "/projekte/zykluswissen/2-zielgruppen.png",
+                "/projekte/zykluswissen/3-module.png",
+                "/projekte/zykluswissen/4-dashboard.png",
+                "/projekte/zykluswissen/5-quiz.png",
+              ]}
+              index={4}
+              longDescription="Eine Lernplattform, die Wissen interaktiv vermittelt. Mit verschiedenen Zielgruppen, personalisierten Dashboards und 7 unterschiedlichen Kartentypen für maximales Engagement."
+              features={[
+                "400+ interaktive Lernkarten entwickelt",
+                "7 verschiedene Kartentypen (Quiz, Mythos, Wissen, Zuordnen...)",
+                "Personalisiertes Dashboard mit Fortschrittstracking",
+                "4 Zielgruppen mit eigenen Lernpfaden",
+                "Blog-Sektion für zusätzliche Inhalte",
+              ]}
+              techStack={["Next.js", "Supabase", "Tailwind", "Vercel"]}
+              liveUrl="https://dein-zyklus.vercel.app"
+            />
           </div>
         </div>
       </section>
