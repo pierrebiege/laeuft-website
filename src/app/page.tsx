@@ -2157,26 +2157,30 @@ export default function Home() {
               </motion.p>
             </div>
 
-            {/* Calendar Placeholder */}
+            {/* Calendly Embed */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-foreground text-background rounded-3xl p-8"
+              className="bg-foreground text-background rounded-3xl p-4 sm:p-8"
             >
-              <div className="aspect-[4/3] bg-background/10 rounded-2xl flex items-center justify-center mb-6">
-                <div className="text-center">
-                  <p className="text-background/60 text-sm mb-2">Kalender-Widget</p>
-                  <p className="font-semibold">Cal.com / Calendly</p>
-                </div>
+              <div className="rounded-2xl overflow-hidden mb-6">
+                <iframe
+                  src="https://calendly.com/biege-pierre/30min?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=000000"
+                  width="100%"
+                  height="600"
+                  frameBorder="0"
+                  title="Termin buchen"
+                  className="rounded-2xl"
+                />
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-background/60">Lieber per E-Mail?</span>
                 <a
-                  href="mailto:hallo@laeuft.ch"
+                  href="mailto:pierre@laeuft.ch"
                   className="font-medium hover:underline"
                 >
-                  hallo@laeuft.ch
+                  pierre@laeuft.ch
                 </a>
               </div>
             </motion.div>
