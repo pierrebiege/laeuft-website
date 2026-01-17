@@ -1668,14 +1668,14 @@ export default function Home() {
         "Kommt drauf an. Eine Automatisierung: 1-2 Wochen. Ein Shop mit Lageranbindung: 4-6 Wochen. Ein Komplettsystem mit Dashboard und Datenbank: 6-10 Wochen. Ich sage dir nach dem ersten Gespräch, was realistisch ist.",
     },
     {
-      question: "Was ist der Unterschied zwischen Projekt und Abo?",
+      question: "Was ist der Unterschied zwischen Projekt und Partner?",
       answer:
-        "Projekt = einmalig. Du brauchst ein System, ich baue es, fertig. Abo = laufend. Dein Business entwickelt sich, ich entwickle das System mit. Die meisten starten mit einem Projekt und wechseln dann ins Abo.",
+        "Projekt = einmalig. Du brauchst ein System, ich baue es, fertig. Partner = laufend. Ich halte deine Systeme am Laufen, baue neue Features und bin da, wenn was ist. Die meisten starten mit einem Projekt und wechseln dann ins Partner-Modell.",
     },
     {
-      question: "Kann ich das Abo pausieren?",
+      question: "Kann ich das Partner-Modell pausieren?",
       answer:
-        "Jederzeit. Monatlich kündbar, keine Mindestlaufzeit. Wenn du einen Monat weniger brauchst, pausierst du. Die restlichen Tage verfallen nicht.",
+        "Jederzeit. 30 Tage Kündigungsfrist, kein Risiko. Mit einer Haltegebühr bleibt dein Platz reserviert – ohne endet das Mandat und du kannst später nach Verfügbarkeit wieder einsteigen.",
     },
     {
       question: "Arbeitest du alleine?",
@@ -1729,7 +1729,7 @@ export default function Home() {
       icon: Cog,
       title: "Systeme",
       shortDesc: "Dashboards, Buchungssysteme, interne Tools – alles, was dein Business zusammenhält.",
-      example: "Für ParkourONE baue ich das AcademyBoard – ein System, das Trainer, Kurse und Teilnehmer an einem Ort verwaltet.",
+      example: "Ein Sportverband verwaltet Trainer, Kurse und Teilnehmer – alles an einem Ort, statt in 5 verschiedenen Tools.",
       details: [
         "Massgeschneiderte Dashboards für deine Daten",
         "Buchungssysteme mit Zahlungsintegration",
@@ -1883,7 +1883,7 @@ export default function Home() {
 
                 <div className="pt-6 border-t border-background/20">
                   <p className="text-background/60 text-sm">
-                    Ab CHF 1&apos;500 (Projekt) · Ab CHF 990/Mt (Monatlich)
+                    Projekt ab CHF 1&apos;500 · Partner ab CHF 3&apos;500/Mt
                   </p>
                 </div>
               </div>
