@@ -2339,29 +2339,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-24 sm:py-32 px-6 bg-foreground text-background">
+      {/* Social Proof - Apple Style */}
+      <section className="py-32 sm:py-40 px-6 bg-foreground text-background">
         <div className="max-w-6xl mx-auto">
-          {/* Stats - Kompakte Zeile */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-8 sm:gap-16 mb-16"
-          >
-            <div className="text-center">
-              <p className="text-4xl sm:text-5xl font-bold">100+</p>
-              <p className="text-background/50 text-sm mt-1">Webseiten</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl sm:text-5xl font-bold">15</p>
-              <p className="text-background/50 text-sm mt-1">Jahre</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl sm:text-5xl font-bold">1</p>
-              <p className="text-background/50 text-sm mt-1">Ansprechpartner</p>
-            </div>
-          </motion.div>
+          <div className="grid md:grid-cols-3 gap-16 md:gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center"
+            >
+              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">
+                100<span className="text-background/30">+</span>
+              </p>
+              <p className="text-background/50 text-base mt-4">Webseiten gebaut</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="text-center"
+            >
+              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">15</p>
+              <p className="text-background/50 text-base mt-4">Jahre Erfahrung</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-center"
+            >
+              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">1</p>
+              <p className="text-background/50 text-base mt-4">Ansprechpartner</p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
