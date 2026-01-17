@@ -140,6 +140,363 @@ function PricingCard({
   );
 }
 
+// Projekt Card with Modal
+function ProjektCard({ delay = 0 }: { delay?: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+        viewport={{ once: true }}
+        transition={{ delay }}
+        onClick={() => setIsOpen(true)}
+        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+      >
+        <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
+          Kein Abo? Das hier.
+        </div>
+        <h3 className="text-xl font-bold mb-2">Projekt</h3>
+        <div className="mb-4">
+          <span className="text-4xl font-bold">1&apos;500 – 15&apos;000</span>
+          <span className="text-muted"> CHF</span>
+        </div>
+        <p className="mb-6 text-muted">Einmal richtig. Dann gehört&apos;s dir.</p>
+        <ul className="space-y-3 mb-8 flex-grow">
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            Konzept & Umsetzung
+          </li>
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            Revisionen bis es passt
+          </li>
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            30 Tage Support nach Übergabe
+          </li>
+        </ul>
+        <div className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-medium bg-foreground text-background group-hover:bg-foreground/90 transition-all">
+          <span>Details ansehen</span>
+          <Plus className="w-4 h-4" />
+        </div>
+      </motion.div>
+
+      {/* Projekt Modal */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setIsOpen(false)}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-foreground text-background"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+
+              <div className="p-6 sm:p-10">
+                {/* Header */}
+                <div className="mb-8">
+                  <div className="text-sm bg-background/20 px-3 py-1 rounded-full w-fit mb-4">
+                    Kein Abo? Das hier.
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-2">Projekt</h2>
+                  <div className="mb-4">
+                    <span className="text-4xl sm:text-5xl font-bold">1&apos;500 – 15&apos;000</span>
+                    <span className="text-background/70"> CHF</span>
+                  </div>
+                  <p className="text-background/70 text-lg">Einmal richtig. Dann gehört&apos;s dir.</p>
+                </div>
+
+                {/* Was drin ist */}
+                <div className="mb-8">
+                  <h3 className="font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Was drin ist</h3>
+                  <ul className="space-y-3">
+                    {[
+                      "Konzept & Umsetzung",
+                      "Revisionen bis es passt",
+                      "30 Tage Support nach Übergabe",
+                      "Dokumentation / Einweisung",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm">
+                        <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Grössenordnung */}
+                <div className="mb-8 p-6 bg-background/10 rounded-2xl">
+                  <h3 className="font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Grössenordnung</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-background/80">Einfache Website</span>
+                      <span className="font-medium">1&apos;500 – 3&apos;000</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-background/80">Website mit CMS / Shop</span>
+                      <span className="font-medium">3&apos;000 – 7&apos;000</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-background/80">Komplexe Systeme</span>
+                      <span className="font-medium">ab 7&apos;000</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Wie es läuft */}
+                <div className="mb-8">
+                  <h3 className="font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Wie es läuft</h3>
+                  <div className="space-y-4">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center text-sm font-bold shrink-0">1</div>
+                      <div>
+                        <p className="font-medium">Gespräch</p>
+                        <p className="text-background/60 text-sm">Du erzählst, ich höre zu. Offerte innert 48h.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center text-sm font-bold shrink-0">2</div>
+                      <div>
+                        <p className="font-medium">Umsetzung</p>
+                        <p className="text-background/60 text-sm">50% Anzahlung → Start. Du siehst den Fortschritt.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center text-sm font-bold shrink-0">3</div>
+                      <div>
+                        <p className="font-medium">Übergabe</p>
+                        <p className="text-background/60 text-sm">50% Rest → Live. 30 Tage Support inklusive.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Danach */}
+                <p className="text-background/50 text-sm text-center mb-6">
+                  Danach: Partner-Modell für laufende Betreuung.
+                </p>
+
+                {/* CTA */}
+                <a
+                  href="#kontakt"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center py-4 bg-background text-foreground rounded-xl font-medium hover:bg-background/90 transition-colors"
+                >
+                  Projekt besprechen
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+// Partner Card with Modal
+function PartnerCard({ delay = 0 }: { delay?: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+        viewport={{ once: true }}
+        transition={{ delay }}
+        onClick={() => setIsOpen(true)}
+        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+      >
+        <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
+          3 Plätze
+        </div>
+        <h3 className="text-xl font-bold mb-2">Partner</h3>
+        <div className="mb-4">
+          <span className="text-4xl font-bold">3&apos;500</span>
+          <span className="text-muted"> CHF/Mt</span>
+        </div>
+        <p className="mb-6 text-muted">Dein Mann fürs Digitale.</p>
+        <ul className="space-y-3 mb-8 flex-grow">
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            Systeme am Laufen halten
+          </li>
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            48h Reaktionszeit, 24h bei Notfällen
+          </li>
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            Monatlicher Check-in
+          </li>
+          <li className="flex items-start gap-3 text-sm">
+            <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
+            Einer von max. drei Partnern
+          </li>
+        </ul>
+        <div className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-medium bg-foreground text-background group-hover:bg-foreground/90 transition-all">
+          <span>Details ansehen</span>
+          <Plus className="w-4 h-4" />
+        </div>
+      </motion.div>
+
+      {/* Partner Modal */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setIsOpen(false)}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-foreground text-background"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+
+              <div className="p-6 sm:p-10">
+                {/* Header */}
+                <div className="mb-8">
+                  <div className="text-sm bg-background/20 px-3 py-1 rounded-full w-fit mb-4">
+                    3 Plätze
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-2">Partner</h2>
+                  <div className="mb-4">
+                    <span className="text-4xl sm:text-5xl font-bold">3&apos;500</span>
+                    <span className="text-background/70"> CHF/Monat</span>
+                  </div>
+                  <p className="text-background/70 text-lg">Dein Mann fürs Digitale.</p>
+                </div>
+
+                {/* Was drin ist */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Was drin ist</h3>
+                  <p className="text-background/60 text-sm mb-4">Alles, was auf Bestehendem aufbaut.</p>
+                  <ul className="space-y-3">
+                    {[
+                      "Systeme am Laufen halten (Bugs, Updates, Troubleshooting)",
+                      "Bestehende Systeme pflegen & optimieren",
+                      "Kleine Anpassungen & neue Features einbauen",
+                      "Webseiten-Updates & Kampagnen-Seiten",
+                      "Neue Automationen, die auf Bestehendem aufbauen",
+                      "Beratung, Fragen, Meetings",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm">
+                        <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Wie es läuft */}
+                <div className="mb-8 p-6 bg-background/10 rounded-2xl">
+                  <h3 className="text-lg font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Wie es läuft</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-3 text-sm">
+                      <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
+                      <span><strong>Reaktionszeit:</strong> 48h normal, 24h bei Notfällen</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
+                      <span><strong>Monatlicher Check-in</strong> (remote oder vor Ort)</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
+                      <span>Du bist einer von <strong>maximal drei Partnern</strong> – priorisiert</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Was separat offeriert wird */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold mb-4 text-background/50 uppercase tracking-wider text-sm">Was separat offeriert wird</h3>
+                  <p className="text-background/60 text-sm mb-4">Alles, was komplett neu ist.</p>
+                  <ul className="space-y-2 text-sm text-background/80">
+                    <li>• Neue Systeme von Grund auf</li>
+                    <li>• Grosse Migrationen</li>
+                    <li>• Projekte mit externen Partnern</li>
+                  </ul>
+                  <p className="text-background/60 text-sm mt-3">→ Faire Partner-Konditionen, separate Offerte</p>
+                </div>
+
+                {/* Kündigung & Pause */}
+                <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                  <div className="p-4 bg-background/5 rounded-xl">
+                    <h4 className="font-bold mb-2 text-sm">Kündigung</h4>
+                    <p className="text-background/70 text-sm">Beidseitig mit 30 Tagen Frist. Kein Risiko.</p>
+                  </div>
+                  <div className="p-4 bg-background/5 rounded-xl">
+                    <h4 className="font-bold mb-2 text-sm">Pause</h4>
+                    <p className="text-background/70 text-sm">Jederzeit möglich. Mit Haltegebühr (1&apos;000 CHF/Mt) bleibt der Platz reserviert.</p>
+                  </div>
+                </div>
+
+                {/* Bottom Line */}
+                <p className="text-background/50 text-sm text-center mb-6">
+                  Planbare Kosten. Keine Überraschungen. Ein Ansprechpartner, der alles kennt.
+                </p>
+
+                {/* CTA */}
+                <a
+                  href="#kontakt"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center py-4 bg-background text-foreground rounded-xl font-medium hover:bg-background/90 transition-colors"
+                >
+                  Partner werden
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 // Portfolio Item with Modal
 function PortfolioItem({
   title,
@@ -1969,52 +2326,9 @@ export default function Home() {
             Preise
           </motion.h2>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <PricingCard
-              title="Projekt"
-              price="Ab 1'500"
-              period=" CHF"
-              description="Einmal richtig."
-              features={[
-                "Fixpreis",
-                "Revisionen inklusive",
-                "Support inklusive",
-              ]}
-              cta="Projekt besprechen"
-              example="Website für einen Schreinerbetrieb. Design, Texte, Bilder – in einer Woche online."
-              delay={0}
-            />
-
-            <PricingCard
-              title="Monatlich"
-              price="990"
-              period=" CHF/Mt"
-              description="Ich wachse mit."
-              features={[
-                "Eine Anfrage zur Zeit",
-                "Schnelle Umsetzung",
-                "Pausieren jederzeit",
-              ]}
-              cta="Monatlich starten"
-              example="Laufende Betreuung für einen Eventveranstalter. Buchungen, Zahlungen, Support – ich halte alles am Laufen."
-              featured
-              delay={0.1}
-            />
-
-            <PricingCard
-              title="Partner"
-              price="2'500"
-              period=" CHF/Mt"
-              description="Dein Mann fürs Digitale."
-              features={[
-                "Unbegrenzte Anfragen",
-                "Priorität",
-                "Grössere Projekte",
-              ]}
-              cta="Partner werden"
-              example="Komplettsystem für einen Betrieb mit 3 Standorten. Dashboard, Datenbank, Automationen – plus alles, was noch kommt."
-              delay={0.2}
-            />
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <ProjektCard delay={0} />
+            <PartnerCard delay={0.1} />
           </div>
 
         </div>
