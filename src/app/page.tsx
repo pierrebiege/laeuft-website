@@ -1648,6 +1648,16 @@ export default function Home() {
         "Systeme, die dein Business zusammenhalten. Dashboards, die Daten aus 5 Tools an einem Ort zeigen. Buchungssysteme, die mit Zahlung und Kommunikation verbunden sind. Shops, die automatisch ans Lager und den Versand gekoppelt sind. Keine Einzellösungen – alles verbunden.",
     },
     {
+      question: "Warum nicht einfach Notion, Asana oder Salesforce?",
+      answer:
+        "Weil die für alle gebaut sind. Du passt dich dem Tool an – nicht umgekehrt. Du zahlst für 100 Features und nutzt 12. Du brauchst 3 Tools, weil keines alles kann. Und wenn sich dein Business ändert, fängst du von vorne an. Ein System, das für dich gebaut ist, macht genau das, was du brauchst. Nicht mehr. Nicht weniger. Und wächst mit, wenn du wächst.",
+    },
+    {
+      question: "Reicht nicht ein fertiges Tool?",
+      answer:
+        "Für manche schon. Wenn dein Business in eine Standardbox passt – kauf dir eine. Aber wenn du merkst, dass du Workarounds baust, Daten kopierst, und trotzdem zahlst für Funktionen, die niemand nutzt – dann brauchst du kein besseres Tool. Dann brauchst du ein System.",
+    },
+    {
       question: "Brauche ich technisches Wissen?",
       answer:
         "Nein. Du erzählst mir, was fehlt. Ich baue es. Du bekommst etwas, das funktioniert – keine Schulung, kein Handbuch, kein Selbststudium nötig.",
