@@ -153,7 +153,7 @@ function ProjektCard({ delay = 0 }: { delay?: number }) {
         viewport={{ once: true }}
         transition={{ delay }}
         onClick={() => setIsOpen(true)}
-        className="flex-shrink-0 w-[340px] sm:w-[400px] rounded-3xl p-8 flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
       >
         <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
           Kein Abo? Das hier.
@@ -184,39 +184,44 @@ function ProjektCard({ delay = 0 }: { delay?: number }) {
         </div>
       </motion.div>
 
-      {/* Projekt Modal */}
+      {/* Projekt Modal - Apple Sheet Style */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 flex items-end justify-center"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-foreground text-background"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-foreground text-background rounded-t-3xl"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Handle */}
+              <div className="sticky top-0 z-10 bg-foreground pt-3 pb-2">
+                <div className="w-10 h-1 bg-background/30 rounded-full mx-auto" />
+              </div>
+
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
+                className="absolute top-3 right-4 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
 
-              <div className="p-6 sm:p-10">
+              <div className="px-6 pb-8 sm:px-10 sm:pb-10">
                 {/* Header */}
                 <div className="mb-8">
                   <div className="text-sm bg-background/20 px-3 py-1 rounded-full w-fit mb-4">
@@ -330,7 +335,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
         viewport={{ once: true }}
         transition={{ delay }}
         onClick={() => setIsOpen(true)}
-        className="flex-shrink-0 w-[340px] sm:w-[400px] rounded-3xl p-8 flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
       >
         <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
           3 Plätze
@@ -365,39 +370,44 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
         </div>
       </motion.div>
 
-      {/* Partner Modal */}
+      {/* Partner Modal - Apple Sheet Style */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 flex items-end justify-center"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-foreground text-background"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-foreground text-background rounded-t-3xl"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Handle */}
+              <div className="sticky top-0 z-10 bg-foreground pt-3 pb-2">
+                <div className="w-10 h-1 bg-background/30 rounded-full mx-auto" />
+              </div>
+
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
+                className="absolute top-3 right-4 sm:right-6 z-10 p-2 sm:p-3 bg-background/10 hover:bg-background/20 rounded-full transition-colors"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
 
-              <div className="p-6 sm:p-10">
+              <div className="px-6 pb-8 sm:px-10 sm:pb-10">
                 {/* Header */}
                 <div className="mb-8">
                   <div className="text-sm bg-background/20 px-3 py-1 rounded-full w-fit mb-4">
@@ -2315,21 +2325,18 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section id="preise" className="py-32 border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 mb-12">
+      <section id="preise" className="py-32 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl font-bold tracking-tight"
+            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-12"
           >
             Preise
           </motion.h2>
-        </div>
 
-        {/* Horizontal Scroll Container */}
-        <div className="overflow-x-auto pb-8">
-          <div className="flex gap-6 px-6 w-max">
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <ProjektCard delay={0} />
             <PartnerCard delay={0.1} />
           </div>
