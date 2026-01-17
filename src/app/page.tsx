@@ -153,7 +153,7 @@ function ProjektCard({ delay = 0 }: { delay?: number }) {
         viewport={{ once: true }}
         transition={{ delay }}
         onClick={() => setIsOpen(true)}
-        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+        className="flex-shrink-0 w-[340px] sm:w-[400px] rounded-3xl p-8 flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
       >
         <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
           Kein Abo? Das hier.
@@ -330,7 +330,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
         viewport={{ once: true }}
         transition={{ delay }}
         onClick={() => setIsOpen(true)}
-        className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
+        className="flex-shrink-0 w-[340px] sm:w-[400px] rounded-3xl p-8 flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
       >
         <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
           3 Plätze
@@ -2315,22 +2315,24 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section id="preise" className="py-32 px-6 border-t border-border">
-        <div className="max-w-4xl mx-auto">
+      <section id="preise" className="py-32 border-t border-border">
+        <div className="max-w-7xl mx-auto px-6 mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl font-bold tracking-tight text-center mb-12"
+            className="text-3xl sm:text-4xl font-bold tracking-tight"
           >
             Preise
           </motion.h2>
+        </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        {/* Horizontal Scroll Container */}
+        <div className="overflow-x-auto pb-8">
+          <div className="flex gap-6 px-6 w-max">
             <ProjektCard delay={0} />
             <PartnerCard delay={0.1} />
           </div>
-
         </div>
       </section>
 
