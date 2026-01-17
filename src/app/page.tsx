@@ -351,7 +351,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
         className="rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-zinc-900 border border-border cursor-pointer group"
       >
         <div className="text-sm bg-foreground/10 text-foreground px-3 py-1 rounded-full w-fit mb-4">
-          3 Plätze
+          Laufend
         </div>
         <h3 className="text-xl font-bold mb-2">Partner</h3>
         <div className="mb-4">
@@ -374,7 +374,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
           </li>
           <li className="flex items-start gap-3 text-sm">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-foreground" />
-            Einer von max. drei Partnern
+            Du hast Priorität
           </li>
         </ul>
         <div className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-medium bg-foreground text-background group-hover:bg-foreground/90 transition-all">
@@ -435,7 +435,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
                 {/* Header */}
                 <div className="mb-8">
                   <div className="text-sm bg-background/20 px-3 py-1 rounded-full w-fit mb-4">
-                    3 Plätze
+                    Laufend
                   </div>
                   <h2 className="text-3xl sm:text-4xl font-bold mb-2">Partner</h2>
                   <div className="mb-4">
@@ -480,7 +480,7 @@ function PartnerCard({ delay = 0 }: { delay?: number }) {
                     </li>
                     <li className="flex items-start gap-3 text-sm">
                       <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-background" />
-                      <span>Du bist einer von <strong>maximal drei Partnern</strong> – priorisiert</span>
+                      <span><strong>Du hast Priorität</strong> – schnelle Reaktion, wenn&apos;s brennt</span>
                     </li>
                   </ul>
                 </div>
