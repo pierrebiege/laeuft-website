@@ -1885,7 +1885,7 @@ export default function Home() {
       {/* Problem Section - Word by Word Reveal */}
       <section
         ref={problemRef}
-        className="relative h-[300vh] border-t border-border"
+        className="relative h-[350vh] border-t border-border"
       >
         <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6">
           <motion.p
@@ -1897,7 +1897,7 @@ export default function Home() {
             Das Problem
           </motion.p>
 
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-center max-w-5xl leading-relaxed">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-center max-w-4xl leading-relaxed">
             {allWords.map((word, index) => {
               const start = index / totalWords;
               const end = (index + 1) / totalWords;
