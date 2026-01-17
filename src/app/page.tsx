@@ -4,12 +4,59 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, 
 import { useState, useRef, useEffect } from "react";
 import { Zap, User, Cog, Globe, Database, ArrowUp, X, Plus } from "lucide-react";
 
+// CountUp Animation Component
+function CountUp({
+  target,
+  suffix = "",
+  duration = 2
+}: {
+  target: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
+
+      // Easing function for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(easeOut * target));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isInView, target, duration]);
+
+  return (
+    <span ref={ref}>
+      {count}{suffix && <span className="text-background/30">{suffix}</span>}
+    </span>
+  );
+}
+
 // FAQ Accordion Item
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-border">
+    <div className="border-b border-border overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-6 flex items-center justify-between text-left hover:opacity-70 transition-opacity"
@@ -17,22 +64,41 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         <span className="text-lg sm:text-xl font-medium pr-8">{question}</span>
         <motion.span
           animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 20
+          }}
           className="text-2xl flex-shrink-0"
         >
           +
         </motion.span>
       </button>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ height: 0 }}
+            animate={{ height: "auto" }}
+            exit={{ height: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 40
+            }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-muted max-w-2xl">{answer}</p>
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{
+                duration: 0.2,
+                delay: isOpen ? 0.1 : 0
+              }}
+              className="pb-6 text-muted max-w-2xl"
+            >
+              {answer}
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -2343,40 +2409,26 @@ export default function Home() {
       <section className="py-32 sm:py-40 px-6 bg-foreground text-background">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-16 md:gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center"
-            >
+            <div className="text-center">
               <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">
-                100<span className="text-background/30">+</span>
+                <CountUp target={100} suffix="+" duration={2} />
               </p>
               <p className="text-background/50 text-base mt-4">Webseiten gebaut</p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="text-center"
-            >
-              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">15</p>
+            <div className="text-center">
+              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">
+                <CountUp target={15} duration={1.5} />
+              </p>
               <p className="text-background/50 text-base mt-4">Jahre Erfahrung</p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-center"
-            >
-              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">1</p>
+            <div className="text-center">
+              <p className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-tighter">
+                <CountUp target={1} duration={0.8} />
+              </p>
               <p className="text-background/50 text-base mt-4">Ansprechpartner</p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
