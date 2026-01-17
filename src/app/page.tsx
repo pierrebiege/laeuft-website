@@ -1907,6 +1907,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Why not off-the-shelf */}
+      <section className="py-24 sm:py-32 px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-sm uppercase tracking-widest text-muted mb-6"
+          >
+            Warum kein fertiges Tool?
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-8 leading-tight"
+          >
+            Fertige Tools sind für alle gebaut.{" "}
+            <span className="text-muted">Nicht für dich.</span>
+          </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4 text-muted text-lg"
+          >
+            <p>
+              Sie passen nie ganz. Also baust du Workarounds. Nutzt drei Tools statt einem. Kopierst Daten von A nach B. Und zahlst pro Nutzer, pro Feature, pro Monat – für Funktionen, die du nicht brauchst.
+            </p>
+            <p className="text-foreground font-medium">
+              Ich baue, was du wirklich brauchst. Nicht mehr. Nicht weniger.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* What I build Section */}
       <section className="py-32 bg-foreground text-background">
         <div className="max-w-7xl mx-auto px-6 mb-12">
