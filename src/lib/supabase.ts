@@ -46,3 +46,36 @@ export interface Service {
   default_amount: number
   features: string[] | null
 }
+
+export interface Invoice {
+  id: string
+  client_id: string
+  offer_id: string | null
+  invoice_number: string
+  title: string
+  description: string | null
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+  issue_date: string
+  due_date: string | null
+  total_amount: number
+  paid_amount: number
+  paid_at: string | null
+  sent_at: string | null
+  unique_token: string
+  notes: string | null
+  created_at: string
+  updated_at: string
+  client?: Client
+  items?: InvoiceItem[]
+}
+
+export interface InvoiceItem {
+  id: string
+  invoice_id: string
+  title: string
+  description: string | null
+  quantity: number
+  unit_price: number
+  amount: number
+  sort_order: number
+}
