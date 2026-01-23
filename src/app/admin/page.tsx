@@ -3,17 +3,49 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
 
 export default function AdminPage() {
   const [offers, setOffers] = useState<OfferWithClient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     loadOffers();
   }, []);
+
+  async function sendOffer(offerId: string) {
+    if (!confirm("Offerte per E-Mail senden?")) return;
+
+    setSendingId(offerId);
+    try {
+      const res = await fetch("/api/send-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId }),
+      });
+
+      if (res.ok) {
+        loadOffers();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Senden");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+    setSendingId(null);
+  }
+
+  function copyLink(token: string) {
+    const url = `${window.location.origin}/angebot/${token}`;
+    navigator.clipboard.writeText(url);
+    setCopiedId(token);
+    setTimeout(() => setCopiedId(null), 2000);
+  }
 
   async function loadOffers() {
     const { data, error } = await supabase
@@ -93,7 +125,7 @@ export default function AdminPage() {
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Betrag</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Status</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Erstellt</th>
-                <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Link</th>
+                <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Aktionen</th>
               </tr>
             </thead>
             <tbody>
@@ -124,16 +156,44 @@ export default function AdminPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-zinc-500">{formatDate(offer.created_at)}</td>
-                    <td className="px-6 py-4 text-right">
-                      <a
-                        href={`/angebot/${offer.unique_token}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-                      >
-                        <ExternalLink size={14} />
-                        Öffnen
-                      </a>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        {offer.status === "draft" && (
+                          <button
+                            onClick={() => sendOffer(offer.id)}
+                            disabled={sendingId === offer.id}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            <Mail size={14} />
+                            {sendingId === offer.id ? "Sende..." : "Senden"}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => copyLink(offer.unique_token)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        >
+                          {copiedId === offer.unique_token ? (
+                            <>
+                              <Check size={14} className="text-green-500" />
+                              Kopiert
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={14} />
+                              Link
+                            </>
+                          )}
+                        </button>
+                        <a
+                          href={`/angebot/${offer.unique_token}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        >
+                          <ExternalLink size={14} />
+                          Öffnen
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 );
