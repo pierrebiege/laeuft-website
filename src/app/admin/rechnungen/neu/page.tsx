@@ -119,7 +119,7 @@ function NewInvoiceContent() {
 
     setSaving(true);
 
-    // Create invoice
+    // Create invoice (always as draft first)
     const { data: invoice, error: invoiceError } = await supabase
       .from("invoices")
       .insert({
@@ -127,11 +127,10 @@ function NewInvoiceContent() {
         offer_id: linkedOfferId,
         title,
         description,
-        status: sendImmediately ? "sent" : "draft",
+        status: "draft",
         due_date: dueDate || null,
         total_amount: getTotalAmount(),
         notes,
-        sent_at: sendImmediately ? new Date().toISOString() : null,
       })
       .select()
       .single();
@@ -160,6 +159,24 @@ function NewInvoiceContent() {
 
     if (itemsError) {
       console.error("Error creating invoice items:", itemsError);
+    }
+
+    // Send email if requested
+    if (sendImmediately) {
+      try {
+        const res = await fetch("/api/send-invoice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ invoiceId: invoice.id }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          alert("Rechnung erstellt, aber E-Mail konnte nicht gesendet werden: " + (data.error || "Unbekannter Fehler"));
+        }
+      } catch {
+        alert("Rechnung erstellt, aber E-Mail konnte nicht gesendet werden");
+      }
     }
 
     setSaving(false);

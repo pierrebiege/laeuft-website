@@ -92,17 +92,16 @@ export default function NewOfferPage() {
 
     setSaving(true);
 
-    // Create offer
+    // Create offer (always as draft first)
     const { data: offer, error: offerError } = await supabase
       .from("offers")
       .insert({
         client_id: selectedClientId,
         title,
         description,
-        status: sendImmediately ? "sent" : "draft",
+        status: "draft",
         valid_until: validUntil || null,
         total_amount: getTotalAmount(),
-        sent_at: sendImmediately ? new Date().toISOString() : null,
       })
       .select()
       .single();
@@ -129,6 +128,24 @@ export default function NewOfferPage() {
 
     if (itemsError) {
       console.error("Error creating offer items:", itemsError);
+    }
+
+    // Send email if requested
+    if (sendImmediately) {
+      try {
+        const res = await fetch("/api/send-offer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ offerId: offer.id }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          alert("Offerte erstellt, aber E-Mail konnte nicht gesendet werden: " + (data.error || "Unbekannter Fehler"));
+        }
+      } catch {
+        alert("Offerte erstellt, aber E-Mail konnte nicht gesendet werden");
+      }
     }
 
     setSaving(false);
