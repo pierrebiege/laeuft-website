@@ -121,13 +121,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Generate QR code data
+    // NOTE: Debtor is left empty because we don't have structured address data
+    // (street, postal code, city separately). With address type "S", these are required.
+    // Leaving debtor empty is valid for NON reference type.
     const qrData = generateSPC({
       amount: invoice.total_amount,
       invoiceNumber: invoice.invoice_number,
-      debtor: invoice.client ? {
-        name: invoice.client.company || invoice.client.name,
-        country: "CH",
-      } : undefined,
+      // debtor intentionally omitted - no structured address data available
     })
 
     // Format IBAN for display (groups of 4)
