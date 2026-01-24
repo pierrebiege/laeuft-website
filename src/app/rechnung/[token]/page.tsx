@@ -285,9 +285,10 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
 
           {/* Swiss QR Bill Section - only show if not paid and QR data available */}
           {invoice.status !== "paid" && invoice.status !== "cancelled" && qrBill && (
-            <div className="border-t-2 border-dashed border-zinc-300 dark:border-zinc-700 pt-8 mt-8">
+            <div className="border-t-2 border-dashed border-zinc-300 pt-8 mt-8 bg-white -mx-8 md:-mx-12 px-8 md:px-12 pb-8 print:-mx-8 print:px-8">
+              {/* Scissors line indicator */}
               <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-black">
                   Zahlteil / Payment Part
                 </h3>
                 <p className="text-xs text-zinc-500 mt-1">Swiss QR Code nach SIX Standard</p>
@@ -296,53 +297,58 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
               <div className="grid grid-cols-2 gap-8">
                 {/* QR Code */}
                 <div className="flex flex-col items-center">
-                  <div className="bg-white p-4 rounded-lg border-2 border-zinc-900">
+                  <div className="bg-white p-4 border-2 border-black">
                     <QRCodeSVG
                       value={qrBill.qrData}
-                      size={160}
+                      size={166}
                       level="M"
                       includeMargin={false}
+                      bgColor="#FFFFFF"
+                      fgColor="#000000"
                     />
-                    {/* Swiss Cross */}
-                    <div className="flex justify-center mt-2">
-                      <div className="w-7 h-7 bg-white border border-zinc-900 flex items-center justify-center">
-                        <div className="relative w-4 h-4">
-                          <div className="absolute top-1/2 left-0 w-full h-1 bg-red-600 -translate-y-1/2"></div>
-                          <div className="absolute left-1/2 top-0 w-1 h-full bg-red-600 -translate-x-1/2"></div>
-                        </div>
+                    {/* Swiss Cross - centered in QR code */}
+                    <div className="flex justify-center -mt-[90px] mb-[70px]">
+                      <div className="w-[7mm] h-[7mm] bg-white flex items-center justify-center">
+                        <svg width="7mm" height="7mm" viewBox="0 0 19.8 19.8">
+                          <rect x="0" y="0" width="19.8" height="19.8" fill="black"/>
+                          <rect x="1.2" y="1.2" width="17.4" height="17.4" fill="white"/>
+                          <rect x="4.2" y="8.4" width="11.4" height="3" fill="black"/>
+                          <rect x="8.4" y="4.2" width="3" height="11.4" fill="black"/>
+                        </svg>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Payment Info */}
-                <div className="text-sm space-y-4">
+                <div className="text-sm space-y-4 text-black">
                   <div>
-                    <div className="text-xs text-zinc-400 uppercase tracking-wide mb-1">Konto / Zahlbar an</div>
-                    <div className="text-zinc-900 dark:text-white font-mono">{qrBill.creditor.iban}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.name}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.address}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.location}</div>
+                    <div className="text-xs text-zinc-600 uppercase tracking-wide mb-1 font-bold">Konto / Zahlbar an</div>
+                    <div className="font-mono">{qrBill.creditor.iban}</div>
+                    <div>{qrBill.creditor.name}</div>
+                    <div>{qrBill.creditor.address}</div>
+                    <div>{qrBill.creditor.location}</div>
                   </div>
 
                   <div>
-                    <div className="text-xs text-zinc-400 uppercase tracking-wide mb-1">Zahlbar durch</div>
+                    <div className="text-xs text-zinc-600 uppercase tracking-wide mb-1 font-bold">Zahlbar durch</div>
                     {invoice.client.company && (
-                      <div className="text-zinc-700 dark:text-zinc-300">{invoice.client.company}</div>
+                      <div>{invoice.client.company}</div>
                     )}
-                    <div className="text-zinc-700 dark:text-zinc-300">{invoice.client.name}</div>
+                    <div>{invoice.client.name}</div>
                   </div>
 
                   <div>
-                    <div className="text-xs text-zinc-400 uppercase tracking-wide mb-1">Betrag</div>
-                    <div className="text-xl font-bold text-zinc-900 dark:text-white">
-                      CHF {invoice.total_amount.toFixed(2)}
+                    <div className="text-xs text-zinc-600 uppercase tracking-wide mb-1 font-bold">Währung / Betrag</div>
+                    <div className="flex gap-8">
+                      <span className="font-bold">CHF</span>
+                      <span className="font-bold">{invoice.total_amount.toFixed(2)}</span>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs text-zinc-400 uppercase tracking-wide mb-1">Mitteilung</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">Rechnung {invoice.invoice_number}</div>
+                    <div className="text-xs text-zinc-600 uppercase tracking-wide mb-1 font-bold">Zusätzliche Informationen</div>
+                    <div>Rechnung {invoice.invoice_number}</div>
                   </div>
                 </div>
               </div>
