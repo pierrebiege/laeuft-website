@@ -41,7 +41,7 @@ export default function InvoicesPage() {
   }
 
   async function markAsPaid(invoiceId: string) {
-    if (!confirm("Rechnung als bezahlt markieren?")) return;
+    if (!confirm("Zahlungseingang bestätigen? Die Rechnung wird als bezahlt markiert.")) return;
 
     const { error } = await supabase
       .from("invoices")
@@ -213,10 +213,10 @@ export default function InvoicesPage() {
                         {invoice.status === "sent" && (
                           <button
                             onClick={() => markAsPaid(invoice.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
                           >
                             <CreditCard size={14} />
-                            Bezahlt
+                            Zahlung bestätigen
                           </button>
                         )}
                         <button
