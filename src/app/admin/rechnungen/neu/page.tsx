@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase, Client, Offer } from "@/lib/supabase";
-import { ArrowLeft, Plus, Trash2, Save, Send } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 
 interface InvoiceItem {
   id: string;
@@ -111,7 +111,7 @@ function NewInvoiceContent() {
     return items.reduce((sum, item) => sum + getItemAmount(item), 0);
   }
 
-  async function saveInvoice(sendImmediately = false) {
+  async function saveInvoice() {
     if (!selectedClientId || !title || items.length === 0) {
       alert("Bitte fülle alle Pflichtfelder aus");
       return;
@@ -119,7 +119,7 @@ function NewInvoiceContent() {
 
     setSaving(true);
 
-    // Create invoice (always as draft first)
+    // Create invoice as draft
     const { data: invoice, error: invoiceError } = await supabase
       .from("invoices")
       .insert({
@@ -159,24 +159,6 @@ function NewInvoiceContent() {
 
     if (itemsError) {
       console.error("Error creating invoice items:", itemsError);
-    }
-
-    // Send email if requested
-    if (sendImmediately) {
-      try {
-        const res = await fetch("/api/send-invoice", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ invoiceId: invoice.id }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          alert("Rechnung erstellt, aber E-Mail konnte nicht gesendet werden: " + (data.error || "Unbekannter Fehler"));
-        }
-      } catch {
-        alert("Rechnung erstellt, aber E-Mail konnte nicht gesendet werden");
-      }
     }
 
     setSaving(false);
@@ -380,20 +362,12 @@ function NewInvoiceContent() {
         {/* Actions */}
         <div className="flex items-center gap-3 pt-4">
           <button
-            onClick={() => saveInvoice(false)}
-            disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
-          >
-            <Save size={18} />
-            {saving ? "Speichern..." : "Als Entwurf speichern"}
-          </button>
-          <button
-            onClick={() => saveInvoice(true)}
+            onClick={() => saveInvoice()}
             disabled={saving}
             className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
           >
-            <Send size={18} />
-            {saving ? "Erstellen..." : "Erstellen & Link generieren"}
+            <Save size={18} />
+            {saving ? "Speichern..." : "Speichern"}
           </button>
         </div>
       </div>

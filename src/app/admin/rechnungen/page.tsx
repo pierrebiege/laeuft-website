@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Invoice, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle, Trash2 } from "lucide-react";
 
 type InvoiceWithClient = Invoice & { client: Client };
 
@@ -64,6 +64,22 @@ export default function InvoicesPage() {
     navigator.clipboard.writeText(url);
     setCopiedId(token);
     setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  async function deleteInvoice(invoiceId: string) {
+    if (!confirm("Rechnung unwiderruflich löschen?")) return;
+
+    const { error } = await supabase
+      .from("invoices")
+      .delete()
+      .eq("id", invoiceId);
+
+    if (error) {
+      console.error("Error deleting invoice:", error);
+      alert("Fehler beim Löschen");
+    } else {
+      loadInvoices();
+    }
   }
 
   async function loadInvoices() {
@@ -228,6 +244,12 @@ export default function InvoicesPage() {
                           <ExternalLink size={14} />
                           Öffnen
                         </a>
+                        <button
+                          onClick={() => deleteInvoice(invoice.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
                       </div>
                     </td>
                   </tr>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2 } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
 
@@ -45,6 +45,22 @@ export default function AdminPage() {
     navigator.clipboard.writeText(url);
     setCopiedId(token);
     setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  async function deleteOffer(offerId: string) {
+    if (!confirm("Offerte unwiderruflich löschen?")) return;
+
+    const { error } = await supabase
+      .from("offers")
+      .delete()
+      .eq("id", offerId);
+
+    if (error) {
+      console.error("Error deleting offer:", error);
+      alert("Fehler beim Löschen");
+    } else {
+      loadOffers();
+    }
   }
 
   async function loadOffers() {
@@ -202,6 +218,12 @@ export default function AdminPage() {
                           <ExternalLink size={14} />
                           Öffnen
                         </a>
+                        <button
+                          onClick={() => deleteOffer(offer.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
                       </div>
                     </td>
                   </tr>

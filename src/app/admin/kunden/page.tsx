@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase, Client } from "@/lib/supabase";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Trash2 } from "lucide-react";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -27,6 +27,22 @@ export default function ClientsPage() {
 
     setClients(data || []);
     setLoading(false);
+  }
+
+  async function deleteClient(clientId: string) {
+    if (!confirm("Kunde unwiderruflich löschen? Alle zugehörigen Offerten und Rechnungen werden ebenfalls gelöscht.")) return;
+
+    const { error } = await supabase
+      .from("clients")
+      .delete()
+      .eq("id", clientId);
+
+    if (error) {
+      console.error("Error deleting client:", error);
+      alert("Fehler beim Löschen");
+    } else {
+      loadClients();
+    }
   }
 
   async function saveClient(e: React.FormEvent) {
@@ -149,6 +165,7 @@ export default function ClientsPage() {
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Firma</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Name</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">E-Mail</th>
+                <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500"></th>
               </tr>
             </thead>
             <tbody>
@@ -162,6 +179,14 @@ export default function ClientsPage() {
                   </td>
                   <td className="px-6 py-4 text-zinc-900 dark:text-white">{client.name}</td>
                   <td className="px-6 py-4 text-zinc-500">{client.email}</td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => deleteClient(client.id)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase, Client, Service } from "@/lib/supabase";
-import { ArrowLeft, Plus, Trash2, Save, Send } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 
 interface OfferItem {
   id: string;
@@ -84,7 +84,7 @@ export default function NewOfferPage() {
     return items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   }
 
-  async function saveOffer(sendImmediately = false) {
+  async function saveOffer() {
     if (!selectedClientId || !title || items.length === 0) {
       alert("Bitte fülle alle Pflichtfelder aus");
       return;
@@ -92,7 +92,7 @@ export default function NewOfferPage() {
 
     setSaving(true);
 
-    // Create offer (always as draft first)
+    // Create offer as draft
     const { data: offer, error: offerError } = await supabase
       .from("offers")
       .insert({
@@ -128,24 +128,6 @@ export default function NewOfferPage() {
 
     if (itemsError) {
       console.error("Error creating offer items:", itemsError);
-    }
-
-    // Send email if requested
-    if (sendImmediately) {
-      try {
-        const res = await fetch("/api/send-offer", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ offerId: offer.id }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          alert("Offerte erstellt, aber E-Mail konnte nicht gesendet werden: " + (data.error || "Unbekannter Fehler"));
-        }
-      } catch {
-        alert("Offerte erstellt, aber E-Mail konnte nicht gesendet werden");
-      }
     }
 
     setSaving(false);
@@ -327,20 +309,12 @@ export default function NewOfferPage() {
         {/* Actions */}
         <div className="flex items-center gap-3 pt-4">
           <button
-            onClick={() => saveOffer(false)}
-            disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
-          >
-            <Save size={18} />
-            {saving ? "Speichern..." : "Als Entwurf speichern"}
-          </button>
-          <button
-            onClick={() => saveOffer(true)}
+            onClick={() => saveOffer()}
             disabled={saving}
             className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
           >
-            <Send size={18} />
-            {saving ? "Senden..." : "Speichern & Link generieren"}
+            <Save size={18} />
+            {saving ? "Speichern..." : "Speichern"}
           </button>
         </div>
       </div>
