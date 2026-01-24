@@ -2,18 +2,28 @@
 
 import { useEffect, useState, use } from "react";
 import { supabase, Invoice, InvoiceItem, Client } from "@/lib/supabase";
-import { businessConfig, generateQRBillData } from "@/lib/business-config";
 import { QRCodeSVG } from "qrcode.react";
-import { Check, Download, Printer } from "lucide-react";
+import { Check, Printer } from "lucide-react";
 
 type InvoiceWithDetails = Invoice & {
   client: Client;
   items: InvoiceItem[];
 };
 
+type QRBillData = {
+  qrData: string;
+  creditor: {
+    name: string;
+    iban: string;
+    address: string;
+    location: string;
+  };
+};
+
 export default function InvoicePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
   const [invoice, setInvoice] = useState<InvoiceWithDetails | null>(null);
+  const [qrBill, setQrBill] = useState<QRBillData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,19 +32,34 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
   }, [token]);
 
   async function loadInvoice() {
-    const { data, error } = await supabase
+    // Load invoice
+    const { data, error: invoiceError } = await supabase
       .from("invoices")
       .select(`*, client:clients(*), items:invoice_items(*)`)
       .eq("unique_token", token)
       .single();
 
-    if (error || !data) {
+    if (invoiceError || !data) {
       setError("Rechnung nicht gefunden");
-    } else {
-      // Sort items by sort_order
-      data.items = data.items?.sort((a: InvoiceItem, b: InvoiceItem) => a.sort_order - b.sort_order) || [];
-      setInvoice(data);
+      setLoading(false);
+      return;
     }
+
+    // Sort items by sort_order
+    data.items = data.items?.sort((a: InvoiceItem, b: InvoiceItem) => a.sort_order - b.sort_order) || [];
+    setInvoice(data);
+
+    // Load QR bill data from API
+    try {
+      const res = await fetch(`/api/qr-bill?token=${token}`);
+      if (res.ok) {
+        const qrData = await res.json();
+        setQrBill(qrData);
+      }
+    } catch (e) {
+      console.error("Failed to load QR bill data:", e);
+    }
+
     setLoading(false);
   }
 
@@ -81,15 +106,6 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
     );
   }
 
-  const qrData = generateQRBillData({
-    invoiceNumber: `Rechnung ${invoice.invoice_number}`,
-    amount: invoice.total_amount,
-    debtor: invoice.client ? {
-      name: invoice.client.company || invoice.client.name,
-      country: "CH",
-    } : undefined,
-  });
-
   const statusColors = {
     draft: "bg-zinc-100 text-zinc-600",
     sent: "bg-blue-50 text-blue-600",
@@ -128,7 +144,7 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
               <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
                 Läuft<span className="text-zinc-400">.</span>
               </h1>
-              <p className="text-sm text-zinc-500 mt-1">{businessConfig.tagline}</p>
+              <p className="text-sm text-zinc-500 mt-1">Digital Systems & Branding</p>
             </div>
             <div className="text-right">
               <div className="text-sm text-zinc-500">Rechnung</div>
@@ -148,10 +164,10 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
             <div>
               <div className="text-xs text-zinc-400 uppercase tracking-wide mb-2">Von</div>
               <div className="text-sm text-zinc-700 dark:text-zinc-300">
-                <div className="font-medium">{businessConfig.name}</div>
-                <div>{businessConfig.street}</div>
-                <div>{businessConfig.postalCode} {businessConfig.city}</div>
-                <div className="mt-2">{businessConfig.email}</div>
+                <div className="font-medium">Pierre-Laurent Biege</div>
+                <div>Tschangaladongastrasse 3</div>
+                <div>3955 Albinen</div>
+                <div className="mt-2">pierre@laeuft.ch</div>
               </div>
             </div>
             <div>
@@ -267,13 +283,14 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
             </div>
           )}
 
-          {/* Swiss QR Bill Section - only show if not paid */}
-          {invoice.status !== "paid" && invoice.status !== "cancelled" && (
+          {/* Swiss QR Bill Section - only show if not paid and QR data available */}
+          {invoice.status !== "paid" && invoice.status !== "cancelled" && qrBill && (
             <div className="border-t-2 border-dashed border-zinc-300 dark:border-zinc-700 pt-8 mt-8">
               <div className="text-center mb-6">
                 <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
                   Zahlteil / Payment Part
                 </h3>
+                <p className="text-xs text-zinc-500 mt-1">Swiss QR Code nach SIX Standard</p>
               </div>
 
               <div className="grid grid-cols-2 gap-8">
@@ -281,28 +298,31 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
                 <div className="flex flex-col items-center">
                   <div className="bg-white p-4 rounded-lg border-2 border-zinc-900">
                     <QRCodeSVG
-                      value={qrData}
+                      value={qrBill.qrData}
                       size={160}
                       level="M"
                       includeMargin={false}
                     />
-                    <div className="mt-2 text-center">
-                      <svg viewBox="0 0 40 10" className="w-10 h-3 mx-auto">
-                        <text x="0" y="8" className="text-[8px] font-bold fill-current">CH</text>
-                      </svg>
+                    {/* Swiss Cross */}
+                    <div className="flex justify-center mt-2">
+                      <div className="w-7 h-7 bg-white border border-zinc-900 flex items-center justify-center">
+                        <div className="relative w-4 h-4">
+                          <div className="absolute top-1/2 left-0 w-full h-1 bg-red-600 -translate-y-1/2"></div>
+                          <div className="absolute left-1/2 top-0 w-1 h-full bg-red-600 -translate-x-1/2"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-xs text-zinc-500 mt-2">Swiss QR Code</div>
                 </div>
 
                 {/* Payment Info */}
                 <div className="text-sm space-y-4">
                   <div>
                     <div className="text-xs text-zinc-400 uppercase tracking-wide mb-1">Konto / Zahlbar an</div>
-                    <div className="text-zinc-900 dark:text-white font-mono">{businessConfig.ibanFormatted}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{businessConfig.name}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{businessConfig.street}</div>
-                    <div className="text-zinc-700 dark:text-zinc-300">{businessConfig.postalCode} {businessConfig.city}</div>
+                    <div className="text-zinc-900 dark:text-white font-mono">{qrBill.creditor.iban}</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.name}</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.address}</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">{qrBill.creditor.location}</div>
                   </div>
 
                   <div>
@@ -332,10 +352,10 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-sm text-zinc-500">
             <p>
-              {businessConfig.name} | {businessConfig.tagline} | {businessConfig.street} | {businessConfig.postalCode} {businessConfig.city}
+              Pierre-Laurent Biege | Digital Systems & Branding | Tschangaladongastrasse 3 | 3955 Albinen
             </p>
             <p className="mt-1">
-              {businessConfig.phone} | {businessConfig.email} | {businessConfig.website}
+              079 853 36 72 | pierre@laeuft.ch | laeuft.ch
             </p>
           </div>
         </div>
