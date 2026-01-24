@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2 } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
 
@@ -58,6 +58,25 @@ export default function AdminPage() {
     if (error) {
       console.error("Error deleting offer:", error);
       alert("Fehler beim Löschen");
+    } else {
+      loadOffers();
+    }
+  }
+
+  async function acceptInternally(offerId: string) {
+    if (!confirm("Offerte intern als angenommen markieren?")) return;
+
+    const { error } = await supabase
+      .from("offers")
+      .update({
+        status: "accepted",
+        accepted_at: new Date().toISOString(),
+      })
+      .eq("id", offerId);
+
+    if (error) {
+      console.error("Error accepting offer:", error);
+      alert("Fehler beim Aktualisieren");
     } else {
       loadOffers();
     }
@@ -175,14 +194,23 @@ export default function AdminPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         {offer.status === "draft" && (
-                          <button
-                            onClick={() => sendOffer(offer.id)}
-                            disabled={sendingId === offer.id}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
-                          >
-                            <Mail size={14} />
-                            {sendingId === offer.id ? "Sende..." : "Senden"}
-                          </button>
+                          <>
+                            <button
+                              onClick={() => sendOffer(offer.id)}
+                              disabled={sendingId === offer.id}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                              <Mail size={14} />
+                              {sendingId === offer.id ? "Sende..." : "Senden"}
+                            </button>
+                            <button
+                              onClick={() => acceptInternally(offer.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                            >
+                              <CheckCircle size={14} />
+                              Annehmen
+                            </button>
+                          </>
                         )}
                         {offer.status === "accepted" && (
                           <Link
