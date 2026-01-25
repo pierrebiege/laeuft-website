@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from "react";
 import { supabase, Invoice, InvoiceItem, Client } from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
-import { Check, Printer } from "lucide-react";
+import { Check, Printer, Download } from "lucide-react";
 
 type InvoiceWithDetails = Invoice & {
   client: Client;
@@ -83,6 +83,23 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
     window.print();
   }
 
+  async function handleDownloadPDF() {
+    const response = await fetch(`/api/invoice-pdf?token=${token}`);
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Rechnung-${invoice?.invoice_number || 'download'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else {
+      alert('Fehler beim Erstellen des PDFs');
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
@@ -124,14 +141,21 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
 
   return (
     <div className="min-h-screen bg-zinc-100 dark:bg-zinc-950 py-8 print:bg-white print:py-0">
-      {/* Print button - hidden on print */}
-      <div className="max-w-3xl mx-auto px-4 mb-4 print:hidden">
+      {/* Action buttons - hidden on print */}
+      <div className="max-w-3xl mx-auto px-4 mb-4 print:hidden flex gap-2">
+        <button
+          onClick={handleDownloadPDF}
+          className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+        >
+          <Download size={16} />
+          PDF herunterladen
+        </button>
         <button
           onClick={handlePrint}
           className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
         >
           <Printer size={16} />
-          Drucken / PDF
+          Drucken
         </button>
       </div>
 

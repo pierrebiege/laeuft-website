@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Users, Settings, Home, Receipt } from "lucide-react";
+import { FileText, Users, Settings, Home, Receipt, Calculator, TrendingUp, MinusCircle, Upload } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -15,7 +15,7 @@ export default function AdminLayout({
     { href: "/admin", label: "Offerten", icon: FileText },
     { href: "/admin/rechnungen", label: "Rechnungen", icon: Receipt },
     { href: "/admin/kunden", label: "Kunden", icon: Users },
-    { href: "/admin/einstellungen", label: "Einstellungen", icon: Settings },
+    { href: "/admin/buchhaltung", label: "Buchhaltung", icon: Calculator },
   ];
 
   return (

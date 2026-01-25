@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Invoice, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle, Trash2 } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle, Trash2, Bell, Download } from "lucide-react";
 
 type InvoiceWithClient = Invoice & { client: Client };
 
@@ -12,6 +12,7 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [remindingId, setRemindingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadInvoices();
@@ -57,6 +58,36 @@ export default function InvoicesPage() {
     } else {
       loadInvoices();
     }
+  }
+
+  async function sendReminder(invoiceId: string, level: number) {
+    const levelText = level === 1 ? "Zahlungserinnerung" : level === 2 ? "2. Mahnung" : "Letzte Mahnung";
+    if (!confirm(`${levelText} per E-Mail senden?`)) return;
+
+    setRemindingId(invoiceId);
+    try {
+      const res = await fetch("/api/send-reminder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId, reminderNumber: level }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message || "Mahnung gesendet");
+        loadInvoices();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Senden");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+    setRemindingId(null);
+  }
+
+  function downloadPDF(token: string, invoiceNumber: string) {
+    window.open(`/api/invoice-pdf?token=${token}`, '_blank');
   }
 
   function copyLink(token: string) {
@@ -211,14 +242,50 @@ export default function InvoicesPage() {
                           </button>
                         )}
                         {invoice.status === "sent" && (
-                          <button
-                            onClick={() => markAsPaid(invoice.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
-                          >
-                            <CreditCard size={14} />
-                            Zahlung bestätigen
-                          </button>
+                          <>
+                            <button
+                              onClick={() => markAsPaid(invoice.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
+                            >
+                              <CreditCard size={14} />
+                              Zahlung bestätigen
+                            </button>
+                            <button
+                              onClick={() => sendReminder(invoice.id, 1)}
+                              disabled={remindingId === invoice.id}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                              <Bell size={14} />
+                              {remindingId === invoice.id ? "..." : "Erinnern"}
+                            </button>
+                          </>
                         )}
+                        {invoice.status === "overdue" && (
+                          <>
+                            <button
+                              onClick={() => markAsPaid(invoice.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
+                            >
+                              <CreditCard size={14} />
+                              Bezahlt
+                            </button>
+                            <button
+                              onClick={() => sendReminder(invoice.id, 2)}
+                              disabled={remindingId === invoice.id}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                              <Bell size={14} />
+                              {remindingId === invoice.id ? "..." : "Mahnung"}
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => downloadPDF(invoice.unique_token, invoice.invoice_number)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        >
+                          <Download size={14} />
+                          PDF
+                        </button>
                         <button
                           onClick={() => copyLink(invoice.unique_token)}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"

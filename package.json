@@ -9,9 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.2",
     "@supabase/supabase-js": "^2.91.1",
     "@vercel/analytics": "^1.6.1",
     "framer-motion": "^12.23.26",
+    "jspdf": "^4.0.0",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "nodemailer": "^7.0.12",
@@ -21,7 +23,8 @@
     "qrcode.react": "^4.2.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "swissqrbill": "^4.2.1"
+    "swissqrbill": "^4.2.1",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

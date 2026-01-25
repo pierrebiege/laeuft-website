@@ -79,3 +79,70 @@ export interface InvoiceItem {
   amount: number
   sort_order: number
 }
+
+// Buchhaltung Types
+export interface Category {
+  id: string
+  name: string
+  type: 'income' | 'expense'
+  color: string
+  icon: string
+  sort_order: number
+  created_at: string
+}
+
+export interface Expense {
+  id: string
+  title: string
+  description: string | null
+  amount: number
+  date: string
+  category_id: string | null
+  receipt_url: string | null
+  receipt_filename: string | null
+  ocr_raw_text: string | null
+  ocr_confidence: number | null
+  vendor_name: string | null
+  vendor_id: string | null
+  is_recurring: boolean
+  payment_method: string | null
+  reference_number: string | null
+  import_source: string | null
+  import_batch_id: string | null
+  created_at: string
+  updated_at: string
+  category?: Category
+}
+
+export interface Income {
+  id: string
+  title: string
+  description: string | null
+  amount: number
+  date: string
+  category_id: string | null
+  invoice_id: string | null
+  external_id: string | null
+  external_source: string | null
+  customer_name: string | null
+  customer_email: string | null
+  import_source: string | null
+  import_batch_id: string | null
+  created_at: string
+  updated_at: string
+  category?: Category
+  invoice?: Invoice
+}
+
+export interface ImportBatch {
+  id: string
+  type: string
+  filename: string | null
+  records_total: number
+  records_imported: number
+  records_skipped: number
+  status: 'pending' | 'processing' | 'completed' | 'failed'
+  error_message: string | null
+  created_at: string
+  completed_at: string | null
+}
