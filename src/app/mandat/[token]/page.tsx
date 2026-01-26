@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client } from "@/lib/supabase";
-import { Check, Printer, Download, XCircle, PauseCircle, PlayCircle, AlertTriangle } from "lucide-react";
+import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle } from "lucide-react";
 
 type MandateWithDetails = Mandate & {
   client: Client;
@@ -20,7 +20,6 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [showPauseDialog, setShowPauseDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
@@ -116,57 +115,6 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     setActionLoading(false);
   }
 
-  async function handlePause() {
-    if (!mandate) return;
-
-    setActionLoading(true);
-
-    // Default pause: 1 month
-    const pauseEnd = new Date();
-    pauseEnd.setMonth(pauseEnd.getMonth() + 1);
-
-    const { error } = await supabase
-      .from("mandates")
-      .update({
-        status: "paused",
-        paused_at: new Date().toISOString(),
-        pause_end_date: pauseEnd.toISOString().split('T')[0],
-      })
-      .eq("id", mandate.id);
-
-    if (error) {
-      alert("Fehler beim Pausieren");
-    } else {
-      setShowPauseDialog(false);
-      loadMandate();
-    }
-
-    setActionLoading(false);
-  }
-
-  async function handleResume() {
-    if (!mandate) return;
-
-    setActionLoading(true);
-
-    const { error } = await supabase
-      .from("mandates")
-      .update({
-        status: "active",
-        paused_at: null,
-        pause_end_date: null,
-      })
-      .eq("id", mandate.id);
-
-    if (error) {
-      alert("Fehler beim Fortsetzen");
-    } else {
-      loadMandate();
-    }
-
-    setActionLoading(false);
-  }
-
   function handlePrint() {
     window.print();
   }
@@ -192,7 +140,6 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
   // Check if mandate is in an actionable state
   const isActive = mandate?.status === "active" || mandate?.status === "accepted";
-  const isPaused = mandate?.status === "paused";
   const isCancelling = mandate?.status === "cancelling";
 
   function getCurrentMonth() {
@@ -278,43 +225,30 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         </div>
 
         {/* Status Banner for Active Mandates */}
-        {(isActive || isPaused || isCancelling) && (
+        {(isActive || isCancelling) && (
           <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden">
             <div className={`rounded-xl p-4 md:p-6 ${
-              isCancelling ? "bg-orange-50 border border-orange-200" :
-              isPaused ? "bg-amber-50 border border-amber-200" :
-              "bg-emerald-50 border border-emerald-200"
+              isCancelling ? "bg-orange-50 border border-orange-200" : "bg-emerald-50 border border-emerald-200"
             }`}>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {isCancelling ? (
                       <AlertTriangle className="text-orange-600" size={20} />
-                    ) : isPaused ? (
-                      <PauseCircle className="text-amber-600" size={20} />
                     ) : (
                       <PlayCircle className="text-emerald-600" size={20} />
                     )}
                     <span className={`font-semibold ${
-                      isCancelling ? "text-orange-800" :
-                      isPaused ? "text-amber-800" :
-                      "text-emerald-800"
+                      isCancelling ? "text-orange-800" : "text-emerald-800"
                     }`}>
-                      {isCancelling ? "Kündigung eingereicht" :
-                       isPaused ? "Mandat pausiert" :
-                       "Mandat aktiv"}
+                      {isCancelling ? "Kündigung eingereicht" : "Mandat aktiv"}
                     </span>
                   </div>
                   <p className={`text-sm ${
-                    isCancelling ? "text-orange-700" :
-                    isPaused ? "text-amber-700" :
-                    "text-emerald-700"
+                    isCancelling ? "text-orange-700" : "text-emerald-700"
                   }`}>
                     {isCancelling && mandate.cancellation_effective_date && (
                       <>Letzter Tag der Zusammenarbeit: {formatDate(mandate.cancellation_effective_date)}</>
-                    )}
-                    {isPaused && mandate.pause_end_date && (
-                      <>Pausiert bis {formatDate(mandate.pause_end_date)} • Haltegebühr: CHF {formatAmount(mandate.pause_fee)}.–/Mt</>
                     )}
                     {isActive && mandate.start_date && (
                       <>Aktiv seit {formatDate(mandate.start_date)}</>
@@ -325,36 +259,15 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                   </p>
                 </div>
 
-                <div className="flex gap-2">
-                  {isPaused && (
-                    <button
-                      onClick={handleResume}
-                      disabled={actionLoading}
-                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
-                    >
-                      <PlayCircle size={16} />
-                      Fortsetzen
-                    </button>
-                  )}
-                  {isActive && (
-                    <>
-                      <button
-                        onClick={() => setShowPauseDialog(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg text-sm font-medium hover:bg-amber-200 transition-colors"
-                      >
-                        <PauseCircle size={16} />
-                        Pausieren
-                      </button>
-                      <button
-                        onClick={() => setShowCancelDialog(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
-                      >
-                        <XCircle size={16} />
-                        Kündigen
-                      </button>
-                    </>
-                  )}
-                </div>
+                {isActive && (
+                  <button
+                    onClick={() => setShowCancelDialog(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
+                  >
+                    <XCircle size={16} />
+                    Kündigen
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -389,41 +302,6 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                   className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
                   {actionLoading ? "Wird gekündigt..." : "Kündigung bestätigen"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Pause Dialog */}
-        {showPauseDialog && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                  <PauseCircle className="text-amber-600" size={20} />
-                </div>
-                <h3 className="text-lg font-semibold text-zinc-900">Mandat pausieren</h3>
-              </div>
-              <p className="text-zinc-600 mb-4">
-                Während der Pause fällt eine reduzierte Haltegebühr von <strong>CHF {formatAmount(mandate.pause_fee)}.–/Monat</strong> an.
-              </p>
-              <p className="text-sm text-zinc-500 mb-6">
-                Die Pause sichert deine Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowPauseDialog(false)}
-                  className="flex-1 px-4 py-2 border border-zinc-300 text-zinc-700 rounded-lg font-medium hover:bg-zinc-50 transition-colors"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  onClick={handlePause}
-                  disabled={actionLoading}
-                  className="flex-1 px-4 py-2 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors disabled:opacity-50"
-                >
-                  {actionLoading ? "Wird pausiert..." : "Pause starten"}
                 </button>
               </div>
             </div>
@@ -540,8 +418,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                   <span className="text-xs md:text-sm text-zinc-600 print:text-black">Kündigungsfrist (beidseitig)</span>
                 </div>
                 <div className="pt-4 md:pt-5 border-t border-zinc-300 print:pt-[5mm]">
-                  <strong className="block text-base md:text-lg font-semibold mb-1 text-black">Pause möglich</strong>
-                  <span className="text-xs md:text-sm text-zinc-600 print:text-black">{formatAmount(mandate.pause_fee)}.–/Mt Haltegebühr</span>
+                  <strong className="block text-base md:text-lg font-semibold mb-1 text-black">Garantiert</strong>
+                  <span className="text-xs md:text-sm text-zinc-600 print:text-black">Verfügbarkeit durch Stellvertretung</span>
                 </div>
                 <div className="pt-4 md:pt-5 border-t border-zinc-300 print:pt-[5mm]">
                   <strong className="block text-base md:text-lg font-semibold mb-1 text-black">Monatlich</strong>
@@ -576,7 +454,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                   <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung kann jederzeit online über diesen Link erfolgen. Nach Ablauf der Frist endet die Zusammenarbeit, offene Arbeiten werden abgeschlossen.
                 </p>
                 <p>
-                  <strong className="text-black">Pause/Haltegebühr:</strong> Das Mandat kann jederzeit online über diesen Link pausiert werden. Während der Pause fällt eine reduzierte Haltegebühr von CHF {formatAmount(mandate.pause_fee)}.–/Monat an. Diese sichert die Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
+                  <strong className="text-black">Verfügbarkeit:</strong> Ferien und geplante Abwesenheiten werden im Voraus kommuniziert. In dieser Zeit wird die Arbeit durch einen qualifizierten Stellvertreter oder Freelancer sichergestellt. Der Kontakt läuft weiterhin über Pierre.
                 </p>
                 <p>
                   <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Komplett neue Projekte, grössere Migrationen oder Arbeiten mit externen Partnern werden separat offeriert – zu fairen Partner-Konditionen.
@@ -660,15 +538,6 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
               </div>
             )}
 
-            {/* Signature Area (for print) */}
-            <div className="mt-16 md:mt-20 grid grid-cols-2 gap-10 md:gap-20 print:mt-[20mm] print:gap-[20mm]">
-              <div className="pt-12 md:pt-16 border-t border-black text-xs md:text-sm text-zinc-600 print:pt-[15mm] print:text-black">
-                Ort, Datum
-              </div>
-              <div className="pt-12 md:pt-16 border-t border-black text-xs md:text-sm text-zinc-600 print:pt-[15mm] print:text-black">
-                {mandate.client.company || mandate.client.name}
-              </div>
-            </div>
           </div>
         </div>
       </div>

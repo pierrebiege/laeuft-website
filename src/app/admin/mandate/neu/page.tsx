@@ -48,7 +48,6 @@ export default function NewMandatePage() {
   const [introduction, setIntroduction] = useState("Ein Vorschlag, wie wir die IT-Betreuung weiterführen können – fair, flexibel, und ohne dass Wissen verloren geht.");
   const [validUntil, setValidUntil] = useState("");
   const [cancellationPeriod, setCancellationPeriod] = useState("3 Monate");
-  const [pauseFee, setPauseFee] = useState(1000);
 
   // Pricing phases
   const [pricingPhases, setPricingPhases] = useState<PricingPhase[]>([
@@ -195,7 +194,6 @@ export default function NewMandatePage() {
           introduction: introduction || null,
           valid_until: validUntil || null,
           cancellation_period: cancellationPeriod,
-          pause_fee: pauseFee,
           status: "draft",
         })
         .select()
@@ -569,7 +567,7 @@ export default function NewMandatePage() {
         {/* Conditions */}
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Konditionen</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
                 Kündigungsfrist
@@ -579,17 +577,6 @@ export default function NewMandatePage() {
                 value={cancellationPeriod}
                 onChange={(e) => setCancellationPeriod(e.target.value)}
                 placeholder="3 Monate"
-                className="w-full px-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-                Haltegebühr (Pause)
-              </label>
-              <input
-                type="number"
-                value={pauseFee}
-                onChange={(e) => setPauseFee(parseFloat(e.target.value) || 0)}
                 className="w-full px-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg"
               />
             </div>
