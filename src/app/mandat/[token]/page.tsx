@@ -294,11 +294,11 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
           </div>
         </div>
 
-        {/* Page 2 - Selection */}
-        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm]">
+        {/* Page 2 - Terms & Selection */}
+        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:pt-[20mm]">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[0_25mm_20mm_25mm]">
             {/* Header */}
-            <header className="flex justify-between items-start mb-10 md:mb-16 print:mb-[20mm]">
+            <header className="flex justify-between items-start mb-10 md:mb-12 print:mb-[15mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
                 Läuft.
               </div>
@@ -307,6 +307,29 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                 Seite 2
               </div>
             </header>
+
+            {/* Explanatory Notes */}
+            <div className="mb-8 md:mb-10 print:mb-[10mm]">
+              <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black">
+                Hinweise zu den Konditionen
+              </div>
+              <div className="space-y-3 text-sm text-zinc-700 print:text-black">
+                <p>
+                  <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung erfolgt schriftlich per E-Mail. Nach Ablauf der Frist endet die Zusammenarbeit, offene Arbeiten werden abgeschlossen.
+                </p>
+                <p>
+                  <strong className="text-black">Pause/Haltegebühr:</strong> Das Mandat kann auf Wunsch pausiert werden. Während der Pause fällt eine reduzierte Haltegebühr von CHF {formatAmount(mandate.pause_fee)}.–/Monat an. Diese sichert die Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
+                </p>
+                <p>
+                  <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Komplett neue Projekte, grössere Migrationen oder Arbeiten mit externen Partnern werden separat offeriert – zu fairen Partner-Konditionen.
+                </p>
+                <p>
+                  <strong className="text-black">Abrechnung:</strong> Die Rechnung wird monatlich im Voraus gestellt, jeweils am Tag des Vertragsabschlusses. Zahlungsziel: 30 Tage.
+                </p>
+              </div>
+            </div>
+
+            <hr className="border-t border-zinc-200 my-6 md:my-8 print:my-[8mm] print:border-zinc-300" />
 
             {/* Options Section */}
             <div className="mb-8 md:mb-10 print:mb-[12mm]">
@@ -398,10 +421,14 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
             width: 210mm;
             min-height: 297mm;
             page-break-after: always;
+            page-break-inside: avoid;
             box-shadow: none !important;
           }
           .mandate-page:last-child {
             page-break-after: avoid;
+          }
+          .mandate-page:nth-child(2) {
+            padding-top: 20mm !important;
           }
         }
       `}</style>
