@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client } from "@/lib/supabase";
-import { Check, Printer, Download } from "lucide-react";
+import { Check, Printer, Download, XCircle, PauseCircle, PlayCircle, AlertTriangle } from "lucide-react";
 
 type MandateWithDetails = Mandate & {
   client: Client;
@@ -19,6 +19,9 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showPauseDialog, setShowPauseDialog] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     loadMandate();
@@ -69,6 +72,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         accepted_option_id: selectedOption,
         accepted_at: new Date().toISOString(),
         status: mandate.options.find(o => o.id === selectedOption)?.is_rejection ? "rejected" : "accepted",
+        start_date: new Date().toISOString().split('T')[0],
       })
       .eq("id", mandate.id);
 
@@ -82,12 +86,92 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     setAccepting(false);
   }
 
+  async function handleCancel() {
+    if (!mandate) return;
+
+    setActionLoading(true);
+
+    // Calculate effective date based on cancellation period
+    const monthsMatch = mandate.cancellation_period.match(/(\d+)/);
+    const months = monthsMatch ? parseInt(monthsMatch[1]) : 3;
+    const effectiveDate = new Date();
+    effectiveDate.setMonth(effectiveDate.getMonth() + months);
+
+    const { error } = await supabase
+      .from("mandates")
+      .update({
+        status: "cancelling",
+        cancelled_at: new Date().toISOString(),
+        cancellation_effective_date: effectiveDate.toISOString().split('T')[0],
+      })
+      .eq("id", mandate.id);
+
+    if (error) {
+      alert("Fehler beim Kündigen");
+    } else {
+      setShowCancelDialog(false);
+      loadMandate();
+    }
+
+    setActionLoading(false);
+  }
+
+  async function handlePause() {
+    if (!mandate) return;
+
+    setActionLoading(true);
+
+    // Default pause: 1 month
+    const pauseEnd = new Date();
+    pauseEnd.setMonth(pauseEnd.getMonth() + 1);
+
+    const { error } = await supabase
+      .from("mandates")
+      .update({
+        status: "paused",
+        paused_at: new Date().toISOString(),
+        pause_end_date: pauseEnd.toISOString().split('T')[0],
+      })
+      .eq("id", mandate.id);
+
+    if (error) {
+      alert("Fehler beim Pausieren");
+    } else {
+      setShowPauseDialog(false);
+      loadMandate();
+    }
+
+    setActionLoading(false);
+  }
+
+  async function handleResume() {
+    if (!mandate) return;
+
+    setActionLoading(true);
+
+    const { error } = await supabase
+      .from("mandates")
+      .update({
+        status: "active",
+        paused_at: null,
+        pause_end_date: null,
+      })
+      .eq("id", mandate.id);
+
+    if (error) {
+      alert("Fehler beim Fortsetzen");
+    } else {
+      loadMandate();
+    }
+
+    setActionLoading(false);
+  }
+
   function handlePrint() {
     window.print();
   }
 
   async function handleDownloadPDF() {
-    // For now, use print dialog - could add server-side PDF generation later
     window.print();
   }
 
@@ -97,6 +181,19 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
       maximumFractionDigits: 0,
     }).format(amount);
   }
+
+  function formatDate(date: string) {
+    return new Date(date).toLocaleDateString("de-CH", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  // Check if mandate is in an actionable state
+  const isActive = mandate?.status === "active" || mandate?.status === "accepted";
+  const isPaused = mandate?.status === "paused";
+  const isCancelling = mandate?.status === "cancelling";
 
   function getCurrentMonth() {
     return new Date().toLocaleDateString("de-CH", { month: "long", year: "numeric" });
@@ -127,6 +224,10 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     accepted: "bg-green-100 text-green-700",
     rejected: "bg-red-100 text-red-700",
     active: "bg-emerald-100 text-emerald-700",
+    paused: "bg-amber-100 text-amber-700",
+    cancelling: "bg-orange-100 text-orange-700",
+    cancelled: "bg-zinc-100 text-zinc-700",
+    ended: "bg-zinc-100 text-zinc-700",
   };
 
   const statusLabels: Record<string, string> = {
@@ -135,6 +236,10 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     accepted: "Angenommen",
     rejected: "Abgelehnt",
     active: "Aktiv",
+    paused: "Pausiert",
+    cancelling: "Gekündigt",
+    cancelled: "Beendet",
+    ended: "Beendet",
   };
 
   return (
@@ -171,6 +276,159 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
             Drucken
           </button>
         </div>
+
+        {/* Status Banner for Active Mandates */}
+        {(isActive || isPaused || isCancelling) && (
+          <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden">
+            <div className={`rounded-xl p-4 md:p-6 ${
+              isCancelling ? "bg-orange-50 border border-orange-200" :
+              isPaused ? "bg-amber-50 border border-amber-200" :
+              "bg-emerald-50 border border-emerald-200"
+            }`}>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    {isCancelling ? (
+                      <AlertTriangle className="text-orange-600" size={20} />
+                    ) : isPaused ? (
+                      <PauseCircle className="text-amber-600" size={20} />
+                    ) : (
+                      <PlayCircle className="text-emerald-600" size={20} />
+                    )}
+                    <span className={`font-semibold ${
+                      isCancelling ? "text-orange-800" :
+                      isPaused ? "text-amber-800" :
+                      "text-emerald-800"
+                    }`}>
+                      {isCancelling ? "Kündigung eingereicht" :
+                       isPaused ? "Mandat pausiert" :
+                       "Mandat aktiv"}
+                    </span>
+                  </div>
+                  <p className={`text-sm ${
+                    isCancelling ? "text-orange-700" :
+                    isPaused ? "text-amber-700" :
+                    "text-emerald-700"
+                  }`}>
+                    {isCancelling && mandate.cancellation_effective_date && (
+                      <>Endet am {formatDate(mandate.cancellation_effective_date)}</>
+                    )}
+                    {isPaused && mandate.pause_end_date && (
+                      <>Pausiert bis {formatDate(mandate.pause_end_date)} • Haltegebühr: CHF {formatAmount(mandate.pause_fee)}.–/Mt</>
+                    )}
+                    {isActive && mandate.start_date && (
+                      <>Aktiv seit {formatDate(mandate.start_date)}</>
+                    )}
+                    {isActive && !mandate.start_date && mandate.accepted_at && (
+                      <>Aktiv seit {formatDate(mandate.accepted_at)}</>
+                    )}
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  {isPaused && (
+                    <button
+                      onClick={handleResume}
+                      disabled={actionLoading}
+                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                    >
+                      <PlayCircle size={16} />
+                      Fortsetzen
+                    </button>
+                  )}
+                  {isActive && (
+                    <>
+                      <button
+                        onClick={() => setShowPauseDialog(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg text-sm font-medium hover:bg-amber-200 transition-colors"
+                      >
+                        <PauseCircle size={16} />
+                        Pausieren
+                      </button>
+                      <button
+                        onClick={() => setShowCancelDialog(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
+                      >
+                        <XCircle size={16} />
+                        Kündigen
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Cancel Dialog */}
+        {showCancelDialog && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <XCircle className="text-red-600" size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-zinc-900">Mandat kündigen</h3>
+              </div>
+              <p className="text-zinc-600 mb-4">
+                Möchtest du das Mandat wirklich kündigen? Die Kündigungsfrist beträgt <strong>{mandate.cancellation_period}</strong>.
+              </p>
+              <p className="text-sm text-zinc-500 mb-6">
+                Das Mandat läuft bis zum Ende der Kündigungsfrist weiter. Offene Arbeiten werden abgeschlossen.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowCancelDialog(false)}
+                  className="flex-1 px-4 py-2 border border-zinc-300 text-zinc-700 rounded-lg font-medium hover:bg-zinc-50 transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={actionLoading}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? "Wird gekündigt..." : "Kündigung bestätigen"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pause Dialog */}
+        {showPauseDialog && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <PauseCircle className="text-amber-600" size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-zinc-900">Mandat pausieren</h3>
+              </div>
+              <p className="text-zinc-600 mb-4">
+                Während der Pause fällt eine reduzierte Haltegebühr von <strong>CHF {formatAmount(mandate.pause_fee)}.–/Monat</strong> an.
+              </p>
+              <p className="text-sm text-zinc-500 mb-6">
+                Die Pause sichert deine Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowPauseDialog(false)}
+                  className="flex-1 px-4 py-2 border border-zinc-300 text-zinc-700 rounded-lg font-medium hover:bg-zinc-50 transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handlePause}
+                  disabled={actionLoading}
+                  className="flex-1 px-4 py-2 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? "Wird pausiert..." : "Pause starten"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Page 1 */}
         <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl mb-6 md:mb-8 print:shadow-none print:mb-0 print:max-w-none">

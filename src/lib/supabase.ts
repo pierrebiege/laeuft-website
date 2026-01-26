@@ -154,7 +154,7 @@ export interface Mandate {
   title: string
   subtitle: string | null
   introduction: string | null
-  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'active' | 'paused' | 'cancelled' | 'ended'
+  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'active' | 'paused' | 'cancelling' | 'cancelled' | 'ended'
   valid_until: string | null
   start_date: string | null
   end_date: string | null
@@ -172,6 +172,15 @@ export interface Mandate {
   sent_at: string | null
   created_at: string
   updated_at: string
+  // Cancellation fields
+  cancelled_at: string | null
+  cancellation_effective_date: string | null
+  cancellation_reason: string | null
+  // Pause fields
+  paused_at: string | null
+  pause_end_date: string | null
+  pause_reason: string | null
+  // Relations
   client?: Client
   pricing_phases?: MandatePricingPhase[]
   sections?: MandateSection[]
