@@ -487,7 +487,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
         {/* Page 1 */}
         <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl mb-6 md:mb-8 print:shadow-none print:mb-0 print:max-w-none">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm]">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm_15mm_25mm]">
             {/* Header */}
             <header className="flex justify-between items-start mb-10 md:mb-16 print:mb-[20mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
@@ -633,8 +633,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         </div>
 
         {/* Page 2 - Terms & Selection */}
-        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:pt-[20mm]">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[0_25mm_20mm_25mm]">
+        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm]">
             {/* Header */}
             <header className="flex justify-between items-start mb-10 md:mb-12 print:mb-[15mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
@@ -773,16 +773,18 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         @media print {
           .mandate-page {
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
+            overflow: hidden;
             page-break-after: always;
             page-break-inside: avoid;
             box-shadow: none !important;
+            position: relative;
           }
           .mandate-page:last-child {
             page-break-after: avoid;
-          }
-          .mandate-page:nth-child(2) {
-            padding-top: 20mm !important;
+            height: auto;
+            min-height: 297mm;
+            overflow: visible;
           }
         }
       `}</style>
