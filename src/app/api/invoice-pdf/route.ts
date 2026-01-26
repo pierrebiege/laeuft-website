@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { jsPDF } from 'jspdf'
+import QRCode from 'qrcode'
 
 // Business info
 const business = {
@@ -12,6 +13,44 @@ const business = {
   phone: "079 853 36 72",
   website: "laeuft.ch",
   iban: "CH72 8080 8007 8508 8887 5",
+}
+
+// Creditor info for QR code
+const creditor = {
+  iban: "CH7280808007850888875",
+  name: "Pierre-Laurent Biege",
+  street: "Tschangaladongastrasse",
+  buildingNumber: "3",
+  postalCode: "3955",
+  city: "Albinen",
+  country: "CH",
+}
+
+// Generate Swiss Payment Code (SPC)
+function generateSPC(invoiceAmount: number, invoiceNumber: string): string {
+  const fields: string[] = []
+  fields.push("SPC")
+  fields.push("0200")
+  fields.push("1")
+  fields.push(creditor.iban)
+  fields.push("S")
+  fields.push(creditor.name)
+  fields.push(creditor.street)
+  fields.push(creditor.buildingNumber)
+  fields.push(creditor.postalCode)
+  fields.push(creditor.city)
+  fields.push(creditor.country)
+  // Ultimate Creditor (empty)
+  fields.push("", "", "", "", "", "", "")
+  fields.push(invoiceAmount.toFixed(2))
+  fields.push("CHF")
+  // Debtor (empty)
+  fields.push("", "", "", "", "", "", "")
+  fields.push("NON")
+  fields.push("")
+  fields.push(`Rechnung ${invoiceNumber}`)
+  fields.push("EPD")
+  return fields.join("\n")
 }
 
 export async function GET(request: NextRequest) {
@@ -245,19 +284,128 @@ export async function GET(request: NextRequest) {
       doc.text(noteLines, margin + 4, y + 6)
     }
 
-    // Payment info (bottom of page)
-    y = 250
-    doc.setDrawColor(200, 200, 200)
-    doc.setLineWidth(0.3)
-    doc.line(margin, y, margin + contentWidth, y)
+    // QR Bill Section (only if not paid and not cancelled)
+    if (invoice.status !== 'paid' && invoice.status !== 'cancelled') {
+      // Add new page for QR Bill if needed, or position at bottom
+      if (y > 180) {
+        doc.addPage()
+        y = margin
+      } else {
+        y = 180
+      }
 
-    y += 8
-    doc.setFontSize(9)
-    doc.setTextColor(128, 128, 128)
-    doc.text('Zahlbar an:', margin, y)
-    doc.setTextColor(0, 0, 0)
-    doc.text(business.name, margin + 25, y)
-    doc.text(`IBAN: ${business.iban}`, margin + 25, y + 5)
+      // Dashed line separator
+      doc.setDrawColor(180, 180, 180)
+      doc.setLineDashPattern([2, 2], 0)
+      doc.line(margin, y, margin + contentWidth, y)
+      doc.setLineDashPattern([], 0)
+
+      y += 8
+
+      // QR Section Header
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(0, 0, 0)
+      doc.text('Zahlteil / Payment Part', pageWidth / 2, y, { align: 'center' })
+
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(128, 128, 128)
+      doc.text('Swiss QR Code nach SIX Standard', pageWidth / 2, y + 5, { align: 'center' })
+
+      y += 15
+
+      // Generate QR Code
+      const spcData = generateSPC(invoice.total_amount, invoice.invoice_number)
+      const qrDataUrl = await QRCode.toDataURL(spcData, {
+        width: 166,
+        margin: 0,
+        errorCorrectionLevel: 'M',
+      })
+
+      // Add QR Code image
+      const qrSize = 46 // mm
+      const qrX = margin + 10
+      doc.addImage(qrDataUrl, 'PNG', qrX, y, qrSize, qrSize)
+
+      // Swiss Cross in center of QR code
+      const crossSize = 7
+      const crossX = qrX + (qrSize - crossSize) / 2
+      const crossY = y + (qrSize - crossSize) / 2
+      doc.setFillColor(255, 255, 255)
+      doc.rect(crossX, crossY, crossSize, crossSize, 'F')
+      doc.setFillColor(0, 0, 0)
+      doc.rect(crossX, crossY, crossSize, crossSize, 'S')
+      // Horizontal bar
+      doc.rect(crossX + 1.5, crossY + 3, 4, 1, 'F')
+      // Vertical bar
+      doc.rect(crossX + 3, crossY + 1.5, 1, 4, 'F')
+
+      // Payment Info (right side)
+      const infoX = margin + 75
+      let infoY = y
+
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(100, 100, 100)
+      doc.text('KONTO / ZAHLBAR AN', infoX, infoY)
+
+      infoY += 5
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'normal')
+      doc.text(business.iban, infoX, infoY)
+      doc.text(creditor.name, infoX, infoY + 4)
+      doc.text(`${creditor.street} ${creditor.buildingNumber}`, infoX, infoY + 8)
+      doc.text(`${creditor.postalCode} ${creditor.city}`, infoX, infoY + 12)
+
+      infoY += 22
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(100, 100, 100)
+      doc.text('ZAHLBAR DURCH', infoX, infoY)
+
+      infoY += 5
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'normal')
+      if (invoice.client.company) {
+        doc.text(invoice.client.company, infoX, infoY)
+        infoY += 4
+      }
+      doc.text(invoice.client.name, infoX, infoY)
+
+      infoY += 10
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(100, 100, 100)
+      doc.text('WÄHRUNG / BETRAG', infoX, infoY)
+
+      infoY += 5
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'bold')
+      doc.text(`CHF    ${invoice.total_amount.toFixed(2)}`, infoX, infoY)
+
+      infoY += 10
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(100, 100, 100)
+      doc.text('ZUSÄTZLICHE INFORMATIONEN', infoX, infoY)
+
+      infoY += 5
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'normal')
+      doc.text(`Rechnung ${invoice.invoice_number}`, infoX, infoY)
+    } else {
+      // Payment info (bottom of page) - only for paid invoices
+      y = 250
+      doc.setDrawColor(200, 200, 200)
+      doc.setLineWidth(0.3)
+      doc.line(margin, y, margin + contentWidth, y)
+
+      y += 8
+      doc.setFontSize(9)
+      doc.setTextColor(128, 128, 128)
+      doc.text('Zahlbar an:', margin, y)
+      doc.setTextColor(0, 0, 0)
+      doc.text(business.name, margin + 25, y)
+      doc.text(`IBAN: ${business.iban}`, margin + 25, y + 5)
+    }
 
     // Footer
     y = 285

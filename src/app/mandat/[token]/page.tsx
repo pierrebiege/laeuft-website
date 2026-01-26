@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client } from "@/lib/supabase";
-import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle } from "lucide-react";
+import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice } from "@/lib/supabase";
+import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle, FileText, ExternalLink } from "lucide-react";
 
 type MandateWithDetails = Mandate & {
   client: Client;
   pricing_phases: MandatePricingPhase[];
   sections: (MandateSection & { items: { id: string; title: string; detail: string | null }[] })[];
   options: MandateOption[];
+  mandate_invoices?: (MandateInvoice & { invoice: Invoice })[];
 };
 
 export default function MandatePage({ params }: { params: Promise<{ token: string }> }) {
@@ -34,7 +35,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         client:clients(*),
         pricing_phases:mandate_pricing_phases(*),
         sections:mandate_sections(*, items:mandate_section_items(*)),
-        options:mandate_options(*)
+        options:mandate_options(*),
+        mandate_invoices(*, invoice:invoices(*))
       `)
       .eq("unique_token", token)
       .single();
@@ -273,6 +275,59 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
           </div>
         )}
 
+        {/* Invoices Section */}
+        {mandate.mandate_invoices && mandate.mandate_invoices.length > 0 && (
+          <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden">
+            <div className="bg-white rounded-xl border border-zinc-200 p-4 md:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <FileText className="text-zinc-600" size={20} />
+                <h3 className="font-semibold text-zinc-900">Rechnungen</h3>
+              </div>
+              <div className="space-y-2">
+                {mandate.mandate_invoices
+                  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                  .map((mi) => (
+                    <a
+                      key={mi.id}
+                      href={`/rechnung/${mi.invoice?.unique_token}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 hover:bg-zinc-100 transition-colors"
+                    >
+                      <div>
+                        <div className="font-medium text-zinc-900">
+                          {mi.invoice?.invoice_number}
+                        </div>
+                        <div className="text-sm text-zinc-500">
+                          {new Date(mi.period_start).toLocaleDateString("de-CH", { month: "long", year: "numeric" })}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="font-medium text-zinc-900">
+                            CHF {formatAmount(mi.amount)}.–
+                          </div>
+                          <div className={`text-xs font-medium ${
+                            mi.invoice?.status === "paid" ? "text-green-600" :
+                            mi.invoice?.status === "overdue" ? "text-red-600" :
+                            mi.invoice?.status === "sent" ? "text-blue-600" :
+                            "text-zinc-500"
+                          }`}>
+                            {mi.invoice?.status === "paid" ? "Bezahlt" :
+                             mi.invoice?.status === "overdue" ? "Überfällig" :
+                             mi.invoice?.status === "sent" ? "Offen" :
+                             mi.invoice?.status === "draft" ? "Entwurf" : ""}
+                          </div>
+                        </div>
+                        <ExternalLink size={16} className="text-zinc-400" />
+                      </div>
+                    </a>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Cancel Dialog */}
         {showCancelDialog && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -365,7 +420,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                         {phase.label}
                       </div>
                       <div className="text-3xl md:text-4xl font-bold tracking-tight text-black">
-                        {formatAmount(phase.amount)}.–
+                        {formatAmount(phase.amount)}.–<span className="text-lg font-normal text-zinc-500">/Mt</span>
                       </div>
                       {phase.description && (
                         <div className="text-xs md:text-sm text-zinc-600 mt-2 print:text-black">{phase.description}</div>

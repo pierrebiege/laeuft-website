@@ -2,16 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase, Mandate, Client } from "@/lib/supabase";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Pause, Play, Trash2 } from "lucide-react";
+import { supabase, Mandate, Client, MandatePricingPhase } from "@/lib/supabase";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Pause, Play, Trash2, Receipt } from "lucide-react";
 
-type MandateWithClient = Mandate & { client: Client };
+type MandateWithClient = Mandate & { client: Client; pricing_phases?: MandatePricingPhase[] };
 
 export default function MandatesPage() {
   const [mandates, setMandates] = useState<MandateWithClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [invoiceDialog, setInvoiceDialog] = useState<MandateWithClient | null>(null);
+  const [selectedAmount, setSelectedAmount] = useState<number>(0);
+  const [customAmount, setCustomAmount] = useState<string>("");
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
 
   useEffect(() => {
     loadMandates();
@@ -20,7 +24,7 @@ export default function MandatesPage() {
   async function loadMandates() {
     const { data, error } = await supabase
       .from("mandates")
-      .select(`*, client:clients(*)`)
+      .select(`*, client:clients(*), pricing_phases:mandate_pricing_phases(*)`)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -70,19 +74,36 @@ export default function MandatesPage() {
     }
   }
 
-  async function generateInvoice(mandateId: string) {
-    if (!confirm("Monatliche Rechnung jetzt generieren?")) return;
+  function openInvoiceDialog(mandate: MandateWithClient) {
+    // Sort pricing phases and set default amount
+    const phases = (mandate.pricing_phases || []).sort((a, b) => a.sort_order - b.sort_order);
+    const primaryPhase = phases.find(p => p.is_primary) || phases[0];
+    setSelectedAmount(primaryPhase?.amount || 0);
+    setCustomAmount("");
+    setInvoiceDialog(mandate);
+  }
 
+  async function generateInvoice() {
+    if (!invoiceDialog) return;
+
+    const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
+    if (!amount || amount <= 0) {
+      alert("Bitte einen gültigen Betrag eingeben");
+      return;
+    }
+
+    setGeneratingInvoice(true);
     try {
       const res = await fetch("/api/generate-mandate-invoice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mandateId }),
+        body: JSON.stringify({ mandateId: invoiceDialog.id, amount }),
       });
 
       if (res.ok) {
         const data = await res.json();
         alert(`Rechnung ${data.invoice_number} erstellt!`);
+        setInvoiceDialog(null);
         loadMandates();
       } else {
         const data = await res.json();
@@ -91,6 +112,7 @@ export default function MandatesPage() {
     } catch {
       alert("Verbindungsfehler");
     }
+    setGeneratingInvoice(false);
   }
 
   function copyLink(token: string) {
@@ -129,6 +151,87 @@ export default function MandatesPage() {
 
   return (
     <div>
+      {/* Invoice Amount Dialog */}
+      {invoiceDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                <Receipt className="text-emerald-600" size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Rechnung erstellen</h3>
+                <p className="text-sm text-zinc-500">{invoiceDialog.client?.company || invoiceDialog.client?.name}</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                Betrag auswählen
+              </label>
+              {(invoiceDialog.pricing_phases || [])
+                .sort((a, b) => a.sort_order - b.sort_order)
+                .map((phase) => (
+                  <label
+                    key={phase.id}
+                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      selectedAmount === phase.amount && !customAmount
+                        ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30"
+                        : "border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="amount"
+                      checked={selectedAmount === phase.amount && !customAmount}
+                      onChange={() => {
+                        setSelectedAmount(phase.amount);
+                        setCustomAmount("");
+                      }}
+                      className="w-4 h-4 text-emerald-600"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-zinc-900 dark:text-white">
+                        {formatAmount(phase.amount)}/Monat
+                      </div>
+                      <div className="text-sm text-zinc-500">{phase.label}</div>
+                    </div>
+                  </label>
+                ))}
+
+              <div className="pt-2">
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Oder eigenen Betrag eingeben
+                </label>
+                <input
+                  type="number"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  placeholder="z.B. 2500"
+                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setInvoiceDialog(null)}
+                className="flex-1 px-4 py-2 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 rounded-lg font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={generateInvoice}
+                disabled={generatingInvoice}
+                className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              >
+                {generatingInvoice ? "Erstelle..." : `Rechnung über ${formatAmount(customAmount ? parseFloat(customAmount) || 0 : selectedAmount)}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -217,7 +320,7 @@ export default function MandatesPage() {
                         )}
                         {(mandate.status === "active" || mandate.status === "accepted") && (
                           <button
-                            onClick={() => generateInvoice(mandate.id)}
+                            onClick={() => openInvoiceDialog(mandate)}
                             className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors"
                           >
                             <Plus size={14} />

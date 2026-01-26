@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
-    const { mandateId } = await request.json()
+    const { mandateId, amount: customAmount } = await request.json()
 
     if (!mandateId) {
       return NextResponse.json({ error: 'Mandate ID required' }, { status: 400 })
@@ -29,42 +29,45 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Mandate is not active' }, { status: 400 })
     }
 
-    // Determine the amount for this invoice
     const today = new Date()
-    let invoiceAmount = 0
 
-    // Check pricing phases for the applicable amount
-    const sortedPhases = (mandate.pricing_phases || []).sort(
-      (a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order
-    )
+    // Use custom amount if provided, otherwise determine automatically
+    let invoiceAmount = customAmount || 0
 
-    for (const phase of sortedPhases) {
-      // Check if this phase applies based on date
-      const phaseStart = phase.start_date ? new Date(phase.start_date) : null
-      const phaseEnd = phase.end_date ? new Date(phase.end_date) : null
-
-      if (phaseStart && today < phaseStart) continue
-      if (phaseEnd && today > phaseEnd) continue
-
-      invoiceAmount = phase.amount
-      break
-    }
-
-    // Fallback: use accepted option monthly amount
-    if (invoiceAmount === 0 && mandate.accepted_option_id) {
-      const acceptedOption = (mandate.accepted_option || []).find(
-        (o: { id: string }) => o.id === mandate.accepted_option_id
+    if (!invoiceAmount) {
+      // Check pricing phases for the applicable amount
+      const sortedPhases = (mandate.pricing_phases || []).sort(
+        (a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order
       )
-      if (acceptedOption?.monthly_amount) {
-        invoiceAmount = acceptedOption.monthly_amount
-      }
-    }
 
-    // Fallback: use primary phase
-    if (invoiceAmount === 0) {
-      const primaryPhase = sortedPhases.find((p: { is_primary: boolean }) => p.is_primary)
-      if (primaryPhase) {
-        invoiceAmount = primaryPhase.amount
+      for (const phase of sortedPhases) {
+        // Check if this phase applies based on date
+        const phaseStart = phase.start_date ? new Date(phase.start_date) : null
+        const phaseEnd = phase.end_date ? new Date(phase.end_date) : null
+
+        if (phaseStart && today < phaseStart) continue
+        if (phaseEnd && today > phaseEnd) continue
+
+        invoiceAmount = phase.amount
+        break
+      }
+
+      // Fallback: use accepted option monthly amount
+      if (invoiceAmount === 0 && mandate.accepted_option_id) {
+        const acceptedOption = (mandate.accepted_option || []).find(
+          (o: { id: string }) => o.id === mandate.accepted_option_id
+        )
+        if (acceptedOption?.monthly_amount) {
+          invoiceAmount = acceptedOption.monthly_amount
+        }
+      }
+
+      // Fallback: use primary phase
+      if (invoiceAmount === 0) {
+        const primaryPhase = sortedPhases.find((p: { is_primary: boolean }) => p.is_primary)
+        if (primaryPhase) {
+          invoiceAmount = primaryPhase.amount
+        }
       }
     }
 
@@ -85,17 +88,20 @@ export async function POST(request: NextRequest) {
     const dueDate = new Date()
     dueDate.setDate(dueDate.getDate() + 30)
 
+    // Clean title: remove "Offerte" from mandate title for invoices
+    const cleanTitle = mandate.title.replace(/[-–]\s*Offerte/gi, '').replace(/Offerte[-–\s]*/gi, '').replace(/\s+/g, ' ').trim()
+
     const { data: invoice, error: invoiceError } = await supabase
       .from('invoices')
       .insert({
         client_id: mandate.client_id,
-        title: `${mandate.title} - ${periodLabel}`,
+        title: `${cleanTitle} - ${periodLabel}`,
         description: `Monatliche Betreuung gemäss Mandat`,
         status: 'draft',
         issue_date: today.toISOString().split('T')[0],
         due_date: dueDate.toISOString().split('T')[0],
         total_amount: invoiceAmount,
-        notes: `Mandat: ${mandate.title}`,
+        notes: `Mandat: ${cleanTitle}`,
       })
       .select()
       .single()
@@ -111,7 +117,7 @@ export async function POST(request: NextRequest) {
       .insert({
         invoice_id: invoice.id,
         title: `IT-Betreuung ${periodLabel}`,
-        description: mandate.title,
+        description: cleanTitle,
         quantity: 1,
         unit_price: invoiceAmount,
         amount: invoiceAmount,

@@ -309,7 +309,7 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
 
           {/* Swiss QR Bill Section - only show if not paid and QR data available */}
           {invoice.status !== "paid" && invoice.status !== "cancelled" && qrBill && (
-            <div className="border-t-2 border-dashed border-zinc-300 pt-8 mt-8 bg-white -mx-8 md:-mx-12 px-8 md:px-12 pb-8 print:-mx-8 print:px-8">
+            <div className="border-t-2 border-dashed border-zinc-300 pt-8 mt-8 bg-white -mx-8 md:-mx-12 px-8 md:px-12 pb-8 print:-mx-8 print:px-8 print:break-inside-avoid print:text-black">
               {/* Scissors line indicator */}
               <div className="text-center mb-6">
                 <h3 className="text-lg font-semibold text-black">
