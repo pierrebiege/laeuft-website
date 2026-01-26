@@ -155,7 +155,20 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
   }
 
   async function handleDownloadPDF() {
-    window.print();
+    const response = await fetch(`/api/mandate-pdf?token=${token}`);
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Mandat-${mandate?.client.company || mandate?.client.name || 'download'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else {
+      alert('Fehler beim Erstellen des PDFs');
+    }
   }
 
   function formatAmount(amount: number) {
