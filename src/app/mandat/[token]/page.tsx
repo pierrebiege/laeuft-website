@@ -773,18 +773,12 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         @media print {
           .mandate-page {
             width: 210mm;
-            height: 297mm;
-            overflow: hidden;
+            min-height: 297mm;
             page-break-after: always;
-            page-break-inside: avoid;
             box-shadow: none !important;
-            position: relative;
           }
           .mandate-page:last-child {
             page-break-after: avoid;
-            height: auto;
-            min-height: 297mm;
-            overflow: visible;
           }
         }
       `}</style>
