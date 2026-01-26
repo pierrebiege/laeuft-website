@@ -287,7 +287,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                 </div>
                 <div className="pt-4 md:pt-5 border-t border-zinc-300 print:pt-[5mm]">
                   <strong className="block text-base md:text-lg font-semibold mb-1 text-black">Monatlich</strong>
-                  <span className="text-xs md:text-sm text-zinc-600 print:text-black">Abrechnung im Voraus</span>
+                  <span className="text-xs md:text-sm text-zinc-600 print:text-black">Rechnung am Tag des Vertragsabschlusses</span>
                 </div>
               </div>
             </div>
