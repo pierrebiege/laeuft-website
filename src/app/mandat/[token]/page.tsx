@@ -633,16 +633,15 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         </div>
 
         {/* Page 2 - Terms & Selection */}
-        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm]">
+        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:pt-[15mm]">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[15mm_25mm_20mm_25mm]">
             {/* Header */}
             <header className="flex justify-between items-start mb-10 md:mb-12 print:mb-[15mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
                 Läuft.
               </div>
               <div className="text-right text-xs md:text-sm text-zinc-600 print:text-black">
-                {mandate.title}<br />
-                Seite 2
+                {mandate.title}
               </div>
             </header>
 
@@ -662,7 +661,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                   <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Neue Projekte werden separat offeriert.
                 </p>
                 <p>
-                  <strong className="text-black">Abrechnung:</strong> Monatlich im Voraus, Zahlungsziel 30 Tage.
+                  <strong className="text-black">Abrechnung:</strong> Monatlich im Voraus, zahlbar innerhalb von 10 Tagen.
                 </p>
               </div>
             </div>
