@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { supabase, Client } from "@/lib/supabase";
-import { Plus, X, Trash2 } from "lucide-react";
+import { Plus, X, Trash2, Pencil, Check } from "lucide-react";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form state
   const [name, setName] = useState("");
@@ -27,6 +28,22 @@ export default function ClientsPage() {
 
     setClients(data || []);
     setLoading(false);
+  }
+
+  function startEdit(client: Client) {
+    setEditingId(client.id);
+    setName(client.name);
+    setCompany(client.company || "");
+    setEmail(client.email);
+    setShowForm(true);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setName("");
+    setCompany("");
+    setEmail("");
+    setShowForm(false);
   }
 
   async function deleteClient(clientId: string) {
@@ -51,20 +68,37 @@ export default function ClientsPage() {
 
     setSaving(true);
 
-    const { error } = await supabase.from("clients").insert({
-      name,
-      company: company || null,
-      email,
-    });
+    if (editingId) {
+      // Update existing client
+      const { error } = await supabase
+        .from("clients")
+        .update({
+          name,
+          company: company || null,
+          email,
+        })
+        .eq("id", editingId);
 
-    if (error) {
-      alert("Fehler beim Speichern");
+      if (error) {
+        alert("Fehler beim Aktualisieren");
+      } else {
+        cancelEdit();
+        loadClients();
+      }
     } else {
-      setName("");
-      setCompany("");
-      setEmail("");
-      setShowForm(false);
-      loadClients();
+      // Create new client
+      const { error } = await supabase.from("clients").insert({
+        name,
+        company: company || null,
+        email,
+      });
+
+      if (error) {
+        alert("Fehler beim Speichern");
+      } else {
+        cancelEdit();
+        loadClients();
+      }
     }
 
     setSaving(false);
@@ -79,7 +113,13 @@ export default function ClientsPage() {
           <p className="text-zinc-500 mt-1">Verwalte deine Kunden</p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (showForm) {
+              cancelEdit();
+            } else {
+              setShowForm(true);
+            }
+          }}
           className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
         >
           {showForm ? <X size={18} /> : <Plus size={18} />}
@@ -93,6 +133,11 @@ export default function ClientsPage() {
           onSubmit={saveClient}
           className="mb-8 p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800"
         >
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+              {editingId ? "Kunde bearbeiten" : "Neuer Kunde"}
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
@@ -133,13 +178,25 @@ export default function ClientsPage() {
               />
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
-          >
-            {saving ? "Speichern..." : "Kunde speichern"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex items-center gap-2 px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+            >
+              <Check size={16} />
+              {saving ? "Speichern..." : editingId ? "Aktualisieren" : "Kunde speichern"}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="px-4 py-2 text-zinc-600 hover:text-zinc-900 font-medium"
+              >
+                Abbrechen
+              </button>
+            )}
+          </div>
         </form>
       )}
 
@@ -165,14 +222,16 @@ export default function ClientsPage() {
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Firma</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Name</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">E-Mail</th>
-                <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500"></th>
+                <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Aktionen</th>
               </tr>
             </thead>
             <tbody>
               {clients.map((client) => (
                 <tr
                   key={client.id}
-                  className="border-b border-zinc-100 dark:border-zinc-800 last:border-0"
+                  className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${
+                    editingId === client.id ? "bg-zinc-50 dark:bg-zinc-800/50" : ""
+                  }`}
                 >
                   <td className="px-6 py-4 font-medium text-zinc-900 dark:text-white">
                     {client.company || "–"}
@@ -180,12 +239,21 @@ export default function ClientsPage() {
                   <td className="px-6 py-4 text-zinc-900 dark:text-white">{client.name}</td>
                   <td className="px-6 py-4 text-zinc-500">{client.email}</td>
                   <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => deleteClient(client.id)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => startEdit(client)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                      >
+                        <Pencil size={14} />
+                        Bearbeiten
+                      </button>
+                      <button
+                        onClick={() => deleteClient(client.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
