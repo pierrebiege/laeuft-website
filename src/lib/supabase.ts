@@ -146,3 +146,103 @@ export interface ImportBatch {
   created_at: string
   completed_at: string | null
 }
+
+// Mandate Types (Partner-Modell)
+export interface Mandate {
+  id: string
+  client_id: string
+  title: string
+  subtitle: string | null
+  introduction: string | null
+  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'active' | 'paused' | 'cancelled' | 'ended'
+  valid_until: string | null
+  start_date: string | null
+  end_date: string | null
+  accepted_option_id: string | null
+  accepted_at: string | null
+  signature_data: string | null
+  unique_token: string
+  billing_day: number
+  next_invoice_date: string | null
+  last_invoice_date: string | null
+  invoices_generated: number
+  cancellation_period: string
+  pause_fee: number
+  billing_cycle: 'monthly' | 'quarterly' | 'yearly'
+  sent_at: string | null
+  created_at: string
+  updated_at: string
+  client?: Client
+  pricing_phases?: MandatePricingPhase[]
+  sections?: MandateSection[]
+  options?: MandateOption[]
+  systems?: MandateSystem[]
+}
+
+export interface MandatePricingPhase {
+  id: string
+  mandate_id: string
+  label: string
+  amount: number
+  description: string | null
+  start_date: string | null
+  end_date: string | null
+  is_primary: boolean
+  sort_order: number
+  created_at: string
+}
+
+export interface MandateSection {
+  id: string
+  mandate_id: string
+  label: string
+  title: string | null
+  description: string | null
+  section_type: 'list' | 'terms' | 'text' | 'comparison'
+  page_number: number
+  sort_order: number
+  created_at: string
+  items?: MandateSectionItem[]
+}
+
+export interface MandateSectionItem {
+  id: string
+  section_id: string
+  title: string
+  detail: string | null
+  description: string | null
+  sort_order: number
+  created_at: string
+}
+
+export interface MandateOption {
+  id: string
+  mandate_id: string
+  title: string
+  description: string | null
+  monthly_amount: number | null
+  start_date: string | null
+  is_rejection: boolean
+  sort_order: number
+  created_at: string
+}
+
+export interface MandateSystem {
+  id: string
+  mandate_id: string
+  name: string
+  technology: string | null
+  sort_order: number
+  created_at: string
+}
+
+export interface MandateInvoice {
+  id: string
+  mandate_id: string
+  invoice_id: string | null
+  period_start: string
+  period_end: string
+  amount: number
+  created_at: string
+  invoice?: Invoice
+}
