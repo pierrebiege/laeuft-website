@@ -311,7 +311,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                     "text-emerald-700"
                   }`}>
                     {isCancelling && mandate.cancellation_effective_date && (
-                      <>Endet am {formatDate(mandate.cancellation_effective_date)}</>
+                      <>Letzter Tag der Zusammenarbeit: {formatDate(mandate.cancellation_effective_date)}</>
                     )}
                     {isPaused && mandate.pause_end_date && (
                       <>Pausiert bis {formatDate(mandate.pause_end_date)} • Haltegebühr: CHF {formatAmount(mandate.pause_fee)}.–/Mt</>
@@ -573,10 +573,10 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
               </div>
               <div className="space-y-3 text-sm text-zinc-700 print:text-black">
                 <p>
-                  <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung erfolgt schriftlich per E-Mail. Nach Ablauf der Frist endet die Zusammenarbeit, offene Arbeiten werden abgeschlossen.
+                  <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung kann jederzeit online über diesen Link erfolgen. Nach Ablauf der Frist endet die Zusammenarbeit, offene Arbeiten werden abgeschlossen.
                 </p>
                 <p>
-                  <strong className="text-black">Pause/Haltegebühr:</strong> Das Mandat kann auf Wunsch pausiert werden. Während der Pause fällt eine reduzierte Haltegebühr von CHF {formatAmount(mandate.pause_fee)}.–/Monat an. Diese sichert die Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
+                  <strong className="text-black">Pause/Haltegebühr:</strong> Das Mandat kann jederzeit online über diesen Link pausiert werden. Während der Pause fällt eine reduzierte Haltegebühr von CHF {formatAmount(mandate.pause_fee)}.–/Monat an. Diese sichert die Verfügbarkeit und Priorität bei Wiederaufnahme. Maximale Pausendauer: 3 Monate.
                 </p>
                 <p>
                   <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Komplett neue Projekte, grössere Migrationen oder Arbeiten mit externen Partnern werden separat offeriert – zu fairen Partner-Konditionen.
