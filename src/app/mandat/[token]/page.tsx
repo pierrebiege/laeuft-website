@@ -233,9 +233,17 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
             size: A4;
             margin: 20mm 25mm;
           }
+          @page :first {
+            margin-top: 20mm;
+          }
           html, body {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+          }
+          /* Hide browser header/footer areas */
+          @top-left, @top-center, @top-right,
+          @bottom-left, @bottom-center, @bottom-right {
+            content: none !important;
           }
         }
       `}</style>
