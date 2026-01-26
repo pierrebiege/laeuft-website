@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice } from "@/lib/supabase";
+import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice, MandateSystem } from "@/lib/supabase";
 import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle, FileText, ExternalLink } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type MandateWithDetails = Mandate & {
   client: Client;
@@ -10,6 +11,7 @@ type MandateWithDetails = Mandate & {
   sections: (MandateSection & { items: { id: string; title: string; detail: string | null }[] })[];
   options: MandateOption[];
   mandate_invoices?: (MandateInvoice & { invoice: Invoice })[];
+  systems?: MandateSystem[];
 };
 
 export default function MandatePage({ params }: { params: Promise<{ token: string }> }) {
@@ -36,7 +38,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         pricing_phases:mandate_pricing_phases(*),
         sections:mandate_sections(*, items:mandate_section_items(*)),
         options:mandate_options(*),
-        mandate_invoices(*, invoice:invoices(*))
+        mandate_invoices(*, invoice:invoices(*)),
+        systems:mandate_systems(*)
       `)
       .eq("unique_token", token)
       .single();
@@ -53,6 +56,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
       section.items = section.items?.sort((a, b) => a.sort_order - b.sort_order) || [];
     });
     mandateData.options = mandateData.options?.sort((a: MandateOption, b: MandateOption) => a.sort_order - b.sort_order) || [];
+    mandateData.systems = mandateData.systems?.sort((a: MandateSystem, b: MandateSystem) => a.sort_order - b.sort_order) || [];
 
     setMandate(mandateData);
     if (mandateData.accepted_option_id) {
@@ -462,6 +466,31 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
               </div>
             ))}
 
+            {/* Systems */}
+            {mandate.systems && mandate.systems.length > 0 && (
+              <>
+                <hr className="border-t border-zinc-200 my-8 md:my-10 print:my-[10mm] print:border-zinc-300" />
+                <div className="mb-8 md:mb-10 print:mb-[12mm]">
+                  <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black">
+                    Systeme
+                  </div>
+                  <ul className="list-none">
+                    {mandate.systems.map((system) => (
+                      <li
+                        key={system.id}
+                        className="py-2 md:py-3 border-b border-zinc-100 last:border-0 flex justify-between items-center text-black print:border-zinc-200"
+                      >
+                        <span>{system.name}</span>
+                        {system.technology && (
+                          <span className="text-xs md:text-sm text-zinc-600 print:text-black">{system.technology}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+
             {/* Conditions */}
             <div className="mb-8 print:mb-[12mm]">
               <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black">
@@ -588,6 +617,31 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                     <div className="text-sm text-green-700 print:text-black">
                       {mandate.accepted_at && `Am ${new Date(mandate.accepted_at).toLocaleDateString("de-CH")}`}
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* QR Code for Print - Online Acceptance */}
+            {!accepted && (
+              <div className="hidden print:block mt-12 pt-8 border-t-2 border-dashed border-zinc-300">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <QRCodeSVG
+                      value={typeof window !== "undefined" ? window.location.href : `https://laeuft.ch/mandat/${token}`}
+                      size={80}
+                      level="M"
+                      includeMargin={false}
+                    />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-black mb-1">Online annehmen oder ablehnen</div>
+                    <p className="text-xs text-zinc-600">
+                      Scanne den QR-Code oder besuche den Link, um deine Auswahl digital zu bestätigen.
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-2 font-mono">
+                      laeuft.ch/mandat/{token.substring(0, 8)}...
+                    </p>
                   </div>
                 </div>
               </div>

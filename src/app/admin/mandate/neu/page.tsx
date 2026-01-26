@@ -35,6 +35,12 @@ interface MandateOption {
   is_rejection: boolean;
 }
 
+interface MandateSystem {
+  id?: string;
+  name: string;
+  technology: string;
+}
+
 export default function NewMandatePage() {
   const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
@@ -91,6 +97,12 @@ export default function NewMandatePage() {
     { title: "Mandat ab Mai 2026", description: "Nach Kündigungsfrist. 3'500.–/Mt", monthly_amount: 3500, is_rejection: false },
     { title: "Kein Mandat", description: "Sucht intern/extern. Ich unterstütze die Übergabe.", monthly_amount: null, is_rejection: true },
   ]);
+
+  // Systems
+  const [systems, setSystems] = useState<MandateSystem[]>([]);
+
+  // Handover URL (optional)
+  const [handoverUrl, setHandoverUrl] = useState("");
 
   useEffect(() => {
     loadClients();
@@ -172,6 +184,21 @@ export default function NewMandatePage() {
 
   function removeOption(index: number) {
     setOptions(options.filter((_, i) => i !== index));
+  }
+
+  // System handlers
+  function addSystem() {
+    setSystems([...systems, { name: "", technology: "" }]);
+  }
+
+  function updateSystem(index: number, field: keyof MandateSystem, value: string) {
+    const updated = [...systems];
+    updated[index] = { ...updated[index], [field]: value };
+    setSystems(updated);
+  }
+
+  function removeSystem(index: number) {
+    setSystems(systems.filter((_, i) => i !== index));
   }
 
   async function saveMandate(e: React.FormEvent) {
@@ -256,6 +283,17 @@ export default function NewMandatePage() {
           sort_order: i,
         }));
         await supabase.from("mandate_options").insert(opts);
+      }
+
+      // Insert systems
+      if (systems.length > 0) {
+        const sys = systems.map((s, i) => ({
+          mandate_id: mandate.id,
+          name: s.name,
+          technology: s.technology || null,
+          sort_order: i,
+        }));
+        await supabase.from("mandate_systems").insert(sys);
       }
 
       router.push("/admin/mandate");
@@ -562,6 +600,56 @@ export default function NewMandatePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Systems */}
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Systeme</h2>
+              <p className="text-sm text-zinc-500">Welche Systeme werden betreut? (optional)</p>
+            </div>
+            <button
+              type="button"
+              onClick={addSystem}
+              className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white flex items-center gap-1"
+            >
+              <Plus size={14} />
+              System hinzufügen
+            </button>
+          </div>
+          {systems.length > 0 && (
+            <div className="space-y-2">
+              {systems.map((system, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
+                  <input
+                    type="text"
+                    value={system.name}
+                    onChange={(e) => updateSystem(index, "name", e.target.value)}
+                    placeholder="z.B. Webseiten, Trainingsplaner"
+                    className="flex-1 px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={system.technology}
+                    onChange={(e) => updateSystem(index, "technology", e.target.value)}
+                    placeholder="z.B. WordPress, React"
+                    className="w-40 px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSystem(index)}
+                    className="p-1 text-zinc-400 hover:text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {systems.length === 0 && (
+            <p className="text-sm text-zinc-400 italic">Keine Systeme definiert. Klicke oben um welche hinzuzufügen.</p>
+          )}
         </div>
 
         {/* Conditions */}
