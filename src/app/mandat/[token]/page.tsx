@@ -231,16 +231,29 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         @media print {
           @page {
             size: A4;
-            margin: 0;
+            margin: 20mm 25mm 15mm 25mm;
           }
           html, body {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
+          .print-header {
+            position: running(header);
+          }
+          @top-center {
+            content: element(header);
+          }
         }
       `}</style>
 
-      <div className="min-h-screen bg-zinc-200 py-6 md:py-8 print:bg-white print:py-0">
+      {/* Fixed Print Header - appears on every page */}
+      <div className="hidden print:block fixed top-0 left-0 right-0 h-[15mm] bg-white px-[25mm] pt-[8mm]" style={{ fontFamily: "Georgia, serif" }}>
+        <div className="text-xl font-semibold tracking-tight text-black">
+          Läuft.
+        </div>
+      </div>
+
+      <div className="min-h-screen bg-zinc-200 py-6 md:py-8 print:bg-white print:py-0 print:mt-[15mm]">
         {/* Action buttons - hidden on print */}
         <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden flex gap-2">
           <button
@@ -487,7 +500,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
         {/* Page 1 */}
         <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl mb-6 md:mb-8 print:shadow-none print:mb-0 print:max-w-none">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[20mm_25mm_15mm_25mm]">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-0">
             {/* Header */}
             <header className="flex justify-between items-start mb-10 md:mb-16 print:mb-[20mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
@@ -633,8 +646,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
         </div>
 
         {/* Page 2 - Terms & Selection */}
-        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:pt-[15mm]">
-          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-[15mm_25mm_20mm_25mm]">
+        <div className="mandate-page max-w-3xl lg:max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none print:max-w-none">
+          <div className="p-6 md:p-10 lg:p-[25mm_28mm] print:p-0">
             {/* Header */}
             <header className="flex justify-between items-start mb-10 md:mb-12 print:mb-[15mm]">
               <div className="text-2xl md:text-3xl font-semibold tracking-tight text-black" style={{ fontFamily: "Georgia, serif" }}>
