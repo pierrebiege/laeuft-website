@@ -4,12 +4,12 @@ import nodemailer from 'nodemailer'
 
 // Email configuration
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'asmtp.mail.hostpoint.ch',
-  port: parseInt(process.env.SMTP_PORT || '465'),
-  secure: true,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: false,
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    pass: process.env.SMTP_PASSWORD,
   },
 })
 
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (mandateError || !mandate) {
+      console.error('Mandate not found:', mandateError)
       return NextResponse.json({ error: 'Mandate not found' }, { status: 404 })
     }
 
@@ -41,6 +42,10 @@ export async function POST(request: NextRequest) {
     }
 
     const client = mandate.client
+    if (!client) {
+      console.error('Client not found for mandate:', mandate.id)
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 })
+    }
     const mandateUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://laeuft.ch'}/mandat/${mandate.unique_token}`
 
     // Sort pricing phases
@@ -142,6 +147,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Send mandate error:', error)
-    return NextResponse.json({ error: 'Failed to send mandate' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: `Failed to send mandate: ${errorMessage}` }, { status: 500 })
   }
 }
