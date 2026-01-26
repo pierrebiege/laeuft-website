@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice, MandateSystem } from "@/lib/supabase";
-import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle, FileText, ExternalLink } from "lucide-react";
+import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle, FileText, ExternalLink, Pencil, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 type MandateWithDetails = Mandate & {
@@ -24,6 +24,8 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
   const [accepted, setAccepted] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showContactEdit, setShowContactEdit] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: "", email: "", company: "" });
 
   useEffect(() => {
     loadMandate();
@@ -59,11 +61,38 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     mandateData.systems = mandateData.systems?.sort((a: MandateSystem, b: MandateSystem) => a.sort_order - b.sort_order) || [];
 
     setMandate(mandateData);
+    setContactForm({
+      name: mandateData.client.name || "",
+      email: mandateData.client.email || "",
+      company: mandateData.client.company || "",
+    });
     if (mandateData.accepted_option_id) {
       setSelectedOption(mandateData.accepted_option_id);
       setAccepted(true);
     }
     setLoading(false);
+  }
+
+  async function handleSaveContact() {
+    if (!mandate) return;
+    setActionLoading(true);
+
+    const { error } = await supabase
+      .from("clients")
+      .update({
+        name: contactForm.name,
+        email: contactForm.email,
+        company: contactForm.company || null,
+      })
+      .eq("id", mandate.client.id);
+
+    if (error) {
+      alert("Fehler beim Speichern");
+    } else {
+      setShowContactEdit(false);
+      loadMandate();
+    }
+    setActionLoading(false);
   }
 
   async function handleAccept() {
@@ -332,6 +361,97 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
           </div>
         )}
 
+        {/* Contact Info Section */}
+        <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden">
+          <div className="bg-white rounded-xl border border-zinc-200 p-4 md:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <User className="text-zinc-600" size={20} />
+                <h3 className="font-semibold text-zinc-900">Deine Kontaktdaten</h3>
+              </div>
+              <button
+                onClick={() => setShowContactEdit(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
+              >
+                <Pencil size={14} />
+                Bearbeiten
+              </button>
+            </div>
+            <div className="space-y-1 text-sm">
+              {mandate.client.company && (
+                <div className="font-medium text-zinc-900">{mandate.client.company}</div>
+              )}
+              <div className={mandate.client.company ? "text-zinc-600" : "font-medium text-zinc-900"}>
+                {mandate.client.name}
+              </div>
+              <div className="text-zinc-600">{mandate.client.email}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Edit Dialog */}
+        {showContactEdit && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center">
+                  <Pencil className="text-zinc-600" size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-zinc-900">Kontaktdaten bearbeiten</h3>
+              </div>
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-1">Firma (optional)</label>
+                  <input
+                    type="text"
+                    value={contactForm.company}
+                    onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
+                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    placeholder="Firmenname"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-1">Name *</label>
+                  <input
+                    type="text"
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    placeholder="Vor- und Nachname"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-1">E-Mail *</label>
+                  <input
+                    type="email"
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    placeholder="email@beispiel.ch"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowContactEdit(false)}
+                  className="flex-1 px-4 py-2 border border-zinc-300 text-zinc-700 rounded-lg font-medium hover:bg-zinc-50 transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handleSaveContact}
+                  disabled={actionLoading || !contactForm.name || !contactForm.email}
+                  className="flex-1 px-4 py-2 bg-zinc-900 text-white rounded-lg font-medium hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? "Speichern..." : "Speichern"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Cancel Dialog */}
         {showCancelDialog && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -529,30 +649,32 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
             </header>
 
             {/* Explanatory Notes */}
-            <div className="mb-8 md:mb-10 print:mb-[10mm]">
-              <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black">
+            <div className="mb-8 md:mb-10 print:mb-[6mm]">
+              <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black print:mb-2">
                 Hinweise zu den Konditionen
               </div>
-              <div className="space-y-3 text-sm text-zinc-700 print:text-black">
+              <div className="space-y-3 text-sm text-zinc-700 print:text-black print:space-y-1 print:text-xs">
                 <p>
-                  <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung kann jederzeit online über diesen Link erfolgen. Nach Ablauf der Frist endet die Zusammenarbeit, offene Arbeiten werden abgeschlossen.
+                  <strong className="text-black">Kündigungsfrist:</strong> Das Mandat kann von beiden Seiten mit einer Frist von {mandate.cancellation_period} gekündigt werden. Die Kündigung kann jederzeit online über diesen Link erfolgen.
                 </p>
                 <p>
-                  <strong className="text-black">Verfügbarkeit:</strong> Ferien und geplante Abwesenheiten werden im Voraus kommuniziert. In dieser Zeit wird die Arbeit durch einen qualifizierten Stellvertreter oder Freelancer sichergestellt. Der Kontakt läuft weiterhin über Pierre.
+                  <strong className="text-black">Verfügbarkeit:</strong> Ferien werden im Voraus kommuniziert. In dieser Zeit wird die Arbeit durch einen qualifizierten Stellvertreter sichergestellt.
                 </p>
                 <p>
-                  <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Komplett neue Projekte, grössere Migrationen oder Arbeiten mit externen Partnern werden separat offeriert – zu fairen Partner-Konditionen.
+                  <strong className="text-black">Leistungsumfang:</strong> Das Mandat umfasst alle Arbeiten an bestehenden Systemen. Neue Projekte werden separat offeriert.
                 </p>
                 <p>
-                  <strong className="text-black">Abrechnung:</strong> Die Rechnung wird monatlich im Voraus gestellt, jeweils am Tag des Vertragsabschlusses. Zahlungsziel: 30 Tage.
+                  <strong className="text-black">Abrechnung:</strong> Monatlich im Voraus, Zahlungsziel 30 Tage.
                 </p>
               </div>
             </div>
 
-            <hr className="border-t border-zinc-200 my-6 md:my-8 print:my-[8mm] print:border-zinc-300" />
+            <hr className="border-t border-zinc-200 my-6 md:my-8 print:my-[4mm] print:border-zinc-300" />
 
+            {/* Options + QR wrapper - keep together on print */}
+            <div className="print:break-inside-avoid">
             {/* Options Section */}
-            <div className="mb-8 md:mb-10 print:mb-[12mm]">
+            <div className="mb-8 md:mb-10 print:mb-[4mm]">
               <div className="text-xs uppercase tracking-widest text-zinc-600 mb-4 font-semibold print:text-black">
                 Auswahl
               </div>
@@ -560,7 +682,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                 {mandate.options.map((option) => (
                   <label
                     key={option.id}
-                    className={`flex items-start gap-3 md:gap-4 py-4 border-b border-zinc-100 cursor-pointer transition-colors print:border-zinc-200 ${
+                    className={`flex items-start gap-3 md:gap-4 py-4 print:py-2 border-b border-zinc-100 cursor-pointer transition-colors print:border-zinc-200 ${
                       accepted ? "pointer-events-none" : "hover:bg-zinc-50"
                     } ${selectedOption === option.id ? "bg-zinc-50 print:bg-zinc-100" : ""}`}
                   >
@@ -572,19 +694,19 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                         checked={selectedOption === option.id}
                         onChange={() => setSelectedOption(option.id)}
                         disabled={accepted}
-                        className="w-5 h-5 appearance-none border-2 border-zinc-400 rounded-sm checked:border-black checked:bg-black cursor-pointer disabled:cursor-default print:border-black"
+                        className="w-5 h-5 print:w-4 print:h-4 appearance-none border-2 border-zinc-400 rounded-sm checked:border-black checked:bg-black cursor-pointer disabled:cursor-default print:border-black"
                       />
                       {selectedOption === option.id && (
                         <Check
                           size={14}
-                          className="absolute top-0.5 left-0.5 text-white pointer-events-none"
+                          className="absolute top-0.5 left-0.5 text-white pointer-events-none print:hidden"
                         />
                       )}
                     </div>
                     <div>
-                      <strong className="block text-black">{option.title}</strong>
+                      <strong className="block text-black print:text-sm">{option.title}</strong>
                       {option.description && (
-                        <span className="text-sm text-zinc-600 print:text-black">{option.description}</span>
+                        <span className="text-sm text-zinc-600 print:text-black print:text-xs">{option.description}</span>
                       )}
                     </div>
                   </label>
@@ -624,28 +746,26 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
             {/* QR Code for Print - Online Acceptance */}
             {!accepted && (
-              <div className="hidden print:block mt-12 pt-8 border-t-2 border-dashed border-zinc-300">
-                <div className="flex items-start gap-6">
+              <div className="hidden print:block mt-4 pt-4 border-t-2 border-dashed border-zinc-300">
+                <div className="flex items-start gap-5">
                   <div className="flex-shrink-0">
                     <QRCodeSVG
                       value={typeof window !== "undefined" ? window.location.href : `https://laeuft.ch/mandat/${token}`}
-                      size={80}
+                      size={60}
                       level="M"
                       includeMargin={false}
                     />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-black mb-1">Online annehmen oder ablehnen</div>
-                    <p className="text-xs text-zinc-600">
-                      Scanne den QR-Code oder besuche den Link, um deine Auswahl digital zu bestätigen.
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-2 font-mono">
-                      laeuft.ch/mandat/{token.substring(0, 8)}...
+                    <div className="text-xs font-semibold text-black mb-1">Online annehmen oder ablehnen</div>
+                    <p className="text-[10px] text-zinc-600">
+                      Scanne den QR-Code oder besuche laeuft.ch/mandat/{token.substring(0, 8)}...
                     </p>
                   </div>
                 </div>
               </div>
             )}
+            </div>{/* End Options + QR wrapper */}
 
           </div>
         </div>
