@@ -361,7 +361,7 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
           </div>
         )}
 
-        {/* Contact Info Section */}
+        {/* Contact Info Section - Inline Editing */}
         <div className="max-w-3xl lg:max-w-[210mm] mx-auto px-4 md:px-6 mb-4 print:hidden">
           <div className="bg-white rounded-xl border border-zinc-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
@@ -369,88 +369,86 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
                 <User className="text-zinc-600" size={20} />
                 <h3 className="font-semibold text-zinc-900">Deine Kontaktdaten</h3>
               </div>
-              <button
-                onClick={() => setShowContactEdit(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
-              >
-                <Pencil size={14} />
-                Bearbeiten
-              </button>
-            </div>
-            <div className="space-y-1 text-sm">
-              {mandate.client.company && (
-                <div className="font-medium text-zinc-900">{mandate.client.company}</div>
-              )}
-              <div className={mandate.client.company ? "text-zinc-600" : "font-medium text-zinc-900"}>
-                {mandate.client.name}
-              </div>
-              <div className="text-zinc-600">{mandate.client.email}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Edit Dialog */}
-        {showContactEdit && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center">
-                  <Pencil className="text-zinc-600" size={20} />
+              {!showContactEdit ? (
+                <button
+                  onClick={() => setShowContactEdit(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
+                >
+                  <Pencil size={14} />
+                  Bearbeiten
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setShowContactEdit(false);
+                      setContactForm({
+                        name: mandate.client.name || "",
+                        email: mandate.client.email || "",
+                        company: mandate.client.company || "",
+                      });
+                    }}
+                    className="px-3 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    onClick={handleSaveContact}
+                    disabled={actionLoading || !contactForm.name || !contactForm.email}
+                    className="px-3 py-1.5 text-sm bg-zinc-900 text-white rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                  >
+                    {actionLoading ? "..." : "Speichern"}
+                  </button>
                 </div>
-                <h3 className="text-lg font-semibold text-zinc-900">Kontaktdaten bearbeiten</h3>
+              )}
+            </div>
+
+            {!showContactEdit ? (
+              <div className="space-y-1 text-sm">
+                {mandate.client.company && (
+                  <div className="font-medium text-zinc-900">{mandate.client.company}</div>
+                )}
+                <div className={mandate.client.company ? "text-zinc-600" : "font-medium text-zinc-900"}>
+                  {mandate.client.name}
+                </div>
+                <div className="text-zinc-600">{mandate.client.email}</div>
               </div>
-              <div className="space-y-4 mb-6">
+            ) : (
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-1">Firma (optional)</label>
+                  <label className="block text-xs text-zinc-500 mb-1">Firma (optional)</label>
                   <input
                     type="text"
                     value={contactForm.company}
                     onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
-                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:bg-white"
                     placeholder="Firmenname"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-1">Name *</label>
+                  <label className="block text-xs text-zinc-500 mb-1">Name *</label>
                   <input
                     type="text"
                     value={contactForm.name}
                     onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:bg-white"
                     placeholder="Vor- und Nachname"
-                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-1">E-Mail *</label>
+                  <label className="block text-xs text-zinc-500 mb-1">E-Mail *</label>
                   <input
                     type="email"
                     value={contactForm.email}
                     onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                    className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:bg-white"
                     placeholder="email@beispiel.ch"
-                    required
                   />
                 </div>
               </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowContactEdit(false)}
-                  className="flex-1 px-4 py-2 border border-zinc-300 text-zinc-700 rounded-lg font-medium hover:bg-zinc-50 transition-colors"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  onClick={handleSaveContact}
-                  disabled={actionLoading || !contactForm.name || !contactForm.email}
-                  className="flex-1 px-4 py-2 bg-zinc-900 text-white rounded-lg font-medium hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                >
-                  {actionLoading ? "Speichern..." : "Speichern"}
-                </button>
-              </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Cancel Dialog */}
         {showCancelDialog && (
