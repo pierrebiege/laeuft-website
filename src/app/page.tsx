@@ -1881,7 +1881,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 className="inline-block bg-foreground/10 text-sm px-4 py-2 rounded-full mb-6"
               >
-                Für Unternehmer, die mehr brauchen als Tools
+                Software, die passt. Nicht Software, die man anpasst.
               </motion.div>
 
               <motion.h1
@@ -1890,9 +1890,9 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
               >
-                Ich baue Systeme,
+                Gebaut für dein Business.
                 <br />
-                <span className="italic font-serif font-normal">die es noch nicht gibt.</span>
+                <span className="italic font-serif font-normal">Nicht für alle.</span>
               </motion.h1>
 
               <motion.p
@@ -1901,7 +1901,7 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xl text-muted mb-8 max-w-lg"
               >
-                Datenbanken. Automationen. Shops. Alles verbunden.
+                Massgeschneiderte Software für Unternehmer. Ein Entwickler. Direkt.
               </motion.p>
 
               <motion.div
