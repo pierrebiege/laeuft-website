@@ -17,6 +17,11 @@ import {
   SlidersHorizontal,
   X,
   Sparkles,
+  Clock,
+  MessageCircle,
+  CalendarClock,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 const STATUSES: PartnerStatus[] = [
@@ -50,20 +55,118 @@ function daysUntil(dateStr: string): number {
   return Math.ceil((d.getTime() - now.getTime()) / 86400000);
 }
 
+function daysSince(dateStr: string | null): number | null {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return Math.floor((now.getTime() - d.getTime()) / 86400000);
+}
+
+interface ActionItem {
+  icon: typeof AlertTriangle;
+  color: string;
+  label: string;
+  partnerId: string;
+  partnerName: string;
+  detail: string;
+  priority: number; // lower = more urgent
+}
+
+function computeActions(allPartners: Partner[]): ActionItem[] {
+  const actions: ActionItem[] = [];
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  for (const p of allPartners) {
+    if (p.status === "Closed" || p.status === "Declined") continue;
+
+    // Follow-up überfällig
+    if (p.follow_up_date) {
+      const days = daysUntil(p.follow_up_date);
+      if (days < 0) {
+        actions.push({
+          icon: AlertTriangle,
+          color: "text-red-600 dark:text-red-400",
+          label: "Follow-up überfällig",
+          partnerId: p.id,
+          partnerName: p.name,
+          detail: `seit ${Math.abs(days)} Tag${Math.abs(days) !== 1 ? "en" : ""}`,
+          priority: 0,
+        });
+      } else if (days <= 3 && days >= 0) {
+        actions.push({
+          icon: CalendarClock,
+          color: "text-amber-600 dark:text-amber-400",
+          label: "Follow-up bald",
+          partnerId: p.id,
+          partnerName: p.name,
+          detail: days === 0 ? "heute" : `in ${days} Tag${days !== 1 ? "en" : ""}`,
+          priority: 1,
+        });
+      }
+    }
+
+    // Lead/Negotiating ohne Kontakt seit > 7 Tagen
+    if (p.status === "Lead" || p.status === "Negotiating") {
+      const days = daysSince(p.last_contact);
+      if (days === null || days > 14) {
+        actions.push({
+          icon: MessageCircle,
+          color: "text-blue-600 dark:text-blue-400",
+          label: "Keine Rückmeldung",
+          partnerId: p.id,
+          partnerName: p.name,
+          detail: days === null ? "noch nie kontaktiert" : `seit ${days} Tagen`,
+          priority: days === null ? 2 : 3,
+        });
+      }
+
+      // Kein Follow-up gesetzt
+      if (!p.follow_up_date) {
+        actions.push({
+          icon: Clock,
+          color: "text-zinc-500",
+          label: "Kein Follow-up",
+          partnerId: p.id,
+          partnerName: p.name,
+          detail: "Follow-up Datum setzen",
+          priority: 4,
+        });
+      }
+    }
+  }
+
+  return actions.sort((a, b) => a.priority - b.priority);
+}
+
 export default function PartnersPage() {
   const [partners, setPartners] = useState<Partner[]>([]);
+  const [allPartners, setAllPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [typeFilter, setTypeFilter] = useState<string>("All");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [showActions, setShowActions] = useState(true);
 
   // Debounced search
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput), 300);
     return () => clearTimeout(t);
   }, [searchInput]);
+
+  // Load all partners once (for action board)
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("partners")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      setAllPartners((data || []) as Partner[]);
+    })();
+  }, []);
 
   const loadPartners = useCallback(async () => {
     let query = supabase
@@ -95,10 +198,11 @@ export default function PartnersPage() {
     loadPartners();
   }, [loadPartners]);
 
-  const activeCount = partners.filter((p) => p.status === "Active").length;
-  const pipelineCount = partners.filter(
+  const activeCount = allPartners.filter((p) => p.status === "Active").length;
+  const pipelineCount = allPartners.filter(
     (p) => p.status === "Lead" || p.status === "Negotiating"
   ).length;
+  const actions = computeActions(allPartners);
 
   return (
     <div>
@@ -109,7 +213,7 @@ export default function PartnersPage() {
             Partners
           </h1>
           <p className="text-sm text-zinc-500 mt-1">
-            {partners.length} Partner
+            {allPartners.length} Partner
             {activeCount > 0 && ` · ${activeCount} aktiv`}
             {pipelineCount > 0 && ` · ${pipelineCount} in Pipeline`}
           </p>
@@ -148,11 +252,63 @@ export default function PartnersPage() {
         </div>
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
           <div className="text-2xl font-bold text-zinc-900 dark:text-white">
-            {partners.filter((p) => p.partner_type === "Brand").length}
+            {allPartners.filter((p) => p.partner_type === "Brand").length}
           </div>
           <div className="text-xs text-zinc-500 mt-1">Brands</div>
         </div>
       </div>
+
+      {/* Action Board */}
+      {actions.length > 0 && (
+        <div className="mb-6">
+          <button
+            onClick={() => setShowActions(!showActions)}
+            className="flex items-center gap-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+          >
+            To Do
+            <span className="px-1.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full text-xs font-bold normal-case">
+              {actions.length}
+            </span>
+            {showActions ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+          </button>
+          {showActions && (
+            <div className="space-y-1.5">
+              {actions.slice(0, 8).map((a, idx) => {
+                const Icon = a.icon;
+                return (
+                  <Link
+                    key={`${a.partnerId}-${idx}`}
+                    href={`/admin/partners/${a.partnerId}`}
+                    className="flex items-center gap-3 px-3.5 py-2.5 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors group"
+                  >
+                    <Icon size={14} className={`${a.color} shrink-0`} />
+                    <div className="flex-1 min-w-0 flex items-center gap-2">
+                      <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">
+                        {a.partnerName}
+                      </span>
+                      <span className={`text-xs font-medium ${a.color}`}>
+                        {a.label}
+                      </span>
+                    </div>
+                    <span className="text-xs text-zinc-400 shrink-0">
+                      {a.detail}
+                    </span>
+                    <ArrowUpRight
+                      size={12}
+                      className="text-zinc-300 group-hover:text-zinc-500 shrink-0 transition-colors"
+                    />
+                  </Link>
+                );
+              })}
+              {actions.length > 8 && (
+                <div className="text-xs text-zinc-400 px-3.5 py-1">
+                  +{actions.length - 8} weitere
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Search + Filter */}
       <div className="flex items-center gap-3 mb-6">
