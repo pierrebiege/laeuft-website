@@ -82,7 +82,19 @@ export default function AIPartnerPage() {
     }
   }, [message]);
 
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+
   const processFile = (file: File) => {
+    // PDFs: save for attachment only, not for AI vision
+    if (file.type === "application/pdf") {
+      if (file.size > 20 * 1024 * 1024) {
+        setError("Datei zu gross (max. 20MB)");
+        return;
+      }
+      setPendingFiles((prev) => [...prev, file]);
+      return;
+    }
+
     const validTypes = [
       "image/jpeg",
       "image/png",
@@ -249,6 +261,50 @@ export default function AIPartnerPage() {
         });
       }
 
+      // Save pending PDF files as attachments
+      for (const file of pendingFiles) {
+        const filePath = `${data.id}/${Date.now()}_${file.name}`;
+        await supabase.storage
+          .from("partner-attachments")
+          .upload(filePath, file);
+        await supabase.from("partner_attachments").insert({
+          partner_id: data.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+          mime_type: file.type,
+          uploaded_by: user,
+        });
+      }
+
+      // Save uploaded images as partner attachments
+      for (const img of images) {
+        const ext = img.media_type.split("/")[1] || "png";
+        const fileName = img.name || `screenshot_${Date.now()}.${ext}`;
+        const filePath = `${data.id}/${Date.now()}_${fileName}`;
+
+        // Convert base64 to blob
+        const byteChars = atob(img.data);
+        const byteArray = new Uint8Array(byteChars.length);
+        for (let i = 0; i < byteChars.length; i++) {
+          byteArray[i] = byteChars.charCodeAt(i);
+        }
+        const blob = new Blob([byteArray], { type: img.media_type });
+
+        await supabase.storage
+          .from("partner-attachments")
+          .upload(filePath, blob);
+
+        await supabase.from("partner_attachments").insert({
+          partner_id: data.id,
+          file_name: fileName,
+          file_path: filePath,
+          file_size: blob.size,
+          mime_type: img.media_type,
+          uploaded_by: user,
+        });
+      }
+
       setStep("done");
 
       // Redirect to partner page after short delay
@@ -305,12 +361,12 @@ export default function AIPartnerPage() {
               </select>
             </div>
 
-            {/* Image previews */}
-            {images.length > 0 && (
+            {/* File previews */}
+            {(images.length > 0 || pendingFiles.length > 0) && (
               <div className="flex gap-2 flex-wrap">
                 {images.map((img, idx) => (
                   <div
-                    key={idx}
+                    key={`img-${idx}`}
                     className="relative group w-20 h-20 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700"
                   >
                     <img
@@ -320,6 +376,27 @@ export default function AIPartnerPage() {
                     />
                     <button
                       onClick={() => removeImage(idx)}
+                      className="absolute top-1 right-1 p-0.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                {pendingFiles.map((file, idx) => (
+                  <div
+                    key={`pdf-${idx}`}
+                    className="relative group w-20 h-20 rounded-lg border border-zinc-200 dark:border-zinc-700 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-800"
+                  >
+                    <span className="text-lg">📄</span>
+                    <span className="text-[10px] text-zinc-500 truncate max-w-[72px] px-1">
+                      {file.name}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setPendingFiles((prev) =>
+                          prev.filter((_, i) => i !== idx)
+                        )
+                      }
                       className="absolute top-1 right-1 p-0.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X size={12} />
@@ -348,7 +425,11 @@ export default function AIPartnerPage() {
                   e.preventDefault();
                   const files = e.dataTransfer.files;
                   for (const file of Array.from(files)) {
-                    if (file.type.startsWith("image/")) processFile(file);
+                    if (
+                      file.type.startsWith("image/") ||
+                      file.type === "application/pdf"
+                    )
+                      processFile(file);
                   }
                 }}
                 onKeyDown={(e) => {
@@ -363,7 +444,7 @@ export default function AIPartnerPage() {
                 <input
                   ref={fileRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.pdf"
                   multiple
                   className="hidden"
                   onChange={(e) => {
@@ -413,9 +494,9 @@ export default function AIPartnerPage() {
             )}
 
             <p className="text-xs text-zinc-400 text-center">
-              Cmd+Enter zum Senden. Screenshots per Cmd+V einfügen oder Bild
-              hochladen. Die AI erkennt automatisch Partner-Name, Kontaktdaten,
-              Instagram und mehr.
+              Cmd+Enter zum Senden. Screenshots per Cmd+V, Bilder und PDFs per
+              Drag & Drop. Erkennt neue Anfragen, laufende Verträge und
+              vergangene Deals automatisch.
             </p>
           </div>
         )}

@@ -32,6 +32,8 @@ import {
   Download,
   FileText,
   Receipt,
+  Image as ImageIcon,
+  File as FileIcon,
 } from "lucide-react";
 
 const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
@@ -596,41 +598,77 @@ export default function PartnerDetailPage({
             </div>
             {attachments.length > 0 && (
               <div className="space-y-2">
-                {attachments.map((att) => (
-                  <div
-                    key={att.id}
-                    className="flex items-center gap-3 px-3 py-2.5 bg-zinc-50 dark:bg-zinc-800 rounded-lg"
-                  >
-                    <Paperclip size={14} className="text-zinc-400 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      {att.url ? (
+                {attachments.map((att) => {
+                  const isImage = att.mime_type?.startsWith("image/");
+                  const isPdf = att.mime_type === "application/pdf";
+                  return (
+                    <div
+                      key={att.id}
+                      className="bg-zinc-50 dark:bg-zinc-800 rounded-lg overflow-hidden"
+                    >
+                      {/* Image preview */}
+                      {isImage && att.url && (
                         <a
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          download={att.file_name}
-                          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
+                          className="block"
                         >
-                          {att.file_name}
+                          <img
+                            src={att.url}
+                            alt={att.file_name}
+                            className="w-full max-h-[200px] object-contain bg-zinc-100 dark:bg-zinc-900 cursor-pointer hover:opacity-90 transition-opacity"
+                          />
                         </a>
-                      ) : (
-                        <span className="text-sm font-medium text-zinc-900 dark:text-white truncate block">
-                          {att.file_name}
-                        </span>
                       )}
-                      <div className="text-xs text-zinc-500">
-                        {formatSize(att.file_size)} · {att.uploaded_by} ·{" "}
-                        {new Date(att.created_at).toLocaleDateString("de-CH")}
+                      <div className="flex items-center gap-3 px-3 py-2.5">
+                        {isImage ? (
+                          <ImageIcon size={14} className="text-blue-400 shrink-0" />
+                        ) : isPdf ? (
+                          <FileIcon size={14} className="text-red-400 shrink-0" />
+                        ) : (
+                          <Paperclip size={14} className="text-zinc-400 shrink-0" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          {att.url ? (
+                            <a
+                              href={att.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
+                            >
+                              {att.file_name}
+                            </a>
+                          ) : (
+                            <span className="text-sm font-medium text-zinc-900 dark:text-white truncate block">
+                              {att.file_name}
+                            </span>
+                          )}
+                          <div className="text-xs text-zinc-500">
+                            {formatSize(att.file_size)} · {att.uploaded_by} ·{" "}
+                            {new Date(att.created_at).toLocaleDateString("de-CH")}
+                          </div>
+                        </div>
+                        {att.url && (
+                          <a
+                            href={att.url}
+                            download={att.file_name}
+                            className="p-1 text-zinc-400 hover:text-blue-500 transition-colors shrink-0"
+                            title="Herunterladen"
+                          >
+                            <Download size={14} />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => deleteAttachment(att)}
+                          className="p-1 text-zinc-400 hover:text-red-500 transition-colors shrink-0"
+                        >
+                          <X size={14} />
+                        </button>
                       </div>
                     </div>
-                    <button
-                      onClick={() => deleteAttachment(att)}
-                      className="p-1 text-zinc-400 hover:text-red-500 transition-colors shrink-0"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

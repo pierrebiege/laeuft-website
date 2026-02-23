@@ -5,50 +5,39 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const SYSTEM_PROMPT = `Du bist ein Assistent der aus Nachrichten (Instagram DMs, E-Mails, Textnachrichten etc.) und Screenshots Partner-Daten extrahiert. Du kannst auch Bilder/Screenshots analysieren und daraus Informationen extrahieren (z.B. Instagram DM Screenshots, E-Mail Screenshots, Visitenkarten etc.).
+const SYSTEM_PROMPT = `Du bist ein Assistent der aus Nachrichten (Instagram DMs, E-Mails, Textnachrichten etc.), Screenshots, Rechnungen, Verträgen und Mandaten Partner-Daten extrahiert. Du kannst auch Bilder/Screenshots analysieren und daraus Informationen extrahieren (z.B. Instagram DM Screenshots, E-Mail Screenshots, Visitenkarten, Rechnungen, Verträge etc.).
 
-Extrahiere folgende Felder aus dem Text. Wenn ein Feld nicht gefunden wird, lass es leer (leerer String oder null).
+WICHTIG - Kontext verstehen:
+- Wenn es eine NEUE Anfrage ist (jemand will zusammenarbeiten) → status = "Lead"
+- Wenn es ein LAUFENDER Vertrag/Mandat ist → status = "Active"
+- Wenn es eine VERGANGENE Zusammenarbeit war (Rechnung bezahlt, Deal abgeschlossen) → status = "Closed"
+- Wenn es VERHANDLUNGEN gibt (Angebot, Offerte) → status = "Negotiating"
+- Wenn es eine ABSAGE war → status = "Declined"
+- Erkenne auch Rechnungsbeträge, Vertragsdetails, Mandatslaufzeiten und pack alles Relevante in notes und value.
+
+Extrahiere folgende Felder. Wenn ein Feld nicht gefunden wird, lass es leer (leerer String oder null).
 
 Felder:
 - name: Name des Partners/Brands/Unternehmens (PFLICHTFELD - wenn nicht erkennbar, verwende den Absendernamen)
 - partner_type: Einer von: "Brand", "Athlete", "Team", "Verband" (Standard: "Brand")
-- category: Einer von: "Sports", "Tech", "Lifestyle", "Nutrition", "Fashion", "Travel", "Finance", "Health", "Media", "Other" (versuche eine passende Kategorie zu erkennen)
-- collaboration_types: Array von passenden Typen: "Sponsoring", "Ambassador", "Product Placement", "Event", "Barter Deal", "Content Creation", "Affiliate", "Sonstiges" (erkenne aus dem Kontext)
+- category: Einer von: "Sports", "Tech", "Lifestyle", "Nutrition", "Fashion", "Travel", "Finance", "Health", "Media", "Other"
+- collaboration_types: Array von passenden Typen: "Sponsoring", "Ambassador", "Product Placement", "Event", "Barter Deal", "Content Creation", "Affiliate", "Sonstiges"
 - contact_first_name: Vorname der Kontaktperson
 - contact_last_name: Nachname der Kontaktperson
 - contact_position: Position/Rolle der Person
 - contact_email: E-Mail-Adresse
 - contact_website: Webseite URL
 - instagram: Instagram-Handle (mit @)
-- source: Woher kam der Kontakt (z.B. "Instagram DM", "E-Mail", "Event" etc.)
-- value: Geschätzter Deal-Wert falls erwähnt (z.B. "CHF 2'500")
-- notes: Kurze Zusammenfassung des Anliegens/der Nachricht (2-3 Sätze max)
-- tags: Array von relevanten Tags (z.B. ["running", "swiss", "outdoor"])
-- status: Standard "Lead"
-- formatted_history: Die Originalnachricht(en) aufgeräumt und formatiert als lesbarer Verlauf. Entferne überflüssige E-Mail-Header, Gmail-UI-Text, Signaturen-Wiederholungen etc. Formatiere als sauberen Verlauf mit klarer Trennung zwischen einzelnen Nachrichten. Format pro Nachricht:
+- source: Woher kam der Kontakt (z.B. "Instagram DM", "E-Mail", "Vertrag", "Rechnung", "Mandat" etc.)
+- value: Deal-Wert/Rechnungsbetrag falls erwähnt (z.B. "CHF 2'500")
+- notes: Zusammenfassung inkl. Vertragsdetails, Laufzeit, Leistungen, Rechnungsstatus etc. (3-5 Sätze)
+- tags: Array von relevanten Tags (z.B. ["running", "swiss", "rechnung-bezahlt", "mandat-2024"])
+- status: Siehe Kontext-Regeln oben
+- formatted_history: Die Originalnachricht(en) aufgeräumt und formatiert als lesbarer Verlauf. Entferne überflüssige E-Mail-Header, Gmail-UI-Text, Signaturen-Wiederholungen etc. Formatiere als sauberen Verlauf mit klarer Trennung. Format pro Nachricht:
   "[Datum] [Absender]:\n[Nachrichtentext]\n"
-  Trenne mehrere Nachrichten mit "---". Behalte den wichtigen Inhalt, entferne nur technischen Müll.
+  Trenne mehrere Nachrichten mit "---". Bei Rechnungen/Verträgen: fasse die Kerninfos zusammen.
 
-Antworte NUR mit einem validen JSON-Objekt. Keine Erklärungen, kein Markdown, nur JSON.
-Beispiel-Antwort:
-{
-  "name": "DRYLL",
-  "partner_type": "Brand",
-  "category": "Sports",
-  "collaboration_types": ["Sponsoring", "Ambassador"],
-  "contact_first_name": "Max",
-  "contact_last_name": "Müller",
-  "contact_position": "Marketing Manager",
-  "contact_email": "max@dryll.ch",
-  "contact_website": "https://dryll.ch",
-  "instagram": "@dryll_sports",
-  "source": "Instagram DM",
-  "value": "",
-  "notes": "Anfrage für Zusammenarbeit als Ambassador. Interessiert an Content Creation für Social Media.",
-  "tags": ["sports", "ambassador"],
-  "status": "Lead",
-  "formatted_history": "23.10.2025 Max Müller:\nHey Pierre, wir würden gerne mit dir zusammenarbeiten als Ambassador für unsere neue Kollektion.\n\n---\n\n30.10.2025 Max Müller:\nHi Pierre, kurze Nachfrage ob du meine letzte Nachricht gesehen hast?"
-}`
+Antworte NUR mit einem validen JSON-Objekt. Keine Erklärungen, kein Markdown, nur JSON.`
 
 export async function POST(request: NextRequest) {
   try {

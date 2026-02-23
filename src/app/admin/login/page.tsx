@@ -37,7 +37,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/admin");
+        router.push(tab === "manager" ? "/admin/partners" : "/admin");
         router.refresh();
       } else {
         setError(data.error || "Login fehlgeschlagen");
