@@ -1,0 +1,328 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import type { Partner, PartnerType, PartnerStatus } from "@/lib/supabase";
+import {
+  Plus,
+  Search,
+  Building2,
+  User,
+  Users,
+  Landmark,
+  Paperclip,
+  ArrowUpRight,
+  AlertTriangle,
+} from "lucide-react";
+
+const STATUSES: PartnerStatus[] = [
+  "Lead",
+  "Negotiating",
+  "Active",
+  "Closed",
+  "Declined",
+];
+const TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
+
+const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
+  Lead: { bg: "bg-blue-50 dark:bg-blue-900/20", text: "text-blue-700 dark:text-blue-300" },
+  Negotiating: { bg: "bg-amber-50 dark:bg-amber-900/20", text: "text-amber-700 dark:text-amber-300" },
+  Active: { bg: "bg-emerald-50 dark:bg-emerald-900/20", text: "text-emerald-700 dark:text-emerald-300" },
+  Closed: { bg: "bg-zinc-100 dark:bg-zinc-800", text: "text-zinc-500 dark:text-zinc-400" },
+  Declined: { bg: "bg-red-50 dark:bg-red-900/20", text: "text-red-700 dark:text-red-300" },
+};
+
+const TYPE_ICONS: Record<string, typeof Building2> = {
+  Brand: Building2,
+  Athlete: User,
+  Team: Users,
+  Verband: Landmark,
+};
+
+function daysUntil(dateStr: string): number {
+  const d = new Date(dateStr);
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return Math.ceil((d.getTime() - now.getTime()) / 86400000);
+}
+
+export default function PartnersPage() {
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [typeFilter, setTypeFilter] = useState<string>("All");
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  // Debounced search
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const loadPartners = useCallback(async () => {
+    let query = supabase
+      .from("partners")
+      .select("*, partner_attachments(id)")
+      .order("updated_at", { ascending: false });
+
+    if (statusFilter !== "All") query = query.eq("status", statusFilter);
+    if (typeFilter !== "All") query = query.eq("partner_type", typeFilter);
+    if (search) {
+      query = query.or(
+        `name.ilike.%${search}%,contact_first_name.ilike.%${search}%,contact_last_name.ilike.%${search}%,contact_email.ilike.%${search}%`
+      );
+    }
+
+    const { data } = await query;
+
+    const mapped = (data || []).map((p) => ({
+      ...p,
+      attachment_count: p.partner_attachments?.length || 0,
+      partner_attachments: undefined,
+    }));
+
+    setPartners(mapped as Partner[]);
+    setLoading(false);
+  }, [statusFilter, typeFilter, search]);
+
+  useEffect(() => {
+    loadPartners();
+  }, [loadPartners]);
+
+  const activeCount = partners.filter((p) => p.status === "Active").length;
+  const pipelineCount = partners.filter(
+    (p) => p.status === "Lead" || p.status === "Negotiating"
+  ).length;
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+            Partners
+          </h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            {partners.length} Partner
+            {activeCount > 0 && ` · ${activeCount} aktiv`}
+            {pipelineCount > 0 && ` · ${pipelineCount} in Pipeline`}
+          </p>
+        </div>
+        <Link
+          href="/admin/partners/neu"
+          className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+        >
+          <Plus size={16} />
+          Neuer Partner
+        </Link>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+          <div className="text-2xl font-bold text-zinc-900 dark:text-white">
+            {activeCount}
+          </div>
+          <div className="text-xs text-zinc-500 mt-1">Aktiv</div>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+          <div className="text-2xl font-bold text-zinc-900 dark:text-white">
+            {pipelineCount}
+          </div>
+          <div className="text-xs text-zinc-500 mt-1">In Pipeline</div>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+          <div className="text-2xl font-bold text-zinc-900 dark:text-white">
+            {partners.filter((p) => p.partner_type === "Brand").length}
+          </div>
+          <div className="text-xs text-zinc-500 mt-1">Brands</div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+          />
+          <input
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+            placeholder="Suchen…"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+        {["All", ...STATUSES].map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              statusFilter === s
+                ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
+            }`}
+          >
+            {s === "All" ? "Alle" : s}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        {["All", ...TYPES].map((t) => (
+          <button
+            key={t}
+            onClick={() => setTypeFilter(t)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              typeFilter === t
+                ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
+            }`}
+          >
+            {t === "All" ? "Alle Typen" : t}
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <div className="text-center text-zinc-400 py-12">Laden…</div>
+      ) : partners.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="text-zinc-400 mb-2">Keine Partner gefunden</div>
+          <Link
+            href="/admin/partners/neu"
+            className="text-sm text-zinc-900 dark:text-white underline"
+          >
+            Ersten Partner erstellen
+          </Link>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-zinc-100 dark:border-zinc-800">
+                <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                  Partner
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                  Zusammenarbeit
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                  Kontakt
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                  Stand
+                </th>
+                <th className="text-center px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                  Anhang
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {partners.map((p) => {
+                const TypeIcon = TYPE_ICONS[p.partner_type] || Building2;
+                const sc = STATUS_COLORS[p.status] || STATUS_COLORS.Lead;
+                const overdue =
+                  p.follow_up_date &&
+                  daysUntil(p.follow_up_date) <= 0 &&
+                  p.status !== "Closed" &&
+                  p.status !== "Declined";
+                const contactName = [
+                  p.contact_first_name,
+                  p.contact_last_name,
+                ]
+                  .filter(Boolean)
+                  .join(" ");
+
+                return (
+                  <tr
+                    key={p.id}
+                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors"
+                  >
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/partners/${p.id}`}
+                        className="block"
+                      >
+                        <div className="flex items-center gap-2">
+                          <TypeIcon
+                            size={14}
+                            className="text-zinc-400 shrink-0"
+                          />
+                          <span className="font-medium text-zinc-900 dark:text-white">
+                            {p.name}
+                          </span>
+                          <ArrowUpRight
+                            size={12}
+                            className="text-zinc-300 shrink-0"
+                          />
+                        </div>
+                        <div className="text-xs text-zinc-500 mt-0.5">
+                          {p.category}
+                          {p.value ? ` · ${p.value}` : ""}
+                        </div>
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {(p.collaboration_types || []).slice(0, 2).map((ct) => (
+                          <span
+                            key={ct}
+                            className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded text-xs"
+                          >
+                            {ct}
+                          </span>
+                        ))}
+                        {(p.collaboration_types || []).length > 2 && (
+                          <span className="text-xs text-zinc-400">
+                            +{p.collaboration_types.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {contactName && (
+                        <div className="text-zinc-900 dark:text-white text-xs font-medium">
+                          {contactName}
+                        </div>
+                      )}
+                      {p.contact_email && (
+                        <div className="text-xs text-zinc-500 truncate max-w-[180px]">
+                          {p.contact_email}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${sc.bg} ${sc.text}`}
+                      >
+                        {p.status}
+                      </span>
+                      {overdue && (
+                        <div className="flex items-center gap-1 text-xs text-orange-600 mt-1">
+                          <AlertTriangle size={10} />
+                          Follow-up überfällig
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {(p.attachment_count || 0) > 0 && (
+                        <span className="inline-flex items-center gap-1 text-xs text-zinc-500">
+                          <Paperclip size={12} />
+                          {p.attachment_count}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -13,9 +13,12 @@ export default function InvoicesPage() {
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [remindingId, setRemindingId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   useEffect(() => {
     loadInvoices();
+    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
+    if (r && decodeURIComponent(r[1]) === "manager") setIsAdmin(false);
   }, []);
 
   async function sendInvoice(invoiceId: string) {
@@ -231,7 +234,7 @@ export default function InvoicesPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        {invoice.status === "draft" && (
+                        {invoice.status === "draft" && isAdmin && (
                           <button
                             onClick={() => sendInvoice(invoice.id)}
                             disabled={sendingId === invoice.id}
@@ -250,14 +253,16 @@ export default function InvoicesPage() {
                               <CreditCard size={14} />
                               Zahlung bestätigen
                             </button>
-                            <button
-                              onClick={() => sendReminder(invoice.id, 1)}
-                              disabled={remindingId === invoice.id}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors disabled:opacity-50"
-                            >
-                              <Bell size={14} />
-                              {remindingId === invoice.id ? "..." : "Erinnern"}
-                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => sendReminder(invoice.id, 1)}
+                                disabled={remindingId === invoice.id}
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors disabled:opacity-50"
+                              >
+                                <Bell size={14} />
+                                {remindingId === invoice.id ? "..." : "Erinnern"}
+                              </button>
+                            )}
                           </>
                         )}
                         {invoice.status === "overdue" && (
@@ -269,14 +274,16 @@ export default function InvoicesPage() {
                               <CreditCard size={14} />
                               Bezahlt
                             </button>
-                            <button
-                              onClick={() => sendReminder(invoice.id, 2)}
-                              disabled={remindingId === invoice.id}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
-                            >
-                              <Bell size={14} />
-                              {remindingId === invoice.id ? "..." : "Mahnung"}
-                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => sendReminder(invoice.id, 2)}
+                                disabled={remindingId === invoice.id}
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
+                              >
+                                <Bell size={14} />
+                                {remindingId === invoice.id ? "..." : "Mahnung"}
+                              </button>
+                            )}
                           </>
                         )}
                         <button

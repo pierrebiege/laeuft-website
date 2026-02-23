@@ -12,6 +12,13 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL('/admin/login', request.url)
       return NextResponse.redirect(loginUrl)
     }
+
+    // Block manager from accessing Buchhaltung
+    const role = request.cookies.get('admin_role')?.value
+    if (role === 'manager' && pathname.startsWith('/admin/buchhaltung')) {
+      const redirectUrl = new URL('/admin', request.url)
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
   return NextResponse.next()

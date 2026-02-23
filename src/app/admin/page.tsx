@@ -12,9 +12,12 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   useEffect(() => {
     loadOffers();
+    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
+    if (r && decodeURIComponent(r[1]) === "manager") setIsAdmin(false);
   }, []);
 
   async function sendOffer(offerId: string) {
@@ -195,14 +198,16 @@ export default function AdminPage() {
                       <div className="flex items-center justify-end gap-2">
                         {offer.status === "draft" && (
                           <>
-                            <button
-                              onClick={() => sendOffer(offer.id)}
-                              disabled={sendingId === offer.id}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
-                            >
-                              <Mail size={14} />
-                              {sendingId === offer.id ? "Sende..." : "Senden"}
-                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => sendOffer(offer.id)}
+                                disabled={sendingId === offer.id}
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+                              >
+                                <Mail size={14} />
+                                {sendingId === offer.id ? "Sende..." : "Senden"}
+                              </button>
+                            )}
                             <button
                               onClick={() => acceptInternally(offer.id)}
                               className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"

@@ -255,3 +255,63 @@ export interface MandateInvoice {
   created_at: string
   invoice?: Invoice
 }
+
+// Partner CRM Types
+export type PartnerType = 'Brand' | 'Athlete' | 'Team' | 'Verband'
+export type PartnerStatus = 'Lead' | 'Negotiating' | 'Active' | 'Closed' | 'Declined'
+export type CollaborationType =
+  | 'Sponsoring'
+  | 'Ambassador'
+  | 'Product Placement'
+  | 'Event'
+  | 'Barter Deal'
+  | 'Content Creation'
+  | 'Affiliate'
+  | 'Sonstiges'
+
+export interface Partner {
+  id: string
+  name: string
+  partner_type: PartnerType
+  category: string
+  collaboration_types: CollaborationType[]
+  contact_first_name: string
+  contact_last_name: string
+  contact_position: string
+  contact_email: string
+  contact_website: string
+  status: PartnerStatus
+  notes: string
+  status_date: string | null
+  instagram: string
+  source: string
+  value: string
+  follow_up_date: string | null
+  last_contact: string | null
+  tags: string[]
+  created_at: string
+  updated_at: string
+  history?: PartnerHistory[]
+  attachments?: PartnerAttachment[]
+  attachment_count?: number
+}
+
+export interface PartnerHistory {
+  id: string
+  partner_id: string
+  author: string
+  note: string
+  created_at: string
+}
+
+export interface PartnerAttachment {
+  id: string
+  partner_id: string
+  file_name: string
+  file_path: string
+  file_size: number
+  mime_type: string
+  uploaded_by: string
+  created_at: string
+  url?: string
+}
