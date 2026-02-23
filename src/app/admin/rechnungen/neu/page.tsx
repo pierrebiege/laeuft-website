@@ -18,13 +18,14 @@ function NewInvoiceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fromOfferId = searchParams.get("from_offer");
+  const preselectedClient = searchParams.get("client");
 
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   // Form state
-  const [selectedClientId, setSelectedClientId] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState(preselectedClient || "");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");

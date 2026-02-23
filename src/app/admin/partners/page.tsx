@@ -14,6 +14,8 @@ import {
   Paperclip,
   ArrowUpRight,
   AlertTriangle,
+  SlidersHorizontal,
+  X,
 } from "lucide-react";
 
 const STATUSES: PartnerStatus[] = [
@@ -54,6 +56,7 @@ export default function PartnersPage() {
   const [typeFilter, setTypeFilter] = useState<string>("All");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Debounced search
   useEffect(() => {
@@ -141,9 +144,9 @@ export default function PartnersPage() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <div className="relative flex-1 max-w-xs">
+      {/* Search + Filter */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="relative flex-1 max-w-sm">
           <Search
             size={16}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
@@ -155,35 +158,124 @@ export default function PartnersPage() {
             onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
-        {["All", ...STATUSES].map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              statusFilter === s
-                ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
-                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
-            }`}
-          >
-            {s === "All" ? "Alle" : s}
-          </button>
-        ))}
-      </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        {["All", ...TYPES].map((t) => (
+        {/* Filter Button */}
+        <div className="relative">
           <button
-            key={t}
-            onClick={() => setTypeFilter(t)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              typeFilter === t
-                ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
-                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+              statusFilter !== "All" || typeFilter !== "All"
+                ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-transparent"
+                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
             }`}
           >
-            {t === "All" ? "Alle Typen" : t}
+            <SlidersHorizontal size={14} />
+            Filter
+            {(statusFilter !== "All" || typeFilter !== "All") && (
+              <span className="ml-1 px-1.5 py-0.5 bg-white/20 dark:bg-black/20 rounded text-xs">
+                {(statusFilter !== "All" ? 1 : 0) + (typeFilter !== "All" ? 1 : 0)}
+              </span>
+            )}
           </button>
-        ))}
+
+          {/* Filter Dropdown */}
+          {showFilters && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setShowFilters(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-lg z-20 p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-white">
+                    Filter
+                  </span>
+                  {(statusFilter !== "All" || typeFilter !== "All") && (
+                    <button
+                      onClick={() => {
+                        setStatusFilter("All");
+                        setTypeFilter("All");
+                      }}
+                      className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    >
+                      Zurücksetzen
+                    </button>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-2">
+                    Status
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["All", ...STATUSES].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setStatusFilter(s)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          statusFilter === s
+                            ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        }`}
+                      >
+                        {s === "All" ? "Alle" : s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-2">
+                    Typ
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["All", ...TYPES].map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTypeFilter(t)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          typeFilter === t
+                            ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        }`}
+                      >
+                        {t === "All" ? "Alle" : t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Active filter chips */}
+        {(statusFilter !== "All" || typeFilter !== "All") && (
+          <div className="flex items-center gap-2">
+            {statusFilter !== "All" && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                {statusFilter}
+                <button
+                  onClick={() => setStatusFilter("All")}
+                  className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {typeFilter !== "All" && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                {typeFilter}
+                <button
+                  onClick={() => setTypeFilter("All")}
+                  className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Table */}

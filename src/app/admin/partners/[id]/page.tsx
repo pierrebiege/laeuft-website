@@ -28,6 +28,8 @@ import {
   Paperclip,
   Send,
   Download,
+  FileText,
+  Receipt,
 } from "lucide-react";
 
 const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
@@ -264,6 +266,65 @@ export default function PartnerDetailPage({
     loadAttachments();
   };
 
+  const getOrCreateClient = async (): Promise<string | null> => {
+    if (!partner) return null;
+
+    const contactName = [partner.contact_first_name, partner.contact_last_name]
+      .filter(Boolean)
+      .join(" ") || partner.name;
+
+    // Check if client with same email already exists
+    if (partner.contact_email) {
+      const { data: existing } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("email", partner.contact_email)
+        .single();
+
+      if (existing) return existing.id;
+    }
+
+    // Create new client from partner data
+    const { data: newClient, error } = await supabase
+      .from("clients")
+      .insert({
+        name: contactName,
+        company: partner.name,
+        email: partner.contact_email || "",
+      })
+      .select()
+      .single();
+
+    if (error || !newClient) {
+      alert("Fehler beim Erstellen des Kunden: " + (error?.message || ""));
+      return null;
+    }
+
+    // Log it
+    await supabase.from("partner_history").insert({
+      partner_id: id,
+      author: user,
+      note: `Kunde "${partner.name}" automatisch erstellt.`,
+    });
+    loadHistory();
+
+    return newClient.id;
+  };
+
+  const createOfferte = async () => {
+    const clientId = await getOrCreateClient();
+    if (clientId) {
+      router.push(`/admin/offerten/neu?client=${clientId}`);
+    }
+  };
+
+  const createRechnung = async () => {
+    const clientId = await getOrCreateClient();
+    if (clientId) {
+      router.push(`/admin/rechnungen/neu?client=${clientId}`);
+    }
+  };
+
   const deleteAttachment = async (att: PartnerAttachment) => {
     if (!confirm("Anhang löschen?")) return;
     await supabase.storage
@@ -344,6 +405,20 @@ export default function PartnerDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={createOfferte}
+            className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+          >
+            <FileText size={14} />
+            Offerte
+          </button>
+          <button
+            onClick={createRechnung}
+            className="flex items-center gap-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+          >
+            <Receipt size={14} />
+            Rechnung
+          </button>
           <button
             onClick={startEdit}
             className="flex items-center gap-2 px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase, Client, Service } from "@/lib/supabase";
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
@@ -13,15 +13,17 @@ interface OfferItem {
   amount: number;
 }
 
-export default function NewOfferPage() {
+function NewOfferContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedClient = searchParams.get("client");
   const [clients, setClients] = useState<Client[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   // Form state
-  const [selectedClientId, setSelectedClientId] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState(preselectedClient || "");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [validUntil, setValidUntil] = useState("");
@@ -319,5 +321,13 @@ export default function NewOfferPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function NewOfferPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-12 text-zinc-500">Laden...</div>}>
+      <NewOfferContent />
+    </Suspense>
   );
 }
