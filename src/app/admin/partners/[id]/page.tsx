@@ -124,6 +124,7 @@ export default function PartnerDetailPage({
   const fileRef = useRef<HTMLInputElement>(null);
   const [tagIn, setTagIn] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
   const [user, setUser] = useState("Pierre");
 
@@ -608,18 +609,16 @@ export default function PartnerDetailPage({
                     >
                       {/* Image preview */}
                       {isImage && att.url && (
-                        <a
-                          href={att.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block"
+                        <button
+                          onClick={() => setLightbox(att.url!)}
+                          className="block w-full"
                         >
                           <img
                             src={att.url}
                             alt={att.file_name}
                             className="w-full max-h-[200px] object-contain bg-zinc-100 dark:bg-zinc-900 cursor-pointer hover:opacity-90 transition-opacity"
                           />
-                        </a>
+                        </button>
                       )}
                       <div className="flex items-center gap-3 px-3 py-2.5">
                         {isImage ? (
@@ -631,14 +630,23 @@ export default function PartnerDetailPage({
                         )}
                         <div className="flex-1 min-w-0">
                           {att.url ? (
-                            <a
-                              href={att.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
-                            >
-                              {att.file_name}
-                            </a>
+                            isImage ? (
+                              <button
+                                onClick={() => setLightbox(att.url!)}
+                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block text-left"
+                              >
+                                {att.file_name}
+                              </button>
+                            ) : (
+                              <a
+                                href={att.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
+                              >
+                                {att.file_name}
+                              </a>
+                            )
                           ) : (
                             <span className="text-sm font-medium text-zinc-900 dark:text-white truncate block">
                               {att.file_name}
@@ -816,6 +824,27 @@ export default function PartnerDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-pointer"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+          >
+            <X size={24} />
+          </button>
+          <img
+            src={lightbox}
+            alt="Vorschau"
+            className="max-w-full max-h-[90vh] object-contain rounded-lg cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editing && (
