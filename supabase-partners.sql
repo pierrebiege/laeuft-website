@@ -43,6 +43,10 @@ CREATE TABLE partner_history (
   partner_id  UUID NOT NULL REFERENCES partners(id) ON DELETE CASCADE,
   author      TEXT NOT NULL,
   note        TEXT NOT NULL,
+  channel     TEXT DEFAULT 'note'
+              CHECK (channel IN ('email', 'instagram', 'phone', 'meeting', 'note', 'initial')),
+  direction   TEXT DEFAULT 'internal'
+              CHECK (direction IN ('outgoing', 'incoming', 'internal')),
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 

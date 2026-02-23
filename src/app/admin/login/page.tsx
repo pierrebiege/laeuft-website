@@ -77,7 +77,7 @@ export default function LoginPage() {
                 : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             }`}
           >
-            Admin
+            Pierre
           </button>
           <button
             type="button"
@@ -88,7 +88,7 @@ export default function LoginPage() {
                 : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             }`}
           >
-            Manager
+            Anes
           </button>
         </div>
 
@@ -151,7 +151,7 @@ export default function LoginPage() {
         <p className="text-center text-xs text-zinc-400 mt-6">
           {tab === "admin"
             ? "Google Authenticator oder ähnliche App verwenden"
-            : "Manager-Zugang ohne 2FA"}
+            : "Zugang ohne 2FA"}
         </p>
       </div>
     </div>

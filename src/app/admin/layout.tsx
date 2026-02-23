@@ -129,9 +129,9 @@ export default function AdminLayout({
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-zinc-900 dark:text-white truncate">
-                  {role === "admin" ? "Pierre" : "Manager"}
+                  {role === "admin" ? "Pierre" : "Anes"}
                 </div>
-                <div className="text-xs text-zinc-400 capitalize">{role}</div>
+                <div className="text-xs text-zinc-400">{role === "admin" ? "Admin" : "Manager"}</div>
               </div>
             )}
             <button

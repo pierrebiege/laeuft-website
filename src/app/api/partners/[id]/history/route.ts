@@ -27,11 +27,17 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const { author, note } = await request.json()
+  const { author, note, channel, direction } = await request.json()
 
   const { data, error } = await supabase
     .from('partner_history')
-    .insert({ partner_id: id, author, note })
+    .insert({
+      partner_id: id,
+      author,
+      note,
+      channel: channel || 'note',
+      direction: direction || 'internal',
+    })
     .select()
     .single()
 

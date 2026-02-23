@@ -63,7 +63,7 @@ export default function NewPartnerPage() {
 
   useEffect(() => {
     const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setUser("Manager");
+    if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
   }, []);
 
   const [f, setF] = useState<Partial<Partner>>({

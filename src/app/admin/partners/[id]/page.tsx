@@ -10,6 +10,8 @@ import type {
   PartnerHistory,
   PartnerAttachment,
   CollaborationType,
+  HistoryChannel,
+  HistoryDirection,
 } from "@/lib/supabase";
 import {
   ArrowLeft,
@@ -57,6 +59,21 @@ const TYPE_ICONS: Record<string, typeof Building2> = {
   Brand: Building2, Athlete: User, Team: Users, Verband: Landmark,
 };
 
+const CHANNELS: { value: HistoryChannel; label: string; icon: string }[] = [
+  { value: "email", label: "E-Mail", icon: "📩" },
+  { value: "instagram", label: "Instagram", icon: "📸" },
+  { value: "phone", label: "Telefon", icon: "📞" },
+  { value: "meeting", label: "Meeting", icon: "🤝" },
+  { value: "note", label: "Notiz", icon: "📝" },
+  { value: "initial", label: "Erstanfrage", icon: "🚀" },
+];
+
+const DIRECTIONS: { value: HistoryDirection; label: string; icon: string }[] = [
+  { value: "outgoing", label: "Ausgehend", icon: "→" },
+  { value: "incoming", label: "Eingehend", icon: "←" },
+  { value: "internal", label: "Intern", icon: "—" },
+];
+
 function fmtDate(d: string | null): string {
   if (!d) return "–";
   return new Date(d).toLocaleDateString("de-CH", {
@@ -97,6 +114,8 @@ export default function PartnerDetailPage({
   const [history, setHistory] = useState<PartnerHistory[]>([]);
   const [attachments, setAttachments] = useState<PartnerAttachment[]>([]);
   const [note, setNote] = useState("");
+  const [noteChannel, setNoteChannel] = useState<HistoryChannel>("note");
+  const [noteDirection, setNoteDirection] = useState<HistoryDirection>("internal");
   const [noteLoading, setNoteLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [drag, setDrag] = useState(false);
@@ -108,7 +127,7 @@ export default function PartnerDetailPage({
 
   useEffect(() => {
     const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setUser("Manager");
+    if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
   }, []);
 
   const loadPartner = async () => {
@@ -232,14 +251,21 @@ export default function PartnerDetailPage({
       partner_id: id,
       author: user,
       note: note.trim(),
+      channel: noteChannel,
+      direction: noteDirection,
     });
 
-    await supabase
-      .from("partners")
-      .update({ last_contact: today() })
-      .eq("id", id);
+    // Update last_contact if it's not an internal note
+    if (noteDirection !== "internal") {
+      await supabase
+        .from("partners")
+        .update({ last_contact: today() })
+        .eq("id", id);
+    }
 
     setNote("");
+    setNoteChannel("note");
+    setNoteDirection("internal");
     setNoteLoading(false);
     loadHistory();
     loadPartner();
@@ -614,48 +640,112 @@ export default function PartnerDetailPage({
             <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
               Aktivitäts-Log
             </h3>
-            <div className="flex gap-2 mb-4">
-              <input
-                className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                placeholder="Notiz / Update hinzufügen…"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") addNote();
-                }}
-              />
-              <button
-                onClick={addNote}
-                disabled={noteLoading || !note.trim()}
-                className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
-              >
-                <Send size={14} />
-                Log
-              </button>
-            </div>
-            <div className="space-y-3 max-h-[400px] overflow-y-auto">
-              {history.map((h) => (
-                <div
-                  key={h.id}
-                  className="flex items-start gap-3 py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0"
+
+            {/* New entry form */}
+            <div className="space-y-2 mb-4">
+              <div className="flex gap-2">
+                <select
+                  value={noteChannel}
+                  onChange={(e) => setNoteChannel(e.target.value as HistoryChannel)}
+                  className="px-2.5 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
                 >
-                  <div className="text-xs text-zinc-400 whitespace-nowrap pt-0.5">
-                    {new Date(h.created_at).toLocaleDateString("de-CH")}
-                  </div>
-                  <div
-                    className={`text-xs font-semibold whitespace-nowrap pt-0.5 ${
-                      h.author === "Pierre"
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-violet-600 dark:text-violet-400"
-                    }`}
-                  >
-                    {h.author}
-                  </div>
-                  <div className="text-sm text-zinc-700 dark:text-zinc-300 flex-1">
-                    {h.note}
-                  </div>
+                  {CHANNELS.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.icon} {c.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg overflow-hidden">
+                  {DIRECTIONS.map((d) => (
+                    <button
+                      key={d.value}
+                      type="button"
+                      onClick={() => setNoteDirection(d.value)}
+                      title={d.label}
+                      className={`px-2.5 py-2 text-sm font-medium transition-colors ${
+                        noteDirection === d.value
+                          ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                          : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      }`}
+                    >
+                      {d.icon}
+                    </button>
+                  ))}
                 </div>
-              ))}
+                <span className="self-center text-xs text-zinc-400 whitespace-nowrap">
+                  {DIRECTIONS.find((d) => d.value === noteDirection)?.label}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                  placeholder="Was ist passiert?"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") addNote();
+                  }}
+                />
+                <button
+                  onClick={addNote}
+                  disabled={noteLoading || !note.trim()}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                >
+                  <Send size={14} />
+                  Log
+                </button>
+              </div>
+            </div>
+
+            {/* History entries */}
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {history.map((h) => {
+                const ch = CHANNELS.find((c) => c.value === h.channel);
+                const dir = DIRECTIONS.find((d) => d.value === h.direction);
+                return (
+                  <div
+                    key={h.id}
+                    className="flex items-start gap-2.5 py-2.5 px-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50"
+                  >
+                    <span className="text-sm pt-0.5" title={ch?.label}>
+                      {ch?.icon || "📝"}
+                    </span>
+                    <span
+                      className={`text-xs font-bold pt-1 ${
+                        h.direction === "outgoing"
+                          ? "text-blue-500"
+                          : h.direction === "incoming"
+                          ? "text-emerald-500"
+                          : "text-zinc-400"
+                      }`}
+                      title={dir?.label}
+                    >
+                      {dir?.icon || "—"}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span
+                          className={`text-xs font-semibold ${
+                            h.author === "Pierre"
+                              ? "text-blue-600 dark:text-blue-400"
+                              : h.author === "Anes"
+                              ? "text-violet-600 dark:text-violet-400"
+                              : "text-zinc-500"
+                          }`}
+                        >
+                          {h.author}
+                        </span>
+                        <span className="text-xs text-zinc-400">
+                          {new Date(h.created_at).toLocaleDateString("de-CH")}
+                        </span>
+                      </div>
+                      <div className="text-sm text-zinc-700 dark:text-zinc-300">
+                        {h.note}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
               {history.length === 0 && (
                 <div className="text-sm text-zinc-400 py-2">
                   Noch keine Einträge.

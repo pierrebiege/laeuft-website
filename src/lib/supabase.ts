@@ -296,11 +296,16 @@ export interface Partner {
   attachment_count?: number
 }
 
+export type HistoryChannel = 'email' | 'instagram' | 'phone' | 'meeting' | 'note' | 'initial'
+export type HistoryDirection = 'outgoing' | 'incoming' | 'internal'
+
 export interface PartnerHistory {
   id: string
   partner_id: string
   author: string
   note: string
+  channel: HistoryChannel
+  direction: HistoryDirection
   created_at: string
 }
 
