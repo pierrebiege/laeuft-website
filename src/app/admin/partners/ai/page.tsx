@@ -66,6 +66,7 @@ export default function AIPartnerPage() {
   // Extracted data
   const [extracted, setExtracted] = useState<Partial<Partner> | null>(null);
   const [originalMessage, setOriginalMessage] = useState("");
+  const [formattedHistory, setFormattedHistory] = useState("");
 
   useEffect(() => {
     const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
@@ -176,6 +177,7 @@ export default function AIPartnerPage() {
         follow_up_date: null,
         last_contact: today(),
       });
+      setFormattedHistory(data.formatted_history || "");
       setStep("review");
     } catch (err) {
       setError(
@@ -226,23 +228,26 @@ export default function AIPartnerPage() {
         direction: "internal",
       });
 
-      // Save original message as history entry
-      const historyChannel =
-        source === "Instagram DM"
-          ? "instagram"
-          : source === "E-Mail"
-            ? "email"
-            : source === "Telefon"
-              ? "phone"
-              : "note";
+      // Save formatted conversation as history entry
+      const historyNote = formattedHistory || originalMessage;
+      if (historyNote.trim()) {
+        const historyChannel =
+          source === "Instagram DM"
+            ? "instagram"
+            : source === "E-Mail"
+              ? "email"
+              : source === "Telefon"
+                ? "phone"
+                : "note";
 
-      await supabase.from("partner_history").insert({
-        partner_id: data.id,
-        author: user,
-        note: originalMessage,
-        channel: historyChannel,
-        direction: "incoming",
-      });
+        await supabase.from("partner_history").insert({
+          partner_id: data.id,
+          author: user,
+          note: historyNote,
+          channel: historyChannel,
+          direction: "incoming",
+        });
+      }
 
       setStep("done");
 
@@ -418,28 +423,30 @@ export default function AIPartnerPage() {
         {/* Review Step */}
         {(step === "review" || step === "saving") && extracted && (
           <div className="space-y-4">
-            {/* Original message/images preview */}
+            {/* Formatted conversation history */}
             <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4">
-              <div className="text-xs font-medium text-zinc-500 mb-2">
-                {images.length > 0 ? "Originaldaten" : "Originalnachricht"}
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs font-medium text-zinc-500">
+                  Konversation (wird im Aktivitäts-Log gespeichert)
+                </div>
+                {images.length > 0 && (
+                  <div className="flex gap-1.5">
+                    {images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img.preview}
+                        alt={img.name}
+                        className="w-8 h-8 rounded object-cover border border-zinc-200 dark:border-zinc-700"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-              {images.length > 0 && (
-                <div className="flex gap-2 flex-wrap mb-2">
-                  {images.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img.preview}
-                      alt={img.name}
-                      className="w-16 h-16 rounded-lg object-cover border border-zinc-200 dark:border-zinc-700"
-                    />
-                  ))}
-                </div>
-              )}
-              {originalMessage && (
-                <div className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap max-h-[120px] overflow-y-auto">
-                  {originalMessage}
-                </div>
-              )}
+              <textarea
+                value={formattedHistory || originalMessage}
+                onChange={(e) => setFormattedHistory(e.target.value)}
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none min-h-[100px] max-h-[200px]"
+              />
             </div>
 
             {/* Extracted fields */}

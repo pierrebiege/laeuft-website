@@ -25,6 +25,9 @@ Felder:
 - notes: Kurze Zusammenfassung des Anliegens/der Nachricht (2-3 Sätze max)
 - tags: Array von relevanten Tags (z.B. ["running", "swiss", "outdoor"])
 - status: Standard "Lead"
+- formatted_history: Die Originalnachricht(en) aufgeräumt und formatiert als lesbarer Verlauf. Entferne überflüssige E-Mail-Header, Gmail-UI-Text, Signaturen-Wiederholungen etc. Formatiere als sauberen Verlauf mit klarer Trennung zwischen einzelnen Nachrichten. Format pro Nachricht:
+  "[Datum] [Absender]:\n[Nachrichtentext]\n"
+  Trenne mehrere Nachrichten mit "---". Behalte den wichtigen Inhalt, entferne nur technischen Müll.
 
 Antworte NUR mit einem validen JSON-Objekt. Keine Erklärungen, kein Markdown, nur JSON.
 Beispiel-Antwort:
@@ -43,7 +46,8 @@ Beispiel-Antwort:
   "value": "",
   "notes": "Anfrage für Zusammenarbeit als Ambassador. Interessiert an Content Creation für Social Media.",
   "tags": ["sports", "ambassador"],
-  "status": "Lead"
+  "status": "Lead",
+  "formatted_history": "23.10.2025 Max Müller:\nHey Pierre, wir würden gerne mit dir zusammenarbeiten als Ambassador für unsere neue Kollektion.\n\n---\n\n30.10.2025 Max Müller:\nHi Pierre, kurze Nachfrage ob du meine letzte Nachricht gesehen hast?"
 }`
 
 export async function POST(request: NextRequest) {
@@ -83,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
+      max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content }],
     })
