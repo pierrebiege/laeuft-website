@@ -188,7 +188,7 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
             <div>
               <div className="text-xs text-zinc-400 uppercase tracking-wide mb-2">Von</div>
               <div className="text-sm text-zinc-700 dark:text-zinc-300">
-                <div className="font-medium">Pierre-Laurent Biege</div>
+                <div className="font-medium">Pierre Biege</div>
                 <div>Tschangaladongastrasse 3</div>
                 <div>3955 Albinen</div>
                 <div className="mt-2">pierre@laeuft.ch</div>
@@ -382,7 +382,7 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-sm text-zinc-500">
             <p>
-              Pierre-Laurent Biege | Digital Systems & Branding | Tschangaladongastrasse 3 | 3955 Albinen
+              Pierre Biege | Digital Systems & Branding | Tschangaladongastrasse 3 | 3955 Albinen
             </p>
             <p className="mt-1">
               079 853 36 72 | pierre@laeuft.ch | laeuft.ch

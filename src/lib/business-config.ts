@@ -1,7 +1,7 @@
 // Business configuration for invoices and QR-bills
 export const businessConfig = {
   // Company info
-  name: "Pierre-Laurent Biege",
+  name: "Pierre Biege",
   company: "Läuft.",
   tagline: "Digital Systems & Branding",
 

@@ -298,7 +298,7 @@ export default function PublicOfferPage() {
         <div className="text-center mt-8 text-sm text-zinc-400 print:mt-6 print:text-zinc-600">
           <p className="print:hidden">Bei Fragen: pierre@laeuft.ch</p>
           <p className="hidden print:block">
-            Pierre-Laurent Biege | Tschangaladongastrasse 3 | 3955 Albinen | pierre@laeuft.ch | 079 853 36 72
+            Pierre Biege | Tschangaladongastrasse 3 | 3955 Albinen | pierre@laeuft.ch | 079 853 36 72
           </p>
         </div>
       </motion.div>

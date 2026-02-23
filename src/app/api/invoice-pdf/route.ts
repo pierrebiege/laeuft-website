@@ -5,7 +5,7 @@ import QRCode from 'qrcode'
 
 // Business info
 const business = {
-  name: "Pierre-Laurent Biege",
+  name: "Pierre Biege",
   company: "Läuft. Digital Systems & Branding",
   street: "Tschangaladongastrasse 3",
   location: "3955 Albinen",
@@ -18,7 +18,7 @@ const business = {
 // Creditor info for QR code
 const creditor = {
   iban: "CH7280808007850888875",
-  name: "Pierre-Laurent Biege",
+  name: "Pierre Biege",
   street: "Tschangaladongastrasse",
   buildingNumber: "3",
   postalCode: "3955",

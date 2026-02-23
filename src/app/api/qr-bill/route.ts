@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 // Creditor information (you - the payment recipient)
 const creditor = {
   iban: "CH7280808007850888875",
-  name: "Pierre-Laurent Biege",
+  name: "Pierre Biege",
   street: "Tschangaladongastrasse",
   buildingNumber: "3",
   postalCode: "3955",

@@ -154,11 +154,11 @@ export async function POST(request: NextRequest) {
 
   <p style="margin-top: 32px;">
     Freundliche Grüsse<br>
-    <strong>Pierre-Laurent Biege</strong>
+    <strong>Pierre Biege</strong>
   </p>
 
   <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e4e4e7; color: #a1a1aa; font-size: 12px;">
-    <p style="margin: 0;">Pierre-Laurent Biege | Digital Systems & Branding</p>
+    <p style="margin: 0;">Pierre Biege | Digital Systems & Branding</p>
     <p style="margin: 4px 0 0 0;">Tschangaladongastrasse 3 | 3955 Albinen</p>
     <p style="margin: 4px 0 0 0;">079 853 36 72 | pierre@laeuft.ch | laeuft.ch</p>
   </div>
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
 
     // Send email
     await transporter.sendMail({
-      from: `"Pierre-Laurent Biege" <${process.env.SMTP_USER || 'pierre@laeuft.ch'}>`,
+      from: `"Pierre Biege" <${process.env.SMTP_USER || 'pierre@laeuft.ch'}>`,
       to: client.email,
       subject,
       html: emailHtml,
