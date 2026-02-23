@@ -699,53 +699,19 @@ export default function PartnerDetailPage({
 
             {/* History entries */}
             <div className="space-y-2 max-h-[400px] overflow-y-auto">
-              {history.map((h) => {
-                const ch = CHANNELS.find((c) => c.value === h.channel);
-                const dir = DIRECTIONS.find((d) => d.value === h.direction);
-                return (
-                  <div
-                    key={h.id}
-                    className="flex items-start gap-2.5 py-2.5 px-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50"
-                  >
-                    <span className="text-sm pt-0.5" title={ch?.label}>
-                      {ch?.icon || "📝"}
-                    </span>
-                    <span
-                      className={`text-xs font-bold pt-1 ${
-                        h.direction === "outgoing"
-                          ? "text-blue-500"
-                          : h.direction === "incoming"
-                          ? "text-emerald-500"
-                          : "text-zinc-400"
-                      }`}
-                      title={dir?.label}
-                    >
-                      {dir?.icon || "—"}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span
-                          className={`text-xs font-semibold ${
-                            h.author === "Pierre"
-                              ? "text-blue-600 dark:text-blue-400"
-                              : h.author === "Anes"
-                              ? "text-violet-600 dark:text-violet-400"
-                              : "text-zinc-500"
-                          }`}
-                        >
-                          {h.author}
-                        </span>
-                        <span className="text-xs text-zinc-400">
-                          {new Date(h.created_at).toLocaleDateString("de-CH")}
-                        </span>
-                      </div>
-                      <div className="text-sm text-zinc-700 dark:text-zinc-300">
-                        {h.note}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {history.map((h) => (
+                <HistoryEntry
+                  key={h.id}
+                  entry={h}
+                  onAuthorChange={async (newAuthor) => {
+                    await supabase
+                      .from("partner_history")
+                      .update({ author: newAuthor })
+                      .eq("id", h.id);
+                    loadHistory();
+                  }}
+                />
+              ))}
               {history.length === 0 && (
                 <div className="text-sm text-zinc-400 py-2">
                   Noch keine Einträge.
@@ -1128,6 +1094,92 @@ export default function PartnerDetailPage({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// History entry with editable author
+function HistoryEntry({
+  entry,
+  onAuthorChange,
+}: {
+  entry: PartnerHistory;
+  onAuthorChange: (newAuthor: string) => Promise<void>;
+}) {
+  const [editingAuthor, setEditingAuthor] = useState(false);
+  const ch = CHANNELS.find((c) => c.value === entry.channel);
+  const dir = DIRECTIONS.find((d) => d.value === entry.direction);
+
+  return (
+    <div className="flex items-start gap-2.5 py-2.5 px-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
+      <span className="text-sm pt-0.5" title={ch?.label}>
+        {ch?.icon || "\ud83d\udcdd"}
+      </span>
+      <span
+        className={`text-xs font-bold pt-1 ${
+          entry.direction === "outgoing"
+            ? "text-blue-500"
+            : entry.direction === "incoming"
+            ? "text-emerald-500"
+            : "text-zinc-400"
+        }`}
+        title={dir?.label}
+      >
+        {dir?.icon || "\u2014"}
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <div className="relative">
+            <button
+              onClick={() => setEditingAuthor(!editingAuthor)}
+              className={`text-xs font-semibold hover:underline cursor-pointer ${
+                entry.author === "Pierre"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : entry.author === "Anes"
+                  ? "text-violet-600 dark:text-violet-400"
+                  : "text-zinc-500"
+              }`}
+              title="Klicken um Autor zu ändern"
+            >
+              {entry.author}
+            </button>
+            {editingAuthor && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setEditingAuthor(false)}
+                />
+                <div className="absolute left-0 top-full mt-1 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-lg z-20 py-1 min-w-[100px]">
+                  {["Pierre", "Anes"].map((name) => (
+                    <button
+                      key={name}
+                      onClick={async () => {
+                        if (name !== entry.author) {
+                          await onAuthorChange(name);
+                        }
+                        setEditingAuthor(false);
+                      }}
+                      className={`block w-full text-left px-3 py-1.5 text-xs font-medium transition-colors ${
+                        name === entry.author
+                          ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                          : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          <span className="text-xs text-zinc-400">
+            {new Date(entry.created_at).toLocaleDateString("de-CH")}
+          </span>
+        </div>
+        <div className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+          {entry.note}
+        </div>
+      </div>
     </div>
   );
 }
