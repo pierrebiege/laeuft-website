@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   SlidersHorizontal,
   X,
+  Sparkles,
 } from "lucide-react";
 
 const STATUSES: PartnerStatus[] = [
@@ -113,13 +114,22 @@ export default function PartnersPage() {
             {pipelineCount > 0 && ` · ${pipelineCount} in Pipeline`}
           </p>
         </div>
-        <Link
-          href="/admin/partners/neu"
-          className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
-        >
-          <Plus size={16} />
-          Neuer Partner
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/partners/ai"
+            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-500 to-indigo-600 text-white rounded-lg text-sm font-medium hover:from-violet-600 hover:to-indigo-700 transition-all"
+          >
+            <Sparkles size={16} />
+            AI Erfassung
+          </Link>
+          <Link
+            href="/admin/partners/neu"
+            className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+          >
+            <Plus size={16} />
+            Neuer Partner
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
