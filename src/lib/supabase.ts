@@ -268,6 +268,9 @@ export type CollaborationType =
   | 'Content Creation'
   | 'Affiliate'
   | 'Sonstiges'
+export type PotentialLevel = 'Hoch' | 'Mittel' | 'Tief'
+export type FitLevel = 'Hoch' | 'Mittel' | 'Tief'
+export type PriorityLevel = 'A' | 'B' | 'C'
 
 export interface Partner {
   id: string
@@ -289,6 +292,8 @@ export interface Partner {
   follow_up_date: string | null
   last_contact: string | null
   tags: string[]
+  potenzial: PotentialLevel | null
+  fit: FitLevel | null
   created_at: string
   updated_at: string
   history?: PartnerHistory[]
@@ -320,3 +325,61 @@ export interface PartnerAttachment {
   created_at: string
   url?: string
 }
+
+// Priority calculation
+const PRIORITY_MATRIX: Record<string, PriorityLevel> = {
+  'Hoch-Hoch': 'A', 'Hoch-Mittel': 'A', 'Hoch-Tief': 'B',
+  'Mittel-Hoch': 'A', 'Mittel-Mittel': 'B', 'Mittel-Tief': 'C',
+  'Tief-Hoch': 'B', 'Tief-Mittel': 'C', 'Tief-Tief': 'C',
+}
+
+export function calcPriority(
+  potenzial: PotentialLevel | null | undefined,
+  fit: FitLevel | null | undefined
+): PriorityLevel | null {
+  if (!potenzial || !fit) return null
+  return PRIORITY_MATRIX[`${potenzial}-${fit}`] || null
+}
+
+export function priorityOrder(p: PriorityLevel | null): number {
+  if (p === 'A') return 1
+  if (p === 'B') return 2
+  if (p === 'C') return 3
+  return 99
+}
+
+export function parseValue(v: string | null | undefined): number {
+  if (!v) return 0
+  return parseFloat(v.replace(/[^0-9.]/g, '')) || 0
+}
+
+export const POTENTIAL_LEVELS: PotentialLevel[] = ['Hoch', 'Mittel', 'Tief']
+export const FIT_LEVELS: FitLevel[] = ['Hoch', 'Mittel', 'Tief']
+
+export const PRIORITY_COLORS: Record<PriorityLevel, { bg: string; text: string }> = {
+  A: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-300' },
+  B: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300' },
+  C: { bg: 'bg-zinc-100 dark:bg-zinc-800', text: 'text-zinc-500 dark:text-zinc-400' },
+}
+
+export const POTENTIAL_COLORS: Record<PotentialLevel, { bg: string; text: string }> = {
+  Hoch: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-300' },
+  Mittel: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300' },
+  Tief: { bg: 'bg-zinc-100 dark:bg-zinc-800', text: 'text-zinc-500 dark:text-zinc-400' },
+}
+
+export const FIT_COLORS: Record<FitLevel, { bg: string; text: string }> = {
+  Hoch: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-300' },
+  Mittel: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300' },
+  Tief: { bg: 'bg-zinc-100 dark:bg-zinc-800', text: 'text-zinc-500 dark:text-zinc-400' },
+}
+
+export const SORT_OPTIONS = [
+  { value: 'priority', label: 'Priorität' },
+  { value: 'value', label: 'Deal-Wert' },
+  { value: 'last_contact', label: 'Letzter Kontakt' },
+  { value: 'follow_up', label: 'Follow-up' },
+  { value: 'newest', label: 'Neueste' },
+] as const
+
+export type SortOption = (typeof SORT_OPTIONS)[number]['value']

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { Partner, PartnerType, PartnerStatus, CollaborationType } from "@/lib/supabase";
+import type { Partner, PartnerType, PartnerStatus, CollaborationType, SortOption } from "@/lib/supabase";
+import { calcPriority, priorityOrder, parseValue, POTENTIAL_LEVELS, FIT_LEVELS, SORT_OPTIONS, PRIORITY_COLORS } from "@/lib/supabase";
 import {
   Plus,
   Search,
@@ -229,6 +230,9 @@ export default function PartnersPage() {
   const [typeFilter, setTypeFilter] = useState<string>("All");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [potenzialFilter, setPotenzialFilter] = useState<string>("All");
+  const [fitFilter, setFitFilter] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [showActions, setShowActions] = useState(true);
 
@@ -289,6 +293,8 @@ export default function PartnersPage() {
 
     if (statusFilter !== "All") query = query.eq("status", statusFilter);
     if (typeFilter !== "All") query = query.eq("partner_type", typeFilter);
+    if (potenzialFilter !== "All") query = query.eq("potenzial", potenzialFilter);
+    if (fitFilter !== "All") query = query.eq("fit", fitFilter);
     if (search) {
       query = query.or(
         `name.ilike.%${search}%,contact_first_name.ilike.%${search}%,contact_last_name.ilike.%${search}%,contact_email.ilike.%${search}%`
@@ -305,7 +311,7 @@ export default function PartnersPage() {
 
     setPartners(mapped as Partner[]);
     setLoading(false);
-  }, [statusFilter, typeFilter, search]);
+  }, [statusFilter, typeFilter, potenzialFilter, fitFilter, search]);
 
   useEffect(() => {
     loadPartners();
@@ -555,6 +561,42 @@ export default function PartnersPage() {
   };
 
   // ── Computed values ────────────────────────────────────────────
+
+  const sortedPartners = useMemo(() => {
+    const list = [...partners];
+    switch (sortBy) {
+      case "priority":
+        list.sort((a, b) => {
+          const pa = priorityOrder(calcPriority(a.potenzial, a.fit));
+          const pb = priorityOrder(calcPriority(b.potenzial, b.fit));
+          if (pa !== pb) return pa - pb;
+          return parseValue(b.value) - parseValue(a.value);
+        });
+        break;
+      case "value":
+        list.sort((a, b) => parseValue(b.value) - parseValue(a.value));
+        break;
+      case "last_contact":
+        list.sort((a, b) => {
+          if (!a.last_contact && !b.last_contact) return 0;
+          if (!a.last_contact) return 1;
+          if (!b.last_contact) return -1;
+          return a.last_contact.localeCompare(b.last_contact);
+        });
+        break;
+      case "follow_up":
+        list.sort((a, b) => {
+          if (!a.follow_up_date && !b.follow_up_date) return 0;
+          if (!a.follow_up_date) return 1;
+          if (!b.follow_up_date) return -1;
+          return a.follow_up_date.localeCompare(b.follow_up_date);
+        });
+        break;
+      default:
+        break;
+    }
+    return list;
+  }, [partners, sortBy]);
 
   const activeCount = allPartners.filter((p) => p.status === "Active").length;
   const pipelineCount = allPartners.filter(
@@ -1127,9 +1169,9 @@ export default function PartnersPage() {
           >
             <SlidersHorizontal size={14} />
             Filter
-            {(statusFilter !== "All" || typeFilter !== "All") && (
+            {(statusFilter !== "All" || typeFilter !== "All" || potenzialFilter !== "All" || fitFilter !== "All") && (
               <span className="ml-1 px-1.5 py-0.5 bg-white/20 dark:bg-black/20 rounded text-xs">
-                {(statusFilter !== "All" ? 1 : 0) + (typeFilter !== "All" ? 1 : 0)}
+                {(statusFilter !== "All" ? 1 : 0) + (typeFilter !== "All" ? 1 : 0) + (potenzialFilter !== "All" ? 1 : 0) + (fitFilter !== "All" ? 1 : 0)}
               </span>
             )}
           </button>
@@ -1146,11 +1188,13 @@ export default function PartnersPage() {
                   <span className="text-sm font-semibold text-zinc-900 dark:text-white">
                     Filter
                   </span>
-                  {(statusFilter !== "All" || typeFilter !== "All") && (
+                  {(statusFilter !== "All" || typeFilter !== "All" || potenzialFilter !== "All" || fitFilter !== "All") && (
                     <button
                       onClick={() => {
                         setStatusFilter("All");
                         setTypeFilter("All");
+                        setPotenzialFilter("All");
+                        setFitFilter("All");
                       }}
                       className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
                     >
@@ -1200,13 +1244,72 @@ export default function PartnersPage() {
                     ))}
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-2">
+                    Potenzial
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["All", ...POTENTIAL_LEVELS].map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => setPotenzialFilter(l)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          potenzialFilter === l
+                            ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        }`}
+                      >
+                        {l === "All" ? "Alle" : l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-2">
+                    Fit
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["All", ...FIT_LEVELS].map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => setFitFilter(l)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          fitFilter === l
+                            ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        }`}
+                      >
+                        {l === "All" ? "Alle" : l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-2">
+                    Sortierung
+                  </label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    className="w-full px-2.5 py-1.5 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                  >
+                    {SORT_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </>
           )}
         </div>
 
         {/* Active filter chips */}
-        {(statusFilter !== "All" || typeFilter !== "All") && (
+        {(statusFilter !== "All" || typeFilter !== "All" || potenzialFilter !== "All" || fitFilter !== "All") && (
           <div className="flex items-center gap-2">
             {statusFilter !== "All" && (
               <span className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300">
@@ -1224,6 +1327,28 @@ export default function PartnersPage() {
                 {typeFilter}
                 <button
                   onClick={() => setTypeFilter("All")}
+                  className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {potenzialFilter !== "All" && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                Pot: {potenzialFilter}
+                <button
+                  onClick={() => setPotenzialFilter("All")}
+                  className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {fitFilter !== "All" && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                Fit: {fitFilter}
+                <button
+                  onClick={() => setFitFilter("All")}
                   className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white"
                 >
                   <X size={12} />
@@ -1270,9 +1395,11 @@ export default function PartnersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-              {partners.map((p) => {
+              {sortedPartners.map((p) => {
                 const TypeIcon = TYPE_ICONS[p.partner_type] || Building2;
                 const sc = STATUS_COLORS[p.status] || STATUS_COLORS.Lead;
+                const prio = calcPriority(p.potenzial, p.fit);
+                const pc = prio ? PRIORITY_COLORS[prio] : null;
                 const overdue =
                   p.follow_up_date &&
                   daysUntil(p.follow_up_date) <= 0 &&
@@ -1303,6 +1430,11 @@ export default function PartnersPage() {
                           <span className="font-medium text-zinc-900 dark:text-white">
                             {p.name}
                           </span>
+                          {pc && (
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${pc.bg} ${pc.text}`}>
+                              {prio}
+                            </span>
+                          )}
                           <ArrowUpRight
                             size={12}
                             className="text-zinc-300 shrink-0"

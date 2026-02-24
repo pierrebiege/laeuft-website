@@ -33,6 +33,12 @@ CREATE TABLE partners (
   last_contact    DATE,
   tags            TEXT[] DEFAULT '{}',
 
+  -- Bewertung
+  potenzial       TEXT DEFAULT NULL
+                  CHECK (potenzial IS NULL OR potenzial IN ('Hoch', 'Mittel', 'Tief')),
+  fit             TEXT DEFAULT NULL
+                  CHECK (fit IS NULL OR fit IN ('Hoch', 'Mittel', 'Tief')),
+
   created_at      TIMESTAMPTZ DEFAULT NOW(),
   updated_at      TIMESTAMPTZ DEFAULT NOW()
 );

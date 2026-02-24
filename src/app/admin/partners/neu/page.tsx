@@ -9,6 +9,7 @@ import type {
   PartnerStatus,
   CollaborationType,
 } from "@/lib/supabase";
+import { POTENTIAL_LEVELS, FIT_LEVELS } from "@/lib/supabase";
 import { ArrowLeft, Upload, X } from "lucide-react";
 
 const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
@@ -85,6 +86,8 @@ export default function NewPartnerPage() {
     follow_up_date: null,
     last_contact: null,
     tags: [],
+    potenzial: null,
+    fit: null,
   });
 
   const set = (k: string, v: unknown) =>
@@ -233,6 +236,38 @@ export default function NewPartnerPage() {
                   <option key={s} value={s}>
                     {s}
                   </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 mb-1.5">
+                Potenzial
+              </label>
+              <select
+                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                value={f.potenzial || ""}
+                onChange={(e) => set("potenzial", e.target.value || null)}
+              >
+                <option value="">– Nicht gesetzt –</option>
+                {POTENTIAL_LEVELS.map((l) => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 mb-1.5">
+                Fit
+              </label>
+              <select
+                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                value={f.fit || ""}
+                onChange={(e) => set("fit", e.target.value || null)}
+              >
+                <option value="">– Nicht gesetzt –</option>
+                {FIT_LEVELS.map((l) => (
+                  <option key={l} value={l}>{l}</option>
                 ))}
               </select>
             </div>
