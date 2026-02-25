@@ -132,8 +132,8 @@ export default function PublicOfferPage() {
         {/* Header */}
         <div className="text-center mb-8 print:mb-6 print:text-left print:flex print:justify-between print:items-start">
           <div>
-            <div className="text-2xl font-bold mb-2 print:mb-0">
-              Läuft<span className="text-zinc-400 print:text-zinc-600">.</span>
+            <div className="text-2xl font-bold mb-1 print:mb-0">
+              Läuft<span className="text-zinc-400 print:text-zinc-600">.</span> <span className="font-normal text-zinc-600 dark:text-zinc-400 text-lg">Pierre Biege</span>
             </div>
             <p className="text-zinc-500 print:text-xs">Digital Systems & Branding</p>
           </div>
