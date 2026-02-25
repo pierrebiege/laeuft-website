@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
     await transporter.sendMail({
       from: `"Pierre Biege" <${process.env.SMTP_USER}>`,
       to: client.email,
+      bcc: process.env.SMTP_USER,
       subject: `Rechnung ${invoice.invoice_number}: ${invoice.title}`,
       html: `
         <!DOCTYPE html>

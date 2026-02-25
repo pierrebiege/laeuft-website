@@ -171,6 +171,7 @@ export async function POST(request: NextRequest) {
     await transporter.sendMail({
       from: `"Pierre Biege" <${process.env.SMTP_USER || 'pierre@laeuft.ch'}>`,
       to: client.email,
+      bcc: process.env.SMTP_USER || 'pierre@laeuft.ch',
       subject,
       html: emailHtml,
     })
