@@ -186,8 +186,8 @@ export default function InvoicesPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-          <table className="w-full">
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+          <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-zinc-200 dark:border-zinc-800">
                 <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Nr.</th>
@@ -232,8 +232,8 @@ export default function InvoicesPage() {
                     <td className="px-6 py-4 text-zinc-500">
                       {invoice.due_date ? formatDate(invoice.due_date) : "-"}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1">
                         {invoice.status === "draft" && isAdmin && (
                           <button
                             onClick={() => sendInvoice(invoice.id)}

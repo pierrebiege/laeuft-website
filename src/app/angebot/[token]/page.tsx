@@ -205,7 +205,7 @@ export default function PublicOfferPage() {
                 {offer.title}
               </h1>
               {offer.description && (
-                <p className="text-zinc-600 dark:text-zinc-400 print:text-zinc-700">
+                <p className="text-zinc-600 dark:text-zinc-400 print:text-zinc-700 whitespace-pre-line">
                   {offer.description}
                 </p>
               )}
