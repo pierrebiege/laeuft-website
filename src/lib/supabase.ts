@@ -383,3 +383,23 @@ export const SORT_OPTIONS = [
 ] as const
 
 export type SortOption = (typeof SORT_OPTIONS)[number]['value']
+
+// Prospect (Kaltakquise) Types
+export type ProspectStatus = 'neu' | 'kontaktiert' | 'follow_up_1' | 'follow_up_2' | 'geantwortet' | 'kein_interesse' | 'kunde'
+
+export interface Prospect {
+  id: string
+  company: string
+  contact_name: string
+  email: string
+  website: string | null
+  status: ProspectStatus
+  notes: string | null
+  email_1_sent_at: string | null
+  email_2_sent_at: string | null
+  email_3_sent_at: string | null
+  responded_at: string | null
+  converted_client_id: string | null
+  created_at: string
+  updated_at: string
+}

@@ -10,6 +10,7 @@ import {
   Calculator,
   Handshake,
   Handshake as HandshakeIcon,
+  Target,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -47,6 +48,7 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin/partners", label: "Partners", icon: HandshakeIcon, roles: ["admin", "manager"] as Role[] },
+    { href: "/admin/akquise", label: "Akquise", icon: Target, roles: ["admin"] as Role[] },
     { href: "/admin", label: "Offerten", icon: FileText, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/mandate", label: "Mandate", icon: Handshake, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/rechnungen", label: "Rechnungen", icon: Receipt, roles: ["admin", "manager"] as Role[] },
