@@ -10,6 +10,7 @@ import {
   Check,
   X,
   RefreshCw,
+  Send,
 } from "lucide-react";
 
 type FilterTab = "alle" | "neu" | "follow_up" | "geantwortet" | "kein_interesse";
@@ -48,6 +49,60 @@ const STATUS_CONFIG: Record<
   },
 };
 
+function generateEmailDraft(prospect: Prospect, emailNumber: 1 | 2 | 3): { subject: string; body: string } {
+  const firstName = prospect.contact_name.split(" ")[0];
+  const protoLink = prospect.prototype_url || "";
+
+  if (emailNumber === 1) {
+    return {
+      subject: `Eine Idee zu eurer Webseite – ${prospect.company}`,
+      body: `Hallo ${firstName},
+
+Ich bin auf ${prospect.company} gestossen${prospect.website ? ` (${prospect.website})` : ""} und habe mir ein paar Gedanken gemacht – und gleich einen Prototyp gebaut:
+
+${protoLink || "[Prototyp-URL hier einfügen]"}
+
+Schaut es euch in Ruhe an. Falls ihr Interesse habt, melde ich mich gerne für einen kurzen Austausch.
+
+Beste Grüsse
+Pierre`,
+    };
+  }
+
+  if (emailNumber === 2) {
+    return {
+      subject: `Kurzes Follow-up – ${prospect.company}`,
+      body: `Hallo ${firstName},
+
+Ich habe euch vor ein paar Tagen geschrieben und einen Entwurf für eure neue Website geschickt${protoLink ? `:
+
+${protoLink}` : "."}
+
+Wollte nur kurz nachhaken, falls die Nachricht untergegangen ist. Habt ihr euch den Prototyp anschauen können?
+
+Falls ihr Fragen habt oder einen kurzen Call machen wollt – einfach auf dieses Mail antworten.
+
+Beste Grüsse
+Pierre`,
+    };
+  }
+
+  // emailNumber === 3
+  return {
+    subject: `Letztes Follow-up – ${prospect.company}`,
+    body: `Hallo ${firstName},
+
+Ich melde mich ein letztes Mal – ich verstehe, dass ihr viel um die Ohren habt.
+
+Falls ihr in Zukunft eure Website überarbeiten möchtet, stehe ich gerne zur Verfügung. Ihr könnt euch jederzeit melden.
+
+Ich wünsche euch weiterhin viel Erfolg mit ${prospect.company}!
+
+Beste Grüsse
+Pierre`,
+  };
+}
+
 export default function AkquisePage() {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,8 +115,17 @@ export default function AkquisePage() {
     contact_name: "",
     email: "",
     website: "",
+    prototype_url: "",
     notes: "",
   });
+
+  // Email modal state
+  const [emailModal, setEmailModal] = useState<{
+    prospect: Prospect;
+    emailNumber: 1 | 2 | 3;
+    subject: string;
+    body: string;
+  } | null>(null);
 
   useEffect(() => {
     loadProspects();
@@ -117,6 +181,7 @@ export default function AkquisePage() {
       contact_name: form.contact_name,
       email: form.email,
       website: form.website || null,
+      prototype_url: form.prototype_url || null,
       notes: form.notes || null,
     });
 
@@ -124,30 +189,41 @@ export default function AkquisePage() {
       console.error("Error saving prospect:", error);
       alert("Fehler beim Speichern");
     } else {
-      setForm({ company: "", contact_name: "", email: "", website: "", notes: "" });
+      setForm({ company: "", contact_name: "", email: "", website: "", prototype_url: "", notes: "" });
       setShowForm(false);
       loadProspects();
     }
     setSaving(false);
   }
 
-  async function sendEmail(prospect: Prospect, emailNumber: 1 | 2 | 3) {
-    const labels: Record<number, string> = {
-      1: "Erstmail",
-      2: "Follow-up 1",
-      3: "Follow-up 2",
-    };
-    if (!confirm(`${labels[emailNumber]} an ${prospect.company} senden?`)) return;
+  function openEmailModal(prospect: Prospect, emailNumber: 1 | 2 | 3) {
+    const draft = generateEmailDraft(prospect, emailNumber);
+    setEmailModal({
+      prospect,
+      emailNumber,
+      subject: draft.subject,
+      body: draft.body,
+    });
+  }
 
-    setSendingId(prospect.id);
+  async function sendEmailFromModal() {
+    if (!emailModal) return;
+
+    setSendingId(emailModal.prospect.id);
     try {
       const res = await fetch("/api/send-prospect-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prospectId: prospect.id, emailNumber }),
+        body: JSON.stringify({
+          prospectId: emailModal.prospect.id,
+          emailNumber: emailModal.emailNumber,
+          customSubject: emailModal.subject,
+          customBody: emailModal.body,
+        }),
       });
 
       if (res.ok) {
+        setEmailModal(null);
         loadProspects();
       } else {
         const data = await res.json();
@@ -217,6 +293,12 @@ export default function AkquisePage() {
     { key: "geantwortet", label: "Geantwortet" },
     { key: "kein_interesse", label: "Kein Interesse" },
   ];
+
+  const EMAIL_LABELS: Record<number, string> = {
+    1: "Erstmail",
+    2: "Follow-up 1",
+    3: "Follow-up 2",
+  };
 
   return (
     <div>
@@ -297,14 +379,26 @@ export default function AkquisePage() {
                 placeholder="https://firma.ch"
               />
             </div>
-            <div className="md:col-span-2">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                Prototyp-URL
+              </label>
+              <input
+                type="url"
+                value={form.prototype_url}
+                onChange={(e) => setForm({ ...form, prototype_url: e.target.value })}
+                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                placeholder="https://firma.vercel.app"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
                 Notizen
               </label>
-              <textarea
+              <input
+                type="text"
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                rows={2}
                 className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
                 placeholder="z.B. veraltete Website, kein Responsive Design..."
               />
@@ -445,41 +539,31 @@ export default function AkquisePage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1">
-                        {/* Contextual action buttons based on status */}
                         {prospect.status === "neu" && (
                           <button
-                            onClick={() => sendEmail(prospect, 1)}
-                            disabled={sendingId === prospect.id}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors disabled:opacity-50"
+                            onClick={() => openEmailModal(prospect, 1)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                           >
                             <Mail size={14} />
-                            {sendingId === prospect.id
-                              ? "Sende..."
-                              : "Erstmail"}
+                            Erstmail
                           </button>
                         )}
                         {prospect.status === "kontaktiert" && (
                           <button
-                            onClick={() => sendEmail(prospect, 2)}
-                            disabled={sendingId === prospect.id}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors disabled:opacity-50"
+                            onClick={() => openEmailModal(prospect, 2)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
                           >
                             <RefreshCw size={14} />
-                            {sendingId === prospect.id
-                              ? "Sende..."
-                              : "Follow-up 1"}
+                            Follow-up 1
                           </button>
                         )}
                         {prospect.status === "follow_up_1" && (
                           <button
-                            onClick={() => sendEmail(prospect, 3)}
-                            disabled={sendingId === prospect.id}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors disabled:opacity-50"
+                            onClick={() => openEmailModal(prospect, 3)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
                           >
                             <RefreshCw size={14} />
-                            {sendingId === prospect.id
-                              ? "Sende..."
-                              : "Follow-up 2"}
+                            Follow-up 2
                           </button>
                         )}
                         {prospect.status === "follow_up_2" && (
@@ -504,7 +588,6 @@ export default function AkquisePage() {
                             </button>
                           </>
                         )}
-                        {/* Geantwortet / kontaktiert / follow_up statuses can also be marked manually */}
                         {["kontaktiert", "follow_up_1"].includes(
                           prospect.status
                         ) && (
@@ -517,7 +600,6 @@ export default function AkquisePage() {
                             <Check size={14} />
                           </button>
                         )}
-                        {/* Delete button - always visible */}
                         <button
                           onClick={() => deleteProspect(prospect.id)}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
@@ -531,6 +613,85 @@ export default function AkquisePage() {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Email Modal */}
+      {emailModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                  {EMAIL_LABELS[emailModal.emailNumber]} an {emailModal.prospect.company}
+                </h2>
+                <button
+                  onClick={() => setEmailModal(null)}
+                  className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 text-sm text-zinc-500 mb-1">
+                    <span>An:</span>
+                    <span className="text-zinc-900 dark:text-white">{emailModal.prospect.email}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    Betreff
+                  </label>
+                  <input
+                    type="text"
+                    value={emailModal.subject}
+                    onChange={(e) =>
+                      setEmailModal({ ...emailModal, subject: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    Nachricht
+                  </label>
+                  <textarea
+                    value={emailModal.body}
+                    onChange={(e) =>
+                      setEmailModal({ ...emailModal, body: e.target.value })
+                    }
+                    rows={14}
+                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white font-mono text-sm leading-relaxed"
+                  />
+                </div>
+
+                <div className="text-xs text-zinc-400">
+                  BCC an pierre@laeuft.ch · Läuft.-Header wird automatisch hinzugefügt
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <button
+                  onClick={sendEmailFromModal}
+                  disabled={sendingId === emailModal.prospect.id}
+                  className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                >
+                  <Send size={16} />
+                  {sendingId === emailModal.prospect.id ? "Wird gesendet..." : "Senden"}
+                </button>
+                <button
+                  onClick={() => setEmailModal(null)}
+                  className="px-4 py-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                >
+                  Abbrechen
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -393,6 +393,7 @@ export interface Prospect {
   contact_name: string
   email: string
   website: string | null
+  prototype_url: string | null
   status: ProspectStatus
   notes: string | null
   email_1_sent_at: string | null
