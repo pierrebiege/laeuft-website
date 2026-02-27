@@ -55,7 +55,7 @@ const STATUS_AFTER_EMAIL: Record<number, string> = {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = requireAuth(request)
+  const authError = await requireAuth(request)
   if (authError) return authError
 
   try {
