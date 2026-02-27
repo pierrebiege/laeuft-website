@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import { supabase } from '@/lib/supabase'
+import { requireAuth } from '@/lib/auth'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -54,6 +55,9 @@ const STATUS_AFTER_EMAIL: Record<number, string> = {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = requireAuth(request)
+  if (authError) return authError
+
   try {
     const { prospectId, emailNumber, customSubject, customBody } = await request.json()
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import nodemailer from 'nodemailer'
+import { requireAuth } from '@/lib/auth'
 
 // Email configuration
 const transporter = nodemailer.createTransport({
@@ -14,6 +15,9 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function POST(request: NextRequest) {
+  const authError = requireAuth(request)
+  if (authError) return authError
+
   try {
     const { mandateId } = await request.json()
 
