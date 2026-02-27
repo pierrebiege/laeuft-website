@@ -257,7 +257,7 @@ export interface MandateInvoice {
 }
 
 // Partner CRM Types
-export type PartnerType = 'Brand' | 'Athlete' | 'Team' | 'Verband'
+export type PartnerType = 'Brand' | 'Athlete/Persönlichkeiten' | 'Event' | 'NPO' | 'Medien'
 export type PartnerStatus = 'Lead' | 'Negotiating' | 'Active' | 'Closed' | 'Declined'
 export type CollaborationType =
   | 'Sponsoring'

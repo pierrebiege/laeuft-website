@@ -19,7 +19,7 @@ Extrahiere folgende Felder. Wenn ein Feld nicht gefunden wird, lass es leer (lee
 
 Felder:
 - name: Name des Partners/Brands/Unternehmens (PFLICHTFELD - wenn nicht erkennbar, verwende den Absendernamen)
-- partner_type: Einer von: "Brand", "Athlete", "Team", "Verband" (Standard: "Brand")
+- partner_type: Einer von: "Brand", "Athlete/Persönlichkeiten", "Event", "NPO", "Medien" (Standard: "Brand")
 - category: Einer von: "Sports", "Tech", "Lifestyle", "Nutrition", "Fashion", "Travel", "Finance", "Health", "Media", "Other"
 - collaboration_types: Array von passenden Typen: "Sponsoring", "Ambassador", "Product Placement", "Event", "Barter Deal", "Content Creation", "Affiliate", "Sonstiges"
 - contact_first_name: Vorname der Kontaktperson

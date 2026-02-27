@@ -11,8 +11,9 @@ import {
   Search,
   Building2,
   User,
-  Users,
-  Landmark,
+  CalendarDays,
+  Heart,
+  Newspaper,
   Paperclip,
   ArrowUpRight,
   AlertTriangle,
@@ -40,7 +41,7 @@ const STATUSES: PartnerStatus[] = [
   "Closed",
   "Declined",
 ];
-const TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
+const TYPES: PartnerType[] = ["Brand", "Athlete/Persönlichkeiten", "Event", "NPO", "Medien"];
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   Lead: { bg: "bg-blue-50 dark:bg-blue-900/20", text: "text-blue-700 dark:text-blue-300" },
@@ -52,9 +53,10 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
 
 const TYPE_ICONS: Record<string, typeof Building2> = {
   Brand: Building2,
-  Athlete: User,
-  Team: Users,
-  Verband: Landmark,
+  "Athlete/Persönlichkeiten": User,
+  Event: CalendarDays,
+  NPO: Heart,
+  Medien: Newspaper,
 };
 
 const COLLABORATION_TYPES: CollaborationType[] = [
@@ -858,7 +860,7 @@ export default function PartnersPage() {
                     onChange={(e) => updateField("partner_type", e.target.value)}
                     className="w-full px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   >
-                    {["Brand", "Athlete", "Team", "Verband"].map((t) => (
+                    {["Brand", "Athlete/Persönlichkeiten", "Event", "NPO", "Medien"].map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>

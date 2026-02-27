@@ -8,7 +8,7 @@ CREATE TABLE partners (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name            TEXT NOT NULL,
   partner_type    TEXT NOT NULL DEFAULT 'Brand'
-                  CHECK (partner_type IN ('Brand', 'Athlete', 'Team', 'Verband')),
+                  CHECK (partner_type IN ('Brand', 'Athlete/Persönlichkeiten', 'Event', 'NPO', 'Medien')),
   category        TEXT DEFAULT 'Sports',
   collaboration_types TEXT[] DEFAULT '{}',
 

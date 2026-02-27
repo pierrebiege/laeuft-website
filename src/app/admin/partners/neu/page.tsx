@@ -12,7 +12,7 @@ import type {
 import { POTENTIAL_LEVELS, FIT_LEVELS } from "@/lib/supabase";
 import { ArrowLeft, Upload, X } from "lucide-react";
 
-const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
+const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete/Persönlichkeiten", "Event", "NPO", "Medien"];
 const CATEGORIES = [
   "Sports",
   "Tech",
@@ -61,10 +61,20 @@ export default function NewPartnerPage() {
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [tagIn, setTagIn] = useState("");
   const [user, setUser] = useState("Pierre");
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
     const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
     if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("partners").select("tags");
+      const tags = new Set<string>();
+      (data || []).forEach((p) => (p.tags || []).forEach((t: string) => tags.add(t)));
+      setAllTags(Array.from(tags).sort());
+    })();
   }, []);
 
   const [f, setF] = useState<Partial<Partner>>({
@@ -525,6 +535,26 @@ export default function NewPartnerPage() {
                   {t} &times;
                 </span>
               ))}
+            </div>
+          )}
+          {allTags.filter((t) => !(f.tags || []).includes(t)).length > 0 && (
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1">Vorhandene Tags:</div>
+              <div className="flex flex-wrap gap-1.5">
+                {allTags
+                  .filter((t) => !(f.tags || []).includes(t))
+                  .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()))
+                  .map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => set("tags", [...(f.tags || []), t])}
+                      className="px-2 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 rounded text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
+                    >
+                      + {t}
+                    </button>
+                  ))}
+              </div>
             </div>
           )}
         </div>

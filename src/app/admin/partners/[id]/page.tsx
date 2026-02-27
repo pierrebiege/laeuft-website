@@ -18,8 +18,6 @@ import {
   ArrowLeft,
   Building2,
   User,
-  Users,
-  Landmark,
   Pencil,
   Trash2,
   Upload,
@@ -35,9 +33,12 @@ import {
   Receipt,
   Image as ImageIcon,
   File as FileIcon,
+  CalendarDays,
+  Heart,
+  Newspaper,
 } from "lucide-react";
 
-const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete", "Team", "Verband"];
+const PARTNER_TYPES: PartnerType[] = ["Brand", "Athlete/Persönlichkeiten", "Event", "NPO", "Medien"];
 const CATEGORIES = [
   "Sports", "Tech", "Lifestyle", "Nutrition", "Fashion",
   "Travel", "Finance", "Health", "Media", "Other",
@@ -59,7 +60,7 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
 };
 
 const TYPE_ICONS: Record<string, typeof Building2> = {
-  Brand: Building2, Athlete: User, Team: Users, Verband: Landmark,
+  Brand: Building2, "Athlete/Persönlichkeiten": User, Event: CalendarDays, NPO: Heart, Medien: Newspaper,
 };
 
 const CHANNELS: { value: HistoryChannel; label: string; icon: string }[] = [
@@ -101,6 +102,24 @@ function today(): string {
   return new Date().toISOString().split("T")[0];
 }
 
+async function downloadFile(url: string, fileName: string) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Download fehlgeschlagen");
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch {
+    window.open(url, "_blank");
+  }
+}
+
 export default function PartnerDetailPage({
   params: paramsPromise,
 }: {
@@ -126,6 +145,7 @@ export default function PartnerDetailPage({
   const [tagIn, setTagIn] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   const [user, setUser] = useState("Pierre");
 
@@ -177,6 +197,15 @@ export default function PartnerDetailPage({
     loadHistory();
     loadAttachments();
   }, [id]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("partners").select("tags");
+      const tags = new Set<string>();
+      (data || []).forEach((p) => (p.tags || []).forEach((t: string) => tags.add(t)));
+      setAllTags(Array.from(tags).sort());
+    })();
+  }, []);
 
   const handleDelete = async () => {
     if (!confirm("Partner wirklich löschen?")) return;
@@ -688,14 +717,13 @@ export default function PartnerDetailPage({
                           </div>
                         </div>
                         {att.url && (
-                          <a
-                            href={att.url}
-                            download={att.file_name}
+                          <button
+                            onClick={() => downloadFile(att.url!, att.file_name)}
                             className="p-1 text-zinc-400 hover:text-blue-500 transition-colors shrink-0"
                             title="Herunterladen"
                           >
                             <Download size={14} />
-                          </a>
+                          </button>
                         )}
                         <button
                           onClick={() => deleteAttachment(att)}
@@ -1069,6 +1097,34 @@ export default function PartnerDetailPage({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-zinc-500 mb-1.5">
+                    Letzter Kontakt
+                  </label>
+                  <input
+                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                    type="date"
+                    value={editData.last_contact || ""}
+                    onChange={(e) =>
+                      setE("last_contact", e.target.value || null)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
+                    Status Datum
+                  </label>
+                  <input
+                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                    type="date"
+                    value={editData.status_date || ""}
+                    onChange={(e) =>
+                      setE("status_date", e.target.value || null)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
                     Potenzial
                   </label>
                   <select
@@ -1201,6 +1257,26 @@ export default function PartnerDetailPage({
                     </span>
                   ))}
                 </div>
+                {allTags.filter((t) => !(editData.tags || []).includes(t)).length > 0 && (
+                  <div className="mt-2">
+                    <div className="text-[10px] text-zinc-400 mb-1">Vorhandene Tags:</div>
+                    <div className="flex flex-wrap gap-1">
+                      {allTags
+                        .filter((t) => !(editData.tags || []).includes(t))
+                        .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()))
+                        .map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => setE("tags", [...(editData.tags || []), t])}
+                            className="px-2 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 rounded text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
+                          >
+                            + {t}
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
