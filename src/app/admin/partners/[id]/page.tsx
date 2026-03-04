@@ -183,6 +183,21 @@ export default function PartnerDetailPage({
     setHistory(data || []);
   };
 
+  const getFileUrl = async (filePath: string): Promise<string | undefined> => {
+    // Try signed URL first
+    const { data: urlData, error } = await supabase.storage
+      .from("partner-attachments")
+      .createSignedUrl(filePath, 3600);
+    if (urlData?.signedUrl) return urlData.signedUrl;
+    if (error) console.warn("Signed URL failed:", error.message);
+
+    // Fallback: public URL
+    const { data: pubData } = supabase.storage
+      .from("partner-attachments")
+      .getPublicUrl(filePath);
+    return pubData?.publicUrl || undefined;
+  };
+
   const loadAttachments = async () => {
     const { data } = await supabase
       .from("partner_attachments")
@@ -192,10 +207,8 @@ export default function PartnerDetailPage({
 
     const withUrls = await Promise.all(
       (data || []).map(async (att) => {
-        const { data: urlData } = await supabase.storage
-          .from("partner-attachments")
-          .createSignedUrl(att.file_path, 3600);
-        return { ...att, url: urlData?.signedUrl || undefined };
+        const url = await getFileUrl(att.file_path);
+        return { ...att, url };
       })
     );
 
@@ -780,24 +793,32 @@ export default function PartnerDetailPage({
                           <Paperclip size={14} className="text-zinc-400 shrink-0" />
                         )}
                         <div className="flex-1 min-w-0">
-                          {att.url ? (
-                            (isImage || isPdf) ? (
-                              <button
-                                onClick={() => setLightbox({ url: att.url!, mimeType: att.mime_type || "", fileName: att.file_name })}
-                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block text-left"
-                              >
-                                {att.file_name}
-                              </button>
-                            ) : (
-                              <a
-                                href={att.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
-                              >
-                                {att.file_name}
-                              </a>
-                            )
+                          {(isImage || isPdf) ? (
+                            <button
+                              onClick={async () => {
+                                let url = att.url;
+                                if (!url) {
+                                  url = await getFileUrl(att.file_path);
+                                }
+                                if (url) {
+                                  setLightbox({ url, mimeType: att.mime_type || "", fileName: att.file_name });
+                                } else {
+                                  alert("Datei konnte nicht geladen werden.");
+                                }
+                              }}
+                              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block text-left cursor-pointer"
+                            >
+                              {att.file_name}
+                            </button>
+                          ) : att.url ? (
+                            <a
+                              href={att.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block"
+                            >
+                              {att.file_name}
+                            </a>
                           ) : (
                             <span className="text-sm font-medium text-zinc-900 dark:text-white truncate block">
                               {att.file_name}
