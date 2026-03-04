@@ -144,8 +144,16 @@ export default function PartnerDetailPage({
   const fileRef = useRef<HTMLInputElement>(null);
   const [tagIn, setTagIn] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ url: string; mimeType: string; fileName: string } | null>(null);
   const [allTags, setAllTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && lightbox) setLightbox(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightbox]);
 
   const [user, setUser] = useState("Pierre");
 
@@ -669,7 +677,7 @@ export default function PartnerDetailPage({
                       {/* Image preview */}
                       {isImage && att.url && (
                         <button
-                          onClick={() => setLightbox(att.url!)}
+                          onClick={() => setLightbox({ url: att.url!, mimeType: att.mime_type || "image/*", fileName: att.file_name })}
                           className="block w-full"
                         >
                           <img
@@ -689,9 +697,9 @@ export default function PartnerDetailPage({
                         )}
                         <div className="flex-1 min-w-0">
                           {att.url ? (
-                            isImage ? (
+                            (isImage || isPdf) ? (
                               <button
-                                onClick={() => setLightbox(att.url!)}
+                                onClick={() => setLightbox({ url: att.url!, mimeType: att.mime_type || "", fileName: att.file_name })}
                                 className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate block text-left"
                               >
                                 {att.file_name}
@@ -883,24 +891,70 @@ export default function PartnerDetailPage({
         </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Datei-Vorschau Modal */}
       {lightbox && (
         <div
           className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-pointer"
           onClick={() => setLightbox(null)}
         >
-          <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
-          >
-            <X size={24} />
-          </button>
-          <img
-            src={lightbox}
-            alt="Vorschau"
-            className="max-w-full max-h-[90vh] object-contain rounded-lg cursor-default"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {lightbox.mimeType === "application/pdf" ? (
+            /* PDF-Vorschau */
+            <div
+              className="bg-white dark:bg-zinc-900 rounded-xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden cursor-default"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
+                <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">
+                  {lightbox.fileName}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => downloadFile(lightbox.url, lightbox.fileName)}
+                    className="p-2 text-zinc-500 hover:text-blue-500 transition-colors"
+                    title="Herunterladen"
+                  >
+                    <Download size={18} />
+                  </button>
+                  <button
+                    onClick={() => setLightbox(null)}
+                    className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+              <iframe
+                src={lightbox.url}
+                className="flex-1 w-full"
+                title={lightbox.fileName}
+              />
+            </div>
+          ) : (
+            /* Bild-Vorschau */
+            <>
+              <div className="absolute top-4 right-4 flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); downloadFile(lightbox.url, lightbox.fileName); }}
+                  className="p-2 text-white/70 hover:text-white transition-colors"
+                  title="Herunterladen"
+                >
+                  <Download size={24} />
+                </button>
+                <button
+                  onClick={() => setLightbox(null)}
+                  className="p-2 text-white/70 hover:text-white transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <img
+                src={lightbox.url}
+                alt={lightbox.fileName}
+                className="max-w-full max-h-[90vh] object-contain rounded-lg cursor-default"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </>
+          )}
         </div>
       )}
 
