@@ -150,6 +150,8 @@ export function PartnerDetail({ id, onClose }: PartnerDetailProps) {
   const [drag, setDrag] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const [tagIn, setTagIn] = useState("");
+  const [tagFocused, setTagFocused] = useState(false);
+  const tagRef = useRef<HTMLDivElement>(null);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [lightbox, setLightbox] = useState<{ url: string; mimeType: string; fileName: string } | null>(null);
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -675,56 +677,56 @@ export function PartnerDetail({ id, onClose }: PartnerDetailProps) {
             <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
               Tags
             </h3>
-            <div className="flex gap-2 mb-2">
-              <input
-                className={`${INP} flex-1 border-zinc-200 dark:border-zinc-700`}
-                value={tagIn}
-                onChange={(e) => setTagIn(e.target.value)}
-                placeholder="Tag hinzufügen…"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") { e.preventDefault(); addTag(); }
-                }}
-              />
-              <button
-                type="button"
-                onClick={addTag}
-                disabled={!tagIn.trim()}
-                className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
-              >
-                +
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 mb-2">
               {(draft.tags || []).map((t) => (
                 <span
                   key={t}
                   onClick={() => setD("tags", (draft.tags || []).filter((x) => x !== t))}
-                  className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg text-xs cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg text-xs cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors"
                 >
-                  {t} &times;
+                  {t}
+                  <X size={10} />
                 </span>
               ))}
             </div>
-            {allTags.filter((t) => !(draft.tags || []).includes(t)).length > 0 && (
-              <div className="mt-2">
-                <div className="text-[10px] text-zinc-400 mb-1">Vorhandene Tags:</div>
-                <div className="flex flex-wrap gap-1">
-                  {allTags
-                    .filter((t) => !(draft.tags || []).includes(t))
-                    .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()))
-                    .map((t) => (
+            <div className="relative" ref={tagRef}>
+              <input
+                className={`${INP} border-zinc-200 dark:border-zinc-700 w-full`}
+                value={tagIn}
+                onChange={(e) => setTagIn(e.target.value)}
+                placeholder="Tag hinzufügen…"
+                onFocus={() => setTagFocused(true)}
+                onBlur={() => setTimeout(() => setTagFocused(false), 150)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addTag(); }
+                  if (e.key === "Escape") { setTagFocused(false); (e.target as HTMLInputElement).blur(); }
+                }}
+              />
+              {tagFocused && (() => {
+                const suggestions = allTags
+                  .filter((t) => !(draft.tags || []).includes(t))
+                  .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()));
+                if (suggestions.length === 0) return null;
+                return (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg z-20 max-h-[200px] overflow-y-auto">
+                    {suggestions.map((t) => (
                       <button
                         key={t}
                         type="button"
-                        onClick={() => setD("tags", [...(draft.tags || []), t])}
-                        className="px-2 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 rounded text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setD("tags", [...(draft.tags || []), t]);
+                          setTagIn("");
+                        }}
+                        className="block w-full text-left px-3 py-1.5 text-xs text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
                       >
-                        + {t}
+                        {t}
                       </button>
                     ))}
-                </div>
-              </div>
-            )}
+                  </div>
+                );
+              })()}
+            </div>
           </div>
 
           {/* Anhänge */}
@@ -858,6 +860,66 @@ export function PartnerDetail({ id, onClose }: PartnerDetailProps) {
             )}
           </div>
 
+        </div>
+
+        {/* Right column (1 col) - Kontaktperson + Aktivitäts-Log */}
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              Kontaktperson
+            </h3>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
+                  value={draft.contact_first_name || ""}
+                  onChange={(e) => setD("contact_first_name", e.target.value)}
+                  placeholder="Vorname"
+                />
+                <input
+                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
+                  value={draft.contact_last_name || ""}
+                  onChange={(e) => setD("contact_last_name", e.target.value)}
+                  placeholder="Nachname"
+                />
+              </div>
+              <input
+                className={`${INP} text-xs text-zinc-500`}
+                value={draft.contact_position || ""}
+                onChange={(e) => setD("contact_position", e.target.value)}
+                placeholder="Position"
+              />
+              <div className="flex items-center gap-2">
+                <Mail size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  type="email"
+                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
+                  value={draft.contact_email || ""}
+                  onChange={(e) => setD("contact_email", e.target.value)}
+                  placeholder="E-Mail"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
+                  value={draft.contact_website || ""}
+                  onChange={(e) => setD("contact_website", e.target.value)}
+                  placeholder="Webseite"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Instagram size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  className={`${INP} text-sm text-zinc-600 dark:text-zinc-400 flex-1`}
+                  value={draft.instagram || ""}
+                  onChange={(e) => setD("instagram", e.target.value)}
+                  placeholder="@instagram"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Aktivitäts-Log */}
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
             <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
@@ -940,65 +1002,6 @@ export function PartnerDetail({ id, onClose }: PartnerDetailProps) {
                   Noch keine Einträge.
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right column (1 col) - Kontaktperson */}
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
-            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-              Kontaktperson
-            </h3>
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
-                  value={draft.contact_first_name || ""}
-                  onChange={(e) => setD("contact_first_name", e.target.value)}
-                  placeholder="Vorname"
-                />
-                <input
-                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
-                  value={draft.contact_last_name || ""}
-                  onChange={(e) => setD("contact_last_name", e.target.value)}
-                  placeholder="Nachname"
-                />
-              </div>
-              <input
-                className={`${INP} text-xs text-zinc-500`}
-                value={draft.contact_position || ""}
-                onChange={(e) => setD("contact_position", e.target.value)}
-                placeholder="Position"
-              />
-              <div className="flex items-center gap-2">
-                <Mail size={14} className="text-zinc-400 shrink-0" />
-                <input
-                  type="email"
-                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
-                  value={draft.contact_email || ""}
-                  onChange={(e) => setD("contact_email", e.target.value)}
-                  placeholder="E-Mail"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe size={14} className="text-zinc-400 shrink-0" />
-                <input
-                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
-                  value={draft.contact_website || ""}
-                  onChange={(e) => setD("contact_website", e.target.value)}
-                  placeholder="Webseite"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Instagram size={14} className="text-zinc-400 shrink-0" />
-                <input
-                  className={`${INP} text-sm text-zinc-600 dark:text-zinc-400 flex-1`}
-                  value={draft.instagram || ""}
-                  onChange={(e) => setD("instagram", e.target.value)}
-                  placeholder="@instagram"
-                />
-              </div>
             </div>
           </div>
         </div>
