@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PartnerDetail } from "@/components/PartnerDetail";
 import { supabase } from "@/lib/supabase";
 import type { Partner, PartnerType, PartnerStatus, CollaborationType, SortOption } from "@/lib/supabase";
 import { calcPriority, priorityOrder, parseValue, POTENTIAL_LEVELS, FIT_LEVELS, SORT_OPTIONS, PRIORITY_COLORS } from "@/lib/supabase";
@@ -237,6 +238,7 @@ export default function PartnersPage() {
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [showActions, setShowActions] = useState(true);
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null);
 
   // AI state
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -318,6 +320,18 @@ export default function PartnersPage() {
   useEffect(() => {
     loadPartners();
   }, [loadPartners]);
+
+  // Close sheet on Escape
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedPartnerId) {
+        setSelectedPartnerId(null);
+        loadPartners();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedPartnerId, loadPartners]);
 
   // ── AI functions ───────────────────────────────────────────────
 
@@ -1110,10 +1124,10 @@ export default function PartnersPage() {
               {actions.slice(0, 8).map((a, idx) => {
                 const Icon = a.icon;
                 return (
-                  <Link
+                  <button
                     key={`${a.partnerId}-${idx}`}
-                    href={`/admin/partners/${a.partnerId}`}
-                    className="flex items-center gap-3 px-3.5 py-2.5 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors group"
+                    onClick={() => setSelectedPartnerId(a.partnerId)}
+                    className="flex items-center gap-3 px-3.5 py-2.5 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors group w-full text-left"
                   >
                     <Icon size={14} className={`${a.color} shrink-0`} />
                     <div className="flex-1 min-w-0 flex items-center gap-2">
@@ -1131,7 +1145,7 @@ export default function PartnersPage() {
                       size={12}
                       className="text-zinc-300 group-hover:text-zinc-500 shrink-0 transition-colors"
                     />
-                  </Link>
+                  </button>
                 );
               })}
               {actions.length > 8 && (
@@ -1419,34 +1433,32 @@ export default function PartnersPage() {
                     key={p.id}
                     className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors"
                   >
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/admin/partners/${p.id}`}
-                        className="block"
-                      >
-                        <div className="flex items-center gap-2">
-                          <TypeIcon
-                            size={14}
-                            className="text-zinc-400 shrink-0"
-                          />
-                          <span className="font-medium text-zinc-900 dark:text-white">
-                            {p.name}
+                    <td
+                      className="px-4 py-3 cursor-pointer"
+                      onClick={() => setSelectedPartnerId(p.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <TypeIcon
+                          size={14}
+                          className="text-zinc-400 shrink-0"
+                        />
+                        <span className="font-medium text-zinc-900 dark:text-white">
+                          {p.name}
+                        </span>
+                        {pc && (
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${pc.bg} ${pc.text}`}>
+                            {prio}
                           </span>
-                          {pc && (
-                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${pc.bg} ${pc.text}`}>
-                              {prio}
-                            </span>
-                          )}
-                          <ArrowUpRight
-                            size={12}
-                            className="text-zinc-300 shrink-0"
-                          />
-                        </div>
-                        <div className="text-xs text-zinc-500 mt-0.5">
-                          {p.category}
-                          {p.value ? ` · ${p.value}` : ""}
-                        </div>
-                      </Link>
+                        )}
+                        <ArrowUpRight
+                          size={12}
+                          className="text-zinc-300 shrink-0"
+                        />
+                      </div>
+                      <div className="text-xs text-zinc-500 mt-0.5">
+                        {p.category}
+                        {p.value ? ` · ${p.value}` : ""}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
@@ -1504,6 +1516,27 @@ export default function PartnersPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Slide-in Sheet */}
+      {selectedPartnerId && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 z-40 transition-opacity"
+            onClick={() => { setSelectedPartnerId(null); loadPartners(); }}
+          />
+          {/* Sheet */}
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-4xl bg-white dark:bg-zinc-950 shadow-2xl overflow-y-auto animate-slide-in-right">
+            <div className="p-6">
+              <PartnerDetail
+                key={selectedPartnerId}
+                id={selectedPartnerId}
+                onClose={() => { setSelectedPartnerId(null); loadPartners(); }}
+              />
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
