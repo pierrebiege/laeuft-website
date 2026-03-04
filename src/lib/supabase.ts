@@ -404,3 +404,48 @@ export interface Prospect {
   created_at: string
   updated_at: string
 }
+
+// Calendar Types
+export type CalendarEventType = 'work' | 'meeting' | 'training' | 'holiday' | 'deadline' | 'personal' | 'travel'
+export type RecurrenceRule = 'daily' | 'weekly' | 'monthly' | 'weekdays'
+export type VirtualEventSource = 'partner_followup' | 'invoice_due' | 'mandate_billing'
+
+export interface CalendarEvent {
+  id: string
+  title: string
+  description: string | null
+  start_at: string
+  end_at: string
+  all_day: boolean
+  event_type: CalendarEventType
+  color: string
+  partner_id: string | null
+  client_id: string | null
+  mandate_id: string | null
+  invoice_id: string | null
+  recurrence_rule: RecurrenceRule | null
+  recurrence_end: string | null
+  created_by: string
+  created_at: string
+  updated_at: string
+  partner?: Partner
+  client?: Client
+  mandate?: Mandate
+  invoice?: Invoice
+}
+
+export interface VirtualCalendarEvent {
+  id: string
+  title: string
+  start_at: string
+  end_at: string
+  all_day: boolean
+  source: VirtualEventSource
+  color: string
+  sourceId: string
+  sourceName: string
+}
+
+export type CalendarDisplayEvent =
+  | (CalendarEvent & { _virtual: false })
+  | (VirtualCalendarEvent & { _virtual: true })

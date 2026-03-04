@@ -11,6 +11,7 @@ import {
   Handshake,
   Handshake as HandshakeIcon,
   Target,
+  CalendarDays,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -47,6 +48,7 @@ export default function AdminLayout({
   }
 
   const navItems = [
+    { href: "/admin/kalender", label: "Kalender", icon: CalendarDays, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/partners", label: "Partners", icon: HandshakeIcon, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/akquise", label: "Akquise", icon: Target, roles: ["admin"] as Role[] },
     { href: "/admin", label: "Offerten", icon: FileText, roles: ["admin", "manager"] as Role[] },
@@ -153,7 +155,7 @@ export default function AdminLayout({
           collapsed ? "ml-[68px]" : "ml-[240px]"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-6 py-8">{children}</div>
+        <div className={pathname.startsWith("/admin/kalender") ? "max-w-[1400px] mx-auto px-6 py-8" : "max-w-6xl mx-auto px-6 py-8"}>{children}</div>
       </main>
     </div>
   );
