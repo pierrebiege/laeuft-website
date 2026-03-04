@@ -12,13 +12,14 @@ import type {
   CollaborationType,
   HistoryChannel,
   HistoryDirection,
+  PotentialLevel,
+  FitLevel,
 } from "@/lib/supabase";
 import { calcPriority, POTENTIAL_LEVELS, FIT_LEVELS, PRIORITY_COLORS, POTENTIAL_COLORS, FIT_COLORS } from "@/lib/supabase";
 import {
   ArrowLeft,
   Building2,
   User,
-  Pencil,
   Trash2,
   Upload,
   X,
@@ -130,8 +131,8 @@ export default function PartnerDetailPage({
 
   const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState<Partial<Partner>>({});
+  const [draft, setDraft] = useState<Partial<Partner>>({});
+  const [saving, setSaving] = useState(false);
 
   const [history, setHistory] = useState<PartnerHistory[]>([]);
   const [attachments, setAttachments] = useState<PartnerAttachment[]>([]);
@@ -169,6 +170,7 @@ export default function PartnerDetailPage({
       .eq("id", id)
       .single();
     setPartner(data);
+    if (data) setDraft({ ...data });
     setLoading(false);
   };
 
@@ -221,35 +223,30 @@ export default function PartnerDetailPage({
     router.push("/admin/partners");
   };
 
-  const startEdit = () => {
-    if (!partner) return;
-    setEditData({ ...partner });
-    setPendingFiles([]);
-    setTagIn("");
-    setEditing(true);
-  };
+  const setD = (k: string, v: unknown) =>
+    setDraft((prev) => ({ ...prev, [k]: v }));
 
-  const setE = (k: string, v: unknown) =>
-    setEditData((prev) => ({ ...prev, [k]: v }));
-
-  const toggleEditCollab = (ct: CollaborationType) => {
-    const current = editData.collaboration_types || [];
+  const toggleCollab = (ct: CollaborationType) => {
+    const current = draft.collaboration_types || [];
     if (current.includes(ct)) {
-      setE("collaboration_types", current.filter((x) => x !== ct));
+      setD("collaboration_types", current.filter((x) => x !== ct));
     } else {
-      setE("collaboration_types", [...current, ct]);
+      setD("collaboration_types", [...current, ct]);
     }
   };
 
-  const addEditTag = () => {
+  const addTag = () => {
     if (tagIn.trim()) {
-      setE("tags", [...(editData.tags || []), tagIn.trim()]);
+      setD("tags", [...(draft.tags || []), tagIn.trim()]);
       setTagIn("");
     }
   };
 
+  const isDirty = partner ? JSON.stringify(draft) !== JSON.stringify(partner) : false;
+
   const handleSave = async () => {
-    if (!editData.name?.trim()) return;
+    if (!draft.name?.trim()) return;
+    setSaving(true);
 
     const {
       id: _id,
@@ -259,7 +256,7 @@ export default function PartnerDetailPage({
       attachments: _a,
       attachment_count: _ac,
       ...updateData
-    } = editData as Partner & { attachment_count?: number };
+    } = draft as Partner & { attachment_count?: number };
 
     await supabase.from("partners").update(updateData).eq("id", id);
 
@@ -279,7 +276,8 @@ export default function PartnerDetailPage({
       });
     }
 
-    setEditing(false);
+    setPendingFiles([]);
+    setSaving(false);
     loadPartner();
     loadAttachments();
   };
@@ -424,16 +422,16 @@ export default function PartnerDetailPage({
     );
   }
 
-  const TypeIcon = TYPE_ICONS[partner.partner_type] || Building2;
-  const sc = STATUS_COLORS[partner.status] || STATUS_COLORS.Lead;
+  const TypeIcon = TYPE_ICONS[(draft.partner_type || partner.partner_type) as PartnerType] || Building2;
+  const sc = STATUS_COLORS[(draft.status || partner.status) as PartnerStatus] || STATUS_COLORS.Lead;
   const overdue =
-    partner.follow_up_date &&
-    daysUntil(partner.follow_up_date) <= 0 &&
-    partner.status !== "Closed" &&
-    partner.status !== "Declined";
-  const contactName = [partner.contact_first_name, partner.contact_last_name]
-    .filter(Boolean)
-    .join(" ");
+    draft.follow_up_date &&
+    daysUntil(draft.follow_up_date) <= 0 &&
+    draft.status !== "Closed" &&
+    draft.status !== "Declined";
+
+  const INP = "w-full px-2 py-1 bg-transparent border border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-300 dark:focus:border-zinc-600 focus:bg-zinc-50 dark:focus:bg-zinc-800 rounded-lg text-sm transition-colors outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-white/20";
+  const SEL = "px-2 py-1 bg-transparent border border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-300 dark:focus:border-zinc-600 focus:bg-zinc-50 dark:focus:bg-zinc-800 rounded-lg text-sm transition-colors outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-white/20 cursor-pointer appearance-none";
 
   return (
     <div>
@@ -448,30 +446,62 @@ export default function PartnerDetailPage({
 
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex items-center gap-2 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
               <TypeIcon size={14} className="text-zinc-500" />
-              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                {partner.partner_type}
-              </span>
+              <select
+                className={`${SEL} text-xs font-medium text-zinc-600 dark:text-zinc-400 bg-transparent pr-5`}
+                value={draft.partner_type || "Brand"}
+                onChange={(e) => setD("partner_type", e.target.value)}
+              >
+                {PARTNER_TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
             </div>
-            <span
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium ${sc.bg} ${sc.text}`}
+            <select
+              className={`${SEL} text-xs font-medium px-2.5 py-1 rounded-lg ${sc.bg} ${sc.text}`}
+              value={draft.status || "Lead"}
+              onChange={(e) => setD("status", e.target.value)}
             >
-              {partner.status}
-            </span>
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
           </div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-            {partner.name}
-          </h1>
-          <p className="text-sm text-zinc-500 mt-1">
-            {partner.category}
-            {partner.source ? ` · ${partner.source}` : ""}
-            {partner.value ? ` · ${partner.value}` : ""}
-          </p>
+          <input
+            className="w-full text-2xl font-bold text-zinc-900 dark:text-white bg-transparent border border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-300 dark:focus:border-zinc-600 focus:bg-zinc-50 dark:focus:bg-zinc-800 rounded-lg px-1 py-0.5 outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-white/20 transition-colors"
+            value={draft.name || ""}
+            onChange={(e) => setD("name", e.target.value)}
+          />
+          <div className="flex items-center gap-1 mt-1 text-sm text-zinc-500">
+            <select
+              className={`${SEL} text-zinc-500`}
+              value={draft.category || "Sports"}
+              onChange={(e) => setD("category", e.target.value)}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <span>·</span>
+            <input
+              className={`${INP} text-zinc-500 max-w-[140px]`}
+              value={draft.source || ""}
+              onChange={(e) => setD("source", e.target.value)}
+              placeholder="Quelle"
+            />
+            <span>·</span>
+            <input
+              className={`${INP} text-zinc-500 max-w-[140px]`}
+              value={draft.value || ""}
+              onChange={(e) => setD("value", e.target.value)}
+              placeholder="Deal-Wert"
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-4 shrink-0">
           <button
             onClick={createOfferte}
             className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
@@ -486,19 +516,20 @@ export default function PartnerDetailPage({
             <Receipt size={14} />
             Rechnung
           </button>
-          <button
-            onClick={startEdit}
-            className="flex items-center gap-2 px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-          >
-            <Pencil size={14} />
-            Bearbeiten
-          </button>
+          {isDirty && (
+            <button
+              onClick={handleSave}
+              disabled={saving || !draft.name?.trim()}
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+            >
+              {saving ? "Speichern…" : "Speichern"}
+            </button>
+          )}
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
           >
             <Trash2 size={14} />
-            Löschen
           </button>
         </div>
       </div>
@@ -507,23 +538,30 @@ export default function PartnerDetailPage({
         {/* Left column (2 cols) */}
         <div className="col-span-2 space-y-6">
           {/* Zusammenarbeitsform */}
-          {(partner.collaboration_types || []).length > 0 && (
-            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-                Zusammenarbeitsform
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {partner.collaboration_types.map((ct) => (
-                  <span
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              Zusammenarbeitsform
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {COLLABORATION_TYPES.map((ct) => {
+                const active = (draft.collaboration_types || []).includes(ct);
+                return (
+                  <button
                     key={ct}
-                    className="px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-xs font-medium"
+                    type="button"
+                    onClick={() => toggleCollab(ct)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      active
+                        ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    }`}
                   >
                     {ct}
-                  </span>
-                ))}
-              </div>
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
 
           {/* Aktueller Stand */}
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
@@ -532,56 +570,63 @@ export default function PartnerDetailPage({
             </h3>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <div className="text-xs text-zinc-500 mb-1">Status</div>
-                <span
-                  className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${sc.bg} ${sc.text}`}
-                >
-                  {partner.status}
-                </span>
-              </div>
-              <div>
-                <div className="text-xs text-zinc-500 mb-1">Datum</div>
-                <div className="text-sm text-zinc-900 dark:text-white">
-                  {fmtDate(partner.status_date)}
-                </div>
+                <div className="text-xs text-zinc-500 mb-1">Status-Datum</div>
+                <input
+                  type="date"
+                  className={`${INP} text-zinc-900 dark:text-white`}
+                  value={draft.status_date || ""}
+                  onChange={(e) => setD("status_date", e.target.value || null)}
+                />
               </div>
               <div>
                 <div className="text-xs text-zinc-500 mb-1">Follow-up</div>
-                <div
-                  className={`text-sm ${
-                    overdue
-                      ? "text-orange-600 font-semibold"
-                      : "text-zinc-900 dark:text-white"
-                  }`}
-                >
-                  {overdue && <AlertTriangle size={12} className="inline mr-1" />}
-                  {fmtDate(partner.follow_up_date)}
+                <div className="flex items-center gap-1">
+                  {overdue && <AlertTriangle size={12} className="text-orange-600 shrink-0" />}
+                  <input
+                    type="date"
+                    className={`${INP} ${overdue ? "text-orange-600 font-semibold" : "text-zinc-900 dark:text-white"}`}
+                    value={draft.follow_up_date || ""}
+                    onChange={(e) => setD("follow_up_date", e.target.value || null)}
+                  />
                 </div>
               </div>
               <div>
                 <div className="text-xs text-zinc-500 mb-1">Letzter Kontakt</div>
-                <div className="text-sm text-zinc-900 dark:text-white">
-                  {fmtDate(partner.last_contact)}
-                </div>
+                <input
+                  type="date"
+                  className={`${INP} text-zinc-900 dark:text-white`}
+                  value={draft.last_contact || ""}
+                  onChange={(e) => setD("last_contact", e.target.value || null)}
+                />
               </div>
-              {partner.potenzial && (
-                <div>
-                  <div className="text-xs text-zinc-500 mb-1">Potenzial</div>
-                  <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${POTENTIAL_COLORS[partner.potenzial].bg} ${POTENTIAL_COLORS[partner.potenzial].text}`}>
-                    {partner.potenzial}
-                  </span>
-                </div>
-              )}
-              {partner.fit && (
-                <div>
-                  <div className="text-xs text-zinc-500 mb-1">Fit</div>
-                  <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${FIT_COLORS[partner.fit].bg} ${FIT_COLORS[partner.fit].text}`}>
-                    {partner.fit}
-                  </span>
-                </div>
-              )}
+              <div>
+                <div className="text-xs text-zinc-500 mb-1">Potenzial</div>
+                <select
+                  className={`${SEL} ${draft.potenzial ? `${POTENTIAL_COLORS[draft.potenzial].bg} ${POTENTIAL_COLORS[draft.potenzial].text} font-medium` : "text-zinc-400"}`}
+                  value={draft.potenzial || ""}
+                  onChange={(e) => setD("potenzial", e.target.value || null)}
+                >
+                  <option value="">– Nicht gesetzt –</option>
+                  {POTENTIAL_LEVELS.map((l) => (
+                    <option key={l} value={l}>{l}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <div className="text-xs text-zinc-500 mb-1">Fit</div>
+                <select
+                  className={`${SEL} ${draft.fit ? `${FIT_COLORS[draft.fit].bg} ${FIT_COLORS[draft.fit].text} font-medium` : "text-zinc-400"}`}
+                  value={draft.fit || ""}
+                  onChange={(e) => setD("fit", e.target.value || null)}
+                >
+                  <option value="">– Nicht gesetzt –</option>
+                  {FIT_LEVELS.map((l) => (
+                    <option key={l} value={l}>{l}</option>
+                  ))}
+                </select>
+              </div>
               {(() => {
-                const prio = calcPriority(partner.potenzial, partner.fit);
+                const prio = calcPriority(draft.potenzial as PotentialLevel | null | undefined, draft.fit as FitLevel | null | undefined);
                 if (!prio) return null;
                 const pc = PRIORITY_COLORS[prio];
                 return (
@@ -594,34 +639,73 @@ export default function PartnerDetailPage({
                 );
               })()}
             </div>
-            {partner.notes && (
-              <div>
-                <div className="text-xs text-zinc-500 mb-1">Bemerkungen</div>
-                <div className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
-                  {partner.notes}
+            <div>
+              <div className="text-xs text-zinc-500 mb-1">Bemerkungen</div>
+              <textarea
+                className={`${INP} text-zinc-700 dark:text-zinc-300 leading-relaxed min-h-[60px] w-full`}
+                value={draft.notes || ""}
+                onChange={(e) => setD("notes", e.target.value)}
+                placeholder="Deal-Details, nächste Schritte…"
+              />
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              Tags
+            </h3>
+            <div className="flex gap-2 mb-2">
+              <input
+                className={`${INP} flex-1 border-zinc-200 dark:border-zinc-700`}
+                value={tagIn}
+                onChange={(e) => setTagIn(e.target.value)}
+                placeholder="Tag hinzufügen…"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addTag(); }
+                }}
+              />
+              <button
+                type="button"
+                onClick={addTag}
+                disabled={!tagIn.trim()}
+                className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              >
+                +
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {(draft.tags || []).map((t) => (
+                <span
+                  key={t}
+                  onClick={() => setD("tags", (draft.tags || []).filter((x) => x !== t))}
+                  className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg text-xs cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors"
+                >
+                  {t} &times;
+                </span>
+              ))}
+            </div>
+            {allTags.filter((t) => !(draft.tags || []).includes(t)).length > 0 && (
+              <div className="mt-2">
+                <div className="text-[10px] text-zinc-400 mb-1">Vorhandene Tags:</div>
+                <div className="flex flex-wrap gap-1">
+                  {allTags
+                    .filter((t) => !(draft.tags || []).includes(t))
+                    .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()))
+                    .map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setD("tags", [...(draft.tags || []), t])}
+                        className="px-2 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 rounded text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
+                      >
+                        + {t}
+                      </button>
+                    ))}
                 </div>
               </div>
             )}
           </div>
-
-          {/* Tags */}
-          {(partner.tags || []).length > 0 && (
-            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-                Tags
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {partner.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg text-xs"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Anhänge */}
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
@@ -839,54 +923,56 @@ export default function PartnerDetailPage({
             <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
               Kontaktperson
             </h3>
-            {contactName || partner.contact_email || partner.contact_website ? (
-              <div className="space-y-3">
-                {contactName && (
-                  <div className="text-sm font-semibold text-zinc-900 dark:text-white">
-                    {contactName}
-                  </div>
-                )}
-                {partner.contact_position && (
-                  <div className="text-xs text-zinc-500">
-                    {partner.contact_position}
-                  </div>
-                )}
-                {partner.contact_email && (
-                  <a
-                    href={`mailto:${partner.contact_email}`}
-                    className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    <Mail size={14} />
-                    {partner.contact_email}
-                  </a>
-                )}
-                {partner.contact_website && (
-                  <a
-                    href={
-                      partner.contact_website.startsWith("http")
-                        ? partner.contact_website
-                        : `https://${partner.contact_website}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    <Globe size={14} />
-                    {partner.contact_website}
-                  </a>
-                )}
-                {partner.instagram && (
-                  <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    <Instagram size={14} />
-                    {partner.instagram}
-                  </div>
-                )}
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
+                  value={draft.contact_first_name || ""}
+                  onChange={(e) => setD("contact_first_name", e.target.value)}
+                  placeholder="Vorname"
+                />
+                <input
+                  className={`${INP} text-sm font-semibold text-zinc-900 dark:text-white`}
+                  value={draft.contact_last_name || ""}
+                  onChange={(e) => setD("contact_last_name", e.target.value)}
+                  placeholder="Nachname"
+                />
               </div>
-            ) : (
-              <div className="text-sm text-zinc-400">
-                Keine Kontaktdaten hinterlegt.
+              <input
+                className={`${INP} text-xs text-zinc-500`}
+                value={draft.contact_position || ""}
+                onChange={(e) => setD("contact_position", e.target.value)}
+                placeholder="Position"
+              />
+              <div className="flex items-center gap-2">
+                <Mail size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  type="email"
+                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
+                  value={draft.contact_email || ""}
+                  onChange={(e) => setD("contact_email", e.target.value)}
+                  placeholder="E-Mail"
+                />
               </div>
-            )}
+              <div className="flex items-center gap-2">
+                <Globe size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  className={`${INP} text-sm text-blue-600 dark:text-blue-400 flex-1`}
+                  value={draft.contact_website || ""}
+                  onChange={(e) => setD("contact_website", e.target.value)}
+                  placeholder="Webseite"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Instagram size={14} className="text-zinc-400 shrink-0" />
+                <input
+                  className={`${INP} text-sm text-zinc-600 dark:text-zinc-400 flex-1`}
+                  value={draft.instagram || ""}
+                  onChange={(e) => setD("instagram", e.target.value)}
+                  placeholder="@instagram"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -958,401 +1044,6 @@ export default function PartnerDetailPage({
         </div>
       )}
 
-      {/* Edit Modal */}
-      {editing && (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-2xl my-8 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
-                Partner bearbeiten
-              </h2>
-              <button
-                onClick={() => setEditing(false)}
-                className="p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-white transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
-              {/* Grunddaten */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Partner Name *
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.name || ""}
-                    onChange={(e) => setE("name", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Partner-Typ
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.partner_type || "Brand"}
-                    onChange={(e) => setE("partner_type", e.target.value)}
-                  >
-                    {PARTNER_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Kategorie
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.category || "Sports"}
-                    onChange={(e) => setE("category", e.target.value)}
-                  >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Status
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.status || "Lead"}
-                    onChange={(e) => setE("status", e.target.value)}
-                  >
-                    {STATUSES.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Zusammenarbeitsform */}
-              <div>
-                <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                  Zusammenarbeitsform
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {COLLABORATION_TYPES.map((ct) => {
-                    const active = (editData.collaboration_types || []).includes(ct);
-                    return (
-                      <button
-                        key={ct}
-                        type="button"
-                        onClick={() => toggleEditCollab(ct)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                          active
-                            ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900"
-                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200"
-                        }`}
-                      >
-                        {ct}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Kontaktperson */}
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                  value={editData.contact_first_name || ""}
-                  onChange={(e) => setE("contact_first_name", e.target.value)}
-                  placeholder="Vorname"
-                />
-                <input
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                  value={editData.contact_last_name || ""}
-                  onChange={(e) => setE("contact_last_name", e.target.value)}
-                  placeholder="Name"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                  value={editData.contact_position || ""}
-                  onChange={(e) => setE("contact_position", e.target.value)}
-                  placeholder="Position"
-                />
-                <input
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                  type="email"
-                  value={editData.contact_email || ""}
-                  onChange={(e) => setE("contact_email", e.target.value)}
-                  placeholder="E-Mail"
-                />
-              </div>
-              <input
-                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                value={editData.contact_website || ""}
-                onChange={(e) => setE("contact_website", e.target.value)}
-                placeholder="Webseite"
-              />
-
-              {/* Details */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Instagram
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.instagram || ""}
-                    onChange={(e) => setE("instagram", e.target.value)}
-                    placeholder="@brand"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Quelle
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.source || ""}
-                    onChange={(e) => setE("source", e.target.value)}
-                    placeholder="Instagram DM"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Deal-Wert
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.value || ""}
-                    onChange={(e) => setE("value", e.target.value)}
-                    placeholder="CHF 2'500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Follow-up Datum
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    type="date"
-                    value={editData.follow_up_date || ""}
-                    onChange={(e) =>
-                      setE("follow_up_date", e.target.value || null)
-                    }
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Letzter Kontakt
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    type="date"
-                    value={editData.last_contact || ""}
-                    onChange={(e) =>
-                      setE("last_contact", e.target.value || null)
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Status Datum
-                  </label>
-                  <input
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    type="date"
-                    value={editData.status_date || ""}
-                    onChange={(e) =>
-                      setE("status_date", e.target.value || null)
-                    }
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Potenzial
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.potenzial || ""}
-                    onChange={(e) => setE("potenzial", e.target.value || null)}
-                  >
-                    <option value="">– Nicht gesetzt –</option>
-                    {POTENTIAL_LEVELS.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                    Fit
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={editData.fit || ""}
-                    onChange={(e) => setE("fit", e.target.value || null)}
-                  >
-                    <option value="">– Nicht gesetzt –</option>
-                    {FIT_LEVELS.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Bemerkungen */}
-              <div>
-                <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                  Bemerkungen
-                </label>
-                <textarea
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white min-h-[80px]"
-                  value={editData.notes || ""}
-                  onChange={(e) => setE("notes", e.target.value)}
-                  placeholder="Deal-Details, nächste Schritte…"
-                />
-              </div>
-
-              {/* Anhänge im Edit */}
-              <div>
-                <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                  Neue Anhänge
-                </label>
-                <div
-                  className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-lg p-4 text-center cursor-pointer hover:border-zinc-400 transition-colors"
-                  onClick={() => {
-                    const inp = document.createElement("input");
-                    inp.type = "file";
-                    inp.onchange = () => {
-                      const file = inp.files?.[0];
-                      if (file) setPendingFiles((prev) => [...prev, file]);
-                    };
-                    inp.click();
-                  }}
-                >
-                  <Upload size={16} className="mx-auto text-zinc-400 mb-1" />
-                  <div className="text-xs text-zinc-500">
-                    Klicken zum Hochladen
-                  </div>
-                </div>
-                {pendingFiles.length > 0 && (
-                  <div className="space-y-1 mt-2">
-                    {pendingFiles.map((file, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-2 px-2 py-1.5 bg-zinc-50 dark:bg-zinc-800 rounded text-xs"
-                      >
-                        <span className="flex-1 truncate">{file.name}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setPendingFiles((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            )
-                          }
-                          className="text-zinc-400 hover:text-red-500"
-                        >
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Tags */}
-              <div>
-                <label className="block text-xs font-medium text-zinc-500 mb-1.5">
-                  Tags
-                </label>
-                <div className="flex gap-2 mb-2">
-                  <input
-                    className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-                    value={tagIn}
-                    onChange={(e) => setTagIn(e.target.value)}
-                    placeholder="Tag…"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addEditTag();
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={addEditTag}
-                    className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {(editData.tags || []).map((t) => (
-                    <span
-                      key={t}
-                      onClick={() =>
-                        setE(
-                          "tags",
-                          (editData.tags || []).filter((x) => x !== t)
-                        )
-                      }
-                      className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded text-xs cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors"
-                    >
-                      {t} &times;
-                    </span>
-                  ))}
-                </div>
-                {allTags.filter((t) => !(editData.tags || []).includes(t)).length > 0 && (
-                  <div className="mt-2">
-                    <div className="text-[10px] text-zinc-400 mb-1">Vorhandene Tags:</div>
-                    <div className="flex flex-wrap gap-1">
-                      {allTags
-                        .filter((t) => !(editData.tags || []).includes(t))
-                        .filter((t) => !tagIn || t.toLowerCase().includes(tagIn.toLowerCase()))
-                        .map((t) => (
-                          <button
-                            key={t}
-                            type="button"
-                            onClick={() => setE("tags", [...(editData.tags || []), t])}
-                            className="px-2 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 rounded text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
-                          >
-                            + {t}
-                          </button>
-                        ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-              <button
-                onClick={() => setEditing(false)}
-                className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors"
-              >
-                Abbrechen
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={!editData.name?.trim()}
-                className="px-5 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 transition-colors disabled:opacity-50"
-              >
-                Speichern
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
