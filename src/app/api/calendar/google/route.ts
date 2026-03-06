@@ -410,8 +410,18 @@ export async function GET(req: NextRequest) {
   // Support multiple feeds: GOOGLE_CALENDAR_ICAL_URLS (comma-separated) or legacy single GOOGLE_CALENDAR_ICAL_URL
   const urlsRaw = process.env.GOOGLE_CALENDAR_ICAL_URLS || process.env.GOOGLE_CALENDAR_ICAL_URL || "";
   const urls = urlsRaw.split(",").map((u) => u.trim()).filter(Boolean);
+
+  // Debug: return env status if no feeds configured
   if (urls.length === 0) {
-    return NextResponse.json([]);
+    return NextResponse.json({
+      feeds: [],
+      events: [],
+      _debug: {
+        hasUrls: !!process.env.GOOGLE_CALENDAR_ICAL_URLS,
+        hasUrlLegacy: !!process.env.GOOGLE_CALENDAR_ICAL_URL,
+        urlsRawLength: urlsRaw.length,
+      },
+    });
   }
 
   const start = req.nextUrl.searchParams.get("start");
