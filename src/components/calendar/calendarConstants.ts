@@ -9,7 +9,6 @@ import {
   CalendarClock,
   Receipt,
   Handshake,
-  Globe,
 } from "lucide-react";
 
 export type CalendarEventType =
@@ -46,7 +45,6 @@ export const VIRTUAL_EVENT_CONFIG = {
   partner_followup: { label: "Partner Follow-up", color: "#a855f7", icon: CalendarClock },
   invoice_due: { label: "Rechnung fällig", color: "#ef4444", icon: Receipt },
   mandate_billing: { label: "Mandat-Abrechnung", color: "#f59e0b", icon: Handshake },
-  google_calendar: { label: "Google Calendar", color: "#4285f4", icon: Globe },
 };
 
 export const RECURRENCE_OPTIONS: { value: RecurrenceRule | ""; label: string }[] = [

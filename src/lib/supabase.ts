@@ -408,7 +408,7 @@ export interface Prospect {
 // Calendar Types
 export type CalendarEventType = 'work' | 'meeting' | 'training' | 'holiday' | 'deadline' | 'personal' | 'travel'
 export type RecurrenceRule = 'daily' | 'weekly' | 'monthly' | 'weekdays'
-export type VirtualEventSource = 'partner_followup' | 'invoice_due' | 'mandate_billing' | 'google_calendar'
+export type VirtualEventSource = 'partner_followup' | 'invoice_due' | 'mandate_billing'
 
 export interface CalendarEvent {
   id: string
@@ -444,8 +444,6 @@ export interface VirtualCalendarEvent {
   color: string
   sourceId: string
   sourceName: string
-  description?: string
-  location?: string
 }
 
 export type CalendarDisplayEvent =

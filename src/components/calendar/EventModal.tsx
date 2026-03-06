@@ -138,18 +138,10 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
   if (isVirtual && event) {
     const source = event.source as keyof typeof VIRTUAL_EVENT_CONFIG;
     const cfg = VIRTUAL_EVENT_CONFIG[source];
-    const isGoogle = source === "google_calendar";
-    const linkHref = isGoogle
-      ? `https://calendar.google.com/calendar/r/day/${new Date(event.start_at).getFullYear()}/${new Date(event.start_at).getMonth() + 1}/${new Date(event.start_at).getDate()}`
-      : source === "partner_followup" ? `/admin/partners/${event.sourceId}`
-      : source === "invoice_due" ? `/admin/rechnungen`
-      : `/admin/mandate`;
-
-    const startDate = new Date(event.start_at);
-    const endDate = new Date(event.end_at);
-    const timeStr = !event.all_day
-      ? `${startDate.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })} – ${endDate.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}`
-      : null;
+    const linkHref =
+      source === "partner_followup" ? `/admin/partners/${event.sourceId}` :
+      source === "invoice_due" ? `/admin/rechnungen` :
+      `/admin/mandate`;
 
     return (
       <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -165,25 +157,16 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
           </div>
           <div className="p-5 space-y-3">
             <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{event.title}</h3>
-            {!isGoogle && <p className="text-sm text-zinc-500">{event.sourceName}</p>}
+            <p className="text-sm text-zinc-500">{event.sourceName}</p>
             <p className="text-sm text-zinc-500">
-              {startDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-              {timeStr && ` · ${timeStr}`}
+              {new Date(event.start_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
             </p>
-            {isGoogle && event.location && (
-              <p className="text-sm text-zinc-500">{event.location}</p>
-            )}
-            {isGoogle && event.description && (
-              <p className="text-sm text-zinc-500 whitespace-pre-line">{event.description}</p>
-            )}
             <a
               href={linkHref}
-              target={isGoogle ? "_blank" : undefined}
-              rel={isGoogle ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
             >
               <ExternalLink size={14} />
-              {isGoogle ? "In Google Calendar öffnen" : "Zur Quelle"}
+              Zur Quelle
             </a>
           </div>
         </div>

@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import { Plus } from "lucide-react";
 import type { CalendarDisplayEvent } from "@/lib/supabase";
 import { CalendarHeader } from "@/components/calendar/CalendarHeader";
-import { CalendarFilters } from "@/components/calendar/CalendarFilters";
 import { WeekView } from "@/components/calendar/WeekView";
 import { MonthView } from "@/components/calendar/MonthView";
 import { EventModal } from "@/components/calendar/EventModal";
@@ -14,7 +13,7 @@ import { getWeekRange, getMonthRange } from "@/components/calendar/calendarHelpe
 export default function KalenderPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<"week" | "month">("week");
-  const { events, loading, loadEvents, sources, disabled, toggleSource } = useCalendarEvents();
+  const { events, loading, loadEvents } = useCalendarEvents();
 
   // Modal state
   const [modalEvent, setModalEvent] = useState<CalendarDisplayEvent | null | "new">(null);
@@ -94,9 +93,6 @@ export default function KalenderPage() {
           Neuer Termin
         </button>
       </div>
-
-      {/* Source Filters */}
-      <CalendarFilters sources={sources} disabled={disabled} onToggle={toggleSource} />
 
       {/* Calendar */}
       {loading ? (
