@@ -27,7 +27,7 @@ interface GoogleCalendarEvent {
 /* ── Cache ─────────────────────────────────────────────── */
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
-let cache: { data: ParsedEvent[]; ts: number } | null = null;
+let cache: { data: ParsedEvent[]; ts: number } | null = null; // merged cache for all feeds
 
 /* ── iCal Parser ───────────────────────────────────────── */
 
@@ -389,8 +389,10 @@ function toOutput(
 /* ── API Route ─────────────────────────────────────────── */
 
 export async function GET(req: NextRequest) {
-  const icalUrl = process.env.GOOGLE_CALENDAR_ICAL_URL;
-  if (!icalUrl) {
+  // Support multiple feeds: GOOGLE_CALENDAR_ICAL_URLS (comma-separated) or legacy single GOOGLE_CALENDAR_ICAL_URL
+  const urlsRaw = process.env.GOOGLE_CALENDAR_ICAL_URLS || process.env.GOOGLE_CALENDAR_ICAL_URL || "";
+  const urls = urlsRaw.split(",").map((u) => u.trim()).filter(Boolean);
+  if (urls.length === 0) {
     return NextResponse.json([]);
   }
 
@@ -401,15 +403,22 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Fetch & cache iCal feed
+    // Fetch & cache all iCal feeds
     if (!cache || Date.now() - cache.ts > CACHE_TTL) {
-      const res = await fetch(icalUrl, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) {
-        console.error("Google Calendar fetch failed:", res.status);
-        return NextResponse.json([]);
+      const allEvents: ParsedEvent[] = [];
+      const results = await Promise.allSettled(
+        urls.map((url) =>
+          fetch(url, { signal: AbortSignal.timeout(10000) }).then((r) =>
+            r.ok ? r.text() : ""
+          )
+        )
+      );
+      for (const result of results) {
+        if (result.status === "fulfilled" && result.value) {
+          allEvents.push(...parseICal(result.value));
+        }
       }
-      const text = await res.text();
-      cache = { data: parseICal(text), ts: Date.now() };
+      cache = { data: allEvents, ts: Date.now() };
     }
 
     // Expand and filter
