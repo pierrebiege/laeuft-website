@@ -19,7 +19,7 @@ export function useCalendarEvents() {
     const endStr = rangeEnd.toISOString().split("T")[0];
 
     // Load real events, also load recurring events that started before the range
-    const [realRes, partnerRes, invoiceRes, mandateRes] = await Promise.all([
+    const [realRes, partnerRes, invoiceRes, mandateRes, googleRes] = await Promise.all([
       supabase
         .from("calendar_events")
         .select("*")
@@ -52,6 +52,11 @@ export function useCalendarEvents() {
         .in("status", ["active"])
         .gte("next_invoice_date", startStr)
         .lte("next_invoice_date", endStr),
+
+      // Google Calendar events
+      fetch(`/api/calendar/google?start=${startISO}&end=${endISO}`)
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => []),
     ]);
 
     // Expand real events (including recurrence)
@@ -109,6 +114,25 @@ export function useCalendarEvents() {
         color: VIRTUAL_EVENT_CONFIG.mandate_billing.color,
         sourceId: m.id,
         sourceName: `${m.title} – ${clientName}`,
+      };
+      virtual.push({ ...ve, _virtual: true as const });
+    }
+
+    // Google Calendar events
+    const googleEvents = (googleRes || []) as { id: string; title: string; description: string | null; location: string | null; start_at: string; end_at: string; all_day: boolean }[];
+    for (const g of googleEvents) {
+      const ve: VirtualCalendarEvent = {
+        id: g.id,
+        title: g.title,
+        start_at: g.start_at,
+        end_at: g.end_at,
+        all_day: g.all_day,
+        source: "google_calendar",
+        color: VIRTUAL_EVENT_CONFIG.google_calendar.color,
+        sourceId: g.id,
+        sourceName: g.title,
+        description: g.description || undefined,
+        location: g.location || undefined,
       };
       virtual.push({ ...ve, _virtual: true as const });
     }
