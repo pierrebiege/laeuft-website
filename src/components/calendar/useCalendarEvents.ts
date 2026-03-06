@@ -1,14 +1,84 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import type { CalendarEvent, CalendarDisplayEvent, VirtualCalendarEvent } from "@/lib/supabase";
 import { expandRecurrence } from "./calendarHelpers";
 import { VIRTUAL_EVENT_CONFIG } from "./calendarConstants";
 
+/* ── Source management ─────────────────────────────────── */
+
+const GOOGLE_FEED_COLORS = ["#4285f4", "#0f9d58", "#db4437", "#f4b400", "#ab47bc"];
+
+export interface CalendarSource {
+  id: string;
+  name: string;
+  color: string;
+}
+
+const STORAGE_KEY = "calendar-disabled-sources";
+
+function loadDisabled(): Set<string> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function saveDisabled(set: Set<string>) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+}
+
+/* ── Static sources ────────────────────────────────────── */
+
+const STATIC_SOURCES: CalendarSource[] = [
+  { id: "real", name: "Eigene Termine", color: "#3b82f6" },
+  { id: "partner_followup", name: "Partner Follow-ups", color: VIRTUAL_EVENT_CONFIG.partner_followup.color },
+  { id: "invoice_due", name: "Rechnungen", color: VIRTUAL_EVENT_CONFIG.invoice_due.color },
+  { id: "mandate_billing", name: "Mandate", color: VIRTUAL_EVENT_CONFIG.mandate_billing.color },
+];
+
+/* ── Hook ──────────────────────────────────────────────── */
+
 export function useCalendarEvents() {
-  const [events, setEvents] = useState<CalendarDisplayEvent[]>([]);
+  const [allEvents, setAllEvents] = useState<CalendarDisplayEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sources, setSources] = useState<CalendarSource[]>(STATIC_SOURCES);
+  const [disabled, setDisabled] = useState<Set<string>>(new Set());
+
+  // Load disabled state from localStorage on mount
+  useEffect(() => {
+    setDisabled(loadDisabled());
+  }, []);
+
+  const toggleSource = useCallback((sourceId: string) => {
+    setDisabled((prev) => {
+      const next = new Set(prev);
+      if (next.has(sourceId)) {
+        next.delete(sourceId);
+      } else {
+        next.add(sourceId);
+      }
+      saveDisabled(next);
+      return next;
+    });
+  }, []);
+
+  // Filtered events based on enabled sources
+  const events = allEvents.filter((ev) => {
+    if (ev._virtual) {
+      // Google Calendar events have source "google_calendar" but we need feedId for toggling
+      if (ev.source === "google_calendar") {
+        // feedId is stored in the id prefix: gcal-feed-0, gcal-feed-1 etc.
+        const feedId = ev.sourceId.match(/^gcal-feed-\d+/)?.[0];
+        return feedId ? !disabled.has(feedId) : !disabled.has("google_calendar");
+      }
+      return !disabled.has(ev.source);
+    }
+    return !disabled.has("real");
+  });
 
   const loadEvents = useCallback(async (rangeStart: Date, rangeEnd: Date) => {
     setLoading(true);
@@ -55,8 +125,8 @@ export function useCalendarEvents() {
 
       // Google Calendar events
       fetch(`/api/calendar/google?start=${startISO}&end=${endISO}`)
-        .then((r) => (r.ok ? r.json() : []))
-        .catch(() => []),
+        .then((r) => (r.ok ? r.json() : { feeds: [], events: [] }))
+        .catch(() => ({ feeds: [], events: [] })),
     ]);
 
     // Expand real events (including recurrence)
@@ -118,9 +188,24 @@ export function useCalendarEvents() {
       virtual.push({ ...ve, _virtual: true as const });
     }
 
-    // Google Calendar events
-    const googleEvents = (googleRes || []) as { id: string; title: string; description: string | null; location: string | null; start_at: string; end_at: string; all_day: boolean }[];
+    // Google Calendar events — build sources + events from structured response
+    const gcalData = googleRes as { feeds: { id: string; name: string }[]; events: { id: string; title: string; description: string | null; location: string | null; start_at: string; end_at: string; all_day: boolean; feedId: string; feedName: string }[] };
+    const googleFeeds = gcalData.feeds || [];
+    const googleEvents = gcalData.events || [];
+
+    // Build Google sources
+    const googleSources: CalendarSource[] = googleFeeds.map((f, i) => ({
+      id: f.id,
+      name: f.name,
+      color: GOOGLE_FEED_COLORS[i % GOOGLE_FEED_COLORS.length],
+    }));
+    setSources([...STATIC_SOURCES, ...googleSources]);
+
     for (const g of googleEvents) {
+      const feedColor = GOOGLE_FEED_COLORS[
+        googleFeeds.findIndex((f) => f.id === g.feedId) % GOOGLE_FEED_COLORS.length
+      ] || VIRTUAL_EVENT_CONFIG.google_calendar.color;
+
       const ve: VirtualCalendarEvent = {
         id: g.id,
         title: g.title,
@@ -128,8 +213,8 @@ export function useCalendarEvents() {
         end_at: g.end_at,
         all_day: g.all_day,
         source: "google_calendar",
-        color: VIRTUAL_EVENT_CONFIG.google_calendar.color,
-        sourceId: g.id,
+        color: feedColor,
+        sourceId: g.feedId, // feed ID for filtering
         sourceName: g.title,
         description: g.description || undefined,
         location: g.location || undefined,
@@ -142,9 +227,9 @@ export function useCalendarEvents() {
       (a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
     );
 
-    setEvents(all);
+    setAllEvents(all);
     setLoading(false);
   }, []);
 
-  return { events, loading, loadEvents };
+  return { events, loading, loadEvents, sources, disabled, toggleSource };
 }

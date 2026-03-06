@@ -22,12 +22,20 @@ interface GoogleCalendarEvent {
   start_at: string;
   end_at: string;
   all_day: boolean;
+  feedId: string;
+  feedName: string;
+}
+
+interface FeedData {
+  id: string;
+  name: string;
+  events: ParsedEvent[];
 }
 
 /* ── Cache ─────────────────────────────────────────────── */
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
-let cache: { data: ParsedEvent[]; ts: number } | null = null; // merged cache for all feeds
+let cache: { feeds: FeedData[]; ts: number } | null = null;
 
 /* ── iCal Parser ───────────────────────────────────────── */
 
@@ -77,7 +85,11 @@ function parseICalDT(
   return { dt: `${y}-${mo}-${d}T${h}:${mi}:${s}`, allDay: false };
 }
 
-function parseICal(ical: string): ParsedEvent[] {
+function parseICal(ical: string): { name: string; events: ParsedEvent[] } {
+  // Extract calendar name from X-WR-CALNAME header
+  const nameMatch = ical.match(/X-WR-CALNAME:(.*)/);
+  const calName = nameMatch ? unescape(nameMatch[1].trim()) : "Google Calendar";
+
   const lines = unfold(ical);
   const events: ParsedEvent[] = [];
   let props: Map<string, { value: string; params: string }> | null = null;
@@ -168,7 +180,7 @@ function parseICal(ical: string): ParsedEvent[] {
     }
   }
 
-  return events;
+  return { name: calName, events };
 }
 
 /* ── Date utilities (UTC-safe, no timezone shifting) ───── */
@@ -258,6 +270,8 @@ function expandEvent(
   event: ParsedEvent,
   rangeStartStr: string,
   rangeEndStr: string,
+  feedId: string,
+  feedName: string,
 ): GoogleCalendarEvent[] {
   const results: GoogleCalendarEvent[] = [];
 
@@ -265,7 +279,7 @@ function expandEvent(
   if (!event.rrule) {
     const evDate = dateOf(event.startAt);
     if (dateGte(evDate, rangeStartStr) && dateLte(evDate, rangeEndStr)) {
-      results.push(toOutput(event, event.startAt, event.endAt));
+      results.push(toOutput(event, event.startAt, event.endAt, feedId, feedName));
     }
     return results;
   }
@@ -306,7 +320,7 @@ function expandEvent(
           const eAt = event.allDay
             ? `${ds}T23:59:59`
             : addMsToIso(sAt, duration);
-          results.push(toOutput(event, sAt, eAt, ds));
+          results.push(toOutput(event, sAt, eAt, feedId, feedName, ds));
         }
       }
       if (dateOf(current.toISOString()) > maxDate) break;
@@ -330,7 +344,7 @@ function expandEvent(
       if (ds >= rangeStartStr && ds <= rangeEndStr) {
         const sAt = event.allDay ? `${ds}T00:00:00` : `${ds}T${timeStr}${isZ ? "Z" : ""}`;
         const eAt = event.allDay ? `${ds}T23:59:59` : addMsToIso(sAt, duration);
-        results.push(toOutput(event, sAt, eAt, ds));
+        results.push(toOutput(event, sAt, eAt, feedId, feedName, ds));
       }
     }
 
@@ -373,6 +387,8 @@ function toOutput(
   event: ParsedEvent,
   startAt: string,
   endAt: string,
+  feedId: string,
+  feedName: string,
   dateSuffix?: string,
 ): GoogleCalendarEvent {
   return {
@@ -383,6 +399,8 @@ function toOutput(
     start_at: startAt,
     end_at: endAt,
     all_day: event.allDay,
+    feedId,
+    feedName,
   };
 }
 
@@ -405,7 +423,7 @@ export async function GET(req: NextRequest) {
   try {
     // Fetch & cache all iCal feeds
     if (!cache || Date.now() - cache.ts > CACHE_TTL) {
-      const allEvents: ParsedEvent[] = [];
+      const feeds: FeedData[] = [];
       const results = await Promise.allSettled(
         urls.map((url) =>
           fetch(url, { signal: AbortSignal.timeout(10000) }).then((r) =>
@@ -413,12 +431,18 @@ export async function GET(req: NextRequest) {
           )
         )
       );
-      for (const result of results) {
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
         if (result.status === "fulfilled" && result.value) {
-          allEvents.push(...parseICal(result.value));
+          const parsed = parseICal(result.value);
+          feeds.push({
+            id: `gcal-feed-${i}`,
+            name: parsed.name,
+            events: parsed.events,
+          });
         }
       }
-      cache = { data: allEvents, ts: Date.now() };
+      cache = { feeds, ts: Date.now() };
     }
 
     // Expand and filter
@@ -426,16 +450,21 @@ export async function GET(req: NextRequest) {
     const rangeEnd = end.slice(0, 10);
     const events: GoogleCalendarEvent[] = [];
 
-    for (const ev of cache.data) {
-      events.push(...expandEvent(ev, rangeStart, rangeEnd));
+    for (const feed of cache.feeds) {
+      for (const ev of feed.events) {
+        events.push(...expandEvent(ev, rangeStart, rangeEnd, feed.id, feed.name));
+      }
     }
 
     // Sort by start time
     events.sort((a, b) => a.start_at.localeCompare(b.start_at));
 
-    return NextResponse.json(events);
+    return NextResponse.json({
+      feeds: cache.feeds.map((f) => ({ id: f.id, name: f.name })),
+      events,
+    });
   } catch (err) {
     console.error("Google Calendar error:", err);
-    return NextResponse.json([]);
+    return NextResponse.json({ feeds: [], events: [] });
   }
 }
