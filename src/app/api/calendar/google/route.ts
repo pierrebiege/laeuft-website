@@ -434,11 +434,14 @@ export async function GET(req: NextRequest) {
     // Fetch & cache all iCal feeds
     if (!cache || Date.now() - cache.ts > CACHE_TTL) {
       const feeds: FeedData[] = [];
+      const fetchDebug: { url: string; status: string; size: number }[] = [];
       const results = await Promise.allSettled(
         urls.map((url) =>
-          fetch(url, { signal: AbortSignal.timeout(10000) }).then((r) =>
-            r.ok ? r.text() : ""
-          )
+          fetch(url, { signal: AbortSignal.timeout(15000) }).then(async (r) => {
+            const text = r.ok ? await r.text() : "";
+            fetchDebug.push({ url: url.slice(0, 60) + "...", status: `${r.status}`, size: text.length });
+            return text;
+          })
         )
       );
       for (let i = 0; i < results.length; i++) {
@@ -450,9 +453,13 @@ export async function GET(req: NextRequest) {
             name: parsed.name,
             events: parsed.events,
           });
+        } else if (result.status === "rejected") {
+          fetchDebug.push({ url: urls[i].slice(0, 60) + "...", status: `rejected: ${result.reason}`, size: 0 });
         }
       }
       cache = { feeds, ts: Date.now() };
+      // Temporary debug: include fetch results
+      (cache as unknown as Record<string, unknown>)._fetchDebug = fetchDebug;
     }
 
     // Expand and filter
@@ -472,6 +479,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       feeds: cache.feeds.map((f) => ({ id: f.id, name: f.name })),
       events,
+      _debug: {
+        urlCount: urls.length,
+        feedCount: cache.feeds.length,
+        totalParsedEvents: cache.feeds.reduce((s, f) => s + f.events.length, 0),
+        expandedEvents: events.length,
+        fetchDebug: (cache as unknown as Record<string, unknown>)._fetchDebug,
+      },
     });
   } catch (err) {
     console.error("Google Calendar error:", err);
