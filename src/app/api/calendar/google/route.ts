@@ -439,7 +439,11 @@ export async function GET(req: NextRequest) {
         urls.map((url) =>
           fetch(url, {
             signal: AbortSignal.timeout(15000),
-            headers: { "User-Agent": "Mozilla/5.0 (compatible; CalendarSync/1.0)" },
+            redirect: "follow",
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+              "Accept": "text/calendar, text/plain, */*",
+            },
           }).then(async (r) => {
             const text = r.ok ? await r.text() : "";
             fetchDebug.push({ url: url.slice(0, 60) + "...", status: `${r.status}`, size: text.length });
