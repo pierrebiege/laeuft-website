@@ -437,7 +437,10 @@ export async function GET(req: NextRequest) {
       const fetchDebug: { url: string; status: string; size: number }[] = [];
       const results = await Promise.allSettled(
         urls.map((url) =>
-          fetch(url, { signal: AbortSignal.timeout(15000) }).then(async (r) => {
+          fetch(url, {
+            signal: AbortSignal.timeout(15000),
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; CalendarSync/1.0)" },
+          }).then(async (r) => {
             const text = r.ok ? await r.text() : "";
             fetchDebug.push({ url: url.slice(0, 60) + "...", status: `${r.status}`, size: text.length });
             return text;
