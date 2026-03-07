@@ -4,15 +4,15 @@ import { useEffect, useState, useCallback } from "react";
 import { Plus } from "lucide-react";
 import type { CalendarDisplayEvent } from "@/lib/supabase";
 import { CalendarHeader } from "@/components/calendar/CalendarHeader";
-import { WeekView } from "@/components/calendar/WeekView";
+import { YearView } from "@/components/calendar/YearView";
 import { MonthView } from "@/components/calendar/MonthView";
 import { EventModal } from "@/components/calendar/EventModal";
 import { useCalendarEvents } from "@/components/calendar/useCalendarEvents";
-import { getWeekRange, getMonthRange } from "@/components/calendar/calendarHelpers";
+import { getYearRange, getMonthRange } from "@/components/calendar/calendarHelpers";
 
 export default function KalenderPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<"week" | "month">("week");
+  const [view, setView] = useState<"year" | "month">("year");
   const { events, loading, loadEvents } = useCalendarEvents();
 
   // Modal state
@@ -21,7 +21,7 @@ export default function KalenderPage() {
   const [modalHour, setModalHour] = useState<number | undefined>();
 
   const reload = useCallback(() => {
-    const range = view === "week" ? getWeekRange(currentDate) : getMonthRange(currentDate);
+    const range = view === "year" ? getYearRange(currentDate) : getMonthRange(currentDate);
     loadEvents(range.start, range.end);
   }, [currentDate, view, loadEvents]);
 
@@ -35,8 +35,8 @@ export default function KalenderPage() {
       return;
     }
     const d = new Date(currentDate);
-    if (view === "week") {
-      d.setDate(d.getDate() + dir * 7);
+    if (view === "year") {
+      d.setFullYear(d.getFullYear() + dir);
     } else {
       d.setMonth(d.getMonth() + dir);
     }
@@ -49,15 +49,21 @@ export default function KalenderPage() {
     setModalHour(undefined);
   };
 
-  const handleSlotClick = (date: Date, hour: number) => {
-    setModalEvent("new");
-    setModalDate(date);
-    setModalHour(hour);
-  };
-
   const handleDayClick = (date: Date) => {
     setCurrentDate(date);
-    setView("week");
+    setView("month");
+  };
+
+  const handleMonthClick = (date: Date) => {
+    setCurrentDate(date);
+    setView("month");
+  };
+
+  const handleDayClickMonth = (date: Date) => {
+    // In month view, clicking a day creates a new event
+    setModalEvent("new");
+    setModalDate(date);
+    setModalHour(undefined);
   };
 
   const handleModalClose = () => {
@@ -97,19 +103,19 @@ export default function KalenderPage() {
       {/* Calendar */}
       {loading ? (
         <div className="text-center py-20 text-zinc-400">Laden…</div>
-      ) : view === "week" ? (
-        <WeekView
+      ) : view === "year" ? (
+        <YearView
           currentDate={currentDate}
           events={events}
-          onEventClick={handleEventClick}
-          onSlotClick={handleSlotClick}
+          onDayClick={handleDayClick}
+          onMonthClick={handleMonthClick}
         />
       ) : (
         <MonthView
           currentDate={currentDate}
           events={events}
           onEventClick={handleEventClick}
-          onDayClick={handleDayClick}
+          onDayClick={handleDayClickMonth}
         />
       )}
 

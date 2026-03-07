@@ -1,37 +1,4 @@
-import type { CalendarEvent, VirtualCalendarEvent, CalendarDisplayEvent } from "@/lib/supabase";
-import { HOUR_START, HOUR_HEIGHT } from "./calendarConstants";
-
-// ── Week helpers (Monday-based) ────────────────────────────────
-
-export function getWeekRange(date: Date): { start: Date; end: Date } {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day; // Monday = 1
-  const start = new Date(d);
-  start.setDate(d.getDate() + diff);
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  end.setHours(23, 59, 59, 999);
-  return { start, end };
-}
-
-export function getWeekDays(date: Date): Date[] {
-  const { start } = getWeekRange(date);
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    return d;
-  });
-}
-
-export function getWeekNumber(date: Date): number {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  const yearStart = new Date(d.getFullYear(), 0, 4);
-  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-}
+import type { CalendarEvent, CalendarDisplayEvent } from "@/lib/supabase";
 
 // ── Month helpers ──────────────────────────────────────────────
 
@@ -61,6 +28,84 @@ export function getMonthGrid(date: Date): Date[][] {
   return weeks;
 }
 
+// ── Year helpers ──────────────────────────────────────────────
+
+export function getYearRange(date: Date): { start: Date; end: Date } {
+  const start = new Date(date.getFullYear(), 0, 1);
+  const end = new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999);
+  return { start, end };
+}
+
+export function getMiniMonthGrid(year: number, month: number): (Date | null)[][] {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday-based
+
+  const weeks: (Date | null)[][] = [];
+  let currentWeek: (Date | null)[] = [];
+
+  // Fill empty slots before the first day
+  for (let i = 0; i < startDay; i++) {
+    currentWeek.push(null);
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    currentWeek.push(new Date(year, month, d));
+    if (currentWeek.length === 7) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+
+  // Fill remaining slots in last week
+  if (currentWeek.length > 0) {
+    while (currentWeek.length < 7) {
+      currentWeek.push(null);
+    }
+    weeks.push(currentWeek);
+  }
+
+  return weeks;
+}
+
+// ── Multi-day event helpers ───────────────────────────────────
+
+export function isMultiDay(event: { start_at: string; end_at: string }): boolean {
+  const start = new Date(event.start_at);
+  const end = new Date(event.end_at);
+  return start.getFullYear() !== end.getFullYear() ||
+    start.getMonth() !== end.getMonth() ||
+    start.getDate() !== end.getDate();
+}
+
+export function getEventDateRange(event: { start_at: string; end_at: string }): Date[] {
+  const start = new Date(event.start_at);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(event.end_at);
+  end.setHours(0, 0, 0, 0);
+
+  const dates: Date[] = [];
+  const cursor = new Date(start);
+  while (cursor <= end) {
+    dates.push(new Date(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return dates;
+}
+
+export function getEventsForDayMulti(
+  events: CalendarDisplayEvent[],
+  day: Date
+): CalendarDisplayEvent[] {
+  return events.filter((ev) => {
+    if (isMultiDay(ev)) {
+      const dates = getEventDateRange(ev);
+      return dates.some((d) => isSameDay(d, day));
+    }
+    return isSameDay(new Date(ev.start_at), day);
+  });
+}
+
 // ── Date helpers ───────────────────────────────────────────────
 
 export function isToday(date: Date): boolean {
@@ -80,16 +125,6 @@ export function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
-export function formatDateShort(date: Date): string {
-  return date.toLocaleDateString("de-CH", { day: "numeric", month: "short" });
-}
-
-export function formatDateRange(start: Date, end: Date): string {
-  const s = start.toLocaleDateString("de-CH", { day: "numeric", month: "long" });
-  const e = end.toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" });
-  return `${s} – ${e}`;
-}
-
 export function formatTime(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
@@ -101,27 +136,6 @@ export function toDateStr(date: Date): string {
 
 export function toTimeStr(date: Date): string {
   return date.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-}
-
-// ── Positioning for week view ──────────────────────────────────
-
-export function getEventPosition(
-  startAt: string,
-  endAt: string
-): { top: number; height: number } {
-  const start = new Date(startAt);
-  const end = new Date(endAt);
-  const startMinutes = start.getHours() * 60 + start.getMinutes();
-  const endMinutes = end.getHours() * 60 + end.getMinutes();
-  const top = ((startMinutes - HOUR_START * 60) / 60) * HOUR_HEIGHT;
-  const height = Math.max(((endMinutes - startMinutes) / 60) * HOUR_HEIGHT, 20);
-  return { top, height };
-}
-
-export function getCurrentTimePosition(): number {
-  const now = new Date();
-  const minutes = now.getHours() * 60 + now.getMinutes();
-  return ((minutes - HOUR_START * 60) / 60) * HOUR_HEIGHT;
 }
 
 // ── Recurrence expansion ───────────────────────────────────────
@@ -178,63 +192,3 @@ export function expandRecurrence(
   return instances;
 }
 
-// ── Overlap detection ──────────────────────────────────────────
-
-export function detectOverlaps(
-  events: CalendarDisplayEvent[]
-): Map<string, { column: number; totalColumns: number }> {
-  const result = new Map<string, { column: number; totalColumns: number }>();
-  if (events.length === 0) return result;
-
-  const sorted = [...events].sort(
-    (a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
-  );
-
-  const groups: CalendarDisplayEvent[][] = [];
-  let currentGroup: CalendarDisplayEvent[] = [sorted[0]];
-  let groupEnd = new Date(sorted[0].end_at).getTime();
-
-  for (let i = 1; i < sorted.length; i++) {
-    const evStart = new Date(sorted[i].start_at).getTime();
-    if (evStart < groupEnd) {
-      currentGroup.push(sorted[i]);
-      groupEnd = Math.max(groupEnd, new Date(sorted[i].end_at).getTime());
-    } else {
-      groups.push(currentGroup);
-      currentGroup = [sorted[i]];
-      groupEnd = new Date(sorted[i].end_at).getTime();
-    }
-  }
-  groups.push(currentGroup);
-
-  for (const group of groups) {
-    const total = group.length;
-    group.forEach((ev, idx) => {
-      result.set(ev.id, { column: idx, totalColumns: total });
-    });
-  }
-
-  return result;
-}
-
-// ── Get events for a specific day ──────────────────────────────
-
-export function getEventsForDay(
-  events: CalendarDisplayEvent[],
-  day: Date
-): { allDay: CalendarDisplayEvent[]; timed: CalendarDisplayEvent[] } {
-  const allDay: CalendarDisplayEvent[] = [];
-  const timed: CalendarDisplayEvent[] = [];
-
-  for (const ev of events) {
-    const evStart = new Date(ev.start_at);
-    if (!isSameDay(evStart, day)) continue;
-    if (ev.all_day) {
-      allDay.push(ev);
-    } else {
-      timed.push(ev);
-    }
-  }
-
-  return { allDay, timed };
-}

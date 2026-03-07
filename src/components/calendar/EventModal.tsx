@@ -28,6 +28,7 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
   const [eventType, setEventType] = useState<CalendarEventType>("work");
   const [color, setColor] = useState("#3b82f6");
   const [date, setDate] = useState(toDateStr(defaultDate || new Date()));
+  const [endDate, setEndDate] = useState(toDateStr(defaultDate || new Date()));
   const [startTime, setStartTime] = useState(defaultHour != null ? `${String(defaultHour).padStart(2, "0")}:00` : "09:00");
   const [endTime, setEndTime] = useState(defaultHour != null ? `${String(defaultHour + 1).padStart(2, "0")}:00` : "10:00");
   const [allDay, setAllDay] = useState(false);
@@ -52,9 +53,11 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
       setEventType(ev.event_type);
       setColor(ev.color);
       const start = new Date(ev.start_at);
+      const end = new Date(ev.end_at);
       setDate(toDateStr(start));
+      setEndDate(toDateStr(end));
       setStartTime(toTimeStr(start));
-      setEndTime(toTimeStr(new Date(ev.end_at)));
+      setEndTime(toTimeStr(end));
       setAllDay(ev.all_day);
       setRecurrence(ev.recurrence_rule || "");
       setRecurrenceEnd(ev.recurrence_end || "");
@@ -93,7 +96,7 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
     setSaving(true);
 
     const startAt = allDay ? `${date}T00:00:00` : `${date}T${startTime}:00`;
-    const endAt = allDay ? `${date}T23:59:59` : `${date}T${endTime}:00`;
+    const endAt = allDay ? `${endDate}T23:59:59` : `${date}T${endTime}:00`;
 
     const payload = {
       title: title.trim(),
@@ -227,18 +230,45 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
             </div>
           </div>
 
-          {/* Date */}
-          <input
-            type="date"
-            className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-
-          {/* Time + All-day */}
-          <div className="flex items-center gap-3">
+          {/* Date + Time + All-day */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <input
+                type="date"
+                className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                  if (endDate < e.target.value) setEndDate(e.target.value);
+                }}
+              />
+              {allDay && (
+                <>
+                  <span className="text-zinc-400 text-sm">–</span>
+                  <input
+                    type="date"
+                    className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+                    value={endDate}
+                    min={date}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </>
+              )}
+              <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 whitespace-nowrap cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={allDay}
+                  onChange={(e) => {
+                    setAllDay(e.target.checked);
+                    if (e.target.checked) setEndDate(date);
+                  }}
+                  className="rounded border-zinc-300 dark:border-zinc-600"
+                />
+                Ganztägig
+              </label>
+            </div>
             {!allDay && (
-              <>
+              <div className="flex items-center gap-3">
                 <input
                   type="time"
                   className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
@@ -254,17 +284,8 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
                   onChange={(e) => setEndTime(e.target.value)}
                   step="900"
                 />
-              </>
+              </div>
             )}
-            <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 whitespace-nowrap cursor-pointer">
-              <input
-                type="checkbox"
-                checked={allDay}
-                onChange={(e) => setAllDay(e.target.checked)}
-                className="rounded border-zinc-300 dark:border-zinc-600"
-              />
-              Ganztägig
-            </label>
           </div>
 
           {/* Recurrence */}

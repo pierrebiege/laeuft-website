@@ -1,22 +1,18 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getWeekNumber, formatDateRange, getWeekRange } from "./calendarHelpers";
 
 interface CalendarHeaderProps {
   currentDate: Date;
-  view: "week" | "month";
-  onViewChange: (v: "week" | "month") => void;
+  view: "year" | "month";
+  onViewChange: (v: "year" | "month") => void;
   onNavigate: (dir: -1 | 0 | 1) => void;
 }
 
 export function CalendarHeader({ currentDate, view, onViewChange, onNavigate }: CalendarHeaderProps) {
-  const { start, end } = getWeekRange(currentDate);
-  const weekNum = getWeekNumber(currentDate);
-
   const label =
-    view === "week"
-      ? `KW ${weekNum} · ${formatDateRange(start, end)}`
+    view === "year"
+      ? `${currentDate.getFullYear()}`
       : currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" });
 
   return (
@@ -46,7 +42,7 @@ export function CalendarHeader({ currentDate, view, onViewChange, onNavigate }: 
       </div>
 
       <div className="flex bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
-        {(["week", "month"] as const).map((v) => (
+        {(["year", "month"] as const).map((v) => (
           <button
             key={v}
             onClick={() => onViewChange(v)}
@@ -56,7 +52,7 @@ export function CalendarHeader({ currentDate, view, onViewChange, onNavigate }: 
                 : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             }`}
           >
-            {v === "week" ? "Woche" : "Monat"}
+            {v === "year" ? "Jahr" : "Monat"}
           </button>
         ))}
       </div>
