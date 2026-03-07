@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PartnerDetail } from "@/components/PartnerDetail";
 import { supabase } from "@/lib/supabase";
+import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import type { Partner, PartnerType, PartnerStatus, CollaborationType, SortOption } from "@/lib/supabase";
 import { calcPriority, priorityOrder, parseValue, POTENTIAL_LEVELS, FIT_LEVELS, SORT_OPTIONS, PRIORITY_COLORS } from "@/lib/supabase";
 import {
@@ -243,7 +244,8 @@ export default function PartnersPage() {
   // AI state
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [user, setUser] = useState("Pierre");
+  const role = useAdminRole();
+  const user = role === "manager" ? "Anes" : "Pierre";
   const [aiStep, setAiStep] = useState<AIStep>("input");
   const [aiMessage, setAiMessage] = useState("");
   const [aiSource, setAiSource] = useState("");
@@ -256,12 +258,6 @@ export default function PartnersPage() {
   const [showReviewModal, setShowReviewModal] = useState(false);
 
   // ── Effects ────────────────────────────────────────────────────
-
-  // User from cookie
-  useEffect(() => {
-    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
-  }, []);
 
   // Debounced search
   useEffect(() => {

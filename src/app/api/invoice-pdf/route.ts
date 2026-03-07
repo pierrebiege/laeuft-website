@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get invoice with items and client
-    const { data: invoice, error } = await supabase
+    const { data: invoice, error } = await supabaseAdmin
       .from('invoices')
       .select(`*, client:clients(*), items:invoice_items(*)`)
       .eq('unique_token', token)

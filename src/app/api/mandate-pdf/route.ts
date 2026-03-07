@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get mandate with all relations
-    const { data: mandate, error } = await supabase
+    const { data: mandate, error } = await supabaseAdmin
       .from('mandates')
       .select(`
         *,

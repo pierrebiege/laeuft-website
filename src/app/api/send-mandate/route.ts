@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import nodemailer from 'nodemailer'
 import { requireAuth } from '@/lib/auth'
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get mandate with client and pricing phases
-    const { data: mandate, error: mandateError } = await supabase
+    const { data: mandate, error: mandateError } = await supabaseAdmin
       .from('mandates')
       .select(`
         *,
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Update mandate status
-    await supabase
+    await supabaseAdmin
       .from('mandates')
       .update({
         status: 'sent',

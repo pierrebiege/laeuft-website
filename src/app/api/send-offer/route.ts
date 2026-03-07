@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 const transporter = nodemailer.createTransport({
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const { offerId } = await request.json()
 
     // Get offer with client
-    const { data: offer, error } = await supabase
+    const { data: offer, error } = await supabaseAdmin
       .from('offers')
       .select(`*, client:clients(*), items:offer_items(*)`)
       .eq('id', offerId)
@@ -106,7 +106,7 @@ Pierre
     })
 
     // Update offer status
-    await supabase
+    await supabaseAdmin
       .from('offers')
       .update({
         status: 'sent',

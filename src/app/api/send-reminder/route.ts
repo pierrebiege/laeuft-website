@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import nodemailer from 'nodemailer'
 import { requireAuth } from '@/lib/auth'
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get invoice with client
-    const { data: invoice, error: invoiceError } = await supabase
+    const { data: invoice, error: invoiceError } = await supabaseAdmin
       .from('invoices')
       .select(`*, client:clients(*)`)
       .eq('id', invoiceId)
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
       : reminderNote
 
     if (Object.keys(updateData).length > 0) {
-      await supabase
+      await supabaseAdmin
         .from('invoices')
         .update(updateData)
         .eq('id', invoiceId)

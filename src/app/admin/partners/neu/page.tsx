@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import type {
   Partner,
   PartnerType,
@@ -60,13 +61,9 @@ export default function NewPartnerPage() {
   const [drag, setDrag] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [tagIn, setTagIn] = useState("");
-  const [user, setUser] = useState("Pierre");
+  const role = useAdminRole();
+  const user = role === "manager" ? "Anes" : "Pierre";
   const [allTags, setAllTags] = useState<string[]>([]);
-
-  useEffect(() => {
-    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
-  }, []);
 
   useEffect(() => {
     (async () => {

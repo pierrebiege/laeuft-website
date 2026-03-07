@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners/[id]/history
@@ -12,7 +12,7 @@ export async function GET(
 
   const { id } = await params
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('partner_history')
     .select('*')
     .eq('partner_id', id)
@@ -36,7 +36,7 @@ export async function POST(
   const { id } = await params
   const { author, note, channel, direction } = await request.json()
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('partner_history')
     .insert({
       partner_id: id,
@@ -53,7 +53,7 @@ export async function POST(
   }
 
   // Update last_contact on partner
-  await supabase
+  await supabaseAdmin
     .from('partners')
     .update({ last_contact: new Date().toISOString().split('T')[0] })
     .eq('id', id)

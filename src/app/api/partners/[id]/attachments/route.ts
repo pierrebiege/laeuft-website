@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners/[id]/attachments
@@ -12,7 +12,7 @@ export async function GET(
 
   const { id } = await params
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('partner_attachments')
     .select('*')
     .eq('partner_id', id)
@@ -25,7 +25,7 @@ export async function GET(
   // Generate signed URLs for each attachment
   const attachments = await Promise.all(
     (data || []).map(async (att) => {
-      const { data: urlData } = await supabase.storage
+      const { data: urlData } = await supabaseAdmin.storage
         .from('partner-attachments')
         .createSignedUrl(att.file_path, 3600) // 1 hour
 
@@ -56,7 +56,7 @@ export async function POST(
   const filePath = `${id}/${Date.now()}_${file.name}`
 
   // Upload to Supabase Storage
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabaseAdmin.storage
     .from('partner-attachments')
     .upload(filePath, file)
 
@@ -65,7 +65,7 @@ export async function POST(
   }
 
   // Save metadata
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('partner_attachments')
     .insert({
       partner_id: id,
@@ -98,13 +98,13 @@ export async function DELETE(
 
   // Delete from storage
   if (file_path) {
-    await supabase.storage
+    await supabaseAdmin.storage
       .from('partner-attachments')
       .remove([file_path])
   }
 
   // Delete metadata
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from('partner_attachments')
     .delete()
     .eq('id', attachment_id)

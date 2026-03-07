@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
+import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
@@ -12,12 +13,11 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const role = useAdminRole();
+  const isAdmin = role === "admin";
 
   useEffect(() => {
     loadOffers();
-    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setIsAdmin(false);
   }, []);
 
   async function sendOffer(offerId: string) {

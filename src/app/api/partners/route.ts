@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners - List partners with filters
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get('type')
   const search = searchParams.get('search')
 
-  let query = supabase
+  let query = supabaseAdmin
     .from('partners')
     .select('*, partner_attachments(id)')
     .order('updated_at', { ascending: false })
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const { _author, ...partnerData } = body
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('partners')
     .insert(partnerData)
     .select()
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
   // Add creation history entry
   if (_author && data) {
-    await supabase.from('partner_history').insert({
+    await supabaseAdmin.from('partner_history').insert({
       partner_id: data.id,
       author: _author,
       note: 'Partner erstellt.',

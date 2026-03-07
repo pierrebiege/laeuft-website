@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get mandate with pricing phases and client
-    const { data: mandate, error: mandateError } = await supabase
+    const { data: mandate, error: mandateError } = await supabaseAdmin
       .from('mandates')
       .select(`
         *,
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     // Clean title: remove "Offerte" from mandate title for invoices
     const cleanTitle = mandate.title.replace(/[-–]\s*Offerte/gi, '').replace(/Offerte[-–\s]*/gi, '').replace(/\s+/g, ' ').trim()
 
-    const { data: invoice, error: invoiceError } = await supabase
+    const { data: invoice, error: invoiceError } = await supabaseAdmin
       .from('invoices')
       .insert({
         client_id: mandate.client_id,
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create invoice item
-    const { error: itemError } = await supabase
+    const { error: itemError } = await supabaseAdmin
       .from('invoice_items')
       .insert({
         invoice_id: invoice.id,
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Link invoice to mandate
-    const { error: linkError } = await supabase
+    const { error: linkError } = await supabaseAdmin
       .from('mandate_invoices')
       .insert({
         mandate_id: mandate.id,
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
     // Update mandate
     const nextInvoiceDate = new Date(today.getFullYear(), today.getMonth() + 1, mandate.billing_day || 1)
 
-    await supabase
+    await supabaseAdmin
       .from('mandates')
       .update({
         last_invoice_date: today.toISOString(),

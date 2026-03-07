@@ -3,12 +3,14 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
 
   // Skip login page
   if (pathname.startsWith('/admin/login')) {
-    const response = NextResponse.next()
-    response.headers.set('x-pathname', pathname)
-    return response
+    return NextResponse.next({
+      request: { headers: requestHeaders },
+    })
   }
 
   const session = request.cookies.get('admin_session')
@@ -29,7 +31,12 @@ export function middleware(request: NextRequest) {
   }
 
   // Protect admin-only API routes (defense in depth — routes also check via requireAuth())
-  if (pathname.startsWith('/api/partners') || pathname.startsWith('/api/send-')) {
+  if (
+    pathname.startsWith('/api/partners') ||
+    pathname.startsWith('/api/send-') ||
+    pathname.startsWith('/api/calendar') ||
+    pathname.startsWith('/api/generate-mandate-invoice')
+  ) {
     if (!session?.value) {
       return NextResponse.json(
         { error: 'Nicht autorisiert.' },
@@ -38,11 +45,17 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.next()
-  response.headers.set('x-pathname', pathname)
-  return response
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  })
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/partners/:path*', '/api/send-:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/api/partners/:path*',
+    '/api/send-:path*',
+    '/api/calendar/:path*',
+    '/api/generate-mandate-invoice/:path*',
+  ],
 }

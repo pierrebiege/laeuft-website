@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 // Creditor information (you - the payment recipient)
 const creditor = {
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get invoice
-    const { data: invoice, error } = await supabase
+    const { data: invoice, error } = await supabaseAdmin
       .from('invoices')
       .select(`*, client:clients(*)`)
       .eq('unique_token', token)

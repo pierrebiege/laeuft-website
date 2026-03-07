@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Invoice, Client } from "@/lib/supabase";
+import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle, Trash2, Bell, Download } from "lucide-react";
 
 type InvoiceWithClient = Invoice & { client: Client };
@@ -13,12 +14,11 @@ export default function InvoicesPage() {
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [remindingId, setRemindingId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const role = useAdminRole();
+  const isAdmin = role === "admin";
 
   useEffect(() => {
     loadInvoices();
-    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setIsAdmin(false);
   }, []);
 
   async function sendInvoice(invoiceId: string) {

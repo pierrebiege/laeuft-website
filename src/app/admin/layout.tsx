@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import { validateSession } from "@/lib/auth";
 import AdminShell from "@/components/admin/AdminShell";
 
@@ -8,17 +8,19 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
-  const isLoginPage = pathname.startsWith("/admin/login");
+  const cookieStore = await cookies();
+  const hasSession = !!cookieStore.get("admin_session")?.value;
 
-  // Server-side session validation (defense in depth — middleware also checks)
-  if (!isLoginPage) {
-    const isValid = await validateSession();
-    if (!isValid) {
-      redirect("/admin/login");
-    }
+  // No session cookie → skip validation (login page, or unauthenticated)
+  if (!hasSession) {
+    return <AdminShell role="admin">{children}</AdminShell>;
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  // Has session cookie → validate against DB
+  const { valid, role } = await validateSession();
+  if (!valid) {
+    redirect("/admin/login");
+  }
+
+  return <AdminShell role={role as "admin" | "manager"}>{children}</AdminShell>;
 }

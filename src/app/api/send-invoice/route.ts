@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { businessConfig } from '@/lib/business-config'
 import { requireAuth } from '@/lib/auth'
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const { invoiceId } = await request.json()
 
     // Get invoice with client
-    const { data: invoice, error } = await supabase
+    const { data: invoice, error } = await supabaseAdmin
       .from('invoices')
       .select(`*, client:clients(*), items:invoice_items(*)`)
       .eq('id', invoiceId)
@@ -140,7 +140,7 @@ Pierre
     })
 
     // Update invoice status
-    await supabase
+    await supabaseAdmin
       .from('invoices')
       .update({
         status: 'sent',

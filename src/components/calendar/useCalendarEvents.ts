@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { supabase } from "@/lib/supabase";
 import type { CalendarEvent, CalendarDisplayEvent, VirtualCalendarEvent } from "@/lib/supabase";
 import { expandRecurrence } from "./calendarHelpers";
 import { VIRTUAL_EVENT_CONFIG } from "./calendarConstants";
@@ -15,44 +14,18 @@ export function useCalendarEvents() {
 
     const startISO = rangeStart.toISOString();
     const endISO = rangeEnd.toISOString();
-    const startStr = rangeStart.toISOString().split("T")[0];
-    const endStr = rangeEnd.toISOString().split("T")[0];
 
-    const [realRes, partnerRes, invoiceRes, mandateRes] = await Promise.all([
-      supabase
-        .from("calendar_events")
-        .select("*")
-        .or(`and(start_at.gte.${startISO},start_at.lte.${endISO}),recurrence_rule.not.is.null`)
-        .order("start_at", { ascending: true }),
+    const res = await fetch(`/api/calendar?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`);
+    if (!res.ok) {
+      setLoading(false);
+      return;
+    }
 
-      supabase
-        .from("partners")
-        .select("id, name, follow_up_date, status")
-        .not("follow_up_date", "is", null)
-        .not("status", "in", '("Closed","Declined")')
-        .gte("follow_up_date", startStr)
-        .lte("follow_up_date", endStr),
-
-      supabase
-        .from("invoices")
-        .select("id, invoice_number, due_date, status, client:clients(name)")
-        .not("due_date", "is", null)
-        .in("status", ["sent", "overdue"])
-        .gte("due_date", startStr)
-        .lte("due_date", endStr),
-
-      supabase
-        .from("mandates")
-        .select("id, title, next_invoice_date, status, client:clients(name)")
-        .not("next_invoice_date", "is", null)
-        .in("status", ["active"])
-        .gte("next_invoice_date", startStr)
-        .lte("next_invoice_date", endStr),
-    ]);
+    const { events: rawEvents, partners, invoices, mandates } = await res.json();
 
     // Expand real events (including recurrence)
     const realEvents: CalendarDisplayEvent[] = [];
-    for (const ev of (realRes.data || []) as CalendarEvent[]) {
+    for (const ev of (rawEvents || []) as CalendarEvent[]) {
       const expanded = expandRecurrence(ev, rangeStart, rangeEnd);
       for (const inst of expanded) {
         realEvents.push({ ...inst, _virtual: false as const });
@@ -62,7 +35,7 @@ export function useCalendarEvents() {
     // Build virtual events
     const virtual: CalendarDisplayEvent[] = [];
 
-    for (const p of partnerRes.data || []) {
+    for (const p of partners || []) {
       const ve: VirtualCalendarEvent = {
         id: `vp-${p.id}`,
         title: `Follow-up: ${p.name}`,
@@ -77,7 +50,7 @@ export function useCalendarEvents() {
       virtual.push({ ...ve, _virtual: true as const });
     }
 
-    for (const inv of invoiceRes.data || []) {
+    for (const inv of invoices || []) {
       const clientName = (inv.client as unknown as { name: string } | null)?.name || "";
       const ve: VirtualCalendarEvent = {
         id: `vi-${inv.id}`,
@@ -93,7 +66,7 @@ export function useCalendarEvents() {
       virtual.push({ ...ve, _virtual: true as const });
     }
 
-    for (const m of mandateRes.data || []) {
+    for (const m of mandates || []) {
       const clientName = (m.client as unknown as { name: string } | null)?.name || "";
       const ve: VirtualCalendarEvent = {
         id: `vm-${m.id}`,

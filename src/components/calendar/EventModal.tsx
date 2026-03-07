@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { X, Trash2, ExternalLink } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import type { CalendarDisplayEvent, CalendarEvent, CalendarEventType, RecurrenceRule, Partner, Client, Mandate, Invoice } from "@/lib/supabase";
+import type { CalendarDisplayEvent, CalendarEvent, CalendarEventType, RecurrenceRule } from "@/lib/supabase";
 import { EVENT_TYPES, COLOR_PRESETS, RECURRENCE_OPTIONS } from "./calendarConstants";
 import { VIRTUAL_EVENT_CONFIG } from "./calendarConstants";
 import { toDateStr, toTimeStr } from "./calendarHelpers";
+import { supabase } from "@/lib/supabase";
 
 interface EventModalProps {
   event: CalendarDisplayEvent | null; // null = new event
@@ -38,7 +38,7 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
   const [linkId, setLinkId] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Link entities
+  // Link entities (still loaded via anon client — these are read-only lookups for dropdowns)
   const [partners, setPartners] = useState<{ id: string; name: string }[]>([]);
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
   const [mandates, setMandates] = useState<{ id: string; title: string }[]>([]);
@@ -119,9 +119,17 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
       const realId = (event as CalendarEvent).id.split("-").length > 5
         ? (event as CalendarEvent).id.split("-").slice(0, 5).join("-")
         : (event as CalendarEvent).id;
-      await supabase.from("calendar_events").update(payload).eq("id", realId);
+      await fetch("/api/calendar", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: realId, ...payload }),
+      });
     } else {
-      await supabase.from("calendar_events").insert(payload);
+      await fetch("/api/calendar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
     }
 
     setSaving(false);
@@ -133,7 +141,7 @@ export function EventModal({ event, defaultDate, defaultHour, onClose, onSaved }
     const realId = (event as CalendarEvent).id.split("-").length > 5
       ? (event as CalendarEvent).id.split("-").slice(0, 5).join("-")
       : (event as CalendarEvent).id;
-    await supabase.from("calendar_events").delete().eq("id", realId);
+    await fetch(`/api/calendar?id=${realId}`, { method: "DELETE" });
     onSaved();
   };
 

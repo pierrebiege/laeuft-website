@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 /**
  * Validates the session token against the database (for API routes).
@@ -15,7 +15,7 @@ export async function requireAuth(request: NextRequest): Promise<NextResponse | 
     )
   }
 
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('admin_sessions')
     .select('token')
     .eq('token', token)
@@ -34,19 +34,21 @@ export async function requireAuth(request: NextRequest): Promise<NextResponse | 
 
 /**
  * Server-side session validation for use in Server Components / Layouts.
- * Returns true if authenticated, false otherwise.
+ * Returns { valid, role } so the layout can pass the role downstream.
  */
-export async function validateSession(): Promise<boolean> {
+export async function validateSession(): Promise<{ valid: boolean; role: string }> {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_session')?.value
-  if (!token) return false
+  if (!token) return { valid: false, role: '' }
 
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('admin_sessions')
-    .select('token')
+    .select('token, role')
     .eq('token', token)
     .gt('expires_at', new Date().toISOString())
     .single()
 
-  return !!data
+  if (!data) return { valid: false, role: '' }
+
+  return { valid: true, role: data.role || 'admin' }
 }

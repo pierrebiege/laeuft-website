@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import { supabase } from "@/lib/supabase";
 import type {
   Partner,
@@ -164,12 +165,8 @@ export function PartnerDetail({ id, onClose }: PartnerDetailProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [lightbox]);
 
-  const [user, setUser] = useState("Pierre");
-
-  useEffect(() => {
-    const r = document.cookie.match(/(?:^|; )admin_role=([^;]*)/);
-    if (r && decodeURIComponent(r[1]) === "manager") setUser("Anes");
-  }, []);
+  const role = useAdminRole();
+  const user = role === "manager" ? "Anes" : "Pierre";
 
   const loadPartner = async () => {
     const { data } = await supabase

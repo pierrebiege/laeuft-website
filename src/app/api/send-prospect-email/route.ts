@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 const transporter = nodemailer.createTransport({
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get prospect
-    const { data: prospect, error } = await supabase
+    const { data: prospect, error } = await supabaseAdmin
       .from('prospects')
       .select('*')
       .eq('id', prospectId)
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     // Update prospect status and email timestamp
     const emailField = `email_${emailNumber}_sent_at`
-    await supabase
+    await supabaseAdmin
       .from('prospects')
       .update({
         status: STATUS_AFTER_EMAIL[emailNumber],
