@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners/[id]/history
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
 
   const { data, error } = await supabase
@@ -26,6 +30,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
   const { author, note, channel, direction } = await request.json()
 

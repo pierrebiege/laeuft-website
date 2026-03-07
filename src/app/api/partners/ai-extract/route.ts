@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { requireAuth } from '@/lib/auth'
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -40,6 +41,9 @@ Felder:
 Antworte NUR mit einem validen JSON-Objekt. Keine Erklärungen, kein Markdown, nur JSON.`
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   try {
     const { message, source, images } = await request.json()
 

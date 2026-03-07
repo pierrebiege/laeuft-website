@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners/[id]/attachments
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
 
   const { data, error } = await supabase
@@ -37,6 +41,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
   const formData = await request.formData()
   const file = formData.get('file') as File
@@ -83,6 +90,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
   const { attachment_id, file_path } = await request.json()
 

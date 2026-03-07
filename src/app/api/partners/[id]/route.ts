@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { requireAuth } from '@/lib/auth'
 
 // GET /api/partners/[id]
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
 
   const { data, error } = await supabase
@@ -26,6 +30,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
   const body = await request.json()
 
@@ -45,9 +52,12 @@ export async function PUT(
 
 // DELETE /api/partners/[id]
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   const { id } = await params
 
   const { error } = await supabase
