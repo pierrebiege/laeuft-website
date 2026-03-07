@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season Kickoff 2026 – Pierre Biege</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #141414;
+    --dark: #1a1a1a;
+    --card: #222222;
+    --pink: #FF3366;
+    --pink-light: #FFB3C6;
+    --white: #ffffff;
+    --gray: #888888;
+    --light-pink-bg: #F5C5C5;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--black);
+    font-family: 'Barlow', sans-serif;
+    overflow: hidden;
+    color: var(--white);
+  }
+
+  /* ── DECK ─────────────────────────── */
+  .deck {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    transform: translateX(60px);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+  .slide.out {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ── LAYOUT HELPERS ───────────────── */
+  .half { width: 50%; height: 100%; position: relative; padding: 52px 48px; display: flex; flex-direction: column; justify-content: flex-start; }
+  .half.dark { background: var(--dark); }
+  .half.black { background: var(--black); }
+  .half.pink-bg { background: var(--light-pink-bg); color: var(--black); }
+  .full { width: 100%; height: 100%; padding: 52px 56px; display: flex; flex-direction: column; }
+
+  .v-bar {
+    position: absolute;
+    top: 0; right: 0;
+    width: 5px; height: 100%;
+    background: var(--pink);
+  }
+
+  /* ── TYPOGRAPHY ───────────────────── */
+  .display {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: -0.5px;
+  }
+  .display.xl  { font-size: clamp(60px, 8vw, 96px); }
+  .display.lg  { font-size: clamp(44px, 6vw, 72px); }
+  .display.md  { font-size: clamp(32px, 4vw, 52px); }
+
+  .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .pink { color: var(--pink); }
+  .black-text { color: var(--black); }
+
+  /* ── FOOTER ───────────────────────── */
+  .footer {
+    position: fixed;
+    bottom: 24px; left: 48px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    z-index: 100;
+  }
+
+  /* ── NAV ──────────────────────────── */
+  .nav {
+    position: fixed;
+    bottom: 24px; right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav button {
+    background: none;
+    border: 1.5px solid #333;
+    color: var(--white);
+    width: 40px; height: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .nav button:hover { border-color: var(--pink); background: var(--pink); }
+  .nav .counter {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    min-width: 52px;
+    text-align: center;
+  }
+
+  /* ── PROGRESS DOTS ────────────────── */
+  .dots {
+    position: fixed;
+    top: 50%; right: 20px;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 100;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    background: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dot.active { background: var(--pink); height: 20px; }
+  .dot:hover { background: var(--pink); }
+
+  /* ── CARD ─────────────────────────── */
+  .card {
+    background: var(--card);
+    border-left: 4px solid var(--pink);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .card .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 4px;
+  }
+  .card .card-body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #ccc;
+  }
+
+  /* ── EVENT CARD ───────────────────── */
+  .event-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .event-card {
+    background: var(--card);
+    border-left: 4px solid var(--pink);
+    padding: 12px 14px;
+  }
+  .event-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 4px;
+  }
+  .event-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--white);
+    margin-bottom: 3px;
+  }
+  .event-goal {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  /* ── LIST ITEM ────────────────────── */
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .list-item::before {
+    content: '';
+    display: block;
+    flex-shrink: 0;
+    width: 4px;
+    height: 32px;
+    background: var(--pink);
+    margin-top: 2px;
+  }
+  .list-item.dark-text::before { background: var(--black); }
+  .list-item span {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--white);
+  }
+  .list-item.dark-text span { color: var(--black); }
+
+  /* ── COL GRID ─────────────────────── */
+  .col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    margin-top: 20px;
+  }
+  .col-card {
+    background: var(--card);
+    border-top: 4px solid var(--pink);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .col-card .col-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 14px;
+  }
+  .col-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .col-card ul li {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #ccc;
+    padding-left: 10px;
+    border-left: 2px solid #444;
+  }
+
+  /* ── SLIDE 1: TITLE ───────────────── */
+  #s1 { background: var(--black); }
+  #s1 .left { width: 50%; height: 100%; padding: 60px 52px; display: flex; flex-direction: column; justify-content: center; }
+  #s1 .right { width: 50%; height: 100%; background: #1c1c1c; display: flex; align-items: center; justify-content: center; padding: 48px; position: relative; }
+
+  /* ── SLIDE 2: VORBEREITUNGSAUFTRAG ── */
+  #s2 .left { position: relative; }
+  #s2 .right { background: var(--dark); }
+
+  /* ── ANIMATIONS ───────────────────── */
+  .slide.active .anim { animation: fadeUp 0.5s ease both; }
+  .slide.active .anim:nth-child(1) { animation-delay: 0.05s; }
+  .slide.active .anim:nth-child(2) { animation-delay: 0.12s; }
+  .slide.active .anim:nth-child(3) { animation-delay: 0.19s; }
+  .slide.active .anim:nth-child(4) { animation-delay: 0.26s; }
+  .slide.active .anim:nth-child(5) { animation-delay: 0.33s; }
+  .slide.active .anim:nth-child(6) { animation-delay: 0.40s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── KEYBOARD HINT ────────────────── */
+  .hint {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #444;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .mt-auto { margin-top: auto; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .mt-32 { margin-top: 32px; }
+  .mb-4 { margin-bottom: 4px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ── SLIDE 1: TITLE ─────────────────────────────────────────── -->
+  <div class="slide active" id="s1">
+    <div class="left">
+      <div class="anim">
+        <div class="display xl" style="color:var(--white)">SEASON</div>
+        <div class="display xl" style="color:var(--white)">KICKOFF</div>
+        <div class="display xl pink">2026</div>
+      </div>
+      <div class="mt-32 anim">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:var(--pink)">PIERRE BIEGE</div>
+      </div>
+    </div>
+    <div class="right">
+      <div style="position:absolute;left:0;top:0;width:4px;height:100%;background:var(--pink)"></div>
+      <div class="anim" style="text-align:center">
+        <div class="label" style="margin-bottom:16px">Season Prep 2026</div>
+        <div style="font-size:13px;color:#555;line-height:1.8;text-transform:uppercase;letter-spacing:2px">
+          Kickoff<br>mit Anes
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3: SAISONPLANUNG ──────────────────────────────────── -->
+  <div class="slide" id="s3">
+    <div class="full" style="background:var(--dark)">
+      <div class="display lg pink anim">SAISON-<br>PLANUNG</div>
+      <div class="event-grid anim" style="animation-delay:.15s;grid-template-columns:1fr 1fr 1fr 1fr;">
+        <div class="event-card">
+          <div class="event-date">17.–19. April 2026</div>
+          <div class="event-name">Catchmaster</div>
+          <div class="event-goal">3-Tage Event</div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">14. Mai 2026</div>
+          <div class="event-name">Witiker Backyard Ultra</div>
+          <div class="event-goal">Mentale Vorbereitung auf Last Soul</div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">27. Juni 2026</div>
+          <div class="event-name">THE LAST LAP Varen</div>
+          <div class="event-goal">Lea crewn & supporten</div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">Ende Juli 2026</div>
+          <div class="event-name">DRYLL Elimination Race</div>
+          <div class="event-goal">Exit ~Runde 40–50</div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">8. August 2026</div>
+          <div class="event-name">Swiss Alps 100</div>
+          <div class="event-goal">Tapering / Teilstrecke</div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--pink);border-left-width:4px">
+          <div class="event-date" style="color:var(--pink)">14. August 2026</div>
+          <div class="event-name" style="color:var(--white)">Last Soul Ultra</div>
+          <div class="event-goal" style="color:var(--pink-light)">Ziel: 100 Runden (wenn gesund)</div>
+        </div>
+        <div class="event-card" style="background:transparent;border:1.5px dashed #333;border-left:4px solid #333">
+          <div class="event-date" style="color:#555">Terminblocker</div>
+          <div class="event-name" style="color:#666;font-size:13px">Läuft.ch Aufbau</div>
+          <div class="event-goal">Podcast April-Push</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4: PARTNER ────────────────────────────────────────── -->
+  <div class="slide" id="s4">
+    <div class="half black" style="justify-content:flex-start">
+      <div class="display lg pink anim">PARTNER</div>
+      <div class="mt-24 anim">
+        <div class="label mb-16">Bestehend & Ausbauen</div>
+        <div class="list-item"><span><strong style="color:var(--pink)">DRYLL</strong> → evtl. CH-Vertrieb aktiv mithelfen</span></div>
+        <div class="list-item"><span><strong style="color:var(--pink)">SPONSER</strong> → Nutrition aller Races</span></div>
+        <div class="list-item"><span><strong style="color:var(--pink)">feels.like</strong> → Potenzial noch nicht ausgeschöpft</span></div>
+      </div>
+    </div>
+    <div class="half dark" style="justify-content:flex-start">
+      <div class="anim">
+        <div class="label mb-16">Wunschpartner</div>
+        <div class="card"><div class="card-title">Coach / Fitness Center</div><div class="card-body">Begleitung Kraft & Erholung – nicht Training, das habe ich im Griff</div></div>
+        <div class="card"><div class="card-title">Physio</div><div class="card-body">Kooperation & regelmässige Begleitung als Deal</div></div>
+        <div class="card"><div class="card-title">Gear & Ausrüstung</div><div class="card-body">Coros DACH? · Joe Nimble (Schuhe)? · Arc'teryx?</div></div>
+        <div class="card"><div class="card-title">Wellness Setup</div><div class="card-body">Fasssauna + Reck/Klimmzugstange für zuhause – Sponsoring möglich?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5: KANÄLE ─────────────────────────────────────────── -->
+  <div class="slide" id="s5">
+    <div class="full" style="background:var(--black)">
+      <div class="display lg pink anim">KANÄLE</div>
+      <div class="col-grid anim" style="animation-delay:.12s">
+        <div class="col-card">
+          <div class="col-title">Instagram & Shorts</div>
+          <ul>
+            <li>Ziel: 100'000 Follower</li>
+            <li>Reels, Trends, viraler Content</li>
+            <li>Daily: Stats + Bild in Stories</li>
+            <li>TikTok & YouTube Shorts parallel</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <div class="col-title">YouTube Long-Form</div>
+          <ul>
+            <li>Vlogs & „Sportler vs. Pierre"</li>
+            <li>Marathon in jeder CH-Stadt</li>
+            <li>Bahnnetz der Schweiz ablaufen</li>
+            <li>Lötschbergtunnel / Schweizumrundung</li>
+            <li>Kanton für Kanton (26)</li>
+            <li>4000er · Pässe · Nachbarländer</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <div class="col-title">Weitere Kanäle</div>
+          <ul>
+            <li>LinkedIn → Läuft.ch positionieren</li>
+            <li>Podcast mit Lea (April: 10 Folgen)</li>
+            <li>Walliserdeutsch.ch Channel (1–3/Woche)</li>
+            <li>Themen: Wallis, Tiny House, Glaube, Familie</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 6: KLEIDERMARKE ───────────────────────────────────── -->
+  <div class="slide" id="s6">
+    <div class="half pink-bg">
+      <div class="display lg black-text anim" style="margin-top:auto;margin-bottom:auto">KLEIDER-<br>MARKE</div>
+      <div class="anim mt-auto">
+        <div class="list-item dark-text"><span>Shopify-Store live (einrichtiggutertag.ch)</span></div>
+        <div class="list-item dark-text"><span>Keramiktassen & Kalender 2026 gestartet</span></div>
+        <div class="list-item dark-text"><span>Trademark «Ein richtig guter Tag» eingetragen</span></div>
+        <div class="list-item dark-text"><span>Stil: brutalist, schwarz-weiss, urban, streetwear</span></div>
+        <div class="list-item dark-text"><span>Moodboard bringe ich zum Kickoff mit</span></div>
+      </div>
+    </div>
+    <div class="half dark" style="justify-content:flex-start;overflow-y:auto">
+      <div class="anim">
+        <div class="label pink mb-16">Plan – wird definitiv umgesetzt</div>
+        <div class="card"><div class="card-title">Produktion</div><div class="card-body">Muster so schnell wie möglich produzieren lassen (Portugal)</div></div>
+        <div class="card"><div class="card-title">Finanzierung</div><div class="card-body">Crowdfunding starten oder finanzielle Hilfe holen<br><span style="color:#666">Budget: 30–50k für Frauen- & Männer-Collection</span></div></div>
+        <div class="card"><div class="card-title">Vertrieb</div><div class="card-body">Meta Werbung + Influencer-Kooperationen</div></div>
+        <div class="card"><div class="card-title">Lager & Logistik</div><div class="card-body">Textil Scherrer Logistics – CH & AT Lager<br><span style="color:#666">Bereits früher zusammengearbeitet via ETREFORT</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 7: WALLIS + WEITERE ───────────────────────────────── -->
+  <div class="slide" id="s7">
+    <div class="half black">
+      <div class="display md pink anim">RUND UM<br>DAS WALLIS</div>
+      <div class="mt-24 anim">
+        <div class="list-item"><span>Walliserdeutsch.ch: 6'800+ Wörter, Verein gegründet</span></div>
+        <div class="list-item"><span>Fördergesuche bei 4 Institutionen laufend</span></div>
+        <div class="list-item"><span>Neu: Channel starten (1–3 Videos/Woche), Audio aufnehmen</span></div>
+        <div class="list-item"><span>dsWallis.ch: nur Technik, aktuell niedrige Prio</span></div>
+      </div>
+    </div>
+    <div class="half dark">
+      <div class="display md pink anim">WEITERE<br>THEMEN</div>
+      <div class="mt-24 anim">
+        <div class="card"><div class="card-title">einrichtiggutertag.ch</div><div class="card-body">Brand & Shop, kein App-Aufbau geplant</div></div>
+        <div class="card"><div class="card-title">pierrebiege.ch</div><div class="card-body">Ausbauen als Sponsoring & Keynote-Plattform</div></div>
+        <div class="card"><div class="card-title">Läuft.ch</div><div class="card-body">Kaltakquise, Ziel: 3–4 neue Kunden pro Monat<br><span style="color:#666">Bestehend: Green Garden · Centerpark · SPONSER · MitMänsch</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 8: ALLGEMEINE FRAGEN ─────────────────────────────── -->
+  <div class="slide" id="s8">
+    <div class="half black">
+      <div class="display md pink anim">ALLGE-<br>MEINE<br>FRAGEN</div>
+      <div class="mt-24 anim">
+        <div class="label mb-16">Wunschziele 2026</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px">
+          <div class="list-item" style="margin-bottom:6px"><span>100K Follower Instagram</span></div>
+          <div class="list-item" style="margin-bottom:6px"><span>Podcast live mit Lea</span></div>
+          <div class="list-item" style="margin-bottom:6px"><span>Witiker: 50 Runden</span></div>
+          <div class="list-item" style="margin-bottom:6px"><span>pierrebiege.ch als Speaker-Plattform</span></div>
+          <div class="list-item" style="margin-bottom:6px"><span>Last Soul Ultra: 100 Runden</span></div>
+          <div class="list-item" style="margin-bottom:6px"><span>Läuft.ch: 4–5 stabile Kunden</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="half dark">
+      <div class="anim">
+        <div class="label mb-16">Fragen an Anes</div>
+        <div class="card"><div class="card-title">Erwartungen</div><div class="card-body">Ich wünsche mir einen echten Sparring-Partner – jemanden, der Dinge hinterfragt, Perspektiven einbringt und mit mir denkt. Nicht jemanden, der nur ausführt.</div></div>
+        <div class="card"><div class="card-title">Zusammenarbeit</div><div class="card-body">Tools, regelmässige Check-ins, klare Aufgabenteilung</div></div>
+        <div class="card"><div class="card-title">Wo unterstützen?</div><div class="card-body">Kanal-Strategie, Partner-Kommunikation, Launch-Planung</div></div>
+        <div class="card"><div class="card-title">Was ich alleine mache</div><div class="card-body">Kreatives, Persönliches, Execution – aber auch hier ist Input willkommen</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div class="footer">PIERREBIEGE</div>
+
+<div class="dots" id="dots"></div>
+
+<div class="nav">
+  <button id="prev" onclick="go(-1)">←</button>
+  <span class="counter" id="counter">1 / 7</span>
+  <button id="next" onclick="go(1)">→</button>
+</div>
+
+<div class="hint">← → Pfeiltasten oder Klick zum Navigieren</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  let current = 0;
+  let prev = -1;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    if (n === current) return;
+    const dots = document.querySelectorAll('.dot');
+    slides[current].classList.remove('active');
+    slides[current].classList.add('out');
+    setTimeout(() => slides[current < n ? current : n + (current - n)].classList.remove('out'), 450);
+    // stagger remove
+    setTimeout(() => {
+      document.querySelectorAll('.slide.out').forEach(s => s.classList.remove('out'));
+    }, 460);
+
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+
+    current = n;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    counter.textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  function go(dir) {
+    const next = Math.max(0, Math.min(slides.length - 1, current + dir));
+    goTo(next);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+  });
+
+  // Touch/swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) go(dx > 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>
