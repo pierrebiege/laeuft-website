@@ -40,6 +40,11 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/api/instagram/tokens') ||
     pathname.startsWith('/api/instagram/extract')
   ) {
+    // Allow API key auth for extract route (mobile app)
+    const hasApiKey = request.headers.get('x-api-key')
+    if (pathname.startsWith('/api/instagram/extract') && hasApiKey) {
+      return NextResponse.next({ request: { headers: requestHeaders } })
+    }
     if (!session?.value) {
       return NextResponse.json(
         { error: 'Nicht autorisiert.' },

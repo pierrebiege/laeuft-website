@@ -3,6 +3,15 @@ import Anthropic from '@anthropic-ai/sdk'
 import { requireAuth } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
+// Allow auth via API key (for mobile app) or session cookie (for web admin)
+async function requireAuthOrApiKey(request: NextRequest) {
+  const apiKey = request.headers.get('x-api-key')
+  if (apiKey && process.env.INSTAGRAM_ADMIN_API_KEY && apiKey === process.env.INSTAGRAM_ADMIN_API_KEY) {
+    return null // authorized
+  }
+  return requireAuth(request)
+}
+
 const SYSTEM_PROMPT = `Du bist ein Datenextraktions-Assistent für Instagram Insights Screenshots.
 
 Der Benutzer lädt Screenshots aus der Instagram App hoch (Insights-Bereich). Extrahiere ALLE sichtbaren Metriken und gib sie als JSON zurück.
@@ -63,7 +72,7 @@ Antwortformat:
 const anthropic = new Anthropic()
 
 export async function POST(request: NextRequest) {
-  const authError = await requireAuth(request)
+  const authError = await requireAuthOrApiKey(request)
   if (authError) return authError
 
   try {
@@ -140,7 +149,7 @@ export async function POST(request: NextRequest) {
 
 // Save extracted data to Supabase
 export async function PUT(request: NextRequest) {
-  const authError = await requireAuth(request)
+  const authError = await requireAuthOrApiKey(request)
   if (authError) return authError
 
   try {
