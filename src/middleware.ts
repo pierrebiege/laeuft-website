@@ -37,7 +37,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/api/calendar') ||
     pathname.startsWith('/api/generate-mandate-invoice') ||
     pathname.startsWith('/api/instagram/config') ||
-    pathname.startsWith('/api/instagram/tokens')
+    pathname.startsWith('/api/instagram/tokens') ||
+    pathname.startsWith('/api/instagram/extract')
   ) {
     if (!session?.value) {
       return NextResponse.json(
@@ -61,5 +62,6 @@ export const config = {
     '/api/generate-mandate-invoice/:path*',
     '/api/instagram/config/:path*',
     '/api/instagram/tokens/:path*',
+    '/api/instagram/extract/:path*',
   ],
 }
