@@ -12,6 +12,7 @@ import {
   Handshake as HandshakeIcon,
   Target,
   CalendarDays,
+  BarChart3,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -46,6 +47,7 @@ export default function AdminShell({
     { href: "/admin/rechnungen", label: "Rechnungen", icon: Receipt, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/kunden", label: "Kunden", icon: Users, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/buchhaltung", label: "Buchhaltung", icon: Calculator, roles: ["admin"] as Role[] },
+    { href: "/admin/instagram", label: "Instagram", icon: BarChart3, roles: ["admin"] as Role[] },
   ];
 
   const visibleItems = navItems.filter((item) => item.roles.includes(role));

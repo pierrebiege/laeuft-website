@@ -23,6 +23,7 @@
     "qrcode": "^1.5.4",
     "qrcode.react": "^4.2.0",
     "react": "19.2.3",
+    "recharts": "^2.15.0",
     "react-dom": "19.2.3",
     "server-only": "^0.0.1",
     "swissqrbill": "^4.2.1",

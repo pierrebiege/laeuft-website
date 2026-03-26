@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
 
     // Block manager from accessing Buchhaltung
     const role = request.cookies.get('admin_role')?.value
-    if (role === 'manager' && pathname.startsWith('/admin/buchhaltung')) {
+    if (role === 'manager' && (pathname.startsWith('/admin/buchhaltung') || pathname.startsWith('/admin/instagram'))) {
       const redirectUrl = new URL('/admin', request.url)
       return NextResponse.redirect(redirectUrl)
     }
@@ -35,7 +35,9 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/api/partners') ||
     pathname.startsWith('/api/send-') ||
     pathname.startsWith('/api/calendar') ||
-    pathname.startsWith('/api/generate-mandate-invoice')
+    pathname.startsWith('/api/generate-mandate-invoice') ||
+    pathname.startsWith('/api/instagram/config') ||
+    pathname.startsWith('/api/instagram/tokens')
   ) {
     if (!session?.value) {
       return NextResponse.json(
@@ -57,5 +59,7 @@ export const config = {
     '/api/send-:path*',
     '/api/calendar/:path*',
     '/api/generate-mandate-invoice/:path*',
+    '/api/instagram/config/:path*',
+    '/api/instagram/tokens/:path*',
   ],
 }
