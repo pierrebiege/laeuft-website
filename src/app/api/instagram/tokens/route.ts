@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 import crypto from 'crypto'
 
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const authError = await requireAuth(request)
   if (authError) return authError
 
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
   const { data, error } = await supabase
     .from('dashboard_tokens')
     .select('*')
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   if (authError) return authError
 
   const body = await request.json()
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
 
   const token = crypto.randomBytes(24).toString('hex')
 

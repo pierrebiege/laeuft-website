@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 export async function PATCH(
@@ -11,7 +11,7 @@ export async function PATCH(
 
   const { id } = await params
   const body = await request.json()
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
 
   const updates: Record<string, unknown> = {}
   if (body.label !== undefined) updates.label = body.label
@@ -37,7 +37,7 @@ export async function DELETE(
   if (authError) return authError
 
   const { id } = await params
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
 
   const { error } = await supabase
     .from('dashboard_tokens')

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import type { DashboardData, InstagramAudience } from '@/lib/instagram-types'
 
 export async function GET(
@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
 
   // Validate token
   const { data: tokenRow, error: tokenError } = await supabase

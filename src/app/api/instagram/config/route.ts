@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   const authError = await requireAuth(request)
   if (authError) return authError
 
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
   const { data, error } = await supabase
     .from('dashboard_config')
     .select('*')
@@ -22,7 +22,7 @@ export async function PUT(request: NextRequest) {
   if (authError) return authError
 
   const body = await request.json()
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('dashboard_config')

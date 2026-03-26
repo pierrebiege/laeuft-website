@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import {
   fetchAccountProfile,
   fetchAccountInsights,
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!sessionCookie) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    const supabase = getSupabaseAdmin()
+    const supabase = supabaseAdmin
     const { data: session } = await supabase
       .from('admin_sessions')
       .select('*')
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const supabase = getSupabaseAdmin()
+  const supabase = supabaseAdmin
   const today = new Date().toISOString().split('T')[0]
   const results: string[] = []
 
