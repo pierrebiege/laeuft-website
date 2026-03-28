@@ -59,11 +59,11 @@ const DATA: Record<Period, {
   },
 }
 
-const TOP_REELS = [
-  { title: 'POV: Durch Berlin', likes: 930, date: '25. März' },
-  { title: 'Behaltet dieses Reel', likes: 832, date: '13. März' },
-  { title: 'Class de Quévy', likes: 830, date: '11. März' },
-  { title: 'Das Fünfti', likes: 762, date: '6. März' },
+const TOP_POSTS = [
+  { title: 'POV: Durch Berlin', aufrufe: 30254, date: '25. März' },
+  { title: 'Ein Schweizer in Berlin', aufrufe: 18490, date: '26. März' },
+  { title: 'Schweiz meets Berlin', aufrufe: 18378, date: '25. März' },
+  { title: '700 Tage Laufen', aufrufe: 15359, date: '28. März' },
 ]
 
 const INTERAKTIONEN_30D = [
@@ -232,15 +232,15 @@ export default function InsightsPage() {
           <p className="text-[10px] text-zinc-600 mt-3">Interaktionen nach Format: Reels 62.3% · Stories 33.1% · Beiträge 4.6%</p>
         </section>
 
-        {/* Top Reels */}
+        {/* Top Posts nach Beliebtheit */}
         <section>
-          <p className="text-sm font-semibold text-white mb-3">Top Reels</p>
+          <p className="text-sm font-semibold text-white mb-3">Nach Beliebtheit (7 Tage)</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {TOP_REELS.map((reel, i) => (
+            {TOP_POSTS.map((post, i) => (
               <div key={i} className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4">
-                <p className="text-xs text-zinc-400 font-medium line-clamp-2">{reel.title}</p>
-                <p className="text-lg font-bold text-white mt-2">{fmt(reel.likes)}</p>
-                <p className="text-[10px] text-zinc-600">Likes · {reel.date}</p>
+                <p className="text-xs text-zinc-400 font-medium line-clamp-2">{post.title}</p>
+                <p className="text-lg font-bold text-white mt-2">{fmt(post.aufrufe)}</p>
+                <p className="text-[10px] text-zinc-600">Aufrufe · {post.date}</p>
               </div>
             ))}
           </div>
@@ -314,18 +314,6 @@ export default function InsightsPage() {
           </div>
 
           <p className="text-[10px] text-zinc-600 mt-4">DACH-Region: 97.4% der Follower</p>
-        </section>
-
-        {/* Partner Logos */}
-        <section>
-          <p className="text-sm font-semibold text-white mb-4">Partner</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 py-6 bg-zinc-900/60 border border-zinc-800 rounded-xl">
-            {['SPONSER', 'feels.like', 'DRYLL', 'Scott Sports'].map((name) => (
-              <span key={name} className="text-sm font-bold text-zinc-500 hover:text-white transition-colors tracking-wider uppercase">
-                {name}
-              </span>
-            ))}
-          </div>
         </section>
 
         {/* CTA */}
