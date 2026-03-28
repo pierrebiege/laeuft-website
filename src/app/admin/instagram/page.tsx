@@ -344,44 +344,45 @@ export default function InstagramAdminPage() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
               <p className="text-sm font-medium text-emerald-800 mb-2">Erkannte Daten:</p>
 
-              {/* Account Metrics */}
-              {(extracted as Record<string, unknown>).account_metrics && (
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-emerald-700 mb-1">Account Metriken</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {Object.entries(extracted.account_metrics as Record<string, unknown>).map(([key, val]) => (
-                      <div key={key} className="bg-white rounded px-2 py-1.5 text-xs">
-                        <span className="text-zinc-500">{key}: </span>
-                        <span className="font-medium">{String(val)}</span>
+              {(() => {
+                const ext = extracted as Record<string, unknown>
+                const metrics = ext.account_metrics as Record<string, unknown> | undefined
+                const audience = ext.audience_data as Record<string, unknown> | undefined
+                const posts = ext.post_data as unknown[] | undefined
+                const rawText = ext.raw_text as string | undefined
+
+                return (
+                  <>
+                    {metrics && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-emerald-700 mb-1">Account Metriken</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {Object.entries(metrics).map(([key, val]) => (
+                            <div key={key} className="bg-white rounded px-2 py-1.5 text-xs">
+                              <span className="text-zinc-500">{key}: </span>
+                              <span className="font-medium">{String(val)}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Audience */}
-              {(extracted as Record<string, unknown>).audience_data && (
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-emerald-700 mb-1">Zielgruppen-Daten</p>
-                  <p className="text-xs text-emerald-600">
-                    {Object.keys(extracted.audience_data as Record<string, unknown>).join(', ')}
-                  </p>
-                </div>
-              )}
-
-              {/* Posts */}
-              {(extracted as Record<string, unknown>).post_data && Array.isArray(extracted.post_data) && (
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-emerald-700 mb-1">
-                    {(extracted.post_data as unknown[]).length} Posts erkannt
-                  </p>
-                </div>
-              )}
-
-              {/* Raw text summary */}
-              {(extracted as Record<string, unknown>).raw_text && (
-                <p className="text-xs text-emerald-600 mt-2 italic">{String(extracted.raw_text)}</p>
-              )}
+                    )}
+                    {audience && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-emerald-700 mb-1">Zielgruppen-Daten</p>
+                        <p className="text-xs text-emerald-600">{Object.keys(audience).join(', ')}</p>
+                      </div>
+                    )}
+                    {posts && posts.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-emerald-700 mb-1">{posts.length} Posts erkannt</p>
+                      </div>
+                    )}
+                    {rawText && (
+                      <p className="text-xs text-emerald-600 mt-2 italic">{rawText}</p>
+                    )}
+                  </>
+                )
+              })()}
             </div>
 
             {/* Editable JSON */}
