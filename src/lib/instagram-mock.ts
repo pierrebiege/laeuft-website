@@ -241,7 +241,7 @@ export function generateMockAudience(): DashboardData['audience'] {
 export function generateMockConfig(): DashboardConfig {
   return {
     id: 'mock-config',
-    account_name: '@einrichtiggutertag',
+    account_name: '@pierrebiege',
     account_bio: 'Ultrarunner & Content Creator aus der Schweiz. Berge, Trails & echte Geschichten.',
     profile_image_url: '/dashboard/mock/profile.jpg',
     hero_headline: 'Pierre Biege',
@@ -293,8 +293,13 @@ export function getMockDashboardData(days: number = 90): DashboardData {
       follower_growth_pct: followerGrowthPct,
       avg_engagement_rate: avgEngagement,
       avg_reach: avgReach,
+      total_views: 997405,
+      total_interactions: Math.round(997405 * 0.045),
       total_posts_period: postsInPeriod,
       posts_per_week: parseFloat((postsInPeriod / weeks).toFixed(1)),
+      views_follower_pct: 67,
+      views_non_follower_pct: 33,
+      reached_accounts: 88686,
     },
   }
 }

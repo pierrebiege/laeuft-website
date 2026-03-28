@@ -69,7 +69,7 @@ export interface DashboardToken {
   created_at: string
 }
 
-export type DateRange = 30 | 60 | 90
+export type DateRange = 14 | 30 | 60 | 90
 export type ContentFilter = 'all' | 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM' | 'REEL'
 
 export interface DashboardData {
@@ -88,7 +88,12 @@ export interface DashboardData {
     follower_growth_pct: number
     avg_engagement_rate: number
     avg_reach: number
+    total_views: number
+    total_interactions: number
     total_posts_period: number
     posts_per_week: number
+    views_follower_pct: number
+    views_non_follower_pct: number
+    reached_accounts: number
   }
 }

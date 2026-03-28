@@ -61,41 +61,20 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
     { name: 'Weiblich', value: femaleTotal, color: GENDER_COLORS.F },
   ]
 
-  // Countries
+  // Top 6 countries
   const countryData = [...audience.country]
     .sort((a, b) => b.value - a.value)
+    .slice(0, 6)
+  const countryTotal = audience.country.reduce((s, c) => s + c.value, 0)
 
-  const countryTotal = countryData.reduce((s, c) => s + c.value, 0)
-
-  // Cities
+  // Top 5 cities
   const cityData = [...audience.city]
     .sort((a, b) => b.value - a.value)
-    .slice(0, 8)
-
-  // Online followers heatmap
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
-  const hours = Array.from({ length: 24 }, (_, i) => i)
-
-  const onlineMap = new Map<string, number>()
-  let maxOnline = 0
-  for (const item of audience.online_followers) {
-    onlineMap.set(item.dimension_key, item.value)
-    if (item.value > maxOnline) maxOnline = item.value
-  }
-
-  function getHeatColor(value: number): string {
-    const intensity = value / maxOnline
-    if (intensity > 0.8) return 'bg-emerald-400'
-    if (intensity > 0.6) return 'bg-emerald-500/80'
-    if (intensity > 0.4) return 'bg-emerald-600/60'
-    if (intensity > 0.2) return 'bg-emerald-700/40'
-    return 'bg-zinc-800'
-  }
+    .slice(0, 5)
 
   return (
     <section>
-      <SectionHeading title="Zielgruppe" subtitle="Wer folgt und wann sie aktiv sind" />
+      <SectionHeading title="Zielgruppe" subtitle="Wer folgt" />
 
       <div className="grid lg:grid-cols-2 gap-4 mb-4">
         {/* Age Distribution */}
@@ -118,15 +97,7 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
           <div className="flex items-center justify-center gap-8">
             <ResponsiveContainer width={160} height={160}>
               <PieChart>
-                <Pie
-                  data={genderData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={70}
-                  dataKey="value"
-                  stroke="none"
-                >
+                <Pie data={genderData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} dataKey="value" stroke="none">
                   {genderData.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
                   ))}
@@ -148,10 +119,10 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4 mb-4">
-        {/* Top Countries */}
+      <div className="grid lg:grid-cols-2 gap-4">
+        {/* Top 6 Countries */}
         <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-4">
-          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Länder</p>
+          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Top Länder</p>
           <div className="space-y-2">
             {countryData.map((c) => {
               const pct = (c.value / countryTotal) * 100
@@ -160,10 +131,7 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
                   <span className="text-base w-6 text-center">{COUNTRY_FLAGS[c.dimension_key] || '🌍'}</span>
                   <span className="text-sm text-zinc-300 w-8">{c.dimension_key}</span>
                   <div className="flex-1 bg-zinc-800 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-400 rounded-full"
-                      style={{ width: `${pct}%` }}
-                    />
+                    <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                   <span className="text-xs text-zinc-500 w-12 text-right">{pct.toFixed(0)}%</span>
                 </div>
@@ -172,9 +140,9 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
           </div>
         </div>
 
-        {/* Top Cities */}
+        {/* Top 5 Cities */}
         <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-4">
-          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Städte</p>
+          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Top Städte</p>
           <div className="space-y-2">
             {cityData.map((c, i) => (
               <div key={c.dimension_key} className="flex items-center justify-between">
@@ -185,51 +153,6 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
                 <span className="text-xs text-zinc-500">{c.value.toLocaleString('de-CH')}</span>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Online Followers Heatmap */}
-      <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-4">
-        <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Aktivste Zeiten</p>
-        <div className="overflow-x-auto">
-          <div className="min-w-[600px]">
-            {/* Hour labels */}
-            <div className="flex ml-8 mb-1">
-              {hours.map((h) => (
-                <div key={h} className="flex-1 text-center text-[9px] text-zinc-600">
-                  {h % 3 === 0 ? `${h}h` : ''}
-                </div>
-              ))}
-            </div>
-            {/* Heatmap grid */}
-            {days.map((day, dayIdx) => (
-              <div key={day} className="flex items-center gap-1 mb-0.5">
-                <span className="text-[10px] text-zinc-500 w-7 text-right">{dayLabels[dayIdx]}</span>
-                <div className="flex flex-1 gap-0.5">
-                  {hours.map((hour) => {
-                    const value = onlineMap.get(`${day}-${hour}`) || 0
-                    return (
-                      <div
-                        key={hour}
-                        className={`flex-1 h-4 rounded-sm ${getHeatColor(value)} transition-colors`}
-                        title={`${dayLabels[dayIdx]} ${hour}:00 — ${value.toLocaleString('de-CH')} aktiv`}
-                      />
-                    )
-                  })}
-                </div>
-              </div>
-            ))}
-            {/* Legend */}
-            <div className="flex items-center justify-end gap-1 mt-2">
-              <span className="text-[9px] text-zinc-600">wenig</span>
-              <div className="w-3 h-3 rounded-sm bg-zinc-800" />
-              <div className="w-3 h-3 rounded-sm bg-emerald-700/40" />
-              <div className="w-3 h-3 rounded-sm bg-emerald-600/60" />
-              <div className="w-3 h-3 rounded-sm bg-emerald-500/80" />
-              <div className="w-3 h-3 rounded-sm bg-emerald-400" />
-              <span className="text-[9px] text-zinc-600">viel</span>
-            </div>
           </div>
         </div>
       </div>

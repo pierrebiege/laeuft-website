@@ -7,7 +7,7 @@ interface DateRangeSelectorProps {
   onChange: (range: DateRange) => void
 }
 
-const options: DateRange[] = [30, 60, 90]
+const options: DateRange[] = [14, 30, 60, 90]
 
 export default function DateRangeSelector({ value, onChange }: DateRangeSelectorProps) {
   return (

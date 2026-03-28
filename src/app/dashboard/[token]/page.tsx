@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react'
 import type { DashboardData, DateRange } from '@/lib/instagram-types'
 import { getMockDashboardData } from '@/lib/instagram-mock'
 import HeroSection from '@/components/dashboard/HeroSection'
+import ViewsBreakdown from '@/components/dashboard/ViewsBreakdown'
 import ReachGrowthChart from '@/components/dashboard/ReachGrowthChart'
 import EngagementAnalysis from '@/components/dashboard/EngagementAnalysis'
 import AudienceProfile from '@/components/dashboard/AudienceProfile'
@@ -75,6 +76,7 @@ export default function DashboardPage({ params }: { params: Promise<{ token: str
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12 sm:space-y-16">
       <HeroSection config={filteredData.config} summary={filteredData.summary} dateRange={dateRange} />
+      <ViewsBreakdown summary={filteredData.summary} posts={filteredData.posts} />
       <ReachGrowthChart metrics={filteredData.metrics} dateRange={dateRange} onDateRangeChange={setDateRange} />
       <EngagementAnalysis metrics={filteredData.metrics} posts={filteredData.posts} dateRange={dateRange} />
       <AudienceProfile audience={filteredData.audience} />
@@ -117,11 +119,15 @@ function getFilteredData(data: DashboardData, dateRange: DateRange): DashboardDa
     metrics,
     posts: posts.length > 0 ? posts : data.posts,
     summary: {
+      ...data.summary,
       current_followers: latest.followers_count,
       follower_growth: followerGrowth,
       follower_growth_pct: followerGrowthPct,
       avg_engagement_rate: avgEngagement,
       avg_reach: avgReach,
+      total_views: Math.round(data.summary.total_views * (dateRange / 90)),
+      total_interactions: Math.round(data.summary.total_interactions * (dateRange / 90)),
+      reached_accounts: Math.round(data.summary.reached_accounts * (dateRange / 90)),
       total_posts_period: posts.length,
       posts_per_week: parseFloat((posts.length / weeks).toFixed(1)),
     },

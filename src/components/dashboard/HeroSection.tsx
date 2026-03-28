@@ -1,6 +1,6 @@
 'use client'
 
-import { Users, TrendingUp, Heart, Calendar } from 'lucide-react'
+import { Users } from 'lucide-react'
 import type { DashboardData } from '@/lib/instagram-types'
 import MetricCard from './MetricCard'
 
@@ -13,7 +13,6 @@ interface HeroSectionProps {
 export default function HeroSection({ config, summary, dateRange }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden">
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-800/30 to-transparent pointer-events-none" />
 
       <div className="relative">
@@ -43,28 +42,28 @@ export default function HeroSection({ config, summary, dateRange }: HeroSectionP
           </div>
         </div>
 
-        {/* KPI Grid */}
+        {/* KPI Grid - 4 main metrics as requested */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard
-            label="Followers"
+            label="Follower"
             value={summary.current_followers}
             delta={summary.follower_growth}
             deltaLabel={` (${summary.follower_growth_pct > 0 ? '+' : ''}${summary.follower_growth_pct}%)`}
             large
           />
           <MetricCard
+            label={`Aufrufe / ${dateRange}d`}
+            value={summary.total_views}
+            large
+          />
+          <MetricCard
+            label={`Interaktionen / ${dateRange}d`}
+            value={summary.total_interactions}
+            large
+          />
+          <MetricCard
             label="Engagement Rate"
             value={`${summary.avg_engagement_rate}%`}
-            large
-          />
-          <MetricCard
-            label={`Ø Reach / ${dateRange}d`}
-            value={summary.avg_reach}
-            large
-          />
-          <MetricCard
-            label="Posts / Woche"
-            value={summary.posts_per_week}
             large
           />
         </div>
