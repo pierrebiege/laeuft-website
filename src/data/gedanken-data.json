@@ -1,0 +1,2922 @@
+[
+  {
+    "id": 1,
+    "title": "Tag 1: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du musst nicht jeden Berg bezwingen. Manchmal reicht es, heute den ersten Schritt zu tun.",
+    "context": "Anti-Overwhelm. Täglich anwendbar."
+  },
+  {
+    "id": 2,
+    "title": "Tag 2: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Kein Wind ist günstig für den, der keinen Hafen kennt. Ich kenne meinen: ein richtig guter Tag.",
+    "context": "Verbindet Philosophie mit Pierres Kernphilosophie."
+  },
+  {
+    "id": 3,
+    "title": "Tag 3: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Der Berg entscheidet nicht, ob du läufst. Das tust nur du.",
+    "context": "Kontrolle vs. Nicht-Kontrolle — Grundprinzip des Stoizismus."
+  },
+  {
+    "id": 4,
+    "title": "Tag 4: Psalm 23",
+    "category": "Meditativ",
+    "philosopher": "Psalm 23",
+    "quote": "Auch wenn ich durch finstere Täler laufe — ich fürchte mich nicht. Ich kenne den Weg.",
+    "context": "Biblisch transformiert auf Trail-Running."
+  },
+  {
+    "id": 5,
+    "title": "Tag 5: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Zwischen Erschöpfung und Aufgeben liegt ein Raum. In diesem Raum liegt deine Freiheit.",
+    "context": "Frankls Kerngedanke auf Ultra-Running übertragen."
+  },
+  {
+    "id": 6,
+    "title": "Tag 6: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Schmerz ist unvermeidlich. Leiden ist eine Wahl.",
+    "context": "Murakamis bekanntester Laufsatz — zeitlos."
+  },
+  {
+    "id": 7,
+    "title": "Tag 7: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Verliere keine Zeit damit, dir vorzustellen, wie andere Menschen laufen sollten.",
+    "context": "Gegen Vergleiche im Sport und im Leben."
+  },
+  {
+    "id": 8,
+    "title": "Tag 8: Meister Eckhart",
+    "category": "Meditativ",
+    "philosopher": "Meister Eckhart",
+    "quote": "Wer Gott sucht und dabei eine bestimmte Weise sucht, findet die Weise und verliert Gott. Wer läuft und dabei Zeiten sucht, findet Zeiten und verliert das Laufen.",
+    "context": "Tiefe Übertragung eines mystischen Gedankens."
+  },
+  {
+    "id": 9,
+    "title": "Tag 9: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Richte dich ein für die Zukunft, aber lebe für heute. Dieser Kilometer, jetzt.",
+    "context": "Präsenz auf dem Trail."
+  },
+  {
+    "id": 10,
+    "title": "Tag 10: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Frage dich nicht, was der Berg von dir verlangt. Frage, was du von dir selbst verlangst.",
+    "context": "Innere vs. äußere Anforderungen."
+  },
+  {
+    "id": 11,
+    "title": "Tag 11: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Unruhig ist unser Herz, bis es Ruhe findet. Bei mir findet es sie auf dem Trail.",
+    "context": "Augustinus' Confessiones — persönlich gemacht."
+  },
+  {
+    "id": 12,
+    "title": "Tag 12: Albert Camus",
+    "category": "Meditativ",
+    "philosopher": "Albert Camus",
+    "quote": "Man muss sich Sisyphus als glücklichen Menschen vorstellen. Und mich beim Bergauflaufen.",
+    "context": "Camus' absurde Philosophie auf Bergläufe übertragen."
+  },
+  {
+    "id": 13,
+    "title": "Tag 13: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Das Hindernis auf dem Weg wird zum Weg. Der steile Pfad ist kein Problem — er ist das Ziel.",
+    "context": "Obstacle is the way — direkt auf Trail-Running."
+  },
+  {
+    "id": 14,
+    "title": "Tag 14: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Die Wunde ist der Ort, wo das Licht eintritt. Blasen auch.",
+    "context": "Rumis Weisheit mit Läufer-Humor gemischt."
+  },
+  {
+    "id": 15,
+    "title": "Tag 15: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Wer ein Warum hat, erträgt fast jedes Wie. Mein Warum läuft jeden Morgen mit mir raus.",
+    "context": "Nietzsche auf Lauf-Motivation — persönlich."
+  },
+  {
+    "id": 16,
+    "title": "Tag 16: Psalm 121",
+    "category": "Meditativ",
+    "philosopher": "Psalm 121",
+    "quote": "Ich hebe meine Augen auf zu den Bergen. Von dort kommt mir Hilfe.",
+    "context": "Biblisch und wörtlich wahr für einen Walliser Läufer."
+  },
+  {
+    "id": 17,
+    "title": "Tag 17: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Es ist nicht wenig Zeit, die wir haben. Es ist viel Zeit, die wir nicht nutzen. Ich nutze sie um 5 Uhr morgens.",
+    "context": "Senecas Zeitphilosophie auf das Frühaufstehen."
+  },
+  {
+    "id": 18,
+    "title": "Tag 18: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du hast Macht über deinen Geist, nicht über äußere Dinge. Erinnere dich daran, und du wirst Kraft finden.",
+    "context": "Stoischer Kern — universell."
+  },
+  {
+    "id": 19,
+    "title": "Tag 19: Thomas von Aquin",
+    "category": "Meditativ",
+    "philosopher": "Thomas von Aquin",
+    "quote": "Die Seele ist mehr als ihr Körper. Aber der Körper ist der Weg, auf dem die Seele gehen lernt.",
+    "context": "Verbindung Körper-Seele in der Bewegung."
+  },
+  {
+    "id": 20,
+    "title": "Tag 20: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Man kann alles nehmen von einem Menschen — außer einer Sache: die Freiheit, seine Haltung zu wählen. Ich wähle: weiterlaufen.",
+    "context": "Frankls stärkste Aussage — auf Ausdauersport."
+  },
+  {
+    "id": 21,
+    "title": "Tag 21: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Suche nicht, dass die Dinge geschehen, wie du willst. Wünsche, dass sie geschehen — und du wirst Ruhe haben.",
+    "context": "Akzeptanz auf dem Trail — besonders bei schlechtem Wetter."
+  },
+  {
+    "id": 22,
+    "title": "Tag 22: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Ich laufe, also bin ich.",
+    "context": "Descartes neu gedacht — einfach, stark."
+  },
+  {
+    "id": 23,
+    "title": "Tag 23: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Denke nicht daran, was andere über dich sagen. Denke daran, was du über dich sagst, wenn niemand zuschaut.",
+    "context": "Integrität auf dem Trail — besonders relevant für Creator."
+  },
+  {
+    "id": 24,
+    "title": "Tag 24: Meister Eckhart",
+    "category": "Meditativ",
+    "philosopher": "Meister Eckhart",
+    "quote": "Der Mensch sollte nicht so sehr nachdenken, was er tun soll, als was er ist.",
+    "context": "Sein statt Leistung — tiefer Gedanke für Läufer."
+  },
+  {
+    "id": 25,
+    "title": "Tag 25: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Lebe, bevor du weißt, wie man lebt. Dein Körper läuft schon. Dein Verstand holt auf.",
+    "context": "Aktion vor Perfektion."
+  },
+  {
+    "id": 26,
+    "title": "Tag 26: Psalm 46",
+    "category": "Meditativ",
+    "philosopher": "Psalm 46",
+    "quote": "Seid stille und erkennet. Manchmal ist der langsamste Kilometer der wichtigste.",
+    "context": "Stille als Lernmoment beim Laufen."
+  },
+  {
+    "id": 27,
+    "title": "Tag 27: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Der Berg lehrt Demut. Nicht weil er größer ist als du. Sondern weil er egal ist, ob du klein bist.",
+    "context": "Bergphilosophie vom besten Bergläufer der Welt."
+  },
+  {
+    "id": 28,
+    "title": "Tag 28: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Verliere die Gegenwart nicht für die Vergangenheit, die tot ist, oder für die Zukunft, die noch nicht existiert.",
+    "context": "Minimalismus des Moments — auf dem Trail."
+  },
+  {
+    "id": 29,
+    "title": "Tag 29: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Du bist nicht ein Tropfen im Ozean. Du bist der Ozean in einem Tropfen. Das spürt man bei Kilometer 200.",
+    "context": "Rumis berühmtester Satz — auf Ultrarunning."
+  },
+  {
+    "id": 30,
+    "title": "Tag 30: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Ohne Musik wäre das Leben ein Irrtum. Ohne Berge auch.",
+    "context": "Nietzsche leicht verändert — witziger Twist."
+  },
+  {
+    "id": 31,
+    "title": "Tag 31: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Unser Herz schlägt, bis es schlägt für das, wofür es geschaffen wurde.",
+    "context": "Berufung — auf Laufen als Lebensinhalt."
+  },
+  {
+    "id": 32,
+    "title": "Tag 32: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Jeden Tag sterbe ich ein wenig. Jeden Morgen werde ich neu geboren — auf dem Trail.",
+    "context": "Senecas tägliche Erneuerung — auf den Laufalltag."
+  },
+  {
+    "id": 33,
+    "title": "Tag 33: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Was andere tun, ist ihre Sache. Was du tust, ist deine. Lauf deinen Lauf.",
+    "context": "Anti-Vergleich, stoisch."
+  },
+  {
+    "id": 34,
+    "title": "Tag 34: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Leben fragt uns — nicht wir das Leben. Die Antwort geben wir mit unseren Schritten.",
+    "context": "Frankls Verantwortungsgedanke auf Bewegung übertragen."
+  },
+  {
+    "id": 35,
+    "title": "Tag 35: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Handele, als ob jede Handlung dein letztes wäre. Lauf, als ob dieser Schritt zählt.",
+    "context": "Präsenz und Ernsthaftigkeit."
+  },
+  {
+    "id": 36,
+    "title": "Tag 36: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Stille ist die Sprache Gottes. Alles andere ist schlechte Übersetzung. Deshalb laufe ich vor dem Aufwachen der Welt.",
+    "context": "Morgendliche Stille auf dem Trail."
+  },
+  {
+    "id": 37,
+    "title": "Tag 37: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Ich laufe nicht um zu gewinnen. Ich laufe um zu sehen, wie weit ich gehen kann.",
+    "context": "Ultrarunning-Philosophie in einem Satz."
+  },
+  {
+    "id": 38,
+    "title": "Tag 38: Psalm 31",
+    "category": "Meditativ",
+    "philosopher": "Psalm 31",
+    "quote": "Meine Zeit steht in deinen Händen. Meine Schritte in meinen.",
+    "context": "Glaube und Selbstverantwortung in Spannung."
+  },
+  {
+    "id": 39,
+    "title": "Tag 39: Thomas von Aquin",
+    "category": "Meditativ",
+    "philosopher": "Thomas von Aquin",
+    "quote": "Das Gute ist das, was alle anstreben. Ich strebe nach einem richtig guten Tag.",
+    "context": "Aquins Teleologie persönlich gemacht."
+  },
+  {
+    "id": 40,
+    "title": "Tag 40: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Beginne jetzt zu leben. Warte nicht auf einen besseren Zeitpunkt. Der einzige perfekte Moment ist dieser.",
+    "context": "Anti-Prokrastination — klar und direkt."
+  },
+  {
+    "id": 41,
+    "title": "Tag 41: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Deine Seele ist gefärbt durch deine Gedanken. Lass sie von den Bergen gefärbt werden.",
+    "context": "Geist und Umgebung — auf die Walliser Alpen."
+  },
+  {
+    "id": 42,
+    "title": "Tag 42: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Menschen werden nicht beunruhigt durch Dinge, sondern durch ihre Meinungen über Dinge. Der Berg ist nicht schwer. Deine Meinung darüber ist es.",
+    "context": "Kognitive Umrahmung auf das Bergauflaufen."
+  },
+  {
+    "id": 43,
+    "title": "Tag 43: Camus",
+    "category": "Meditativ",
+    "philosopher": "Camus",
+    "quote": "Es ist schwierig, allein zu sein mit seinen Gedanken. Deshalb laufe ich. Damit die Gedanken mithalten müssen.",
+    "context": "Laufen als Denken — Camus-Stil."
+  },
+  {
+    "id": 44,
+    "title": "Tag 44: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Bete, als ob alles von Gott abhängt. Lauf, als ob alles von dir abhängt.",
+    "context": "Klassisches Theologen-Zitat — auf Sport."
+  },
+  {
+    "id": 45,
+    "title": "Tag 45: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Berge erinnern uns, wie klein wir sind. Das ist kein Problem. Das ist Erleichterung.",
+    "context": "Demut durch Perspektive."
+  },
+  {
+    "id": 46,
+    "title": "Tag 46: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wer weiß, warum er lebt, erträgt fast jedes Wie. Und wer weiß, warum er läuft, erträgt fast jeden Berg.",
+    "context": "Frankl direkt auf Ultrarunning."
+  },
+  {
+    "id": 47,
+    "title": "Tag 47: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Was du jetzt hast, war einmal das, was du dir gewünscht hast. Vergiss das nicht auf dem Weg nach oben.",
+    "context": "Dankbarkeit — tief und direkt."
+  },
+  {
+    "id": 48,
+    "title": "Tag 48: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Reise mit wenig Gepäck — im Leben und auf dem Trail.",
+    "context": "Minimalismus als Philosophie und Praxis."
+  },
+  {
+    "id": 49,
+    "title": "Tag 49: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Man muss noch Chaos in sich haben, um einen tanzenden Stern gebären zu können. Der Backyard Ultra ist mein Chaos.",
+    "context": "Nietzsche und Extremsport."
+  },
+  {
+    "id": 50,
+    "title": "Tag 50: Psalm 18",
+    "category": "Meditativ",
+    "philosopher": "Psalm 18",
+    "quote": "Mit dir kann ich über Mauern laufen. Mit mir kann ich über Berge.",
+    "context": "Bibel transformiert — Ermächtigung."
+  },
+  {
+    "id": 51,
+    "title": "Tag 51: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Niemand hat Macht über deinen Willen — außer dir. Nutze das.",
+    "context": "Willenskraft als einzige wahre Freiheit."
+  },
+  {
+    "id": 52,
+    "title": "Tag 52: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Laufen lehrt mich zu leiden. Leiden lehrt mich zu leben.",
+    "context": "Kreislauf von Schmerz und Wachstum."
+  },
+  {
+    "id": 53,
+    "title": "Tag 53: Meister Eckhart",
+    "category": "Meditativ",
+    "philosopher": "Meister Eckhart",
+    "quote": "Das Auge, mit dem ich Gott sehe, ist dasselbe Auge, mit dem Gott mich sieht. Auf dem Gipfel sehen wir uns.",
+    "context": "Mystik und Bergmoment."
+  },
+  {
+    "id": 54,
+    "title": "Tag 54: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Kümmere dich nicht um das, was andere sagen. Kümmere dich darum, was du tust.",
+    "context": "Fokus auf die eigene Handlung."
+  },
+  {
+    "id": 55,
+    "title": "Tag 55: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Der größte Schaden entsteht durch zu viel Planung. Manchmal einfach rausgehen.",
+    "context": "Anti-Overanalyse — auf Training."
+  },
+  {
+    "id": 56,
+    "title": "Tag 56: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Gestern bin ich klug gewesen, deshalb wollte ich die Welt verändern. Heute bin ich weise, deshalb verändere ich mich. Jeden Morgen. Einen Lauf.",
+    "context": "Rumi über Weisheit — auf tägliche Praxis."
+  },
+  {
+    "id": 57,
+    "title": "Tag 57: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das einzige, was bleibt, ist die Haltung, mit der wir das ertragen, was wir nicht ändern können. Schlechtes Wetter. Schwere Beine. Noch 50km.",
+    "context": "Akzeptanz im Ausdauersport."
+  },
+  {
+    "id": 58,
+    "title": "Tag 58: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Unsere Seele ist gemacht für Großes — und findet erst Ruhe, wenn sie Großes versucht.",
+    "context": "Bestimmung und Herausforderung."
+  },
+  {
+    "id": 59,
+    "title": "Tag 59: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Wenn du aufwachst, denke daran: Heute lebe ich. Das ist alles, was du brauchst.",
+    "context": "Morgen-Mantra — täglich neu."
+  },
+  {
+    "id": 60,
+    "title": "Tag 60: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Es ist nicht wichtig, wie schnell du bist. Es ist wichtig, wie lange du dranbleibst.",
+    "context": "Ausdauer über Geschwindigkeit."
+  },
+  {
+    "id": 61,
+    "title": "Tag 61: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Übertreibe nicht. Fordere nicht zu wenig. Finde deinen Weg genau in der Mitte — dann halte ihn durch.",
+    "context": "Stoische Mäßigung auf Training."
+  },
+  {
+    "id": 62,
+    "title": "Tag 62: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Werde, der du bist. Laufe jeden Tag ein Stück näher hin.",
+    "context": "Nietzsche als Leitmotiv für Selbstentwicklung."
+  },
+  {
+    "id": 63,
+    "title": "Tag 63: Psalm 37",
+    "category": "Meditativ",
+    "philosopher": "Psalm 37",
+    "quote": "Lass deinen Weg dem Herrn befohlen sein. Und zünde trotzdem die Stirnlampe an.",
+    "context": "Glaube und Pragmatismus — mit Humor."
+  },
+  {
+    "id": 64,
+    "title": "Tag 64: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Vergangen ist die Zeit, die war. Ungewiss ist die Zeit, die kommt. Sicher ist der Schritt, den du jetzt setzt.",
+    "context": "Präsenz als einzige Konstante."
+  },
+  {
+    "id": 65,
+    "title": "Tag 65: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Alles fügt sich aus Wandel zusammen. Jeder Lauf ist ein kleiner Tod und eine kleine Geburt.",
+    "context": "Wandel als Naturgesetz."
+  },
+  {
+    "id": 66,
+    "title": "Tag 66: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Das Laufen ist das ehrlichste, was ich kenne. Es nimmt genau so viel, wie du gibst.",
+    "context": "Gerechtigkeit des Laufens."
+  },
+  {
+    "id": 67,
+    "title": "Tag 67: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Was immer dich bewegt — lass es dich bewegen. Vorwärts.",
+    "context": "Antrieb als Geschenk."
+  },
+  {
+    "id": 68,
+    "title": "Tag 68: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Erfolg kommt zu dem, der aufgehört hat, ihn anzustreben, und sich stattdessen auf seinen Beitrag konzentriert. Ich laufe nicht für die Stats. Ich laufe.",
+    "context": "Intrinsische Motivation."
+  },
+  {
+    "id": 69,
+    "title": "Tag 69: Thomas von Aquin",
+    "category": "Meditativ",
+    "philosopher": "Thomas von Aquin",
+    "quote": "Ein Mensch braucht etwas, das er liebt, etwas, das er hofft, und etwas, das er tut. Ich habe die Berge. Das reicht.",
+    "context": "Liebe, Hoffnung, Handlung."
+  },
+  {
+    "id": 70,
+    "title": "Tag 70: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Dein Körper ist ein Werkzeug deines Geistes. Halte beides in Form.",
+    "context": "Körper-Geist-Einheit."
+  },
+  {
+    "id": 71,
+    "title": "Tag 71: Meister Eckhart",
+    "category": "Meditativ",
+    "philosopher": "Meister Eckhart",
+    "quote": "Der Mensch soll arm sein an Wünschen und reich an Geduld. Am Berg lernt man beides.",
+    "context": "Mystische Armut und Bergausdauer."
+  },
+  {
+    "id": 72,
+    "title": "Tag 72: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Man lernt nicht für das Leben — man lernt für das Laufen. Das Leben kommt von alleine.",
+    "context": "Umkehrung des Schul-Zitats."
+  },
+  {
+    "id": 73,
+    "title": "Tag 73: Camus",
+    "category": "Meditativ",
+    "philosopher": "Camus",
+    "quote": "Der Herbst ist eine zweite Frühjahrszeit, wenn jedes Blatt eine Blume ist. Und ein perfekter Trail.",
+    "context": "Camus' Naturblick auf das Laufen."
+  },
+  {
+    "id": 74,
+    "title": "Tag 74: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Du bist ein Stück des Ganzen. Handle danach — auch wenn dein Körper sagt, er sei das ganze Problem.",
+    "context": "Perspektive auf schlechte Tage."
+  },
+  {
+    "id": 75,
+    "title": "Tag 75: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Du hast uns erschaffen für dich — und unruhig ist unser Herz, bis es Ruhe findet in dir. Für mich: im Laufen.",
+    "context": "Augustinus personalisiert."
+  },
+  {
+    "id": 76,
+    "title": "Tag 76: Psalm 23",
+    "category": "Meditativ",
+    "philosopher": "Psalm 23",
+    "quote": "Er erquicket meine Seele. Manchmal ist das ein Sonnenaufgang. Manchmal ein Kaffee nach 30km.",
+    "context": "Heiliges und Alltägliches."
+  },
+  {
+    "id": 77,
+    "title": "Tag 77: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Erinnere dich: Du leidest nicht mehr, als du leidest. Du leidest genau so viel. Nicht mehr.",
+    "context": "Anti-Katastrophisierung."
+  },
+  {
+    "id": 78,
+    "title": "Tag 78: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Ohne Schmerz kein Großes. Ohne Ruhe kein Bestand. Finde beides — jeden Tag neu.",
+    "context": "Gegensätze als Einheit."
+  },
+  {
+    "id": 79,
+    "title": "Tag 79: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Irgendwo jenseits von richtig und falsch gibt es eine Wiese. Treffe mich dort. Ich komme laufend.",
+    "context": "Rumi — jenseits von Urteilen."
+  },
+  {
+    "id": 80,
+    "title": "Tag 80: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wenn wir nicht mehr imstande sind, die Situation zu verändern, sind wir herausgefordert, uns selbst zu verändern. Das ist jede Backyard-Nacht.",
+    "context": "Transformation durch Extremsituationen."
+  },
+  {
+    "id": 81,
+    "title": "Tag 81: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Lebe mit denen, die dich besser machen. Und laufe auf Wegen, die dich wachsen lassen.",
+    "context": "Umgebung als Einfluss."
+  },
+  {
+    "id": 82,
+    "title": "Tag 82: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Sei nicht unzufrieden mit dem Wenigen, das dir gegeben ist. Sei dankbar, dass du laufen kannst.",
+    "context": "Dankbarkeit als tägliche Praxis."
+  },
+  {
+    "id": 83,
+    "title": "Tag 83: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Die Berge sind mein Zuhause. Nicht weil ich dort wohne — weil ich dort ich bin.",
+    "context": "Authentizität in der Natur."
+  },
+  {
+    "id": 84,
+    "title": "Tag 84: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Lieber als sich zu beschweren: Frage, was du daraus lernen kannst. Schlechter Lauf. Gute Lektion.",
+    "context": "Stoisches Umdeuten."
+  },
+  {
+    "id": 85,
+    "title": "Tag 85: Psalm 139",
+    "category": "Meditativ",
+    "philosopher": "Psalm 139",
+    "quote": "Wohin soll ich gehen vor deinem Geist? Wenn ich bergauf steige — du bist da. Wenn ich im Tal laufe — du auch.",
+    "context": "Allgegenwart Gottes auf dem Trail."
+  },
+  {
+    "id": 86,
+    "title": "Tag 86: Thomas von Aquin",
+    "category": "Meditativ",
+    "philosopher": "Thomas von Aquin",
+    "quote": "Glaube beginnt dort, wo Vernunft endet. Laufen auch — irgendwo nach Kilometer 80.",
+    "context": "Glaube und Ausdauer parallel."
+  },
+  {
+    "id": 87,
+    "title": "Tag 87: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Jeder läufer weiß: nach dem Schmerz kommt Leichtigkeit. Warte auf die Leichtigkeit.",
+    "context": "Second-Wind-Phänomen als Philosophie."
+  },
+  {
+    "id": 88,
+    "title": "Tag 88: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Alles, was exzessiv ist, ist schädlich. Außer vielleicht Dankbarkeit. Und Höhenmeter.",
+    "context": "Stoische Mäßigung mit Ausnahme."
+  },
+  {
+    "id": 89,
+    "title": "Tag 89: Camus",
+    "category": "Meditativ",
+    "philosopher": "Camus",
+    "quote": "Im Tiefsten des Winters entdeckte ich schließlich, dass in mir ein unbesiegbarer Sommer lag. Und er läuft täglich.",
+    "context": "Camus — innere Stärke in dunkler Zeit."
+  },
+  {
+    "id": 90,
+    "title": "Tag 90: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Wenn es dir nicht gelingt, das Richtige zu tun, dann tue es wenigstens weniger falsch. Geh wenigstens raus.",
+    "context": "Anti-Perfektionismus."
+  },
+  {
+    "id": 91,
+    "title": "Tag 91: Meister Eckhart",
+    "category": "Meditativ",
+    "philosopher": "Meister Eckhart",
+    "quote": "Das Innerste des Menschen ist schweigsamer als alle Stille. Laufe dorthin.",
+    "context": "Innere Stille durch Bewegung finden."
+  },
+  {
+    "id": 92,
+    "title": "Tag 92: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Leben stellt die Fragen. Wir sind die Antwort. Ich antworte jeden Tag mit einem Schritt.",
+    "context": "Verantwortung als aktive Handlung."
+  },
+  {
+    "id": 93,
+    "title": "Tag 93: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Das Herz ist wie ein Spiegel. Poliere es täglich. Laufen poliert.",
+    "context": "Bewegung als spirituelle Praxis."
+  },
+  {
+    "id": 94,
+    "title": "Tag 94: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Tue nichts Kleines. Der Berg lacht über kleine Pläne.",
+    "context": "Nietzsche und Ambition."
+  },
+  {
+    "id": 95,
+    "title": "Tag 95: Psalm 90",
+    "category": "Meditativ",
+    "philosopher": "Psalm 90",
+    "quote": "Lehre uns bedenken, dass wir sterben müssen, auf dass wir klug werden. Und früh aufstehen. Und laufen.",
+    "context": "Endlichkeit als Motivation."
+  },
+  {
+    "id": 96,
+    "title": "Tag 96: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Der Kluge wird von Dingen gelenkt, nicht von Umständen.",
+    "context": "Kontrolle des eigenen Zentrums."
+  },
+  {
+    "id": 97,
+    "title": "Tag 97: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Denke immer daran: Es ist nicht der, der beleidigt oder schlägt, der dich verletzt. Es ist deine Meinung, dass sie das tun. Und kein Berg verletzt.",
+    "context": "Perspektive auf Widerstände."
+  },
+  {
+    "id": 98,
+    "title": "Tag 98: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du könntest heute aufhören zu laufen. Aber nicht du — du bist derjenige, der weiterläuft.",
+    "context": "Identität und Handlung."
+  },
+  {
+    "id": 99,
+    "title": "Tag 99: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Unser Herz ist unruhig. Und am unruhigsten ist es, wenn es still steht.",
+    "context": "Bewegung als natürlicher Zustand."
+  },
+  {
+    "id": 100,
+    "title": "Tag 100: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Tag 100 der Streak. Der erste war der schwerste. Der letzte ist der, den du noch nicht gelaufen bist.",
+    "context": "Meilenstein-Reflexion."
+  },
+  {
+    "id": 101,
+    "title": "Tag 101: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Beschäftigtsein ist keine Entschuldigung. Es ist eine Ausrede. Du hast Zeit zum Laufen — du willst sie nur nicht haben.",
+    "context": "Provokation gegen Zeit-Ausreden."
+  },
+  {
+    "id": 102,
+    "title": "Tag 102: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Hör auf, die perfekten Bedingungen zu warten. Der Berg wird nicht flacher. Das Wetter wird nicht besser. Du wirst nicht jünger.",
+    "context": "Anti-Ausrede — scharf."
+  },
+  {
+    "id": 103,
+    "title": "Tag 103: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Du klagst über Schmerz. Gut. Dann weißt du, dass du lebst.",
+    "context": "Schmerz als Zeichen des Lebens."
+  },
+  {
+    "id": 104,
+    "title": "Tag 104: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mensch ist etwas, das überwunden werden soll. Was hast du heute überwunden?",
+    "context": "Selbstüberwindung als tägliche Aufgabe."
+  },
+  {
+    "id": 105,
+    "title": "Tag 105: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Das Leben ist absurd. Also lauf trotzdem.",
+    "context": "Absurdismus als Motivationsstrategie."
+  },
+  {
+    "id": 106,
+    "title": "Tag 106: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Zwischen Reiz und Reaktion liegt ein Raum. Viele wählen dort Netflix. Du wählst die Laufschuhe.",
+    "context": "Wahl als Charakter."
+  },
+  {
+    "id": 107,
+    "title": "Tag 107: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du verlierst Zeit, wenn du klagst. Du verlierst Zeit, wenn du aufgibst. Du verlierst Zeit, wenn du wartest. Hör auf.",
+    "context": "Direkt, ohne Entschuldigung."
+  },
+  {
+    "id": 108,
+    "title": "Tag 108: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Keiner ist arm, der genug hat. Keiner ist langsam, der nicht aufhört.",
+    "context": "Genug ist relativ — bei Geld und Tempo."
+  },
+  {
+    "id": 109,
+    "title": "Tag 109: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Es ist keine Schande langsam zu sein. Es ist eine Schande aufzuhören.",
+    "context": "Klassisches Läufer-Motiv scharf formuliert."
+  },
+  {
+    "id": 110,
+    "title": "Tag 110: Psalm 23",
+    "category": "Provokativ",
+    "philosopher": "Psalm 23",
+    "quote": "Ich fürchte kein Übel. Nicht weil ich keine Angst kenne. Sondern weil ich trotzdem gehe.",
+    "context": "Mut trotz Angst."
+  },
+  {
+    "id": 111,
+    "title": "Tag 111: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Der Glaube an sich macht stark — der Mangel daran macht krank. Was glaubst du über dich, wenn du allein auf dem Trail bist?",
+    "context": "Selbstbild auf dem Trail."
+  },
+  {
+    "id": 112,
+    "title": "Tag 112: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Die meisten Menschen stoppen nicht, weil sie erschöpft sind. Sie stoppen, weil sie aufgehört haben zu glauben.",
+    "context": "Glaube vs. Physik im Ultrarunning."
+  },
+  {
+    "id": 113,
+    "title": "Tag 113: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Kein Mensch hat je gesagt: Ich wünschte, ich hätte weniger gelebt. Lauf mehr.",
+    "context": "Reue und Handlung."
+  },
+  {
+    "id": 114,
+    "title": "Tag 114: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Du musst Sisyphus nicht glücklich finden. Aber du musst laufen.",
+    "context": "Verpflichtung zur Handlung trotz Absurdität."
+  },
+  {
+    "id": 115,
+    "title": "Tag 115: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Die meisten Menschen sterben in dem Moment, wo sie aufhören zu wachsen. Viele sterben mit 30.",
+    "context": "Stagnation als Tod."
+  },
+  {
+    "id": 116,
+    "title": "Tag 116: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Wer alles will, verliert alles. Wer nur laufen will — gewinnt alles.",
+    "context": "Fokus als Strategie."
+  },
+  {
+    "id": 117,
+    "title": "Tag 117: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Der Mensch hat nicht die Fähigkeit, sich selbst zu erlösen — aber er hat die Fähigkeit, sich selbst zu überwinden. Jeden Tag.",
+    "context": "Selbstüberwindung täglich."
+  },
+  {
+    "id": 118,
+    "title": "Tag 118: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Wirst du müde? Gut. Müdigkeit ist das Zeichen, dass du gearbeitet hast.",
+    "context": "Erschöpfung als Erfolg."
+  },
+  {
+    "id": 119,
+    "title": "Tag 119: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du hast heute schon tausend Ausreden gefunden, warum du nicht laufen kannst. Ich habe einen Grund gefunden, warum ich laufe: weil ich kann.",
+    "context": "Umkehrung der Ausreden-Logik."
+  },
+  {
+    "id": 120,
+    "title": "Tag 120: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Weine nicht, weil es vorbei ist. Lauf los, weil es beginnt.",
+    "context": "Aufbruch statt Nostalgie."
+  },
+  {
+    "id": 121,
+    "title": "Tag 121: Psalm 46",
+    "category": "Provokativ",
+    "philosopher": "Psalm 46",
+    "quote": "Gott ist unsere Zuflucht und Stärke. Aber er läuft den Berg nicht für dich hoch.",
+    "context": "Glaube und Eigenverantwortung — provokativer Twist."
+  },
+  {
+    "id": 122,
+    "title": "Tag 122: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Leb nicht für andere. Lauf nicht für andere. Der einzige, der auf dem Trail bei dir ist, bist du.",
+    "context": "Intrinsische Motivation gegen Social-Media-Druck."
+  },
+  {
+    "id": 123,
+    "title": "Tag 123: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Wer Freiheit will, muss zuerst die Sklaverei seiner eigenen Schwäche überwinden.",
+    "context": "Freiheit durch Disziplin."
+  },
+  {
+    "id": 124,
+    "title": "Tag 124: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Entweder du lebst, als ob nichts ein Wunder wäre. Oder, als ob alles eines wäre. Ich entscheide mich jeden Morgen bei Sonnenaufgang.",
+    "context": "Wunderglaube im Alltag."
+  },
+  {
+    "id": 125,
+    "title": "Tag 125: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Menschen suchen Retreats in der Natur. Du hast sie vor deiner Tür. Was hält dich auf?",
+    "context": "Privileg bewusst machen — Albinen-spezifisch."
+  },
+  {
+    "id": 126,
+    "title": "Tag 126: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wenn du weißt, warum — und trotzdem aufhörst — dann war dein Warum nicht stark genug.",
+    "context": "Harte Frage an die eigene Motivation."
+  },
+  {
+    "id": 127,
+    "title": "Tag 127: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Die Schwachen rächen sich immer an den Starken. Die Starken laufen einfach weiter.",
+    "context": "Reaktion auf Kritik: weiterlaufen."
+  },
+  {
+    "id": 128,
+    "title": "Tag 128: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Es gibt keine günstige Zeit. Es gibt nur jetzt. Jetzt ist genug.",
+    "context": "Timing-Ausreden eliminieren."
+  },
+  {
+    "id": 129,
+    "title": "Tag 129: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Ich glaube nicht an Talent. Ich glaube an Kilometer.",
+    "context": "Anti-Talent-Argument — provokativ."
+  },
+  {
+    "id": 130,
+    "title": "Tag 130: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Was immer du tust — tue es vollständig oder lass es. Halbherziges Laufen ist Zeitverschwendung.",
+    "context": "Volles Commitment."
+  },
+  {
+    "id": 131,
+    "title": "Tag 131: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Bekämpfe nicht das, was außer dir ist. Das ist vergebene Mühe. Bekämpfe, was in dir zögert.",
+    "context": "Innerer Widerstand als echter Gegner."
+  },
+  {
+    "id": 132,
+    "title": "Tag 132: Psalm 119",
+    "category": "Provokativ",
+    "philosopher": "Psalm 119",
+    "quote": "Dein Wort ist meines Fußes Leuchte. Manchmal ist das Wort: Weiterlaufen.",
+    "context": "Ermutigung im heiligen Gewand."
+  },
+  {
+    "id": 133,
+    "title": "Tag 133: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Ich bin kein schneller Läufer. Ich bin ein hartnäckiger Läufer. Das ist schwerer.",
+    "context": "Hartnäckigkeit über Geschwindigkeit."
+  },
+  {
+    "id": 134,
+    "title": "Tag 134: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Der einzige wirklich ernsthafte philosophische Frage ist: warum nicht aufhören? Ich habe noch keine gute Antwort gefunden.",
+    "context": "Absurdismus und Ausdauer."
+  },
+  {
+    "id": 135,
+    "title": "Tag 135: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Der Mensch leidet am meisten unter dem Leid, das er sich vorstellt. Die meisten Berge sind kleiner als gedacht.",
+    "context": "Mentale Hindernisse vs. Realität."
+  },
+  {
+    "id": 136,
+    "title": "Tag 136: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Keiner kann dir das nehmen, was du dir selbst gibst, wenn du aufstehst und läufst.",
+    "context": "Selbstgabe durch Disziplin."
+  },
+  {
+    "id": 137,
+    "title": "Tag 137: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Wach auf und lauf. Das ist alles. Der Rest ergibt sich.",
+    "context": "Radikale Einfachheit."
+  },
+  {
+    "id": 138,
+    "title": "Tag 138: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Das Wichtigste ist nicht, lange zu leben — sondern voll zu leben. Ein Lauf vor dem Frühstück ist voller Leben als ein ganzer Tag Sofa.",
+    "context": "Intensität des Lebens."
+  },
+  {
+    "id": 139,
+    "title": "Tag 139: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Du bist nicht dazu gemacht, zu kriechen. Du hast Flügel. Aber Flügel wachsen auf dem Trail.",
+    "context": "Potenzial durch Anstrengung."
+  },
+  {
+    "id": 140,
+    "title": "Tag 140: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Lass die anderen reden. Deine Kilometer reden für dich.",
+    "context": "Taten statt Worte."
+  },
+  {
+    "id": 141,
+    "title": "Tag 141: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Wenn du nie schläfst, wirst du nie träumen. Wenn du nie leidest, wirst du nie wachsen.",
+    "context": "Leiden als Wachstumsvoraussetzung."
+  },
+  {
+    "id": 142,
+    "title": "Tag 142: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Nicht die Stunden machen ein gutes Leben. Die Entscheidungen, die du in den Stunden triffst.",
+    "context": "Entscheidungen als Lebensmacher."
+  },
+  {
+    "id": 143,
+    "title": "Tag 143: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Niemand kann mir schaden außer ich selbst. Und ich bin gerade dabei, mich stark zu machen.",
+    "context": "Selbstverantwortung und Wachstum."
+  },
+  {
+    "id": 144,
+    "title": "Tag 144: Psalm 27",
+    "category": "Provokativ",
+    "philosopher": "Psalm 27",
+    "quote": "Fürchte dich nicht. Der Berg ist nicht dein Feind. Dein Zögern ist es.",
+    "context": "Furcht als eigentliches Hindernis."
+  },
+  {
+    "id": 145,
+    "title": "Tag 145: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Die Rebellion gegen das Leiden ist das Einzige, was dem Menschen Würde gibt. Also steh auf und lauf.",
+    "context": "Rebellion als Haltung im Ausdauersport."
+  },
+  {
+    "id": 146,
+    "title": "Tag 146: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Wenn du für einen Marathon trainierst, trainierst du nicht deinen Körper. Du trainierst dein Ich.",
+    "context": "Sport als Identitätsentwicklung."
+  },
+  {
+    "id": 147,
+    "title": "Tag 147: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Du entscheidest dich nicht für dein Schicksal. Aber du entscheidest dich für deine Antwort darauf. Jeden Morgen.",
+    "context": "Reaktionsfreiheit täglich."
+  },
+  {
+    "id": 148,
+    "title": "Tag 148: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Wer nicht brennt, hat nichts zu löschen. Ich brenne täglich — auf dem Trail.",
+    "context": "Leidenschaft als Feuer."
+  },
+  {
+    "id": 149,
+    "title": "Tag 149: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Vergiss nicht: Jeder Mensch stirbt. Nicht jeder lebt. Du läufst. Das zählt.",
+    "context": "Endlichkeit als Motivationsquelle."
+  },
+  {
+    "id": 150,
+    "title": "Tag 150: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Wir leiden mehr in der Vorstellung als in der Realität. Der Berg ist niemals so schlimm, wie er vom Sofa aussieht.",
+    "context": "Angst vs. Realität."
+  },
+  {
+    "id": 151,
+    "title": "Tag 151: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Niemand kann dich zwingen, aufzugeben. Das tust du allein.",
+    "context": "Eigenverantwortung beim Aufgeben."
+  },
+  {
+    "id": 152,
+    "title": "Tag 152: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Verkaufe deine Klugheit und kaufe Staunen. Auf dem Trail gibt es genug davon umsonst.",
+    "context": "Staunen als Wert."
+  },
+  {
+    "id": 153,
+    "title": "Tag 153: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Talent ohne Disziplin ist wie ein ungeborener Held. Disziplin ohne Talent gewinnt Ultras.",
+    "context": "Disziplin über Talent."
+  },
+  {
+    "id": 154,
+    "title": "Tag 154: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du willst Anerkennung? Lauf so, dass du sie dir selbst gibst. Der Rest folgt oder er tut es nicht.",
+    "context": "Interne Anerkennung als Ziel."
+  },
+  {
+    "id": 155,
+    "title": "Tag 155: Psalm 31",
+    "category": "Provokativ",
+    "philosopher": "Psalm 31",
+    "quote": "Sei stark und lass dein Herz kühn sein. Nicht weil du keine Angst hast. Sondern weil du sie kennst.",
+    "context": "Mut durch Kenntnis der Angst."
+  },
+  {
+    "id": 156,
+    "title": "Tag 156: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Es braucht mehr Mut, weiterzuleben als aufzugeben. Das gilt für Ultras und für das Leben.",
+    "context": "Mut zum Weitermachen."
+  },
+  {
+    "id": 157,
+    "title": "Tag 157: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Schlimmste ist nicht Schmerz. Das Schlimmste ist sinnloser Schmerz. Find den Sinn — und der Schmerz wird erträglich.",
+    "context": "Sinn als Schmerzmittel."
+  },
+  {
+    "id": 158,
+    "title": "Tag 158: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Was du heute lernst, wirst du morgen laufen. Lerne täglich.",
+    "context": "Lernen und Handeln verbunden."
+  },
+  {
+    "id": 159,
+    "title": "Tag 159: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Die Masse sucht Komfort. Der Einzelne sucht Herausforderung. Sei der Einzelne.",
+    "context": "Gegen Mittelmäßigkeit."
+  },
+  {
+    "id": 160,
+    "title": "Tag 160: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Lass dich nicht von dem abhalten, was sein könnte. Tue, was jetzt ist.",
+    "context": "Handlung statt Spekulation."
+  },
+  {
+    "id": 161,
+    "title": "Tag 161: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Der Anfang der Philosophie ist: erkenne, wie wenig du kontrollierst. Dann lauf los.",
+    "context": "Kontrollverzicht als Befreiung."
+  },
+  {
+    "id": 162,
+    "title": "Tag 162: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Du wurdest nicht für Mittelmaß geboren. Mittelmaß ist bequem. Bequem ist ein Käfig.",
+    "context": "Provokation gegen Komfortzone."
+  },
+  {
+    "id": 163,
+    "title": "Tag 163: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Es gibt keine Entschuldigung für einen Läufer. Es gibt nur Entscheidungen.",
+    "context": "Entscheidung vs. Entschuldigung."
+  },
+  {
+    "id": 164,
+    "title": "Tag 164: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Die Schwierigkeit liegt nicht im Tun. Sie liegt im Anfangen. Der Rest ist Trägheit überwinden.",
+    "context": "Anfangen als härtester Schritt."
+  },
+  {
+    "id": 165,
+    "title": "Tag 165: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Menschen fragen mich, wie ich so weit laufen kann. Ich frage sie, warum sie so kurz leben.",
+    "context": "Scharfe Gegenfrage."
+  },
+  {
+    "id": 166,
+    "title": "Tag 166: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Kein Wind hilft dem, der keinen Hafen kennt. Kein Schritt hilft dem, der nicht weiß, warum er läuft.",
+    "context": "Richtung vor Geschwindigkeit."
+  },
+  {
+    "id": 167,
+    "title": "Tag 167: Psalm 37",
+    "category": "Provokativ",
+    "philosopher": "Psalm 37",
+    "quote": "Vertraue dem Herrn und tue Gutes. Das zweite ist dein Teil.",
+    "context": "Glaube und Handlung klar getrennt."
+  },
+  {
+    "id": 168,
+    "title": "Tag 168: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Man muss sich vorstellen, dass Sisyphus lächelt. Ich stelle mir vor, dass er bergauf sprintet.",
+    "context": "Absurdismus mit Ultrarunning-Twist."
+  },
+  {
+    "id": 169,
+    "title": "Tag 169: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wer einen Grund hat zu leben, kann fast jedes Wie ertragen. Finde täglich deinen Grund.",
+    "context": "Tägliche Sinnsuche."
+  },
+  {
+    "id": 170,
+    "title": "Tag 170: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Das Beste am Menschen ist, dass er eine Brücke und kein Ziel ist. Du bist unterwegs. Bleib es.",
+    "context": "Unterwegsein als Haltung."
+  },
+  {
+    "id": 171,
+    "title": "Tag 171: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Sei ehrlich: Bist du müde — oder bist du unmotiviert? Das sind zwei verschiedene Probleme.",
+    "context": "Differenzierung von Müdigkeit und Unlust."
+  },
+  {
+    "id": 172,
+    "title": "Tag 172: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Ein langes Leben ist nicht automatisch ein gutes Leben. Aber ein gelebtes Leben ist immer lang genug.",
+    "context": "Qualität über Quantität des Lebens."
+  },
+  {
+    "id": 173,
+    "title": "Tag 173: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Wenn du aufhörst, weil es schwer ist — dann war es nicht schwer genug, um zu zählen.",
+    "context": "Schärfe gegen vorschnelles Aufgeben."
+  },
+  {
+    "id": 174,
+    "title": "Tag 174: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Das Feuer, das in dir brennt, ist wichtiger als das Feuer um dich herum. Lass es nicht ausgehen.",
+    "context": "Innere Flamme bewahren."
+  },
+  {
+    "id": 175,
+    "title": "Tag 175: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Ich laufe nicht weg vom Leben. Ich laufe ins Leben hinein.",
+    "context": "Running als Hinwendung, nicht Flucht."
+  },
+  {
+    "id": 176,
+    "title": "Tag 176: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Alle leiden. Nicht alle handeln trotzdem. Das ist der Unterschied.",
+    "context": "Handlung trotz Leid."
+  },
+  {
+    "id": 177,
+    "title": "Tag 177: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Ein Mensch, der weiß, warum er leidet, leidet weniger. Weißt du, warum du läufst?",
+    "context": "Frage als Provokation."
+  },
+  {
+    "id": 178,
+    "title": "Tag 178: Psalm 46",
+    "category": "Provokativ",
+    "philosopher": "Psalm 46",
+    "quote": "Seid stille und erkennet, dass ich Gott bin. Manchmal muss man aufhören zu planen und einfach loslaufen.",
+    "context": "Loslassen und Handeln."
+  },
+  {
+    "id": 179,
+    "title": "Tag 179: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Ich bin kein Talent. Ich bin ein Gewohnheitstier. Das ist besser.",
+    "context": "Gewohnheit über Talent."
+  },
+  {
+    "id": 180,
+    "title": "Tag 180: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Lebe, als ob du heute sterbst. Trainiere, als ob du ewig lebst.",
+    "context": "Paradox von Dringlichkeit und Langfristigkeit."
+  },
+  {
+    "id": 181,
+    "title": "Tag 181: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Schweigen und Leiden ohne Sinn ist Qual. Schweigen und Leiden mit Sinn ist Wachstum.",
+    "context": "Sinn als Transformator von Leid."
+  },
+  {
+    "id": 182,
+    "title": "Tag 182: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Tue nicht, was andere von dir erwarten. Tue, was du von dir erwartest. Dann werden die anderen aufholen.",
+    "context": "Selbsterwartung als Standard."
+  },
+  {
+    "id": 183,
+    "title": "Tag 183: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Du kannst nicht kontrollieren, ob es regnet. Du kannst kontrollieren, ob du trotzdem läufst.",
+    "context": "Kontrolldikotomie auf Wetter."
+  },
+  {
+    "id": 184,
+    "title": "Tag 184: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Niemand besteht eine Prüfung, der nicht bereit war, zu scheitern. Melde dich für das Rennen an.",
+    "context": "Mut zur Teilnahme."
+  },
+  {
+    "id": 185,
+    "title": "Tag 185: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Was du suchst, sucht auch dich. Lauf ihm entgegen.",
+    "context": "Aktive Suche statt Warten."
+  },
+  {
+    "id": 186,
+    "title": "Tag 186: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mensch ist am glücklichsten, wenn er am härtesten arbeitet. Das stimmt — frag meinen Körper nach einem Backyard.",
+    "context": "Glück durch Anstrengung — persönlich."
+  },
+  {
+    "id": 187,
+    "title": "Tag 187: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Wer nie verloren hat, hat nie wirklich gespielt.",
+    "context": "Scheitern als Spielvoraussetzung."
+  },
+  {
+    "id": 188,
+    "title": "Tag 188: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Manche Menschen fragen, ob das Leben einen Sinn hat. Ich laufe, bis ich die Antwort finde.",
+    "context": "Laufen als Sinnsuche."
+  },
+  {
+    "id": 189,
+    "title": "Tag 189: Psalm 27",
+    "category": "Provokativ",
+    "philosopher": "Psalm 27",
+    "quote": "Der Herr ist mein Licht und mein Heil — wen sollte ich fürchten? Den Berg nicht. Das Dunkel nicht. Nur mich selbst.",
+    "context": "Selbst als einzige echte Bedrohung."
+  },
+  {
+    "id": 190,
+    "title": "Tag 190: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Nicht der Körper ist es, der aufgibt. Es ist immer der Kopf.",
+    "context": "Mental quitting — klassisch."
+  },
+  {
+    "id": 191,
+    "title": "Tag 191: Camus",
+    "category": "Provokativ",
+    "philosopher": "Camus",
+    "quote": "Du wirst es bereuen, wenn du nicht gelaufen bist. Du wirst es nie bereuen, wenn du gelaufen bist.",
+    "context": "Reue als Entscheidungshilfe."
+  },
+  {
+    "id": 192,
+    "title": "Tag 192: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Beste, das du tun kannst, ist, das Beste zu tun, was du kannst. Heute. Mit diesen Beinen.",
+    "context": "Bestmögliches in der Gegenwart."
+  },
+  {
+    "id": 193,
+    "title": "Tag 193: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Wenn der Körper nicht mehr will — dann übernimmt die Seele. Oder sie gibt auf. Du entscheidest.",
+    "context": "Seele vs. Körper in Extremmomenten."
+  },
+  {
+    "id": 194,
+    "title": "Tag 194: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Das Größte im Leben ist nicht, zu fallen. Es ist, aufzustehen — und dann weiterzulaufen.",
+    "context": "Resilienz als Größe."
+  },
+  {
+    "id": 195,
+    "title": "Tag 195: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Kein Mensch hat je auf dem Sterbebett gesagt: Ich wünschte, ich hätte mehr Netflix geschaut.",
+    "context": "Reue als Perspektive."
+  },
+  {
+    "id": 196,
+    "title": "Tag 196: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Lass die anderen reden. Zeig, was du kannst. Nicht mit Worten — mit Kilometern.",
+    "context": "Beweise statt Behauptungen."
+  },
+  {
+    "id": 197,
+    "title": "Tag 197: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Du wirst nicht sterben, wenn du läufst. Du stirbst ein bisschen, wenn du aufhörst.",
+    "context": "Tod durch Stillstand."
+  },
+  {
+    "id": 198,
+    "title": "Tag 198: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Ich laufe nicht, weil ich muss. Ich laufe, weil ich ohne es nicht mehr ich bin.",
+    "context": "Identität durch Bewegung."
+  },
+  {
+    "id": 199,
+    "title": "Tag 199: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Das Schlechteste ist, ein gewöhnliches Leben zu führen, wenn man für ein außergewöhnliches gemacht ist.",
+    "context": "Provokation zur Selbstüberschreitung."
+  },
+  {
+    "id": 200,
+    "title": "Tag 200: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Tag 200. Ich laufe immer noch. Das sagt mehr als jede Erklärung.",
+    "context": "Milestone als Statement."
+  },
+  {
+    "id": 201,
+    "title": "Tag 201: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Nicht für mich laufe ich. Ich laufe, damit meine Kinder einen Vater haben, der zeigt, was möglich ist.",
+    "context": "Laufen als Erziehung."
+  },
+  {
+    "id": 202,
+    "title": "Tag 202: Psalm 128",
+    "category": "Familie",
+    "philosopher": "Psalm 128",
+    "quote": "Deine Kinder werden wie Olivenzweige um deinen Tisch sein. Und du wirst der sein, von dem sie träumen.",
+    "context": "Väterliches Vorbild biblisch."
+  },
+  {
+    "id": 203,
+    "title": "Tag 203: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wer weiß, warum er lebt — der hat etwas zu geben. Mein Warum schläft noch und wartet auf mich beim Frühstück.",
+    "context": "Kinder als Lebensgrund."
+  },
+  {
+    "id": 204,
+    "title": "Tag 204: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Der beste Vater ist nicht der, der immer da ist. Der beste Vater ist der, der immer er selbst ist.",
+    "context": "Authentizität als Elternschaft."
+  },
+  {
+    "id": 205,
+    "title": "Tag 205: Epiktet",
+    "category": "Familie",
+    "philosopher": "Epiktet",
+    "quote": "Was du deinen Kindern hinterlässt, ist nicht Geld. Es ist, wer du warst.",
+    "context": "Charakter als Erbe."
+  },
+  {
+    "id": 206,
+    "title": "Tag 206: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Kinder sind nicht deine Kinder. Sie kommen durch dich, aber sie gehören nicht dir. Sei ein guter Durchgang.",
+    "context": "Rumi über Kinder und Loslassen."
+  },
+  {
+    "id": 207,
+    "title": "Tag 207: Augustinus",
+    "category": "Familie",
+    "philosopher": "Augustinus",
+    "quote": "Unsere Herzen sind unruhig. Auch die meiner Kinder. Meine Aufgabe: mit ihnen unruhig sein — und trotzdem Boden geben.",
+    "context": "Elternschaft als Haltgeben."
+  },
+  {
+    "id": 208,
+    "title": "Tag 208: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Das Beste, was Eltern tun können: nicht Antworten geben. Sondern Fragen wecken.",
+    "context": "Neugier als elterliches Geschenk."
+  },
+  {
+    "id": 209,
+    "title": "Tag 209: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Lea sieht mich, wenn ich von einem schlechten Lauf zurückkomme. Das ist echter als jeder Gipfelfoto.",
+    "context": "Authentizität in der Beziehung."
+  },
+  {
+    "id": 210,
+    "title": "Tag 210: Psalm 127",
+    "category": "Familie",
+    "philosopher": "Psalm 127",
+    "quote": "Kinder sind eine Gabe des Herrn. Und jeden Morgen, wenn ich zurückkomme, wissen sie: Ihr Vater gibt nicht auf.",
+    "context": "Vorbild durch Konstanz."
+  },
+  {
+    "id": 211,
+    "title": "Tag 211: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Was wir unseren Kindern zeigen, ist wichtiger als was wir ihnen sagen. Ich zeige ihnen: raus, täglich, egal was.",
+    "context": "Handlung als Erziehung."
+  },
+  {
+    "id": 212,
+    "title": "Tag 212: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Liebe ist die einzige Weise, die Existenz eines anderen Menschen vollständig zu verstehen. Lea versteht mich. Das ist Geschenk.",
+    "context": "Liebe als tiefstes Verstehen."
+  },
+  {
+    "id": 213,
+    "title": "Tag 213: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Lea fragt manchmal nicht, wohin ich laufe. Sie weiß, dass ich zurückkomme. Das nennt man Vertrauen.",
+    "context": "Vertrauen in der Partnerschaft."
+  },
+  {
+    "id": 214,
+    "title": "Tag 214: Epiktet",
+    "category": "Familie",
+    "philosopher": "Epiktet",
+    "quote": "Du liebst deine Kinder wirklich, wenn du ihnen zeigst, wie man mit Rückschlägen umgeht.",
+    "context": "Resilienz als Liebesbeweis."
+  },
+  {
+    "id": 215,
+    "title": "Tag 215: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Man liebt seine Kinder nicht, weil man sie braucht. Man braucht sie, weil man sie liebt. Aber dann läuft man trotzdem.",
+    "context": "Liebe und Eigenzeit in Balance."
+  },
+  {
+    "id": 216,
+    "title": "Tag 216: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Der Liebende ist lebendig, der Geliebte ist Feuer. Lea ist mein Feuer. Ich laufe damit.",
+    "context": "Liebe als Energie."
+  },
+  {
+    "id": 217,
+    "title": "Tag 217: Psalm 34",
+    "category": "Familie",
+    "philosopher": "Psalm 34",
+    "quote": "Kommt her, ihr Kinder, hört mir zu. Ich will euch die Furcht des Herrn lehren. Und wie man Berge hochläuft.",
+    "context": "Vater und Kinder — humorvoll biblisch."
+  },
+  {
+    "id": 218,
+    "title": "Tag 218: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Mein Vater hat mir gezeigt, was ein richtig guter Tag ist. Ich zeige es meinen Kindern.",
+    "context": "Generationsweitergabe der Philosophie."
+  },
+  {
+    "id": 219,
+    "title": "Tag 219: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Kinder brauchen keine perfekten Eltern. Sie brauchen ehrliche.",
+    "context": "Ehrlichkeit statt Perfektion."
+  },
+  {
+    "id": 220,
+    "title": "Tag 220: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wir geben unseren Kindern nicht, was wir haben. Wir geben, wer wir sind.",
+    "context": "Charakter als Gabe."
+  },
+  {
+    "id": 221,
+    "title": "Tag 221: Augustinus",
+    "category": "Familie",
+    "philosopher": "Augustinus",
+    "quote": "Das Herz des Vaters ist da, wo seine Kinder sind. Und trotzdem braucht er morgens eine Stunde für sich.",
+    "context": "Eigenzeit als Elternpflicht."
+  },
+  {
+    "id": 222,
+    "title": "Tag 222: Epiktet",
+    "category": "Familie",
+    "philosopher": "Epiktet",
+    "quote": "Was du tust, wenn niemand zuschaut — das ist dein wirklicher Charakter. Meine Kinder sehen es trotzdem.",
+    "context": "Integrität im Alltag."
+  },
+  {
+    "id": 223,
+    "title": "Tag 223: Psalm 103",
+    "category": "Familie",
+    "philosopher": "Psalm 103",
+    "quote": "Wie ein Vater sich seiner Kinder erbarmt, so erbarmt sich Gott. Ich lerne täglich, wie das geht.",
+    "context": "Vatersein als spirituelle Schule."
+  },
+  {
+    "id": 224,
+    "title": "Tag 224: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Das Beste an Kindern: Sie fragen nicht, warum. Sie laufen einfach mit.",
+    "context": "Kinder als Lehrer der Unbedingtheit."
+  },
+  {
+    "id": 225,
+    "title": "Tag 225: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Ich laufe früh morgens, damit ich da bin, wenn sie aufwachen. Das ist kein Opfer. Das ist Planung.",
+    "context": "Frühauflaufen als Familienentscheidung."
+  },
+  {
+    "id": 226,
+    "title": "Tag 226: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Die Liebe ist das Wasser des Lebens. Trinkt es mit ganzer Seele. Auch im Tiny House zu dritt im Bett.",
+    "context": "Liebe im gelebten Alltag."
+  },
+  {
+    "id": 227,
+    "title": "Tag 227: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Das Glück liegt nicht darin, mehr zu haben — sondern weniger zu brauchen. 35 Quadratmeter reichen.",
+    "context": "Tiny House als Lebensphilosophie."
+  },
+  {
+    "id": 228,
+    "title": "Tag 228: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Kinder fragen nicht nach dem Sinn des Lebens. Sie leben ihn. Und erinnern uns daran.",
+    "context": "Kinder als Sinnlehrer."
+  },
+  {
+    "id": 229,
+    "title": "Tag 229: Psalm 22",
+    "category": "Familie",
+    "philosopher": "Psalm 22",
+    "quote": "An dir haben unsere Väter gehofft. Ich hoffe, dass meine Kinder dasselbe von mir sagen.",
+    "context": "Generationale Hoffnung."
+  },
+  {
+    "id": 230,
+    "title": "Tag 230: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Der beste Morgen ist der, nach dem deine Kinder fragen: Warst du wieder laufen, Papa? Ja. Immer.",
+    "context": "Routine als familiale Identität."
+  },
+  {
+    "id": 231,
+    "title": "Tag 231: Epiktet",
+    "category": "Familie",
+    "philosopher": "Epiktet",
+    "quote": "Gib deinen Kindern nicht, was sie wollen. Gib ihnen, was sie brauchen: ein Vorbild.",
+    "context": "Vorbild als höchste Elternaufgabe."
+  },
+  {
+    "id": 232,
+    "title": "Tag 232: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Alles, was aus Liebe getan wird, geschieht jenseits von Gut und Böse. Deshalb laufe ich — für sie.",
+    "context": "Liebe als Motivation jenseits von Moral."
+  },
+  {
+    "id": 233,
+    "title": "Tag 233: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Ich war tot — und das Leben erweckte mich. Und das Leben hat drei Namen, und sie schlafen noch.",
+    "context": "Kinder als Lebenserwecker."
+  },
+  {
+    "id": 234,
+    "title": "Tag 234: Augustinus",
+    "category": "Familie",
+    "philosopher": "Augustinus",
+    "quote": "Liebe — und dann tue, was du willst. Mit Lea ist das einfach.",
+    "context": "Augustinus' Liebesgebot — persönlich."
+  },
+  {
+    "id": 235,
+    "title": "Tag 235: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Die schönsten Momente sind nicht die größten Rennen. Es sind die, wenn ein Kind fragt: Nehmt ihr mich mit?",
+    "context": "Alltag als schönster Moment."
+  },
+  {
+    "id": 236,
+    "title": "Tag 236: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Mein Vater starb. Vorher lehrte er mich: Jeder Tag kann ein richtig guter Tag sein. Das laufe ich weiter.",
+    "context": "Väterliches Erbe — persönlich und tief."
+  },
+  {
+    "id": 237,
+    "title": "Tag 237: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Was einen Menschen trägt, wenn er leiden muss, ist die Liebe. Ich weiß, für wen ich da bin, wenn es schwer wird.",
+    "context": "Liebe als Träger in schweren Momenten."
+  },
+  {
+    "id": 238,
+    "title": "Tag 238: Psalm 68",
+    "category": "Familie",
+    "philosopher": "Psalm 68",
+    "quote": "Gott ist ein Vater der Vaterlosen. Ich habe das Glück, Vater zu sein. Ich nehme es täglich ernst.",
+    "context": "Dankbarkeit für Vaterschaft."
+  },
+  {
+    "id": 239,
+    "title": "Tag 239: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Kinder glauben nicht, was wir sagen. Sie glauben, was wir sind.",
+    "context": "Sein statt Sagen in der Erziehung."
+  },
+  {
+    "id": 240,
+    "title": "Tag 240: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Das Tiny House ist kein Mangel. Es ist eine Entscheidung. Raum für das Wesentliche. Kein Raum für das Überflüssige.",
+    "context": "Bewusste Einfachheit als Wert."
+  },
+  {
+    "id": 241,
+    "title": "Tag 241: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Lea liebt mich, wenn ich zurückkomme — nicht weil ich schnell war. Sondern weil ich gegangen bin.",
+    "context": "Disziplin als Liebesbeweis."
+  },
+  {
+    "id": 242,
+    "title": "Tag 242: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "In der Stille zwischen zwei Atemzügen liegt das ganze Universum. Lea und ich atmen es manchmal zusammen.",
+    "context": "Partnerschaft in der Stille."
+  },
+  {
+    "id": 243,
+    "title": "Tag 243: Augustinus",
+    "category": "Familie",
+    "philosopher": "Augustinus",
+    "quote": "Du hast uns füreinander geschaffen. Lea und ich laufen seit Jahren, ohne immer dieselbe Strecke zu wählen.",
+    "context": "Partnerschaft als gemeinsame Richtung."
+  },
+  {
+    "id": 244,
+    "title": "Tag 244: Psalm 144",
+    "category": "Familie",
+    "philosopher": "Psalm 144",
+    "quote": "Unsere Söhne sind wie junge Pflanzen. Lass sie wachsen — und zeig ihnen die Berge.",
+    "context": "Kinder und Natur."
+  },
+  {
+    "id": 245,
+    "title": "Tag 245: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Das Wichtigste ist nicht, wie viel Zeit du mit deinen Kindern verbringst. Es ist, wie präsent du bist, wenn du da bist.",
+    "context": "Qualität der Präsenz."
+  },
+  {
+    "id": 246,
+    "title": "Tag 246: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Die Liebe ist der Weg in das Innere einer anderen Person. Kinder führen dich in dein eigenes.",
+    "context": "Kinder als Spiegel."
+  },
+  {
+    "id": 247,
+    "title": "Tag 247: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Ich laufe vor Sonnenaufgang, damit ich beim Frühstück da bin. Das ist kein Kompromiss. Das ist Disziplin.",
+    "context": "Laufen als Familienverantwortung."
+  },
+  {
+    "id": 248,
+    "title": "Tag 248: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Was uns nicht tötet, macht uns stärker. Was uns Kinder bringt, macht uns echter.",
+    "context": "Kinder als Authentifizierung."
+  },
+  {
+    "id": 249,
+    "title": "Tag 249: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Die Seele hat kein Geschlecht. Kinder wissen das. Sie lieben einfach.",
+    "context": "Kinderliebe als reine Form."
+  },
+  {
+    "id": 250,
+    "title": "Tag 250: Psalm 127",
+    "category": "Familie",
+    "philosopher": "Psalm 127",
+    "quote": "Vergebens, dass ihr früh aufsteht. Außer wenn ihr aufsteht, um zu laufen — und dann zurückkommt, wenn sie wachen.",
+    "context": "Frühaufstehen und Familie verbinden."
+  },
+  {
+    "id": 251,
+    "title": "Tag 251: Augustinus",
+    "category": "Familie",
+    "philosopher": "Augustinus",
+    "quote": "Liebe ist die Schwerkraft der Seele. Sie zieht mich abends nach Hause — egal wie weit ich gelaufen bin.",
+    "context": "Heimkommen als Liebesbeweis."
+  },
+  {
+    "id": 252,
+    "title": "Tag 252: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Deine Kinder beobachten dich, wenn du denkst, dass es niemand tut. Was sehen sie?",
+    "context": "Reflexionsfrage für Eltern."
+  },
+  {
+    "id": 253,
+    "title": "Tag 253: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Nichts ist wertvoller als Zeit mit Menschen, die man liebt. Deshalb laufe ich früh — und komme früh zurück.",
+    "context": "Zeit als wertvolles Gut."
+  },
+  {
+    "id": 254,
+    "title": "Tag 254: Epiktet",
+    "category": "Familie",
+    "philosopher": "Epiktet",
+    "quote": "Lehre deine Kinder nicht Unterwerfung. Lehre sie Freiheit — und ihre Grenzen.",
+    "context": "Freiheit und Grenzen als Erziehungsziel."
+  },
+  {
+    "id": 255,
+    "title": "Tag 255: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wir wählen nicht unsere Familie. Aber wir wählen täglich, wie wir für sie da sind.",
+    "context": "Wahl als tägliche Haltung."
+  },
+  {
+    "id": 256,
+    "title": "Tag 256: Nietzsche",
+    "category": "Familie",
+    "philosopher": "Nietzsche",
+    "quote": "Das Heroische ist nicht, allein zu sein. Das Heroische ist, für andere da zu sein — und trotzdem man selbst zu bleiben.",
+    "context": "Balance aus Vaterschaft und Selbst."
+  },
+  {
+    "id": 257,
+    "title": "Tag 257: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Was auch immer du liebst, das bist du. Ich bin Läufer. Ich bin Vater. Ich bin beides.",
+    "context": "Identität als Vielheit."
+  },
+  {
+    "id": 258,
+    "title": "Tag 258: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Das Beste, was ich meinen Kindern gebe, ist nicht meine Zeit. Es ist meine Energie, wenn ich da bin.",
+    "context": "Energie als Geschenk."
+  },
+  {
+    "id": 259,
+    "title": "Tag 259: Psalm 103",
+    "category": "Familie",
+    "philosopher": "Psalm 103",
+    "quote": "Gedenke nicht unserer Sünden. Gedenke, dass wir Staub sind — und jeden Morgen trotzdem aufstehen.",
+    "context": "Gnade und Disziplin."
+  },
+  {
+    "id": 260,
+    "title": "Tag 260: Seneca",
+    "category": "Familie",
+    "philosopher": "Seneca",
+    "quote": "Das Tiny House hat kein Gästezimmer. Aber es hat genug Raum für alles, was zählt.",
+    "context": "Bewusste Beschränkung als Fülle."
+  },
+  {
+    "id": 261,
+    "title": "Tag 261: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Wer immer auf eine bessere Zeit wartet, verpasst die Zeit, die er hat. Ich warte nicht mehr.",
+    "context": "Transition als aktive Entscheidung."
+  },
+  {
+    "id": 262,
+    "title": "Tag 262: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Veränderung ist kein Tod. Sie ist das Wesen der Natur. Auch deiner.",
+    "context": "Wandel normalisieren."
+  },
+  {
+    "id": 263,
+    "title": "Tag 263: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Angst vor dem Unbekannten ist natürlich. Handeln trotzdem ist Mut.",
+    "context": "Mut als Handlung trotz Angst."
+  },
+  {
+    "id": 264,
+    "title": "Tag 264: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Du kannst nicht gleichzeitig festhalten und loslassen. Wähle.",
+    "context": "Klare Entscheidung in Übergangsphasen."
+  },
+  {
+    "id": 265,
+    "title": "Tag 265: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mensch ist an seinen Wunden krank — aber an seinen Narben gesund.",
+    "context": "Narben als Zeichen des Überlebens."
+  },
+  {
+    "id": 266,
+    "title": "Tag 266: Psalm 31",
+    "category": "Übergang",
+    "philosopher": "Psalm 31",
+    "quote": "In deine Hände befehle ich meinen Geist. Und dann springe ich.",
+    "context": "Glaube und Mut zum Sprung."
+  },
+  {
+    "id": 267,
+    "title": "Tag 267: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "In der Mitte des Weges ist es dunkel. Das ist ein Zeichen, dass du wirklich unterwegs bist.",
+    "context": "Midlife-Transition als Wegzeichen."
+  },
+  {
+    "id": 268,
+    "title": "Tag 268: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ein neuer Weg beginnt immer damit, dass man den alten verlässt. Nicht weil er falsch war — sondern weil du dich geändert hast.",
+    "context": "Transition ohne Abwertung des Alten."
+  },
+  {
+    "id": 269,
+    "title": "Tag 269: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Was du wirklich bist, zeigt sich erst, wenn der Druck kommt. Ich bin im Druck. Ich sehe, wer ich bin.",
+    "context": "Transition als Selbstoffenbarung."
+  },
+  {
+    "id": 270,
+    "title": "Tag 270: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Das Licht tritt durch die Wunde ein. Versuche nicht, die Wunde zu schließen, bevor es Licht ist.",
+    "context": "Transformation durch Verletzlichkeit."
+  },
+  {
+    "id": 271,
+    "title": "Tag 271: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Es gibt keinen günstigeren Wind als den, der in die Richtung bläst, in die du willst. Ich wähle meine Richtung.",
+    "context": "Richtungswahl als Freiheit."
+  },
+  {
+    "id": 272,
+    "title": "Tag 272: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Der Mensch kann immer neu entscheiden. Das ist das Privileg — und die Last — der Freiheit.",
+    "context": "Neuanfang als Menschenrecht."
+  },
+  {
+    "id": 273,
+    "title": "Tag 273: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Wenn du aufhörst, das Alte zu tun — dann hast du noch nichts Neues getan. Erst wenn du anfängst.",
+    "context": "Loslassen allein reicht nicht."
+  },
+  {
+    "id": 274,
+    "title": "Tag 274: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Wer nicht fliegen kann, soll nicht auf Gipfeln stehen wollen. Wer fliegen kann — soll nicht auf halbem Weg aufhören.",
+    "context": "Mut zum Gipfel."
+  },
+  {
+    "id": 275,
+    "title": "Tag 275: Psalm 40",
+    "category": "Übergang",
+    "philosopher": "Psalm 40",
+    "quote": "Er zog mich aus der Grube. Er stellte meine Füße auf festen Boden. Dann habe ich selbst losgelaufen.",
+    "context": "Göttliche Hilfe und menschliche Eigeninitiative."
+  },
+  {
+    "id": 276,
+    "title": "Tag 276: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Freiheit ist nicht, keine Regeln zu haben. Freiheit ist, die eigenen zu wählen.",
+    "context": "Selbstbestimmung als Freiheit."
+  },
+  {
+    "id": 277,
+    "title": "Tag 277: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ich schreibe nicht, um erfolgreich zu sein. Ich laufe nicht, um anzukommen. Ich tue es, weil ich es tun muss.",
+    "context": "Innerer Antrieb über äußere Ziele."
+  },
+  {
+    "id": 278,
+    "title": "Tag 278: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Dein Alter ist kein Hindernis. Es ist eine Zahl, mit der die Schwachen sich entschuldigen.",
+    "context": "Alter-Ausreden eliminieren."
+  },
+  {
+    "id": 279,
+    "title": "Tag 279: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Gestern bin ich gestorben. Heute bin ich neugeboren worden. Was werde ich morgen tun?",
+    "context": "Tägliche Erneuerung als Haltung."
+  },
+  {
+    "id": 280,
+    "title": "Tag 280: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Das Neue beginnt nicht mit einem großen Plan. Es beginnt mit einem ersten Schritt. Mein erster Schritt heißt Läuft.ch.",
+    "context": "Business-Transition konkret."
+  },
+  {
+    "id": 281,
+    "title": "Tag 281: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Nicht Sicherheit macht uns frei. Sinn macht uns frei.",
+    "context": "Sinnorientierung statt Sicherheitsdenken."
+  },
+  {
+    "id": 282,
+    "title": "Tag 282: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Du wirst es nicht bereuen, wenn du das wagst. Du wirst es bereuen, wenn du es nicht tust.",
+    "context": "Reue als Entscheidungskompass."
+  },
+  {
+    "id": 283,
+    "title": "Tag 283: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Der schöpferische Mensch zerstört zunächst, um dann aufzubauen. Was zerstörst du gerade in deinem Leben?",
+    "context": "Kreative Destruktion als Transformationsphase."
+  },
+  {
+    "id": 284,
+    "title": "Tag 284: Psalm 37",
+    "category": "Übergang",
+    "philosopher": "Psalm 37",
+    "quote": "Harret des Herrn und haltet seinen Weg. Manchmal ist der Weg neu — und das ist der Weg.",
+    "context": "Neuer Weg als göttlicher Weg."
+  },
+  {
+    "id": 285,
+    "title": "Tag 285: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Das Einzige, das ich mit Sicherheit weiß: Ich bin nicht das, was ich war. Und ich bin noch nicht das, was ich sein werde.",
+    "context": "Unterwegsein als Identität."
+  },
+  {
+    "id": 286,
+    "title": "Tag 286: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Jeder Übergang fühlt sich zuerst wie Verlust an. Dann merkst du: Es war kein Verlust. Es war ein Gewinn.",
+    "context": "Übergang retrospektiv bewerten."
+  },
+  {
+    "id": 287,
+    "title": "Tag 287: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ein neues Kapitel beginnt immer auf einer leeren Seite. Die Leere ist nicht das Problem. Sie ist die Möglichkeit.",
+    "context": "Leere als Chance."
+  },
+  {
+    "id": 288,
+    "title": "Tag 288: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Die Reise ist das Ziel. Nicht weil es kein Ziel gibt — sondern weil die Reise dich verändert, bevor du ankommst.",
+    "context": "Prozess über Ergebnis."
+  },
+  {
+    "id": 289,
+    "title": "Tag 289: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Lebe, bevor du weißt, wie man lebt. Ich baue, während ich lerne.",
+    "context": "Lernen durch Handeln."
+  },
+  {
+    "id": 290,
+    "title": "Tag 290: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wenn sich eine Tür schließt, ist es dunkel. Aber Dunkelheit ist die Voraussetzung für Sterne.",
+    "context": "Hoffnung im Übergang."
+  },
+  {
+    "id": 291,
+    "title": "Tag 291: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Fürchte dich nicht vor dem, was sein wird. Fürchte dich vor dem, was du nicht getan hast, wenn du die Chance hattest.",
+    "context": "Unterlassung als echte Gefahr."
+  },
+  {
+    "id": 292,
+    "title": "Tag 292: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Man muss Chaos in sich tragen, um einen tanzenden Stern zu gebären. Ich bin gerade Chaos. Der Stern kommt.",
+    "context": "Chaos als kreativer Zustand."
+  },
+  {
+    "id": 293,
+    "title": "Tag 293: Psalm 23",
+    "category": "Übergang",
+    "philosopher": "Psalm 23",
+    "quote": "Auch wenn ich durch finstere Täler gehe — ich fürchte kein Übel. Transitionen sind finstere Täler mit Licht am Ende.",
+    "context": "Übergang als Tal mit Ausgang."
+  },
+  {
+    "id": 294,
+    "title": "Tag 294: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "In jedem Frühling blüht etwas, das den Winter nicht überlebt zu haben schien. Das bin ich gerade.",
+    "context": "Erneuerung nach schwieriger Phase."
+  },
+  {
+    "id": 295,
+    "title": "Tag 295: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Der Wandel ist das Wesen des Universums. Wer sich nicht wandelt, kämpft gegen das Universum. Viel Glück.",
+    "context": "Wandel als kosmisches Gesetz."
+  },
+  {
+    "id": 296,
+    "title": "Tag 296: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Das Schreiben hat mir beigebracht: Es kommt nicht darauf an, was du weißt. Es kommt darauf an, was du entdeckst, während du es tust.",
+    "context": "Learning by doing — auf Business übertragen."
+  },
+  {
+    "id": 297,
+    "title": "Tag 297: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Hör auf den Schmerz der Sehnsucht. Er zeigt dir, wohin du gehst.",
+    "context": "Sehnsucht als Kompass."
+  },
+  {
+    "id": 298,
+    "title": "Tag 298: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Jeder Meister war einmal ein Anfänger. Ich bin gerade Anfänger. Das ist gut.",
+    "context": "Anfängergeist in der Transition."
+  },
+  {
+    "id": 299,
+    "title": "Tag 299: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Leben ist eine Aufgabe, keine Gabe. Finde deine Aufgabe — und dann lebst du.",
+    "context": "Berufung als Lebensaufgabe."
+  },
+  {
+    "id": 300,
+    "title": "Tag 300: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Alles Große beginnt klein. Mein erstes Läuft.ch-Projekt beginnt mit einem Gespräch.",
+    "context": "Kleiner Anfang großer Dinge."
+  },
+  {
+    "id": 301,
+    "title": "Tag 301: Psalm 118",
+    "category": "Übergang",
+    "philosopher": "Psalm 118",
+    "quote": "Dies ist der Tag, den der Herr macht. Auch wenn er unbequem ist.",
+    "context": "Akzeptanz schwieriger Tage."
+  },
+  {
+    "id": 302,
+    "title": "Tag 302: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Wer weiß, warum er lebt, hält jedes Wie aus. Auch das des Selbstständigseins.",
+    "context": "Transition als Warum-Frage."
+  },
+  {
+    "id": 303,
+    "title": "Tag 303: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Die Wahl ist täglich. Entweder du gestaltest dein Leben — oder das Leben gestaltet dich.",
+    "context": "Aktive Lebensgestaltung."
+  },
+  {
+    "id": 304,
+    "title": "Tag 304: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Nicht der Weg ist das Problem. Das Problem ist, dass du einen anderen Weg willst als den, auf dem du bist.",
+    "context": "Akzeptanz des eigenen Weges."
+  },
+  {
+    "id": 305,
+    "title": "Tag 305: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ich habe keine Angst vor dem Tod. Ich habe Angst davor, nicht gelebt zu haben.",
+    "context": "Angst ums Unleben."
+  },
+  {
+    "id": 306,
+    "title": "Tag 306: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Stirb, bevor du stirbst — und entdecke, dass es keinen Tod gibt.",
+    "context": "Ego-Tod als Befreiung."
+  },
+  {
+    "id": 307,
+    "title": "Tag 307: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Kein Sturm hält ewig. Aber du musst das Boot während des Sturms halten.",
+    "context": "Durchhalten in schwierigen Phasen."
+  },
+  {
+    "id": 308,
+    "title": "Tag 308: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Der Mensch ist nicht frei von Bedingungen. Er ist frei, ihnen gegenüber eine Haltung einzunehmen.",
+    "context": "Haltungsfreiheit als Kernfreiheit."
+  },
+  {
+    "id": 309,
+    "title": "Tag 309: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Das Schwierigste ist, das Alte loszulassen, bevor das Neue klar ist. Genau dort bin ich.",
+    "context": "Transition in der Mitte aushalten."
+  },
+  {
+    "id": 310,
+    "title": "Tag 310: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mensch ist keine Ankunft. Er ist ein Aufbruch.",
+    "context": "Unterwegs als Lebensform."
+  },
+  {
+    "id": 311,
+    "title": "Tag 311: Psalm 121",
+    "category": "Übergang",
+    "philosopher": "Psalm 121",
+    "quote": "Meine Hilfe kommt vom Herrn. Und von mir, der sich bewegt.",
+    "context": "Göttliche und menschliche Hilfe gemeinsam."
+  },
+  {
+    "id": 312,
+    "title": "Tag 312: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Die Freiheit beginnt, wenn du aufhörst, dir vorzustellen, was andere von dir denken.",
+    "context": "Freiheit von fremder Meinung."
+  },
+  {
+    "id": 313,
+    "title": "Tag 313: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Was du heute säst, wirst du nicht morgen ernten. Aber wenn du heute nichts säst — wirst du nie ernten.",
+    "context": "Langfristiges Denken in der Transition."
+  },
+  {
+    "id": 314,
+    "title": "Tag 314: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ein neues Leben beginnt nicht mit einem Plan. Es beginnt mit der Entscheidung, das alte zu beenden.",
+    "context": "Entscheidung als Startpunkt."
+  },
+  {
+    "id": 315,
+    "title": "Tag 315: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Lass das, was du liebst, dich bewegen. Dann läufst du in die richtige Richtung.",
+    "context": "Liebe als Richtungsgeber."
+  },
+  {
+    "id": 316,
+    "title": "Tag 316: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Es ist nie zu spät, das Leben zu beginnen, das du führen willst. Nur zu früh, um aufzugeben.",
+    "context": "Neustart als Option."
+  },
+  {
+    "id": 317,
+    "title": "Tag 317: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Wir leiden nicht daran, was uns passiert. Wir leiden an unserer Haltung dazu.",
+    "context": "Haltung als Entscheidung."
+  },
+  {
+    "id": 318,
+    "title": "Tag 318: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Was du verlässt, hat dich geformt. Was du angehst, wird dich formen. Dank für beides.",
+    "context": "Dankbarkeit in der Transition."
+  },
+  {
+    "id": 319,
+    "title": "Tag 319: Psalm 46",
+    "category": "Übergang",
+    "philosopher": "Psalm 46",
+    "quote": "Gott ist unsere Zuflucht und Stärke. Auch wenn die Berge mitten ins Meer sänken. Auch wenn mein Plan scheitert.",
+    "context": "Glaube als Anker in Unsicherheit."
+  },
+  {
+    "id": 320,
+    "title": "Tag 320: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mut ist nicht das Fehlen von Angst. Er ist das Urteilen, dass etwas anderes wichtiger ist als die Angst.",
+    "context": "Mut als Priorisierung."
+  },
+  {
+    "id": 321,
+    "title": "Tag 321: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Ich bin frei, weil ich keine Illusionen habe. Und ich laufe, weil mir die Freiheit Beine gibt.",
+    "context": "Freiheit und Bewegung."
+  },
+  {
+    "id": 322,
+    "title": "Tag 322: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Wenn du dich änderst, änderst du deine Welt. Das reicht.",
+    "context": "Innerer Wandel als Weltveränderung."
+  },
+  {
+    "id": 323,
+    "title": "Tag 323: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Nicht alle, die wandern, sind verloren. Manche suchen den nächsten Trail.",
+    "context": "Tolkien/Murakami-Mischung."
+  },
+  {
+    "id": 324,
+    "title": "Tag 324: Rumi",
+    "category": "Übergang",
+    "philosopher": "Rumi",
+    "quote": "Triff die Welt mit offenem Herzen — auch wenn es schmerzt. Besonders dann.",
+    "context": "Offenheit trotz Verletzlichkeit."
+  },
+  {
+    "id": 325,
+    "title": "Tag 325: Seneca",
+    "category": "Übergang",
+    "philosopher": "Seneca",
+    "quote": "Der schwierigste Weg ist oft der, den du noch nicht gegangen bist. Geh ihn trotzdem.",
+    "context": "Neuer Weg trotz Unbekanntheit."
+  },
+  {
+    "id": 326,
+    "title": "Tag 326: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Das Gute ist das, was du täglich wählst — nicht das, was dir passiert.",
+    "context": "Aktive Tugend."
+  },
+  {
+    "id": 327,
+    "title": "Tag 327: Epiktet",
+    "category": "Provokativ",
+    "philosopher": "Epiktet",
+    "quote": "Hör auf zu warten, dass jemand dein Leben verändert. Niemand wird kommen.",
+    "context": "Selbstverantwortung radikal."
+  },
+  {
+    "id": 328,
+    "title": "Tag 328: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Jede Nacht sterbe ich ein bisschen — und jeden Morgen bin ich dankbar, dass ich wieder aufstehe.",
+    "context": "Tägliche Erneuerung."
+  },
+  {
+    "id": 329,
+    "title": "Tag 329: Psalm 121",
+    "category": "Meditativ",
+    "philosopher": "Psalm 121",
+    "quote": "Er behütet deinen Ausgang und deinen Eingang. Ich verlasse das Haus um 5 Uhr. Er weiß Bescheid.",
+    "context": "Glauben im Alltag humorvoll."
+  },
+  {
+    "id": 330,
+    "title": "Tag 330: Viktor Frankl",
+    "category": "Provokativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Leid ohne Sinn zerstört. Leid mit Sinn verwandelt. Was ist der Sinn deines Schmerzes heute?",
+    "context": "Sinnfrage im Leid."
+  },
+  {
+    "id": 331,
+    "title": "Tag 331: Nietzsche",
+    "category": "Übergang",
+    "philosopher": "Nietzsche",
+    "quote": "Der Stärkste ist nicht, wer nie fällt. Der Stärkste ist, wer aufsteht — und fragt, was er gelernt hat.",
+    "context": "Resilienz durch Lernen."
+  },
+  {
+    "id": 332,
+    "title": "Tag 332: Rumi",
+    "category": "Familie",
+    "philosopher": "Rumi",
+    "quote": "Liebe hat keine Angst. Liebe fragt nicht nach Garantien. Liebe geht einfach.",
+    "context": "Liebe als Mut."
+  },
+  {
+    "id": 333,
+    "title": "Tag 333: Kilian Jornet",
+    "category": "Provokativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Der Berg ist nicht dein Feind. Die Uhr ist es. Lass sie manchmal zu Hause.",
+    "context": "Technik vs. Erfahrung."
+  },
+  {
+    "id": 334,
+    "title": "Tag 334: Camus",
+    "category": "Meditativ",
+    "philosopher": "Camus",
+    "quote": "Es gibt kein größeres Abenteuer als das des Denkens. Außer vielleicht das des 5-Uhr-Laufs.",
+    "context": "Denken und Bewegen verbunden."
+  },
+  {
+    "id": 335,
+    "title": "Tag 335: Marc Aurel",
+    "category": "Provokativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Jeder Tag ist eine neue Chance, besser zu sein als gestern. Die meisten schlafen diese Chance weg.",
+    "context": "Morgendliche Disziplin."
+  },
+  {
+    "id": 336,
+    "title": "Tag 336: Murakami",
+    "category": "Meditativ",
+    "philosopher": "Murakami",
+    "quote": "Was du beim Laufen lernst, lernst du nirgendwo sonst. Weil du nirgendwo sonst allein mit dir bist.",
+    "context": "Laufen als Selbsterkenntnis."
+  },
+  {
+    "id": 337,
+    "title": "Tag 337: Augustinus",
+    "category": "Übergang",
+    "philosopher": "Augustinus",
+    "quote": "Unser Herz ist für Großes gemacht. Wage das Große.",
+    "context": "Berufung zur Größe."
+  },
+  {
+    "id": 338,
+    "title": "Tag 338: Psalm 23",
+    "category": "Familie",
+    "philosopher": "Psalm 23",
+    "quote": "Er bereitet mir einen Tisch vor Augen meiner Feinde. Bei mir sind das die Berge, die ich erst nicht glaubte, hoch laufen zu können.",
+    "context": "Persönliche Feinde überwinden."
+  },
+  {
+    "id": 339,
+    "title": "Tag 339: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Die Ausrede ist das Grab des Möglichen.",
+    "context": "Komprimiert und scharf."
+  },
+  {
+    "id": 340,
+    "title": "Tag 340: Epiktet",
+    "category": "Meditativ",
+    "philosopher": "Epiktet",
+    "quote": "Behalte deinen inneren Frieden. Alles andere ist temporär.",
+    "context": "Innere Ruhe als Konstante."
+  },
+  {
+    "id": 341,
+    "title": "Tag 341: Viktor Frankl",
+    "category": "Übergang",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Leben ist eine Frage — und jeder Tag ist eine Antwort. Was antwortest du heute?",
+    "context": "Leben als Dialog."
+  },
+  {
+    "id": 342,
+    "title": "Tag 342: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Was fällt, das soll man noch stoßen. Was steht — das soll man lieben.",
+    "context": "Nietzsche radikal — aber wahr."
+  },
+  {
+    "id": 343,
+    "title": "Tag 343: Rumi",
+    "category": "Meditativ",
+    "philosopher": "Rumi",
+    "quote": "Wir kommen alle aus demselben Ort und kehren dahin zurück. Was wir dazwischen tun — das zählt.",
+    "context": "Das Dazwischen als Leben."
+  },
+  {
+    "id": 344,
+    "title": "Tag 344: Marc Aurel",
+    "category": "Familie",
+    "philosopher": "Marc Aurel",
+    "quote": "Liebe die Menschen, mit denen du läufst durch das Leben. Sie sind das Einzige, was bleibt.",
+    "context": "Beziehungen als Konstante."
+  },
+  {
+    "id": 345,
+    "title": "Tag 345: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Manchmal ist der einzige Weg nach oben, zuerst nach unten zu gehen.",
+    "context": "Taktisches Abstiegdenken."
+  },
+  {
+    "id": 346,
+    "title": "Tag 346: Camus",
+    "category": "Übergang",
+    "philosopher": "Camus",
+    "quote": "Freiheit ist nicht, ohne Zwang zu sein. Freiheit ist, dem Zwang zu trotzen.",
+    "context": "Innere Freiheit."
+  },
+  {
+    "id": 347,
+    "title": "Tag 347: Psalm 46",
+    "category": "Provokativ",
+    "philosopher": "Psalm 46",
+    "quote": "Der Herr der Heerscharen ist mit uns. Also wofür fürchtest du dich?",
+    "context": "Gottvertrauen als Provokation."
+  },
+  {
+    "id": 348,
+    "title": "Tag 348: Seneca",
+    "category": "Meditativ",
+    "philosopher": "Seneca",
+    "quote": "Wir haben nicht wenig Zeit. Wir vergeuden viel. Das ist der Unterschied.",
+    "context": "Zeitbewusstsein."
+  },
+  {
+    "id": 349,
+    "title": "Tag 349: Murakami",
+    "category": "Provokativ",
+    "philosopher": "Murakami",
+    "quote": "Niemand wird dich zwingen, besser zu werden. Das musst du selbst wollen.",
+    "context": "Selbstmotivation."
+  },
+  {
+    "id": 350,
+    "title": "Tag 350: Augustinus",
+    "category": "Meditativ",
+    "philosopher": "Augustinus",
+    "quote": "Der Mensch ist groß, wenn er sich selbst klein macht. Nicht um klein zu bleiben — sondern um zu wachsen.",
+    "context": "Demut als Wachstumshaltung."
+  },
+  {
+    "id": 351,
+    "title": "Tag 351: Viktor Frankl",
+    "category": "Familie",
+    "philosopher": "Viktor Frankl",
+    "quote": "Nicht die Umstände machen uns — unsere Haltung zu den Umständen.",
+    "context": "Haltung als Wahl."
+  },
+  {
+    "id": 352,
+    "title": "Tag 352: Nietzsche",
+    "category": "Meditativ",
+    "philosopher": "Nietzsche",
+    "quote": "Der Mensch braucht Sterne, nach denen er sich richten kann. Ich habe die Alpen.",
+    "context": "Orientierung durch Natur."
+  },
+  {
+    "id": 353,
+    "title": "Tag 353: Epiktet",
+    "category": "Übergang",
+    "philosopher": "Epiktet",
+    "quote": "Lass los, was dich hält — und greife, was dich trägt.",
+    "context": "Loslassen und Greifen."
+  },
+  {
+    "id": 354,
+    "title": "Tag 354: Rumi",
+    "category": "Provokativ",
+    "philosopher": "Rumi",
+    "quote": "Manche Türen öffnen sich nur von innen. Klopf nicht von außen. Öffne von innen.",
+    "context": "Innere Öffnung."
+  },
+  {
+    "id": 355,
+    "title": "Tag 355: Marc Aurel",
+    "category": "Meditativ",
+    "philosopher": "Marc Aurel",
+    "quote": "Das Beste, was du tun kannst: Tue, was du für richtig hältst. Dann schlafe gut.",
+    "context": "Gewissen als Leitstern."
+  },
+  {
+    "id": 356,
+    "title": "Tag 356: Psalm 18",
+    "category": "Übergang",
+    "philosopher": "Psalm 18",
+    "quote": "Mit dir durchlaufe ich Heerhaufen — mit meinem Gott überspringe ich Mauern. Und manchmal auch Karrierestufen.",
+    "context": "Mut zum Sprung — humorvoll."
+  },
+  {
+    "id": 357,
+    "title": "Tag 357: Kilian Jornet",
+    "category": "Meditativ",
+    "philosopher": "Kilian Jornet",
+    "quote": "Berge lügen nicht. Wenn du nicht fit bist — der Berg sagt es dir.",
+    "context": "Ehrlichkeit der Natur."
+  },
+  {
+    "id": 358,
+    "title": "Tag 358: Seneca",
+    "category": "Provokativ",
+    "philosopher": "Seneca",
+    "quote": "Nicht der Starke gewinnt. Der Ausdauernde gewinnt. Fast immer.",
+    "context": "Ausdauer als Strategie."
+  },
+  {
+    "id": 359,
+    "title": "Tag 359: Camus",
+    "category": "Familie",
+    "philosopher": "Camus",
+    "quote": "Die Familie ist das erste Vaterland. Ich laufe — und kehre täglich in mein Vaterland zurück.",
+    "context": "Familie als Heimat."
+  },
+  {
+    "id": 360,
+    "title": "Tag 360: Murakami",
+    "category": "Übergang",
+    "philosopher": "Murakami",
+    "quote": "Ich laufe, weil ich laufe. Nicht weil der Weg schön ist. Nicht weil jemand zuschaut. Weil ich es tue.",
+    "context": "Reine intrinsische Motivation."
+  },
+  {
+    "id": 361,
+    "title": "Tag 361: Viktor Frankl",
+    "category": "Meditativ",
+    "philosopher": "Viktor Frankl",
+    "quote": "Das Leben hat immer Sinn. Auch noch im letzten Moment, auch noch auf dem letzten Kilometer.",
+    "context": "Sinn bis zum Schluss."
+  },
+  {
+    "id": 362,
+    "title": "Tag 362: Nietzsche",
+    "category": "Provokativ",
+    "philosopher": "Nietzsche",
+    "quote": "Das Mittelmäßige lebt von der Mehrheit. Das Außergewöhnliche lebt von sich selbst.",
+    "context": "Außergewöhnlichkeit als Unabhängigkeit."
+  },
+  {
+    "id": 363,
+    "title": "Tag 363: Psalm 23",
+    "category": "Meditativ",
+    "philosopher": "Psalm 23",
+    "quote": "Gutes und Barmherzigkeit werden mir folgen mein Leben lang. Ich laufe langsam genug, dass sie mithalten.",
+    "context": "Gnade im Laufrhythmus — mit Humor."
+  },
+  {
+    "id": 364,
+    "title": "Tag 364: Marc Aurel",
+    "category": "Übergang",
+    "philosopher": "Marc Aurel",
+    "quote": "Dieser Tag kommt nie wieder. Was du heute läufst, läufst du nur heute. Das sollte genug sein.",
+    "context": "Einzigartigkeit des Moments."
+  },
+  {
+    "id": 365,
+    "title": "Tag 365: Ein richtig guter Tag",
+    "category": "Meditativ",
+    "philosopher": "Ein richtig guter Tag",
+    "quote": "Es muss kein perfekter Tag sein. Es muss kein großer Tag sein. Es muss nur ein richtig guter Tag sein. Das reicht.",
+    "context": "Pierres eigene Philosophie als Abschluss."
+  }
+]

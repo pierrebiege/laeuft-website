@@ -451,6 +451,25 @@ export type CalendarDisplayEvent =
   | (VirtualCalendarEvent & { _virtual: true })
 
 // Content Planner
+export type GedankeStatus = 'backlog' | 'planned' | 'in_progress' | 'designed' | 'published'
+
+export interface ContentGedanke {
+  id: number
+  tag_number: number
+  title: string
+  category: string
+  philosopher: string
+  quote: string
+  context: string | null
+  status: GedankeStatus
+  priority: number
+  planned_date: string | null
+  published_date: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type ReelStatus = 'backlog' | 'planned' | 'in_progress' | 'filmed' | 'edited' | 'published'
 
 export interface ContentReel {
