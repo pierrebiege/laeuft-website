@@ -89,7 +89,7 @@ export default function InsightsPage() {
         {/* Header */}
         <div className="text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">Pierre Biege</h1>
-          <p className="text-zinc-400 text-sm mt-0.5">@pierrebiege · Ultrarunner · Content Creator</p>
+          <p className="text-zinc-400 text-sm mt-0.5"><a href="https://instagram.com/pierrebiege" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">@pierrebiege</a> · Ultrarunner · Content Creator</p>
           <p className="text-zinc-600 text-xs mt-0.5">18'200 Follower · 238 Inhalte / 30d</p>
         </div>
 
