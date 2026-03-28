@@ -769,6 +769,7 @@ function GedankenTab({
   expandedId,
   setExpandedId,
   onUpdate,
+  onDelete,
 }: {
   gedanken: ContentGedanke[];
   search: string;
