@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import reelsJson from "@/data/reels-data.json";
 import gedankenJson from "@/data/gedanken-data.json";
+import realTalkJson from "@/data/real-talk-data.json";
 import type { ContentReel, ReelStatus, ContentGedanke, GedankeStatus } from "@/lib/supabase";
 
 const STATUS_CONFIG: Record<ReelStatus, { label: string; color: string; icon: React.ElementType; bg: string }> = {
@@ -117,6 +118,51 @@ export default function ContentPlannerPage() {
       alert("Import fehlgeschlagen: " + (e as Error).message);
     }
     setImporting(false);
+  }
+
+  async function importRealTalk() {
+    setImporting(true);
+    try {
+      const rows = (realTalkJson as Array<Record<string, unknown>>).map((g) => ({
+        tag_number: (g.id as number) + 1000,
+        title: g.title as string,
+        category: g.category as string,
+        philosopher: g.philosopher as string,
+        quote: g.quote as string,
+        context: g.context as string || null,
+        status: "backlog",
+        priority: 10,
+      }));
+
+      const res = await fetch("/api/content-gedanken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(rows),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`${data.imported || rows.length} Real-Talk-Texte importiert!`);
+        fetchGedanken();
+      }
+    } catch (e) {
+      alert("Import fehlgeschlagen: " + (e as Error).message);
+    }
+    setImporting(false);
+  }
+
+  async function deleteGedanke(id: number) {
+    const res = await fetch(`/api/content-gedanken?id=${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setGedanken((prev) => prev.filter((g) => g.id !== id));
+    }
+  }
+
+  async function deleteAllGedanken() {
+    if (!confirm("Alle 365 Gedanken loschen? Das kann nicht ruckgangig gemacht werden.")) return;
+    const res = await fetch("/api/content-gedanken?all=true", { method: "DELETE" });
+    if (res.ok) {
+      setGedanken([]);
+    }
   }
 
   async function updateGedanke(id: number, updates: Partial<ContentGedanke>) {
@@ -258,13 +304,32 @@ export default function ContentPlannerPage() {
             </button>
           )}
           {tab === "gedanken" && gedanken.length === 0 && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={importRealTalk}
+                disabled={importing}
+                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
+              >
+                <BookOpen size={16} />
+                {importing ? "Importiere..." : "9 Real-Talk-Texte importieren"}
+              </button>
+              <button
+                onClick={importGedanken}
+                disabled={importing}
+                className="flex items-center gap-2 px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm text-zinc-500 hover:text-zinc-700 disabled:opacity-50 transition-all"
+              >
+                <DatabaseZap size={14} />
+                365 Kurz-Zitate
+              </button>
+            </div>
+          )}
+          {tab === "gedanken" && gedanken.length > 0 && (
             <button
-              onClick={importGedanken}
-              disabled={importing}
-              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
+              onClick={deleteAllGedanken}
+              className="flex items-center gap-2 px-3 py-2 text-red-600 border border-red-200 dark:border-red-900 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-950 transition-all"
             >
-              <DatabaseZap size={16} />
-              {importing ? "Importiere..." : "365 Gedanken importieren"}
+              <X size={14} />
+              Alle loschen
             </button>
           )}
         </div>
@@ -402,6 +467,7 @@ export default function ContentPlannerPage() {
           expandedId={expandedId}
           setExpandedId={setExpandedId}
           onUpdate={updateGedanke}
+          onDelete={deleteGedanke}
         />
       )}
     </div>
@@ -714,6 +780,7 @@ function GedankenTab({
   expandedId: number | null;
   setExpandedId: (id: number | null) => void;
   onUpdate: (id: number, updates: Partial<ContentGedanke>) => void;
+  onDelete: (id: number) => void;
 }) {
   const filtered = useMemo(() => {
     return gedanken.filter((g) => {
@@ -820,6 +887,7 @@ function GedankenTab({
             expanded={expandedId === g.id}
             onToggle={() => setExpandedId(expandedId === g.id ? null : g.id)}
             onUpdate={onUpdate}
+            onDelete={onDelete}
           />
         ))}
         {filtered.length === 0 && (
@@ -844,11 +912,13 @@ function GedankeCard({
   expanded,
   onToggle,
   onUpdate,
+  onDelete,
 }: {
   gedanke: ContentGedanke;
   expanded: boolean;
   onToggle: () => void;
   onUpdate: (id: number, updates: Partial<ContentGedanke>) => void;
+  onDelete: (id: number) => void;
 }) {
   const conf = GEDANKE_STATUS_CONFIG[gedanke.status];
   const StatusIcon = conf.icon;
@@ -976,6 +1046,14 @@ function GedankeCard({
                   className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white resize-none"
                 />
               </div>
+
+              <button
+                onClick={() => { if (confirm("Diesen Gedanken loschen?")) onDelete(gedanke.id); }}
+                className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 mt-2"
+              >
+                <X size={12} />
+                Loschen
+              </button>
             </div>
           </div>
         </div>

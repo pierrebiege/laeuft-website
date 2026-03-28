@@ -61,6 +61,29 @@ export async function PATCH(request: NextRequest) {
   return NextResponse.json(data)
 }
 
+export async function DELETE(request: NextRequest) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  const deleteAll = searchParams.get('all')
+
+  if (deleteAll === 'true') {
+    const { error } = await supabaseAdmin.from('content_gedanken').delete().neq('id', 0)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ deleted: 'all' })
+  }
+
+  if (!id) {
+    return NextResponse.json({ error: 'ID erforderlich' }, { status: 400 })
+  }
+
+  const { error } = await supabaseAdmin.from('content_gedanken').delete().eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ deleted: id })
+}
+
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request)
   if (authError) return authError
