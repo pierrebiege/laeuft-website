@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  Video,
 } from "lucide-react";
 import { AdminRoleProvider } from "./AdminRoleContext";
 
@@ -47,6 +48,7 @@ export default function AdminShell({
     { href: "/admin/rechnungen", label: "Rechnungen", icon: Receipt, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/kunden", label: "Kunden", icon: Users, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/buchhaltung", label: "Buchhaltung", icon: Calculator, roles: ["admin"] as Role[] },
+    { href: "/admin/content", label: "Content", icon: Video, roles: ["admin"] as Role[] },
     { href: "/admin/instagram", label: "Instagram", icon: BarChart3, roles: ["admin"] as Role[] },
   ];
 

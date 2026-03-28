@@ -449,3 +449,35 @@ export interface VirtualCalendarEvent {
 export type CalendarDisplayEvent =
   | (CalendarEvent & { _virtual: false })
   | (VirtualCalendarEvent & { _virtual: true })
+
+// Content Planner
+export type ReelStatus = 'backlog' | 'planned' | 'in_progress' | 'filmed' | 'edited' | 'published'
+
+export interface ContentReel {
+  id: number
+  reel_number: number
+  title: string
+  category: string
+  duration: string
+  reel_type: string
+  hook_text: string | null
+  storyboard: { time: string; description: string }[]
+  audio_type: string
+  audio_mood: string
+  caption: string | null
+  sponsor: string | null
+  sponsor_details: string | null
+  voiceover_script: string | null
+  needs_voiceover: boolean
+  needs_video_footage: boolean
+  props: string[]
+  month: string
+  season: string
+  status: ReelStatus
+  priority: number
+  planned_date: string | null
+  published_date: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
