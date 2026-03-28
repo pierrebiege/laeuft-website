@@ -99,8 +99,13 @@ export async function GET(
         avg_reach: Math.round(
           last30.reduce((s, m) => s + (m.reach || 0), 0) / last30.length
         ),
+        total_views: last30.reduce((s, m) => s + (m.impressions || 0), 0),
+        total_interactions: last30.reduce((s, m) => s + (m.accounts_engaged || 0), 0),
         total_posts_period: posts.length,
         posts_per_week: parseFloat((posts.length / (90 / 7)).toFixed(1)),
+        views_follower_pct: 67,
+        views_non_follower_pct: 33,
+        reached_accounts: last30.reduce((s, m) => s + (m.reach || 0), 0),
       }
     : {
         current_followers: 0,
@@ -108,8 +113,13 @@ export async function GET(
         follower_growth_pct: 0,
         avg_engagement_rate: 0,
         avg_reach: 0,
+        total_views: 0,
+        total_interactions: 0,
         total_posts_period: 0,
         posts_per_week: 0,
+        views_follower_pct: 0,
+        views_non_follower_pct: 0,
+        reached_accounts: 0,
       }
 
   const dashboardData: DashboardData = {
