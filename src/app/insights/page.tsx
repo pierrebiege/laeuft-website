@@ -87,15 +87,10 @@ export default function InsightsPage() {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5">
-          <div className="w-20 h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 overflow-hidden flex-shrink-0 flex items-center justify-center text-zinc-600">
-            <Users size={32} />
-          </div>
-          <div className="text-center sm:text-left">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">Pierre Biege</h1>
-            <p className="text-zinc-400 text-sm mt-0.5">@pierrebiege · Ultrarunner · Content Creator</p>
-            <p className="text-zinc-600 text-xs mt-0.5">18'200 Follower · 238 Inhalte / 30d</p>
-          </div>
+        <div className="text-center sm:text-left">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">Pierre Biege</h1>
+          <p className="text-zinc-400 text-sm mt-0.5">@pierrebiege · Ultrarunner · Content Creator</p>
+          <p className="text-zinc-600 text-xs mt-0.5">18'200 Follower · 238 Inhalte / 30d</p>
         </div>
 
         {/* Period Selector */}
