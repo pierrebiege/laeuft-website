@@ -69,7 +69,7 @@ export interface DashboardToken {
   created_at: string
 }
 
-export type DateRange = 14 | 30 | 60 | 90
+export type DateRange = 7 | 14 | 30
 export type ContentFilter = 'all' | 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM' | 'REEL'
 
 export interface DashboardData {

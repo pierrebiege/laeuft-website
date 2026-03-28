@@ -43,6 +43,8 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
   }
   const ageData = Array.from(ageMap.entries())
     .map(([range, value]) => ({ range, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 4)
     .sort((a, b) => {
       const order = ['13-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+']
       return order.indexOf(a.range) - order.indexOf(b.range)
@@ -61,16 +63,16 @@ export default function AudienceProfile({ audience }: AudienceProfileProps) {
     { name: 'Weiblich', value: femaleTotal, color: GENDER_COLORS.F },
   ]
 
-  // Top 6 countries
+  // Top 4 countries
   const countryData = [...audience.country]
     .sort((a, b) => b.value - a.value)
-    .slice(0, 6)
+    .slice(0, 4)
   const countryTotal = audience.country.reduce((s, c) => s + c.value, 0)
 
-  // Top 5 cities
+  // Top 4 cities
   const cityData = [...audience.city]
     .sort((a, b) => b.value - a.value)
-    .slice(0, 5)
+    .slice(0, 4)
 
   return (
     <section>

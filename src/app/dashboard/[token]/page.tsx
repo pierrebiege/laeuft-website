@@ -17,7 +17,7 @@ const useMock = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true'
 export default function DashboardPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params)
   const [data, setData] = useState<DashboardData | null>(null)
-  const [dateRange, setDateRange] = useState<DateRange>(30)
+  const [dateRange, setDateRange] = useState<DateRange>(7)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
