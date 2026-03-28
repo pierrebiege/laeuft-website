@@ -21,7 +21,9 @@ import {
   ArrowUp,
   ArrowDown,
   Eye,
+  DatabaseZap,
 } from "lucide-react";
+import reelsJson from "@/data/reels-data.json";
 import type { ContentReel, ReelStatus } from "@/lib/supabase";
 
 const STATUS_CONFIG: Record<ReelStatus, { label: string; color: string; icon: React.ElementType; bg: string }> = {
@@ -44,6 +46,7 @@ const STATUS_ORDER: ReelStatus[] = ["backlog", "planned", "in_progress", "filmed
 export default function ContentPlannerPage() {
   const [reels, setReels] = useState<ContentReel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [importing, setImporting] = useState(false);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -74,6 +77,55 @@ export default function ContentPlannerPage() {
       const updated = await res.json();
       setReels((prev) => prev.map((r) => (r.id === id ? updated : r)));
     }
+  }
+
+  async function importReels() {
+    setImporting(true);
+    try {
+      // Transform JSON to DB format
+      const rows = (reelsJson as Array<Record<string, unknown>>).map((r: Record<string, unknown>) => ({
+        reel_number: r.id as number,
+        title: r.title as string,
+        category: r.category as string || "Education",
+        duration: r.duration as string || "15-30s",
+        reel_type: r.type as string || "Music+Text",
+        hook_text: r.hook_text as string || "",
+        storyboard: ((r.storyboard as string[]) || []).map((s: string, i: number) => ({ time: `Szene ${i + 1}`, description: s })),
+        audio_type: r.audio_type as string || "Trending",
+        audio_mood: r.audio_mood as string || "",
+        caption: r.caption as string || "",
+        sponsor: r.sponsor as string || null,
+        sponsor_details: r.sponsor_details as string || null,
+        needs_voiceover: r.needs_voiceover as boolean || false,
+        needs_video_footage: true,
+        props: r.needs_props as string[] || [],
+        month: r.month as string || "",
+        season: r.season as string || "",
+        status: "backlog",
+        priority: 0,
+      }));
+
+      // Send in batches of 50
+      let imported = 0;
+      for (let i = 0; i < rows.length; i += 50) {
+        const batch = rows.slice(i, i + 50);
+        const res = await fetch("/api/content-reels", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(batch),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          imported += data.imported || batch.length;
+        }
+      }
+
+      alert(`${imported} Reels importiert!`);
+      fetchReels();
+    } catch (e) {
+      alert("Import fehlgeschlagen: " + (e as Error).message);
+    }
+    setImporting(false);
   }
 
   const filtered = useMemo(() => {
@@ -111,13 +163,25 @@ export default function ContentPlannerPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
-          Content Planner
-        </h1>
-        <p className="text-zinc-500 text-sm">
-          365 Reel-Ideen fur @pierrebiege -- plane, filme, publiziere.
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
+            Content Planner
+          </h1>
+          <p className="text-zinc-500 text-sm">
+            365 Reel-Ideen fur @pierrebiege -- plane, filme, publiziere.
+          </p>
+        </div>
+        {reels.length === 0 && (
+          <button
+            onClick={importReels}
+            disabled={importing}
+            className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
+          >
+            <DatabaseZap size={16} />
+            {importing ? "Importiere..." : "365 Reels importieren"}
+          </button>
+        )}
       </div>
 
       {/* Stats Bar */}
