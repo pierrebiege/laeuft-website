@@ -56,7 +56,7 @@ export default function TrainingPlanPage() {
 
       const fullPlan = planData as FullPlan
       fullPlan.weeks.sort((a, b) => a.sort_order - b.sort_order)
-      fullPlan.weeks.forEach((w) => w.sessions.sort((a, b) => a.sort_order - b.sort_order))
+      fullPlan.weeks.forEach((w) => w.sessions?.sort((a, b) => a.sort_order - b.sort_order))
       setPlan(fullPlan)
 
       const { data: compData } = await supabase
