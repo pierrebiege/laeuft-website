@@ -311,7 +311,7 @@ export default function ContentPlannerPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
               >
                 <BookOpen size={16} />
-                {importing ? "Importiere..." : "9 Real-Talk-Texte importieren"}
+                {importing ? "Importiere..." : `${(realTalkJson as unknown[]).length} Real-Talk-Texte importieren`}
               </button>
               <button
                 onClick={importGedanken}
