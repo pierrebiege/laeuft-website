@@ -365,7 +365,7 @@ export default function TrainingPlanEditorPage() {
       {/* Month view: all weeks stacked */}
       <div className="space-y-1">
         {/* Day header row */}
-        <div className="grid grid-cols-[140px_repeat(7,1fr)] gap-1">
+        <div className="grid grid-cols-[140px_repeat(7,minmax(0,1fr))] gap-1">
           <div />
           {DAY_LABELS.map((day, i) => (
             <div key={i} className="text-center text-xs font-semibold text-zinc-500 dark:text-zinc-400 py-1">{day}</div>
@@ -374,7 +374,7 @@ export default function TrainingPlanEditorPage() {
 
         {/* Week rows */}
         {weeks.map((week, weekIdx) => (
-          <div key={week.id} className="grid grid-cols-[140px_repeat(7,1fr)] gap-1 group">
+          <div key={week.id} className="grid grid-cols-[140px_repeat(7,minmax(0,1fr))] gap-1 group">
             {/* Week label */}
             <div className="flex flex-col justify-start pt-1 pr-2">
               {editingWeekLabel === week.id ? (
@@ -435,9 +435,9 @@ export default function TrainingPlanEditorPage() {
                       return (
                         <div key={session.id} draggable onDragStart={e => handleDragStart(e, session, week.id)}
                           onClick={() => openEditSession(session, week.id)}
-                          className={`px-1.5 py-1 rounded border-l-2 cursor-pointer hover:shadow-sm transition-shadow text-[11px] ${tc.bg} ${tc.border}`}>
-                          <div className="flex items-center gap-1">
-                            <Icon size={10} className={tc.text} />
+                          className={`px-1.5 py-1 rounded border-l-2 cursor-pointer hover:shadow-sm transition-shadow text-[11px] overflow-hidden ${tc.bg} ${tc.border}`}>
+                          <div className="flex items-center gap-1 min-w-0">
+                            <Icon size={10} className={`${tc.text} shrink-0`} />
                             <span className={`font-medium truncate ${tc.text}`}>{session.title}</span>
                           </div>
                           {session.duration_minutes && (
@@ -460,7 +460,7 @@ export default function TrainingPlanEditorPage() {
         ))}
 
         {/* Add week row */}
-        <div className="grid grid-cols-[140px_repeat(7,1fr)] gap-1">
+        <div className="grid grid-cols-[140px_repeat(7,minmax(0,1fr))] gap-1">
           <button onClick={addWeek}
             className="flex items-center gap-1 px-2 py-2 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
             <Plus size={14} />
