@@ -12,7 +12,7 @@ import {
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
-import { ChevronLeft, ChevronRight, Check, Flame, Dumbbell, Wind, Moon, Clock, Zap, Target } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Check, Footprints, Dumbbell, Wind, Moon, Clock } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
   client: { id: string; name: string; company: string | null }
@@ -22,7 +22,7 @@ type FullPlan = TrainingPlan & {
 type CompletionMap = Record<string, TrainingCompletion>
 
 const TYPE_ICONS: Record<SessionType, React.ElementType> = {
-  lauf: Flame,
+  lauf: Footprints,
   kraft: Dumbbell,
   mobility: Wind,
   ruhe: Moon,

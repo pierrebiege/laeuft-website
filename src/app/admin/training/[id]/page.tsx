@@ -12,7 +12,7 @@ import {
   X,
   GripVertical,
   Clock,
-  Flame,
+  Footprints,
   Dumbbell,
   Wind,
   Moon,
@@ -41,7 +41,7 @@ type PlanWithRelations = TrainingPlan & {
 };
 
 const SESSION_TYPE_ICONS: Record<SessionType, React.ElementType> = {
-  lauf: Flame,
+  lauf: Footprints,
   kraft: Dumbbell,
   mobility: Wind,
   ruhe: Moon,
@@ -112,9 +112,13 @@ export default function TrainingPlanEditorPage() {
 
   const weeks = plan?.weeks?.sort((a, b) => a.sort_order - b.sort_order) || [];
 
+  const TYPE_ORDER: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 };
+
   function sessionsForDayInWeek(weekId: string, day: number) {
     const week = weeks.find(w => w.id === weekId);
-    return (week?.sessions || []).filter(s => s.day_of_week === day).sort((a, b) => a.sort_order - b.sort_order);
+    return (week?.sessions || [])
+      .filter(s => s.day_of_week === day)
+      .sort((a, b) => (TYPE_ORDER[a.session_type] ?? 9) - (TYPE_ORDER[b.session_type] ?? 9) || a.sort_order - b.sort_order);
   }
 
   // --- Title editing ---
@@ -471,25 +475,33 @@ export default function TrainingPlanEditorPage() {
                     </span>
                   </div>
 
-                  {/* Sessions */}
-                  <div className="space-y-1">
-                    {daySessions.map(session => {
-                      const tc = SESSION_TYPE_COLORS[session.session_type];
-                      const Icon = SESSION_TYPE_ICONS[session.session_type];
-                      return (
-                        <div key={session.id} draggable onDragStart={e => handleDragStart(e, session, week.id)}
-                          onClick={() => openEditSession(session, week.id)}
-                          className={`px-1.5 py-1 rounded border-l-2 cursor-pointer hover:shadow-sm transition-shadow text-[11px] overflow-hidden ${tc.bg} ${tc.border}`}>
-                          <div className="flex items-center gap-1 min-w-0">
-                            <Icon size={10} className={`${tc.text} shrink-0`} />
-                            <span className={`font-medium truncate ${tc.text}`}>{session.title}</span>
+                  {/* Sessions grouped by type */}
+                  <div className="space-y-0.5">
+                    {(() => {
+                      let lastType = "";
+                      return daySessions.map(session => {
+                        const tc = SESSION_TYPE_COLORS[session.session_type];
+                        const Icon = SESSION_TYPE_ICONS[session.session_type];
+                        const showDivider = lastType !== "" && lastType !== session.session_type;
+                        lastType = session.session_type;
+                        return (
+                          <div key={session.id}>
+                            {showDivider && <div className="border-t border-dashed border-zinc-200 dark:border-zinc-700 my-1" />}
+                            <div draggable onDragStart={e => handleDragStart(e, session, week.id)}
+                              onClick={() => openEditSession(session, week.id)}
+                              className={`px-1.5 py-1 rounded border-l-2 cursor-pointer hover:shadow-sm transition-shadow text-[11px] overflow-hidden ${tc.bg} ${tc.border}`}>
+                              <div className="flex items-center gap-1 min-w-0">
+                                <Icon size={10} className={`${tc.text} shrink-0`} />
+                                <span className={`font-medium truncate ${tc.text}`}>{session.title}</span>
+                              </div>
+                              {session.duration_minutes && (
+                                <span className="text-[9px] text-zinc-400">{session.duration_minutes}min</span>
+                              )}
+                            </div>
                           </div>
-                          {session.duration_minutes && (
-                            <span className="text-[9px] text-zinc-400">{session.duration_minutes}min</span>
-                          )}
-                        </div>
-                      );
-                    })}
+                        );
+                      });
+                    })()}
                   </div>
 
                   {/* Add button */}
