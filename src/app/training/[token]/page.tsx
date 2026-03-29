@@ -149,7 +149,7 @@ export default function TrainingPlanPage() {
   if (!currentWeek) return null
 
   // --- Stats ---
-  const allSessions = weeks.flatMap(w => w.sessions)
+  const allSessions = weeks.flatMap(w => w.sessions || [])
   const totalAllSessions = allSessions.filter(s => s.session_type !== 'ruhe').length
   const completedAll = allSessions.filter(s => s.session_type !== 'ruhe' && completions[s.id]).length
   const totalMinutes = allSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
