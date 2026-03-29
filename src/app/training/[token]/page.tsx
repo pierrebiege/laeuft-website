@@ -174,7 +174,10 @@ export default function TrainingPlanPage() {
   // Day sessions
   const sessionsByDay: Record<number, TrainingSession[]> = {}
   for (let d = 0; d < 7; d++) {
-    sessionsByDay[d] = currentWeek.sessions.filter(s => s.day_of_week === d)
+    const typeOrder: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
+    sessionsByDay[d] = (currentWeek.sessions || [])
+      .filter(s => s.day_of_week === d)
+      .sort((a, b) => (typeOrder[a.session_type] ?? 9) - (typeOrder[b.session_type] ?? 9))
   }
 
   function getMonday(date: Date) {
@@ -225,24 +228,15 @@ export default function TrainingPlanPage() {
               </div>
             )}
 
-            {/* Overall stats grid */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-zinc-900 dark:text-white">{weeks.length}</div>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Wochen</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-zinc-900 dark:text-white">{totalAllSessions}</div>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Sessions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-zinc-900 dark:text-white">{Math.round(totalMinutes / 60)}h</div>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Gesamt</div>
-              </div>
+            {/* Compact stats row */}
+            <div className="flex items-center gap-4 text-xs text-zinc-500 mb-3">
+              <span>{weeks.length} Wochen</span>
+              <span>{totalAllSessions} Sessions</span>
+              <span>{Math.round(totalMinutes / 60)}h gesamt</span>
             </div>
 
             {/* Overall progress */}
-            <div className="mt-4">
+            <div className="mb-3">
               <div className="flex justify-between text-[10px] text-zinc-500 mb-1">
                 <span>Gesamtfortschritt</span>
                 <span>{completedAll}/{totalAllSessions} ({totalAllSessions > 0 ? Math.round(completedAll / totalAllSessions * 100) : 0}%)</span>
@@ -253,7 +247,7 @@ export default function TrainingPlanPage() {
             </div>
 
             {/* Type breakdown */}
-            <div className="flex gap-3 mt-3">
+            <div className="flex flex-wrap gap-2">
               {(Object.entries(typeCounts) as [SessionType, number][]).map(([type, count]) => {
                 const colors = SESSION_TYPE_COLORS[type]
                 const Icon = TYPE_ICONS[type]

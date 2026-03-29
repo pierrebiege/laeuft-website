@@ -14,6 +14,7 @@ import {
   Clock,
   Footprints,
   Dumbbell,
+  Sparkles,
   Wind,
   Moon,
   Check,
@@ -177,6 +178,21 @@ export default function TrainingPlanEditorPage() {
       body: JSON.stringify({ action: "duplicate", week_id: weekId }),
     });
     if (res.ok) await loadPlan();
+  }
+
+  async function generateWeekSummary(weekId: string) {
+    const res = await fetch(`/api/training/${planId}/generate-summary`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ week_id: weekId }),
+    });
+    if (res.ok) await loadPlan();
+    else alert("Fehler beim Generieren");
+  }
+
+  async function generateAllSummaries() {
+    for (const week of weeks) {
+      await generateWeekSummary(week.id);
+    }
   }
 
   async function deleteWeek(weekId: string) {
@@ -377,7 +393,13 @@ export default function TrainingPlanEditorPage() {
 
       {/* Intro text */}
       <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
-        <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Personliche Nachricht an den Kunden</label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Personliche Nachricht an den Kunden</label>
+          <button onClick={generateAllSummaries}
+            className="flex items-center gap-1 text-[10px] text-amber-600 hover:text-amber-700 font-medium">
+            <Sparkles size={12} />AI Wochen-Summaries generieren
+          </button>
+        </div>
         <textarea
           defaultValue={plan.intro_text || ""}
           onBlur={async (e) => {
@@ -440,6 +462,9 @@ export default function TrainingPlanEditorPage() {
                 className="mt-1 w-full text-[10px] text-zinc-500 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-500 outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
               />
               <div className="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => generateWeekSummary(week.id)} title="AI Summary generieren" className="text-[10px] text-amber-500 hover:text-amber-700">
+                  <Sparkles size={10} />
+                </button>
                 <button onClick={() => duplicateWeek(week.id)} title="Woche duplizieren" className="text-[10px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
                   <Copy size={10} />
                 </button>
