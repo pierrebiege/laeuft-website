@@ -446,8 +446,7 @@ export default function TrainingPlanEditorPage() {
               <span className="text-[10px] text-zinc-400 mt-0.5">
                 {getDayDate(weekIdx, 0).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })} – {getDayDate(weekIdx, 6).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
               </span>
-              <input
-                type="text"
+              <textarea
                 defaultValue={week.summary || ""}
                 onBlur={async (e) => {
                   if (e.target.value !== (week.summary || "")) {
@@ -458,8 +457,9 @@ export default function TrainingPlanEditorPage() {
                     await loadPlan();
                   }
                 }}
-                placeholder="Wochen-Fokus..."
-                className="mt-1 w-full text-[10px] text-zinc-500 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-500 outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+                placeholder="Wochen-Summary (✨ oder manuell)..."
+                rows={week.summary ? 3 : 1}
+                className="mt-1 w-full text-[10px] text-zinc-600 dark:text-zinc-400 bg-transparent border border-transparent rounded hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-400 focus:bg-zinc-50 dark:focus:bg-zinc-800/50 outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700 resize-none px-1 py-0.5"
               />
               <div className="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => generateWeekSummary(week.id)} title="AI Summary generieren" className="text-[10px] text-amber-500 hover:text-amber-700">
