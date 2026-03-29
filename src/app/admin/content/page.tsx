@@ -27,7 +27,6 @@ import {
   Palette,
 } from "lucide-react";
 import reelsJson from "@/data/reels-data.json";
-import gedankenJson from "@/data/gedanken-data.json";
 import realTalkJson from "@/data/real-talk-data.json";
 import type { ContentReel, ReelStatus, ContentGedanke, GedankeStatus } from "@/lib/supabase";
 
@@ -82,42 +81,6 @@ export default function ContentPlannerPage() {
       const data = await res.json();
       setGedanken(data);
     }
-  }
-
-  async function importGedanken() {
-    setImporting(true);
-    try {
-      const rows = (gedankenJson as Array<Record<string, unknown>>).map((g) => ({
-        tag_number: g.id as number,
-        title: g.title as string,
-        category: g.category as string,
-        philosopher: g.philosopher as string,
-        quote: g.quote as string,
-        context: g.context as string || null,
-        status: "backlog",
-        priority: 0,
-      }));
-
-      let imported = 0;
-      for (let i = 0; i < rows.length; i += 50) {
-        const batch = rows.slice(i, i + 50);
-        const res = await fetch("/api/content-gedanken", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(batch),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          imported += data.imported || batch.length;
-        }
-      }
-
-      alert(`${imported} Gedanken importiert!`);
-      fetchGedanken();
-    } catch (e) {
-      alert("Import fehlgeschlagen: " + (e as Error).message);
-    }
-    setImporting(false);
   }
 
   async function importRealTalk() {
@@ -304,24 +267,14 @@ export default function ContentPlannerPage() {
             </button>
           )}
           {tab === "gedanken" && gedanken.length === 0 && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={importRealTalk}
-                disabled={importing}
-                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
-              >
-                <BookOpen size={16} />
-                {importing ? "Importiere..." : `${(realTalkJson as unknown[]).length} Real-Talk-Texte importieren`}
-              </button>
-              <button
-                onClick={importGedanken}
-                disabled={importing}
-                className="flex items-center gap-2 px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm text-zinc-500 hover:text-zinc-700 disabled:opacity-50 transition-all"
-              >
-                <DatabaseZap size={14} />
-                365 Kurz-Zitate
-              </button>
-            </div>
+            <button
+              onClick={importRealTalk}
+              disabled={importing}
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 transition-all"
+            >
+              <BookOpen size={16} />
+              {importing ? "Importiere..." : `${(realTalkJson as unknown[]).length} Real-Talk-Texte importieren`}
+            </button>
           )}
           {tab === "gedanken" && gedanken.length > 0 && (
             <button
