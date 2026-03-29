@@ -228,10 +228,20 @@ export default function TrainingPlanPage() {
     (s) => s.session_type !== 'ruhe' && completions[s.id]
   ).length
 
+  // Get Monday of the week containing start_date
+  function getMonday(date: Date) {
+    const d = new Date(date)
+    const day = d.getDay() // 0=Sun, 1=Mon, ...
+    const diff = day === 0 ? 1 : day === 1 ? 0 : 8 - day
+    d.setDate(d.getDate() + diff)
+    return d
+  }
+
   // Calculate day date
   function getDayDate(dayOfWeek: number): string {
-    const dayDate = new Date(plan!.start_date)
-    dayDate.setDate(dayDate.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
+    const monday = getMonday(new Date(plan!.start_date + 'T00:00:00'))
+    const dayDate = new Date(monday)
+    dayDate.setDate(monday.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
     return dayDate.toLocaleDateString('de-CH', {
       weekday: 'long',
       day: 'numeric',
@@ -241,8 +251,9 @@ export default function TrainingPlanPage() {
 
   // Check if a day is today
   function isToday(dayOfWeek: number): boolean {
-    const dayDate = new Date(plan!.start_date)
-    dayDate.setDate(dayDate.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
+    const monday = getMonday(new Date(plan!.start_date + 'T00:00:00'))
+    const dayDate = new Date(monday)
+    dayDate.setDate(monday.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
     const today = new Date()
     return (
       dayDate.getFullYear() === today.getFullYear() &&
