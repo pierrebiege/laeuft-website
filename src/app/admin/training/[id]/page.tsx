@@ -325,10 +325,19 @@ export default function TrainingPlanEditorPage() {
   const status = statusConfig[plan.status] || statusConfig.draft;
 
   // Calculate dates for each week/day
+  function getMonday(date: Date) {
+    const d = new Date(date);
+    const day = d.getDay(); // 0=Sun, 1=Mon, ...
+    const diff = day === 0 ? 1 : day === 1 ? 0 : 8 - day; // next Monday if not Mon
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
   function getDayDate(weekIndex: number, dayOfWeek: number) {
-    const start = new Date(plan!.start_date);
-    const d = new Date(start);
-    d.setDate(start.getDate() + weekIndex * 7 + dayOfWeek);
+    const start = new Date(plan!.start_date + "T00:00:00");
+    const monday = getMonday(start);
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + weekIndex * 7 + dayOfWeek);
     return d;
   }
 
