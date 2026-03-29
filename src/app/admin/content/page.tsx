@@ -87,7 +87,7 @@ export default function ContentPlannerPage() {
     setImporting(true);
     try {
       const rows = (realTalkJson as Array<Record<string, unknown>>).map((g) => ({
-        tag_number: (g.id as number) + 1000,
+        tag_number: g.tag_number as number,
         title: g.title as string,
         category: g.category as string,
         philosopher: g.philosopher as string,
@@ -97,17 +97,30 @@ export default function ContentPlannerPage() {
         priority: 10,
       }));
 
-      const res = await fetch("/api/content-gedanken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(rows),
-      });
-      if (res.ok) {
+      // Send in batches of 20 (large quote texts)
+      let totalImported = 0;
+      for (let i = 0; i < rows.length; i += 20) {
+        const batch = rows.slice(i, i + 20);
+        const res = await fetch("/api/content-gedanken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(batch),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Import batch error:", err);
+          alert(`Fehler bei Batch ${i / 20 + 1}: ${err.error}`);
+          setImporting(false);
+          return;
+        }
         const data = await res.json();
-        alert(`${data.imported || rows.length} Real-Talk-Texte importiert!`);
-        fetchGedanken();
+        totalImported += data.imported || batch.length;
       }
+
+      alert(`${totalImported} Real-Talk-Texte importiert!`);
+      await fetchGedanken();
     } catch (e) {
+      console.error("Import error:", e);
       alert("Import fehlgeschlagen: " + (e as Error).message);
     }
     setImporting(false);
