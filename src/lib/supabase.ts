@@ -500,3 +500,77 @@ export interface ContentReel {
   created_at: string
   updated_at: string
 }
+
+// Training Planner
+export type TrainingPlanStatus = 'draft' | 'sent' | 'active' | 'archived'
+export type SessionType = 'lauf' | 'kraft' | 'mobility' | 'ruhe'
+
+export const SESSION_SUBTYPES: Record<SessionType, string[]> = {
+  lauf: ['Zone 1-2', 'Intervall', 'Tempo', 'Longrun', 'Recovery', 'Fahrtspiel'],
+  kraft: ['Beine', 'Waden', 'Core/Stabi', 'Oberkörper', 'Ganzkörper'],
+  mobility: ['Dehnen', 'Yoga', 'Foam Rolling'],
+  ruhe: ['Aktive Erholung', 'Ruhetag'],
+}
+
+export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
+  lauf: 'Lauf',
+  kraft: 'Kraft',
+  mobility: 'Mobility',
+  ruhe: 'Ruhe',
+}
+
+export const SESSION_TYPE_COLORS: Record<SessionType, { bg: string; text: string; border: string }> = {
+  lauf: { bg: 'bg-blue-50 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800' },
+  kraft: { bg: 'bg-orange-50 dark:bg-orange-950', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-800' },
+  mobility: { bg: 'bg-green-50 dark:bg-green-950', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800' },
+  ruhe: { bg: 'bg-zinc-50 dark:bg-zinc-800', text: 'text-zinc-500 dark:text-zinc-400', border: 'border-zinc-200 dark:border-zinc-700' },
+}
+
+export const DAY_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
+
+export interface TrainingPlan {
+  id: string
+  client_id: string
+  title: string
+  status: TrainingPlanStatus
+  start_date: string
+  unique_token: string
+  sent_at: string | null
+  created_at: string
+  updated_at: string
+  client?: Client
+  weeks?: TrainingWeek[]
+}
+
+export interface TrainingWeek {
+  id: string
+  plan_id: string
+  week_number: number
+  label: string | null
+  sort_order: number
+  created_at: string
+  sessions?: TrainingSession[]
+}
+
+export interface TrainingSession {
+  id: string
+  week_id: string
+  day_of_week: number
+  session_type: SessionType
+  session_subtype: string
+  title: string
+  duration_minutes: number | null
+  description: string | null
+  intensity: number | null
+  sort_order: number
+  created_at: string
+  completion?: TrainingCompletion | null
+}
+
+export interface TrainingCompletion {
+  id: string
+  session_id: string
+  plan_token: string
+  completed_at: string
+  feedback: string | null
+}
