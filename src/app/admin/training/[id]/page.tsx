@@ -93,6 +93,8 @@ export default function TrainingPlanEditorPage() {
   const [saving, setSaving] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
+  const [editingSummaryWeekId, setEditingSummaryWeekId] = useState<string | null>(null);
+  const [summaryValue, setSummaryValue] = useState("");
   const [titleValue, setTitleValue] = useState("");
   const [dragOverTarget, setDragOverTarget] = useState<string | null>(null);
   const [editingWeekLabel, setEditingWeekLabel] = useState<string | null>(null);
@@ -180,13 +182,18 @@ export default function TrainingPlanEditorPage() {
     if (res.ok) await loadPlan();
   }
 
-  async function generateWeekSummary(weekId: string) {
+  async function generateWeekSummary(weekId: string): Promise<string | null> {
     const res = await fetch(`/api/training/${planId}/generate-summary`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ week_id: weekId }),
     });
-    if (res.ok) await loadPlan();
-    else alert("Fehler beim Generieren");
+    if (res.ok) {
+      const data = await res.json();
+      await loadPlan();
+      return data.summary || null;
+    }
+    alert("Fehler beim Generieren");
+    return null;
   }
 
   async function generateAllSummaries() {
@@ -446,21 +453,17 @@ export default function TrainingPlanEditorPage() {
               <span className="text-[10px] text-zinc-400 mt-0.5">
                 {getDayDate(weekIdx, 0).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })} – {getDayDate(weekIdx, 6).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
               </span>
-              <textarea
-                defaultValue={week.summary || ""}
-                onBlur={async (e) => {
-                  if (e.target.value !== (week.summary || "")) {
-                    await fetch(`/api/training/${planId}/weeks`, {
-                      method: "POST", headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ action: "update_summary", week_id: week.id, summary: e.target.value || null }),
-                    });
-                    await loadPlan();
-                  }
-                }}
-                placeholder="Wochen-Summary (✨ oder manuell)..."
-                rows={week.summary ? 3 : 1}
-                className="mt-1 w-full text-[10px] text-zinc-600 dark:text-zinc-400 bg-transparent border border-transparent rounded hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-400 focus:bg-zinc-50 dark:focus:bg-zinc-800/50 outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700 resize-none px-1 py-0.5"
-              />
+              {week.summary ? (
+                <button onClick={() => { setEditingSummaryWeekId(week.id); setSummaryValue(week.summary || ""); }}
+                  className="mt-1 text-[10px] text-zinc-500 text-left line-clamp-2 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer">
+                  {week.summary}
+                </button>
+              ) : (
+                <button onClick={() => { setEditingSummaryWeekId(week.id); setSummaryValue(""); }}
+                  className="mt-1 text-[10px] text-zinc-300 dark:text-zinc-700 hover:text-zinc-500 cursor-pointer italic">
+                  + Summary
+                </button>
+              )}
               <div className="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => generateWeekSummary(week.id)} title="AI Summary generieren" className="text-[10px] text-amber-500 hover:text-amber-700">
                   <Sparkles size={10} />
@@ -549,6 +552,61 @@ export default function TrainingPlanEditorPage() {
           </button>
         </div>
       </div>
+
+      {/* Summary Edit Popup */}
+      {editingSummaryWeekId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setEditingSummaryWeekId(null)} />
+          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl w-full max-w-md mx-4 p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+                Wochen-Summary bearbeiten
+              </h3>
+              <button onClick={() => setEditingSummaryWeekId(null)} className="p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded">
+                <X size={16} />
+              </button>
+            </div>
+            <textarea
+              value={summaryValue}
+              onChange={(e) => setSummaryValue(e.target.value)}
+              rows={5}
+              autoFocus
+              placeholder="Motivierende Einfuhrung fur diese Woche..."
+              className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white resize-none text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400"
+            />
+            <div className="flex items-center justify-between mt-3">
+              <button
+                onClick={async () => {
+                  const summary = await generateWeekSummary(editingSummaryWeekId);
+                  if (summary) setSummaryValue(summary);
+                }}
+                className="flex items-center gap-1 text-xs text-amber-600 hover:text-amber-700 font-medium"
+              >
+                <Sparkles size={14} />AI generieren
+              </button>
+              <div className="flex gap-2">
+                <button onClick={() => setEditingSummaryWeekId(null)}
+                  className="px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-700 rounded-lg">
+                  Abbrechen
+                </button>
+                <button
+                  onClick={async () => {
+                    await fetch(`/api/training/${planId}/weeks`, {
+                      method: "POST", headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ action: "update_summary", week_id: editingSummaryWeekId, summary: summaryValue || null }),
+                    });
+                    await loadPlan();
+                    setEditingSummaryWeekId(null);
+                  }}
+                  className="px-4 py-1.5 text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100"
+                >
+                  Speichern
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Session Modal (Slide-in from right) */}
       {showModal && (
