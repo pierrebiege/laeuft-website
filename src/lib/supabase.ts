@@ -535,6 +535,7 @@ export interface TrainingPlan {
   status: TrainingPlanStatus
   start_date: string
   unique_token: string
+  intro_text: string | null
   sent_at: string | null
   created_at: string
   updated_at: string
@@ -547,6 +548,7 @@ export interface TrainingWeek {
   plan_id: string
   week_number: number
   label: string | null
+  summary: string | null
   sort_order: number
   created_at: string
   sessions?: TrainingSession[]

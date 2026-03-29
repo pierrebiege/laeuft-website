@@ -12,9 +12,25 @@ export async function POST(
   const { id: plan_id } = await params
   const body = await request.json()
 
-  // Duplicate week: copy all sessions from source week
+  // Duplicate week
   if (body.action === 'duplicate' && body.week_id) {
     return await duplicateWeek(plan_id, body.week_id)
+  }
+
+  // Update label
+  if (body.action === 'update_label' && body.week_id) {
+    const { data, error } = await supabaseAdmin
+      .from('training_weeks').update({ label: body.label }).eq('id', body.week_id).select().single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(data)
+  }
+
+  // Update summary
+  if (body.action === 'update_summary' && body.week_id) {
+    const { data, error } = await supabaseAdmin
+      .from('training_weeks').update({ summary: body.summary }).eq('id', body.week_id).select().single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(data)
   }
 
   // Add new week

@@ -371,6 +371,26 @@ export default function TrainingPlanEditorPage() {
         </div>
       </div>
 
+      {/* Intro text */}
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+        <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Personliche Nachricht an den Kunden</label>
+        <textarea
+          defaultValue={plan.intro_text || ""}
+          onBlur={async (e) => {
+            if (e.target.value !== (plan.intro_text || "")) {
+              await fetch(`/api/training/${planId}`, {
+                method: "PATCH", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ intro_text: e.target.value || null }),
+              });
+              setPlan(prev => prev ? { ...prev, intro_text: e.target.value || null } : prev);
+            }
+          }}
+          rows={2}
+          placeholder="z.B. Hey Lea, hier ist dein Plan fur die nachsten Wochen. Fokus liegt auf Wadenstabilitat und Mobility..."
+          className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white resize-none text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400"
+        />
+      </div>
+
       {/* Month view: all weeks stacked */}
       <div className="space-y-1">
         {/* Day header row */}
@@ -400,6 +420,21 @@ export default function TrainingPlanEditorPage() {
               <span className="text-[10px] text-zinc-400 mt-0.5">
                 {getDayDate(weekIdx, 0).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })} – {getDayDate(weekIdx, 6).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
               </span>
+              <input
+                type="text"
+                defaultValue={week.summary || ""}
+                onBlur={async (e) => {
+                  if (e.target.value !== (week.summary || "")) {
+                    await fetch(`/api/training/${planId}/weeks`, {
+                      method: "POST", headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ action: "update_summary", week_id: week.id, summary: e.target.value || null }),
+                    });
+                    await loadPlan();
+                  }
+                }}
+                placeholder="Wochen-Fokus..."
+                className="mt-1 w-full text-[10px] text-zinc-500 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 focus:border-zinc-500 outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+              />
               <div className="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => duplicateWeek(week.id)} title="Woche duplizieren" className="text-[10px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
                   <Copy size={10} />
