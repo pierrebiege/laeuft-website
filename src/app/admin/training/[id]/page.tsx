@@ -234,6 +234,44 @@ export default function TrainingPlanEditorPage() {
     setSaving(false);
   }
 
+  async function duplicateSession() {
+    if (!editingSession || !modalWeekId) return;
+    setSaving(true);
+    await fetch(`/api/training/${planId}/sessions`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        week_id: modalWeekId,
+        day_of_week: modalDayOfWeek,
+        session_type: editingSession.session_type,
+        session_subtype: editingSession.session_subtype,
+        title: editingSession.title,
+        duration_minutes: editingSession.duration_minutes,
+        intensity: editingSession.intensity,
+        description: editingSession.description,
+      }),
+    });
+    setShowModal(false);
+    await loadPlan();
+    setSaving(false);
+  }
+
+  async function duplicateSessionToDay(session: TrainingSession, sourceWeekId: string, targetWeekId: string, targetDay: number) {
+    await fetch(`/api/training/${planId}/sessions`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        week_id: targetWeekId,
+        day_of_week: targetDay,
+        session_type: session.session_type,
+        session_subtype: session.session_subtype,
+        title: session.title,
+        duration_minutes: session.duration_minutes,
+        intensity: session.intensity,
+        description: session.description,
+      }),
+    });
+    await loadPlan();
+  }
+
   async function deleteSession() {
     if (!editingSession || !confirm("Session loschen?")) return;
     setSaving(true);
@@ -262,12 +300,23 @@ export default function TrainingPlanEditorPage() {
     e.preventDefault();
     setDragOverTarget(null);
     const sessionId = e.dataTransfer.getData("sessionId");
+    const sourceWeekId = e.dataTransfer.getData("sourceWeekId");
     if (!sessionId) return;
-    await fetch(`/api/training/${planId}/sessions`, {
-      method: "PATCH", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: sessionId, day_of_week: day, week_id: weekId }),
-    });
-    await loadPlan();
+
+    // Alt/Option key = duplicate, normal drag = move
+    if (e.altKey) {
+      const sourceWeek = weeks.find(w => w.id === sourceWeekId);
+      const session = sourceWeek?.sessions?.find(s => s.id === sessionId);
+      if (session) {
+        await duplicateSessionToDay(session, sourceWeekId, weekId, day);
+      }
+    } else {
+      await fetch(`/api/training/${planId}/sessions`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: sessionId, day_of_week: day, week_id: weekId }),
+      });
+      await loadPlan();
+    }
   }
 
   if (loading) return <div className="text-center py-12 text-zinc-500">Laden...</div>;
@@ -504,10 +553,16 @@ export default function TrainingPlanEditorPage() {
             {/* Footer */}
             <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
               {editingSession ? (
-                <button onClick={deleteSession} disabled={saving}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50">
-                  <Trash2 size={14} />Loschen
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={duplicateSession} disabled={saving}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50">
+                    <Copy size={14} />Duplizieren
+                  </button>
+                  <button onClick={deleteSession} disabled={saving}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50">
+                    <Trash2 size={14} />Loschen
+                  </button>
+                </div>
               ) : <div />}
               <button onClick={saveSession} disabled={saving || !sessionForm.title}
                 className="inline-flex items-center gap-1.5 px-5 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium text-sm hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
