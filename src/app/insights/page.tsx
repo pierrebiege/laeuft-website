@@ -287,41 +287,55 @@ export default function PublicInsightsPage() {
   // PASSWORD GATE
   if (!unlocked) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black tracking-tight text-white mb-2">
-              L&auml;uft.
+      <div className="min-h-screen bg-zinc-950 relative overflow-hidden flex items-center justify-center p-4">
+        {/* Background image */}
+        <img src="/insights/hero-selfie.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/60 to-zinc-950/90" />
+
+        <div className="relative z-10 w-full max-w-sm text-center">
+          {/* Logo + Title */}
+          <div className="mb-10">
+            <p className="text-xs tracking-[0.3em] uppercase text-zinc-500 mb-3">Live Instagram Daten von</p>
+            <h1 className="text-5xl font-black tracking-tight text-white mb-2">
+              Pierre Biege
             </h1>
-            <p className="text-zinc-400 text-sm">Instagram Insights</p>
-          </div>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-                <input
-                  type="password"
-                  value={passwordInput}
-                  onChange={(e) => {
-                    setPasswordInput(e.target.value)
-                    setPasswordError(false)
-                  }}
-                  placeholder="Passwort"
-                  autoFocus
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-700 transition-colors"
-                />
-              </div>
-              {passwordError && (
-                <p className="text-red-400 text-xs mt-2">Falsches Passwort</p>
-              )}
+            <p className="text-sm text-zinc-400">Ultrarunner &middot; Content Creator &middot; Wallis</p>
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs text-emerald-400 font-medium">LIVE INSIGHTS</span>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-white text-zinc-900 font-semibold text-sm py-3 rounded-lg hover:bg-zinc-200 transition-colors"
-            >
+          </div>
+
+          {/* 3 small preview images */}
+          <div className="flex justify-center gap-2 mb-8">
+            <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover" /></div>
+            <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" /></div>
+            <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" /></div>
+          </div>
+
+          {/* Login form */}
+          <form onSubmit={handlePasswordSubmit} className="space-y-3">
+            <div className="relative">
+              <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false) }}
+                placeholder="Passwort"
+                autoFocus
+                className="w-full bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 transition-colors"
+              />
+            </div>
+            {passwordError && <p className="text-red-400 text-xs">Falsches Passwort</p>}
+            <button type="submit" className="w-full bg-white text-zinc-900 font-semibold text-sm py-3 rounded-xl hover:bg-zinc-200 transition-colors">
               Zugang
             </button>
           </form>
+
+          {/* Powered by */}
+          <p className="mt-8 text-[10px] text-zinc-600">
+            Powered by <a href="https://laeuft.ch" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white transition-colors">laeuft.ch</a>
+          </p>
         </div>
       </div>
     )
@@ -364,54 +378,38 @@ export default function PublicInsightsPage() {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* ============================================ */}
-      {/* 1. HERO SECTION - Full bleed background */}
+      {/* 1. HERO SECTION */}
       {/* ============================================ */}
-      <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Background image */}
-        <img
-          src="/insights/hero-trail.jpg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60" />
-
-        {/* Content */}
-        <div className="relative z-10 text-center px-6 py-20">
-          <h1 className="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85]">
+      <section className="w-full px-6 pt-12 pb-6 max-w-7xl mx-auto">
+        {/* Title row */}
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none">
             INSIGHTS
           </h1>
-          <h2 className="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mt-1">
-            PIERRE BIEGE
-          </h2>
-
-          {/* Tagline */}
-          <p className="mt-6 text-sm sm:text-base tracking-[0.25em] uppercase text-zinc-300/80 font-light">
-            Ultrarunner &middot; Content Creator &middot; Wallis
-          </p>
-
-          {/* Handle + LIVE badge */}
-          <div className="flex items-center justify-center gap-4 mt-5">
-            <span className="text-sm font-medium text-white/90 px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm bg-white/5 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-white/90 px-4 py-1.5 rounded-full border border-white/20 bg-white/5">
               @pierrebiege
             </span>
-            <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               LIVE
             </span>
           </div>
+        </div>
+        <p className="text-sm tracking-[0.2em] uppercase text-zinc-500 font-light mb-8">
+          Pierre Biege &middot; Ultrarunner &middot; Content Creator &middot; Wallis
+        </p>
 
-          {/* Small circular images row */}
-          <div className="flex items-center justify-center gap-3 mt-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
-              <img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover" />
-            </div>
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
-              <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" />
-            </div>
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
-              <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" />
-            </div>
+        {/* 3 Hero images as large tiles */}
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          </div>
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          </div>
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
           </div>
         </div>
       </section>
@@ -633,27 +631,33 @@ export default function PublicInsightsPage() {
       {/* 5. STORIES SECTION */}
       {/* ============================================ */}
       <section className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-          Storys (Last 14 Days)
-        </h2>
-        <div
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
+            Storys (Last 14 Days)
+          </h2>
+          <div className="flex gap-2">
+            <button onClick={() => { const el = document.getElementById('stories-scroll'); if (el) el.scrollBy({ left: -400, behavior: 'smooth' }) }}
+              className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
+              <ChevronLeft size={18} className="text-white" />
+            </button>
+            <button onClick={() => { const el = document.getElementById('stories-scroll'); if (el) el.scrollBy({ left: 400, behavior: 'smooth' }) }}
+              className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
+              <ChevronRight size={18} className="text-white" />
+            </button>
+          </div>
+        </div>
+        <div id="stories-scroll"
           className="flex gap-4 overflow-x-auto pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {(manualStories as ManualStory[]).map((story) => (
             <div key={story.id} className="flex-shrink-0 w-[140px] sm:w-[160px]">
               <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800">
-                <img
-                  src={story.image}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
+                <img src={story.image} alt="" className="w-full h-full object-cover" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-xl px-2 py-2">
                   <div className="flex items-center justify-center gap-1">
                     <Eye size={12} className="text-white/80" />
-                    <p className="text-xs text-white font-semibold">
-                      {formatNumber(story.views)}
-                    </p>
+                    <p className="text-xs text-white font-semibold">{formatNumber(story.views)}</p>
                   </div>
                 </div>
               </div>
@@ -704,7 +708,7 @@ export default function PublicInsightsPage() {
           Live Daten von Instagram
         </div>
         <p className="text-xs text-zinc-600">
-          Powered by l&auml;uft.
+          Powered by <a href="https://laeuft.ch" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white transition-colors">laeuft.ch</a>
         </p>
       </footer>
 
