@@ -1,17 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import {
-  Mail,
-  ArrowRight,
-  Heart,
-  MessageCircle,
-  Play,
-  Eye,
-  Bookmark,
-  Share2,
-  Instagram,
-} from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Mail, ArrowRight, Play, Instagram, ChevronRight } from 'lucide-react'
 
 // --- Types ---
 
@@ -48,8 +38,35 @@ interface InsightsResponse {
     profile_picture_url: string
   }
   media: MediaItem[]
-  topPosts: MediaItem[]
+  periodMedia: MediaItem[]
+  topByImpressions: MediaItem[]
+  topByInteractions: MediaItem[]
   audience: AudienceData
+  onlineFollowers: Record<number, Record<number, number>>
+  accountInsights: {
+    impressions: number
+    reach: number
+    profileViews: number
+    websiteClicks: number
+    accountsEngaged: number
+    profileActivity: number
+  }
+  impressionsBreakdown: {
+    stories: number
+    reels: number
+    posts: number
+    total: number
+  }
+  interactionsBreakdown: {
+    stories: number
+    reels: number
+    posts: number
+    total: number
+  }
+  followerSplit: {
+    impressions: { follower: number; nonFollower: number }
+    interactions: { follower: number; nonFollower: number }
+  }
   metrics: {
     totalReach: number
     totalImpressions: number
@@ -67,12 +84,17 @@ interface InsightsResponse {
     carousels: number
     total: number
   }
+  period: number
   fetchedAt: string
 }
 
 // --- Helpers ---
 
 function fmt(n: number): string {
+  return n.toLocaleString('de-CH')
+}
+
+function fmtCompact(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
   if (n >= 10_000) return `${(n / 1_000).toFixed(1)}k`
   return n.toLocaleString('de-CH')
@@ -82,7 +104,6 @@ function fmtDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('de-CH', {
     day: 'numeric',
     month: 'short',
-    year: 'numeric',
   })
 }
 
@@ -156,26 +177,10 @@ function parseGenderSplit(items: Array<{ key: string; value: number }>) {
   return { male: (male / total) * 100, female: (female / total) * 100 }
 }
 
-// --- Skeleton Components ---
-
-function SkeletonKPI() {
-  return (
-    <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5 animate-pulse">
-      <div className="h-3 w-16 bg-zinc-800 rounded mb-3" />
-      <div className="h-8 w-24 bg-zinc-800 rounded" />
-    </div>
-  )
-}
-
-function SkeletonGrid() {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="aspect-square bg-zinc-900/60 border border-zinc-800/50 rounded-xl animate-pulse" />
-      ))}
-    </div>
-  )
-}
+// --- Colors ---
+const PINK = '#E1306C'
+const PURPLE = '#5851DB'
+const GRADIENT_PINK = '#C13584'
 
 // --- Main Component ---
 
@@ -183,40 +188,56 @@ export default function InsightsPage() {
   const [data, setData] = useState<InsightsResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [period, setPeriod] = useState(30)
+  const [contentFilter, setContentFilter] = useState<'all' | 'stories' | 'reels' | 'posts'>('all')
+  const [contentSort, setContentSort] = useState<'impressions' | 'interactions'>('impressions')
+  const [contentOrder, setContentOrder] = useState<'desc' | 'asc'>('desc')
+  const [activeDay, setActiveDay] = useState(1) // Monday
+  const [aufrufeTab, setAufrufeTab] = useState<'all' | 'follower' | 'nonFollower'>('all')
+
+  const load = useCallback(async (days: number) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/insights?days=${days}`)
+      if (!res.ok) throw new Error('Daten konnten nicht geladen werden')
+      const json = await res.json()
+      setData(json)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unbekannter Fehler')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/insights')
-        if (!res.ok) throw new Error('Daten konnten nicht geladen werden')
-        const json = await res.json()
-        setData(json)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unbekannter Fehler')
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [])
+    load(period)
+  }, [period, load])
 
   // Loading skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14 space-y-10">
-          {/* Header skeleton */}
-          <div className="animate-pulse space-y-3">
-            <div className="h-10 w-56 bg-zinc-800 rounded" />
-            <div className="h-4 w-72 bg-zinc-800/60 rounded" />
-            <div className="h-3 w-48 bg-zinc-800/40 rounded" />
+      <div className="min-h-screen bg-white">
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          <div className="animate-pulse space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-48 bg-gray-200 rounded-lg" />
+              <div className="flex gap-2">
+                <div className="h-9 w-20 bg-gray-200 rounded-full" />
+                <div className="h-9 w-20 bg-gray-200 rounded-full" />
+                <div className="h-9 w-20 bg-gray-200 rounded-full" />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="h-64 bg-gray-100 rounded-2xl" />
+              <div className="h-64 bg-gray-100 rounded-2xl" />
+            </div>
+            <div className="h-40 bg-gray-100 rounded-2xl" />
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="h-64 bg-gray-100 rounded-2xl" />
+              <div className="h-64 bg-gray-100 rounded-2xl" />
+            </div>
           </div>
-          {/* KPI skeleton */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {Array.from({ length: 4 }).map((_, i) => <SkeletonKPI key={i} />)}
-          </div>
-          {/* Grid skeleton */}
-          <SkeletonGrid />
         </main>
       </div>
     )
@@ -225,13 +246,13 @@ export default function InsightsPage() {
   // Error state
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 antialiased flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-2xl font-black text-zinc-500 mb-2">Fehler</p>
-          <p className="text-zinc-600 text-sm">{error || 'Keine Daten verfuegbar'}</p>
+          <p className="text-2xl font-bold text-gray-400 mb-2">Fehler</p>
+          <p className="text-gray-500 text-sm">{error || 'Keine Daten verfuegbar'}</p>
           <button
-            onClick={() => window.location.reload()}
-            className="mt-4 px-5 py-2.5 text-sm bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors"
+            onClick={() => load(period)}
+            className="mt-4 px-5 py-2.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             Erneut versuchen
           </button>
@@ -240,7 +261,7 @@ export default function InsightsPage() {
     )
   }
 
-  const { profile, media, topPosts, audience, metrics, contentMix } = data
+  const { profile, periodMedia, topByImpressions, topByInteractions, audience, onlineFollowers, accountInsights, impressionsBreakdown, interactionsBreakdown, followerSplit, metrics } = data
 
   const totalCountry = audience.countries.reduce((s, c) => s + c.value, 0) || 1
   const countries = audience.countries.slice(0, 6).map((c) => ({
@@ -250,98 +271,358 @@ export default function InsightsPage() {
   const ageGroups = parseAgeGroups(audience.ageGender)
   const genderSplit = parseGenderSplit(audience.ageGender)
 
-  const reelsPct = contentMix.total > 0 ? (contentMix.reels / contentMix.total) * 100 : 0
-  const imagePct = contentMix.total > 0 ? (contentMix.images / contentMix.total) * 100 : 0
-  const carouselPct = contentMix.total > 0 ? (contentMix.carousels / contentMix.total) * 100 : 0
+  // Online followers for active day
+  const dayLabels = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+  const dayHours = onlineFollowers[activeDay] || {}
+  const hourSlots = [0, 3, 6, 9, 12, 15, 18, 21]
+  const maxOnline = Math.max(...hourSlots.map((h) => dayHours[h] || 0), 1)
+
+  // Content grid filtering
+  const filteredMedia = periodMedia.filter((m) => {
+    if (contentFilter === 'all') return true
+    if (contentFilter === 'reels') return m.media_type === 'VIDEO' || m.media_type === 'REEL'
+    if (contentFilter === 'posts') return m.media_type === 'IMAGE' || m.media_type === 'CAROUSEL_ALBUM'
+    // stories not in media endpoint
+    return true
+  }).sort((a, b) => {
+    const valA = contentSort === 'impressions' ? (a.impressions || a.plays || 0) : (a.like_count + a.comments_count + a.saved + a.shares)
+    const valB = contentSort === 'impressions' ? (b.impressions || b.plays || 0) : (b.like_count + b.comments_count + b.saved + b.shares)
+    return contentOrder === 'desc' ? valB - valA : valA - valB
+  })
+
+  // Impressions bars data with follower tab
+  function getBreakdownBars(breakdown: { stories: number; reels: number; posts: number; total: number }) {
+    const total = breakdown.total || 1
+    const multiplier = aufrufeTab === 'follower'
+      ? followerSplit.impressions.follower / 100
+      : aufrufeTab === 'nonFollower'
+      ? followerSplit.impressions.nonFollower / 100
+      : 1
+    return [
+      { label: 'Stories', value: Math.round(breakdown.stories * multiplier), pct: (breakdown.stories / total) * 100, color: PINK },
+      { label: 'Reels', value: Math.round(breakdown.reels * multiplier), pct: (breakdown.reels / total) * 100, color: PURPLE },
+      { label: 'Beitr\u00e4ge', value: Math.round(breakdown.posts * multiplier), pct: (breakdown.posts / total) * 100, color: '#FCAF45' },
+    ].sort((a, b) => b.pct - a.pct)
+  }
+
+  const aufrufeBars = getBreakdownBars(impressionsBreakdown)
+  const maxBarPct = Math.max(...aufrufeBars.map((b) => b.pct), 1)
+
+  // Interactions bars
+  const interactionBars = [
+    { label: 'Reels', value: interactionsBreakdown.reels, pct: interactionsBreakdown.total ? (interactionsBreakdown.reels / interactionsBreakdown.total) * 100 : 0, color: PURPLE },
+    { label: 'Beitr\u00e4ge', value: interactionsBreakdown.posts, pct: interactionsBreakdown.total ? (interactionsBreakdown.posts / interactionsBreakdown.total) * 100 : 0, color: '#FCAF45' },
+    { label: 'Stories', value: interactionsBreakdown.stories, pct: interactionsBreakdown.total ? (interactionsBreakdown.stories / interactionsBreakdown.total) * 100 : 0, color: PINK },
+  ].sort((a, b) => b.pct - a.pct)
+  const maxInteractionPct = Math.max(...interactionBars.map((b) => b.pct), 1)
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14 space-y-12">
+    <div className="min-h-screen bg-white text-gray-900 antialiased">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
 
         {/* ===== HEADER ===== */}
-        <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-                Pierre Biege
-              </h1>
-              <div className="flex items-center gap-1.5 bg-zinc-900/80 border border-zinc-800 rounded-full px-2.5 py-1">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Live</span>
-              </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+              Konto-Insights
+            </h1>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              <span className="text-xs text-gray-500">Live Daten von Instagram</span>
             </div>
-            <p className="text-zinc-400 text-sm">
-              Ultrarunner &middot; Content Creator &middot; Wallis
-            </p>
-            <div className="flex flex-wrap items-center gap-3 mt-2">
-              <a
-                href="https://instagram.com/pierrebiege"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors"
+          </div>
+          <div className="flex gap-1.5 bg-gray-100 p-1 rounded-full">
+            {[7, 14, 30].map((d) => (
+              <button
+                key={d}
+                onClick={() => setPeriod(d)}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
+                  period === d
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
               >
-                <Instagram size={14} />
-                @pierrebiege
-              </a>
-              <span className="text-xs text-zinc-500">{fmt(profile.followers_count)} Followers</span>
-              <span className="text-xs text-zinc-500">{fmt(profile.media_count)} Beitr&auml;ge</span>
-            </div>
+                {d} Tage
+              </button>
+            ))}
           </div>
         </header>
 
-        {/* ===== KPI ROW ===== */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <KPICard label="Follower" value={fmt(profile.followers_count)} />
-          <KPICard label="Reichweite" value={fmt(metrics.totalReach)} sub={`${media.length} Beitr\u00e4ge`} />
-          <KPICard label="Aufrufe" value={fmt(metrics.totalImpressions)} sub={metrics.totalPlays > 0 ? `${fmt(metrics.totalPlays)} Plays` : undefined} />
-          <KPICard label="Engagement" value={`${metrics.engagementRate}%`} sub={`${fmt(metrics.totalInteractions)} Interaktionen`} />
-        </div>
+        {/* ===== SECTION 1: AUFRUFE ===== */}
+        <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            {/* Left: Big number */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-4xl font-bold tracking-tight">{fmt(metrics.totalImpressions)}</p>
+                <p className="text-sm text-gray-500 mt-1">Aufrufe</p>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                <span>Follower: <strong>{followerSplit.impressions.follower.toFixed(1)}%</strong></span>
+                <span>Nicht-Follower: <strong>{followerSplit.impressions.nonFollower.toFixed(1)}%</strong></span>
+              </div>
+              <div className="border-t border-gray-100 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Erreichte Konten</span>
+                  <span className="text-sm font-semibold">{fmt(metrics.totalReach)}</span>
+                </div>
+              </div>
+            </div>
 
-        {/* ===== CONTENT GALLERY ===== */}
-        <section>
-          <SectionTitle>Letzte Beitr&auml;ge</SectionTitle>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-            {media.map((item) => (
-              <PostTile key={item.id} item={item} />
-            ))}
+            {/* Right: Content breakdown bars */}
+            <div className="p-6">
+              <p className="text-sm font-semibold text-gray-900 mb-3">Nach Content-Art</p>
+              <div className="flex gap-1.5 mb-5">
+                {(['all', 'follower', 'nonFollower'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setAufrufeTab(tab)}
+                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                      aufrufeTab === tab
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    {tab === 'all' ? 'Alle' : tab === 'follower' ? 'Follower' : 'Nicht-Follower'}
+                  </button>
+                ))}
+              </div>
+              <div className="space-y-4">
+                {aufrufeBars.map((bar) => (
+                  <div key={bar.label}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm text-gray-700">{bar.label}</span>
+                      <span className="text-sm font-medium text-gray-500">{bar.pct.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.max((bar.pct / maxBarPct) * 100, 3)}%`,
+                          backgroundColor: bar.color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ===== TOP PERFORMING ===== */}
-        {topPosts.length > 0 && (
+        {/* ===== SECTION 2: TOP CONTENT NACH AUFRUFEN ===== */}
+        {topByImpressions.length > 0 && (
           <section>
-            <SectionTitle>Top Beitr&auml;ge nach Aufrufe</SectionTitle>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {topPosts.map((post) => (
-                <TopPostCard key={post.id} post={post} />
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold text-gray-900">Top-Content nach Aufrufen</h2>
+              <button className="flex items-center gap-1 text-sm font-medium" style={{ color: PINK }}>
+                Alle ansehen <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+              {topByImpressions.map((item) => (
+                <TopContentCard key={item.id} item={item} metric={item.impressions || item.plays || 0} metricLabel="Aufrufe" />
               ))}
             </div>
           </section>
         )}
 
-        {/* ===== AUDIENCE ===== */}
+        {/* ===== SECTION 3: PROFIL ===== */}
+        <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            {/* Left: Profile activity */}
+            <div className="p-6">
+              <p className="text-2xl font-bold">{fmt(accountInsights.profileActivity)}</p>
+              <p className="text-sm text-gray-500 mt-1 mb-5">Profilaktivit&auml;ten</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Profilaufrufe</span>
+                  <span className="text-sm font-semibold">{fmt(accountInsights.profileViews)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Auf externen Link getippt</span>
+                  <span className="text-sm font-semibold">{fmt(accountInsights.websiteClicks)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Followers + active times */}
+            <div className="p-6">
+              <p className="text-2xl font-bold">{fmt(profile.followers_count)}</p>
+              <p className="text-sm text-gray-500 mt-1 mb-5">Follower insgesamt</p>
+
+              <p className="text-sm font-semibold text-gray-900 mb-3">Aktivste Zeiten</p>
+              {/* Day tabs */}
+              <div className="flex gap-1 mb-4">
+                {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setActiveDay(d)}
+                    className={`w-8 h-8 text-xs font-medium rounded-full transition-all ${
+                      activeDay === d
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    {dayLabels[d]}
+                  </button>
+                ))}
+              </div>
+              {/* Hour bars */}
+              <div className="space-y-1.5">
+                {hourSlots.map((h) => {
+                  const val = dayHours[h] || 0
+                  const barW = maxOnline > 0 ? (val / maxOnline) * 100 : 0
+                  return (
+                    <div key={h} className="flex items-center gap-2">
+                      <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">{String(h).padStart(2, '0')}:00</span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{ width: `${Math.max(barW, 2)}%`, backgroundColor: PINK }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-gray-400 w-12 tabular-nums">{fmtCompact(val)}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 4: INTERAKTIONEN ===== */}
+        <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            {/* Left */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-4xl font-bold tracking-tight">{fmt(metrics.totalInteractions)}</p>
+                <p className="text-sm text-gray-500 mt-1">Interaktionen</p>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                <span>Follower: <strong>{followerSplit.interactions.follower.toFixed(1)}%</strong></span>
+                <span>Nicht-Follower: <strong>{followerSplit.interactions.nonFollower.toFixed(1)}%</strong></span>
+              </div>
+              <div className="border-t border-gray-100 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Konten, die interagiert haben</span>
+                  <span className="text-sm font-semibold">{fmt(accountInsights.accountsEngaged)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Interaction breakdown */}
+            <div className="p-6">
+              <p className="text-sm font-semibold text-gray-900 mb-5">Nach Content-Interaktionen</p>
+              <div className="space-y-4">
+                {interactionBars.map((bar) => (
+                  <div key={bar.label}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm text-gray-700">{bar.label}</span>
+                      <span className="text-sm font-medium text-gray-500">{bar.pct.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.max((bar.pct / maxInteractionPct) * 100, 3)}%`,
+                          backgroundColor: bar.color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 5: TOP CONTENT NACH INTERAKTIONEN ===== */}
+        {topByInteractions.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold text-gray-900">Top-Content nach Interaktionen</h2>
+              <button className="flex items-center gap-1 text-sm font-medium" style={{ color: PINK }}>
+                Alle ansehen <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+              {topByInteractions.map((item) => {
+                const interactions = item.like_count + item.comments_count + item.saved + item.shares
+                return (
+                  <TopContentCard key={item.id} item={item} metric={interactions} metricLabel="Interaktionen" />
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ===== SECTION 6: CONTENT INSIGHTS ===== */}
+        <section>
+          <h2 className="text-base font-semibold text-gray-900 mb-4">Content-Insights</h2>
+          {/* Filter row */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            <select
+              value={contentFilter}
+              onChange={(e) => setContentFilter(e.target.value as typeof contentFilter)}
+              className="px-3 py-1.5 text-sm bg-gray-100 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            >
+              <option value="all">Alle</option>
+              <option value="reels">Reels</option>
+              <option value="posts">Beitr&auml;ge</option>
+            </select>
+            <select
+              value={contentSort}
+              onChange={(e) => setContentSort(e.target.value as typeof contentSort)}
+              className="px-3 py-1.5 text-sm bg-gray-100 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            >
+              <option value="impressions">Aufrufe</option>
+              <option value="interactions">Interaktionen</option>
+            </select>
+            <select
+              value={contentOrder}
+              onChange={(e) => setContentOrder(e.target.value as typeof contentOrder)}
+              className="px-3 py-1.5 text-sm bg-gray-100 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            >
+              <option value="desc">H&ouml;chste zuerst</option>
+              <option value="asc">Niedrigste zuerst</option>
+            </select>
+          </div>
+          {/* Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+            {filteredMedia.map((item) => (
+              <ContentGridCard key={item.id} item={item} sortMetric={contentSort} />
+            ))}
+          </div>
+        </section>
+
+        {/* ===== SECTION 7: ZIELGRUPPE ===== */}
         {(countries.length > 0 || ageGroups.length > 0) && (
           <section>
-            <SectionTitle>Zielgruppe</SectionTitle>
+            <h2 className="text-base font-semibold text-gray-900 mb-4">Zielgruppe</h2>
             <div className="grid sm:grid-cols-3 gap-4">
               {/* Countries */}
               {countries.length > 0 && (
-                <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5">
-                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-4">L&auml;nder</p>
-                  <div className="space-y-2.5">
+                <div className="bg-white border border-gray-200 rounded-2xl p-5">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">L&auml;nder</p>
+                  <div className="space-y-3">
                     {countries.map((c) => (
                       <div key={c.key}>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-zinc-300">{countryLabel(c.key)}</span>
-                          <span className="text-xs font-medium text-zinc-400">{c.pct.toFixed(1)}%</span>
+                          <span className="text-sm text-gray-700">{countryLabel(c.key)}</span>
+                          <span className="text-sm font-medium text-gray-500">{c.pct.toFixed(1)}%</span>
                         </div>
-                        <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"
-                            style={{ width: `${Math.max(c.pct, 2)}%` }}
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${Math.max(c.pct, 2)}%`,
+                              backgroundColor: PINK,
+                            }}
                           />
                         </div>
                       </div>
@@ -352,19 +633,22 @@ export default function InsightsPage() {
 
               {/* Age Groups */}
               {ageGroups.length > 0 && (
-                <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5">
-                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-4">Alter</p>
-                  <div className="space-y-2.5">
+                <div className="bg-white border border-gray-200 rounded-2xl p-5">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Alter</p>
+                  <div className="space-y-3">
                     {ageGroups.slice(0, 6).map((a) => (
                       <div key={a.key}>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-zinc-300">{a.key}</span>
-                          <span className="text-xs font-medium text-zinc-400">{a.pct.toFixed(1)}%</span>
+                          <span className="text-sm text-gray-700">{a.key}</span>
+                          <span className="text-sm font-medium text-gray-500">{a.pct.toFixed(1)}%</span>
                         </div>
-                        <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
-                            style={{ width: `${Math.max(a.pct, 2)}%` }}
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${Math.max(a.pct, 2)}%`,
+                              backgroundColor: PURPLE,
+                            }}
                           />
                         </div>
                       </div>
@@ -375,30 +659,30 @@ export default function InsightsPage() {
 
               {/* Gender */}
               {(genderSplit.male > 0 || genderSplit.female > 0) && (
-                <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5">
-                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-4">Geschlecht</p>
+                <div className="bg-white border border-gray-200 rounded-2xl p-5">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Geschlecht</p>
                   <div className="space-y-4">
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs text-zinc-300">M&auml;nnlich</span>
-                        <span className="text-xs font-semibold text-zinc-300">{genderSplit.male.toFixed(1)}%</span>
+                        <span className="text-sm text-gray-700">M&auml;nnlich</span>
+                        <span className="text-sm font-semibold text-gray-700">{genderSplit.male.toFixed(1)}%</span>
                       </div>
-                      <div className="w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
+                      <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                         <div
-                          className="h-full bg-blue-500 rounded-full transition-all"
-                          style={{ width: `${genderSplit.male}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${genderSplit.male}%`, backgroundColor: PURPLE }}
                         />
                       </div>
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs text-zinc-300">Weiblich</span>
-                        <span className="text-xs font-semibold text-zinc-300">{genderSplit.female.toFixed(1)}%</span>
+                        <span className="text-sm text-gray-700">Weiblich</span>
+                        <span className="text-sm font-semibold text-gray-700">{genderSplit.female.toFixed(1)}%</span>
                       </div>
-                      <div className="w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
+                      <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                         <div
-                          className="h-full bg-pink-500 rounded-full transition-all"
-                          style={{ width: `${genderSplit.female}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${genderSplit.female}%`, backgroundColor: PINK }}
                         />
                       </div>
                     </div>
@@ -409,40 +693,18 @@ export default function InsightsPage() {
           </section>
         )}
 
-        {/* ===== CONTENT MIX ===== */}
-        <section>
-          <SectionTitle>Content-Verteilung</SectionTitle>
-          <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5 sm:p-6">
-            <div className="grid sm:grid-cols-3 gap-6">
-              <ContentMixBar label="Reels / Videos" count={contentMix.reels} pct={reelsPct} color="from-fuchsia-500 to-purple-600" />
-              <ContentMixBar label="Bilder" count={contentMix.images} pct={imagePct} color="from-blue-500 to-cyan-500" />
-              <ContentMixBar label="Karussells" count={contentMix.carousels} pct={carouselPct} color="from-amber-500 to-orange-500" />
-            </div>
-
-            {/* Interaction breakdown */}
-            <div className="mt-6 pt-5 border-t border-zinc-800/60">
-              <p className="text-xs text-zinc-500 mb-3">Interaktionen gesamt ({fmt(metrics.totalInteractions)})</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <InteractionStat icon={<Heart size={14} />} label="Likes" value={metrics.totalLikes} />
-                <InteractionStat icon={<MessageCircle size={14} />} label="Kommentare" value={metrics.totalComments} />
-                <InteractionStat icon={<Bookmark size={14} />} label="Gespeichert" value={metrics.totalSaved} />
-                <InteractionStat icon={<Share2 size={14} />} label="Geteilt" value={metrics.totalShares} />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== CTA ===== */}
-        <section className="text-center py-12">
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-2">
+        {/* ===== SECTION 8: CTA ===== */}
+        <section className="text-center py-12 px-6 bg-gray-50 rounded-2xl">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-2">
             Interesse an einer Zusammenarbeit?
           </h2>
-          <p className="text-zinc-500 text-sm mb-6">
+          <p className="text-gray-500 text-sm mb-6">
             Lass uns gemeinsam etwas bewegen.
           </p>
           <a
             href="mailto:pierre@laeuft.ch"
-            className="inline-flex items-center gap-2 bg-white text-zinc-950 font-semibold text-sm px-7 py-3.5 rounded-xl hover:bg-zinc-200 transition-colors"
+            className="inline-flex items-center gap-2 text-white font-semibold text-sm px-7 py-3.5 rounded-xl transition-colors hover:opacity-90"
+            style={{ backgroundColor: PINK }}
           >
             <Mail size={16} />
             Kontakt aufnehmen
@@ -451,12 +713,12 @@ export default function InsightsPage() {
         </section>
 
         {/* ===== FOOTER ===== */}
-        <footer className="text-center pb-8 pt-4 border-t border-zinc-800/40">
-          <p className="text-[11px] text-zinc-600">
+        <footer className="text-center pb-8 pt-4 border-t border-gray-100">
+          <p className="text-xs text-gray-400">
             Daten werden live von Instagram geladen &middot; Letzte Aktualisierung: {fmtTime(data.fetchedAt)}
           </p>
-          <p className="text-[10px] text-zinc-700 mt-1">
-            Powered by <span className="text-zinc-500">l&auml;uft.</span>
+          <p className="text-[11px] text-gray-400 mt-1">
+            Powered by <span className="font-medium text-gray-500">l&auml;uft.</span>
           </p>
         </footer>
       </main>
@@ -466,25 +728,15 @@ export default function InsightsPage() {
 
 // --- Sub-components ---
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-sm font-semibold text-white mb-4 tracking-wide">
-      {children}
-    </h2>
-  )
-}
-
-function KPICard({ label, value, sub }: { label: string; value: string; sub?: string }) {
-  return (
-    <div className="bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-5">
-      <p className="text-[10px] uppercase tracking-widest text-zinc-500">{label}</p>
-      <p className="text-2xl font-black text-white mt-1.5">{value}</p>
-      {sub && <p className="text-[11px] text-zinc-500 mt-0.5">{sub}</p>}
-    </div>
-  )
-}
-
-function PostTile({ item }: { item: MediaItem }) {
+function TopContentCard({
+  item,
+  metric,
+  metricLabel,
+}: {
+  item: MediaItem
+  metric: number
+  metricLabel: string
+}) {
   const thumb = getThumb(item)
   const video = isVideo(item.media_type)
 
@@ -493,171 +745,96 @@ function PostTile({ item }: { item: MediaItem }) {
       href={item.permalink}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative aspect-square rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800/40"
+      className="flex-shrink-0 w-32 sm:w-36 group"
+    >
+      <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-gray-100">
+        {thumb ? (
+          <img
+            src={thumb}
+            alt={item.caption?.slice(0, 60) || 'Instagram Post'}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            crossOrigin="anonymous"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            {video ? (
+              <Play size={24} className="text-gray-400" />
+            ) : (
+              <Instagram size={20} className="text-gray-300" />
+            )}
+          </div>
+        )}
+        {/* Badge */}
+        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 pt-6">
+          <p className="text-white text-xs font-semibold">{fmtCompact(metric)}</p>
+          <p className="text-white/70 text-[10px]">{metricLabel}</p>
+        </div>
+        {/* Play icon */}
+        {video && (
+          <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm rounded-md p-1">
+            <Play size={10} className="text-white fill-white" />
+          </div>
+        )}
+      </div>
+      <p className="text-[11px] text-gray-400 mt-1.5 truncate">{fmtDate(item.timestamp)}</p>
+    </a>
+  )
+}
+
+function ContentGridCard({
+  item,
+  sortMetric,
+}: {
+  item: MediaItem
+  sortMetric: 'impressions' | 'interactions'
+}) {
+  const thumb = getThumb(item)
+  const video = isVideo(item.media_type)
+  const value =
+    sortMetric === 'impressions'
+      ? item.impressions || item.plays || 0
+      : item.like_count + item.comments_count + item.saved + item.shares
+
+  return (
+    <a
+      href={item.permalink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative aspect-[2/3] rounded-xl overflow-hidden bg-gray-100"
     >
       {thumb ? (
         <img
           src={thumb}
-          alt={item.caption?.slice(0, 80) || 'Instagram Post'}
-          className="w-full h-full object-cover"
+          alt={item.caption?.slice(0, 60) || 'Post'}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
           crossOrigin="anonymous"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-zinc-900">
-          {video ? (
-            <Play size={32} className="text-zinc-600" />
-          ) : (
-            <Instagram size={24} className="text-zinc-700" />
-          )}
+        <div className="w-full h-full flex items-center justify-center">
+          {video ? <Play size={24} className="text-gray-400" /> : <Instagram size={20} className="text-gray-300" />}
         </div>
       )}
-
-      {/* Video play indicator */}
-      {video && thumb && (
-        <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
+      {/* Badge */}
+      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-2 pt-6">
+        <p className="text-white text-xs font-semibold">{fmtCompact(value)}</p>
+      </div>
+      {/* Video indicator */}
+      {video && (
+        <div className="absolute top-1.5 left-1.5 bg-black/50 backdrop-blur-sm rounded p-0.5">
           <Play size={10} className="text-white fill-white" />
-          {item.plays > 0 && (
-            <span className="text-[10px] text-white font-medium">{fmt(item.plays)}</span>
-          )}
         </div>
       )}
-
       {/* Carousel indicator */}
       {item.media_type === 'CAROUSEL_ALBUM' && (
-        <div className="absolute top-2 right-2">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-white drop-shadow-lg">
+        <div className="absolute top-1.5 right-1.5">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-white drop-shadow-lg">
             <rect x="1" y="3" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
             <rect x="5" y="1" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
           </svg>
         </div>
       )}
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
-        <div className="flex items-center gap-4 text-white">
-          <span className="flex items-center gap-1.5 text-sm font-semibold">
-            <Heart size={16} className="fill-white" />
-            {fmt(item.like_count)}
-          </span>
-          <span className="flex items-center gap-1.5 text-sm font-semibold">
-            <MessageCircle size={16} className="fill-white" />
-            {fmt(item.comments_count)}
-          </span>
-          {item.plays > 0 && (
-            <span className="flex items-center gap-1.5 text-sm font-semibold">
-              <Eye size={16} />
-              {fmt(item.plays)}
-            </span>
-          )}
-        </div>
-      </div>
     </a>
-  )
-}
-
-function TopPostCard({ post }: { post: MediaItem }) {
-  const thumb = getThumb(post)
-  const video = isVideo(post.media_type)
-  const viewCount = post.impressions || post.plays || 0
-
-  return (
-    <a
-      href={post.permalink}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex gap-4 bg-zinc-900/60 border border-zinc-800/50 rounded-2xl p-3 hover:border-zinc-700 transition-colors"
-    >
-      {/* Thumbnail */}
-      <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl overflow-hidden bg-zinc-800">
-        {thumb ? (
-          <img
-            src={thumb}
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
-            crossOrigin="anonymous"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            {video ? <Play size={24} className="text-zinc-600" /> : <Instagram size={20} className="text-zinc-700" />}
-          </div>
-        )}
-        {video && (
-          <div className="absolute bottom-1 left-1 bg-black/60 rounded p-0.5">
-            <Play size={10} className="text-white fill-white" />
-          </div>
-        )}
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0 py-1">
-        <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
-          {post.caption ? post.caption.slice(0, 100) + (post.caption.length > 100 ? '...' : '') : 'Beitrag'}
-        </p>
-        <div className="mt-2 flex items-baseline gap-1.5">
-          <Eye size={13} className="text-zinc-500" />
-          <span className="text-lg font-black text-white">{fmt(viewCount)}</span>
-          <span className="text-[10px] text-zinc-600">Aufrufe</span>
-        </div>
-        <div className="mt-1 flex items-center gap-3 text-[11px] text-zinc-500">
-          <span className="flex items-center gap-1">
-            <Heart size={11} /> {fmt(post.like_count)}
-          </span>
-          <span className="flex items-center gap-1">
-            <Bookmark size={11} /> {fmt(post.saved)}
-          </span>
-          <span>{fmtDate(post.timestamp)}</span>
-        </div>
-      </div>
-    </a>
-  )
-}
-
-function ContentMixBar({
-  label,
-  count,
-  pct,
-  color,
-}: {
-  label: string
-  count: number
-  pct: number
-  color: string
-}) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-zinc-300">{label}</span>
-        <span className="text-sm font-semibold text-white">{count}</span>
-      </div>
-      <div className="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r ${color}`}
-          style={{ width: `${Math.max(pct, 2)}%` }}
-        />
-      </div>
-      <p className="text-[10px] text-zinc-500 mt-1">{pct.toFixed(1)}%</p>
-    </div>
-  )
-}
-
-function InteractionStat({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: number
-}) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-zinc-500">{icon}</span>
-      <div>
-        <p className="text-sm font-semibold text-white">{fmt(value)}</p>
-        <p className="text-[10px] text-zinc-500">{label}</p>
-      </div>
-    </div>
   )
 }
