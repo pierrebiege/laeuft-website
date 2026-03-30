@@ -45,22 +45,38 @@ export async function fetchAccountProfile() {
   })
 }
 
-// Fetch account-level insights for a specific day
-// Note: profile_views and website_clicks were deprecated in v21 (Jan 2025)
+// Fetch account-level insights
+// v21+: impressions deprecated, use views. profile_views/website_clicks removed.
 export async function fetchAccountInsights(since: string, until: string) {
   const id = getAccountId()
-  return graphFetch<{
-    data: Array<{
-      name: string
-      period: string
-      values: Array<{ value: number; end_time: string }>
-    }>
-  }>(`/${id}/insights`, {
-    metric: 'impressions,reach,accounts_engaged,follows_and_unfollows',
-    period: 'day',
-    since,
-    until,
-  })
+
+  // Try multiple metric combinations since availability varies by account type
+  const metricSets = [
+    'views,reach,accounts_engaged,follows_and_unfollows',
+    'impressions,reach,accounts_engaged',
+    'reach',
+  ]
+
+  for (const metrics of metricSets) {
+    try {
+      const result = await graphFetch<{
+        data: Array<{
+          name: string
+          period: string
+          values: Array<{ value: number; end_time: string }>
+        }>
+      }>(`/${id}/insights`, {
+        metric: metrics,
+        period: 'day',
+        since,
+        until,
+      })
+      return result
+    } catch {
+      continue
+    }
+  }
+  return { data: [] }
 }
 
 // Fetch recent media
@@ -85,27 +101,37 @@ export async function fetchRecentMedia(limit: number = 50) {
   return result.data || []
 }
 
-// Fetch per-media insights
-export async function fetchMediaInsights(mediaId: string) {
-  try {
-    const result = await graphFetch<{
-      data: Array<{
-        name: string
-        values: Array<{ value: number }>
-      }>
-    }>(`/${mediaId}/insights`, {
-      metric: 'reach,impressions,saved,shares,plays,views',
-    })
+// Fetch per-media insights (metrics differ by media type)
+export async function fetchMediaInsights(mediaId: string, mediaType?: string) {
+  // Reels/Videos use different metrics than images/carousels
+  const isReel = mediaType === 'VIDEO' || mediaType === 'REEL'
 
-    const metrics: Record<string, number> = {}
-    for (const item of result.data || []) {
-      metrics[item.name] = item.values?.[0]?.value || 0
+  const metricSets = isReel
+    ? ['reach,saved,shares,views', 'reach,saved,shares,plays']  // try views first, fallback to plays
+    : ['impressions,reach,saved,shares', 'reach,saved']  // images/carousels
+
+  for (const metrics of metricSets) {
+    try {
+      const result = await graphFetch<{
+        data: Array<{
+          name: string
+          values: Array<{ value: number }>
+        }>
+      }>(`/${mediaId}/insights`, { metric: metrics })
+
+      const parsed: Record<string, number> = {}
+      for (const item of result.data || []) {
+        parsed[item.name] = item.values?.[0]?.value || 0
+      }
+      // Normalize: use views as impressions fallback
+      if (!parsed.impressions && parsed.views) parsed.impressions = parsed.views
+      if (!parsed.impressions && parsed.plays) parsed.impressions = parsed.plays
+      return parsed
+    } catch {
+      continue // try next metric set
     }
-    return metrics
-  } catch {
-    // Some media types don't support all metrics
-    return {}
   }
+  return {}
 }
 
 // Fetch audience demographics
@@ -138,6 +164,28 @@ export async function fetchAudienceDemographics() {
   return {
     demographics: demographicsRes.data || [],
     online_followers: onlineRes.data || [],
+  }
+}
+
+// Fetch currently active stories (only available for 24h!)
+export async function fetchActiveStories() {
+  const id = getAccountId()
+  try {
+    const result = await graphFetch<{
+      data: Array<{
+        id: string
+        media_type: string
+        media_url: string
+        thumbnail_url?: string
+        timestamp: string
+        permalink?: string
+      }>
+    }>(`/${id}/stories`, {
+      fields: 'id,media_type,media_url,thumbnail_url,timestamp,permalink',
+    })
+    return result.data || []
+  } catch {
+    return []
   }
 }
 

@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     // Fetch per-media insights in parallel
     const mediaWithInsights = await Promise.all(
       media.map(async (item) => {
-        const insights = await fetchMediaInsights(item.id)
+        const insights = await fetchMediaInsights(item.id, item.media_type)
         return {
           id: item.id,
           media_type: item.media_type,
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
 
     // Aggregate metrics from period media
     const totalReach = accountInsights.reach || periodMedia.reduce((s, p) => s + p.reach, 0)
-    const totalImpressions = accountInsights.impressions || periodMedia.reduce((s, p) => s + p.impressions, 0)
+    const totalImpressions = accountInsights.views || accountInsights.impressions || periodMedia.reduce((s, p) => s + p.impressions, 0)
     const totalLikes = periodMedia.reduce((s, p) => s + p.like_count, 0)
     const totalComments = periodMedia.reduce((s, p) => s + p.comments_count, 0)
     const totalSaved = periodMedia.reduce((s, p) => s + p.saved, 0)
