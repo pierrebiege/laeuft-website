@@ -191,7 +191,7 @@ export default function InsightsPage() {
   const [contentSort, setContentSort] = useState<'impressions' | 'interactions'>('impressions')
   const [contentOrder, setContentOrder] = useState<'desc' | 'asc'>('desc')
   const [activeDay, setActiveDay] = useState(1) // Monday
-  const [aufrufeTab, setAufrufeTab] = useState<'all' | 'follower' | 'nonFollower'>('all')
+  // aufrufeTab removed - API doesn't provide follower/non-follower breakdown per content type
 
   const load = useCallback(async (days: number) => {
     setLoading(true)
@@ -291,11 +291,7 @@ export default function InsightsPage() {
   // Impressions bars data with follower tab
   function getBreakdownBars(breakdown: { stories: number; reels: number; posts: number; total: number }) {
     const total = breakdown.total || 1
-    const multiplier = aufrufeTab === 'follower'
-      ? followerSplit.impressions.follower / 100
-      : aufrufeTab === 'nonFollower'
-      ? followerSplit.impressions.nonFollower / 100
-      : 1
+    const multiplier = 1
     return [
       { label: 'Stories', value: Math.round(breakdown.stories * multiplier), pct: (breakdown.stories / total) * 100, color: PINK },
       { label: 'Reels', value: Math.round(breakdown.reels * multiplier), pct: (breakdown.reels / total) * 100, color: PURPLE },
@@ -372,22 +368,7 @@ export default function InsightsPage() {
 
             {/* Right: Content breakdown bars */}
             <div className="p-6">
-              <p className="text-sm font-semibold text-gray-900 mb-3">Nach Content-Art</p>
-              <div className="flex gap-1.5 mb-5">
-                {(['all', 'follower', 'nonFollower'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setAufrufeTab(tab)}
-                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
-                      aufrufeTab === tab
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                    }`}
-                  >
-                    {tab === 'all' ? 'Alle' : tab === 'follower' ? 'Follower' : 'Nicht-Follower'}
-                  </button>
-                ))}
-              </div>
+              <p className="text-sm font-semibold text-gray-900 mb-5">Nach Content-Art</p>
               <div className="space-y-4">
                 {aufrufeBars.map((bar) => (
                   <div key={bar.label}>
