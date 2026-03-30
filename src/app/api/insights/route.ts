@@ -60,7 +60,7 @@ export async function GET(request: Request) {
           impressions: insights.impressions || 0,
           saved: insights.saved || 0,
           shares: insights.shares || 0,
-          plays: insights.plays || 0,
+          plays: insights.plays || insights.views || 0,
         }
       })
     )
@@ -96,8 +96,7 @@ export async function GET(request: Request) {
     const totalShares = periodMedia.reduce((s, p) => s + p.shares, 0)
     const totalPlays = periodMedia.reduce((s, p) => s + p.plays, 0)
     const totalInteractions = totalLikes + totalComments + totalSaved + totalShares
-    const profileViews = accountInsights.profile_views || 0
-    const websiteClicks = accountInsights.website_clicks || 0
+    const followsAndUnfollows = accountInsights.follows_and_unfollows || 0
     const accountsEngaged = accountInsights.accounts_engaged || 0
 
     const engagementRate =
@@ -186,10 +185,8 @@ export async function GET(request: Request) {
       accountInsights: {
         impressions: totalImpressions,
         reach: totalReach,
-        profileViews,
-        websiteClicks,
         accountsEngaged,
-        profileActivity: profileViews + websiteClicks,
+        followsAndUnfollows,
       },
       impressionsBreakdown,
       interactionsBreakdown,

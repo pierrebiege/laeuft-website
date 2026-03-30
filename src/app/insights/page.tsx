@@ -46,10 +46,8 @@ interface InsightsResponse {
   accountInsights: {
     impressions: number
     reach: number
-    profileViews: number
-    websiteClicks: number
     accountsEngaged: number
-    profileActivity: number
+    followsAndUnfollows: number
   }
   impressionsBreakdown: {
     stories: number
@@ -433,18 +431,18 @@ export default function InsightsPage() {
         {/* ===== SECTION 3: PROFIL ===== */}
         <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
           <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
-            {/* Left: Profile activity */}
+            {/* Left: Engagement overview */}
             <div className="p-6">
-              <p className="text-2xl font-bold">{fmt(accountInsights.profileActivity)}</p>
-              <p className="text-sm text-gray-500 mt-1 mb-5">Profilaktivit&auml;ten</p>
+              <p className="text-2xl font-bold">{fmt(accountInsights.accountsEngaged)}</p>
+              <p className="text-sm text-gray-500 mt-1 mb-5">Konten, die interagiert haben</p>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Profilaufrufe</span>
-                  <span className="text-sm font-semibold">{fmt(accountInsights.profileViews)}</span>
+                  <span className="text-sm text-gray-600">Erreichte Konten</span>
+                  <span className="text-sm font-semibold">{fmt(accountInsights.reach)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Auf externen Link getippt</span>
-                  <span className="text-sm font-semibold">{fmt(accountInsights.websiteClicks)}</span>
+                  <span className="text-sm text-gray-600">Follower-Veranderungen</span>
+                  <span className="text-sm font-semibold">{accountInsights.followsAndUnfollows > 0 ? '+' : ''}{fmt(accountInsights.followsAndUnfollows)}</span>
                 </div>
               </div>
             </div>

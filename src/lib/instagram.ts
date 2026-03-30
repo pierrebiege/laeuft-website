@@ -46,6 +46,7 @@ export async function fetchAccountProfile() {
 }
 
 // Fetch account-level insights for a specific day
+// Note: profile_views and website_clicks were deprecated in v21 (Jan 2025)
 export async function fetchAccountInsights(since: string, until: string) {
   const id = getAccountId()
   return graphFetch<{
@@ -55,7 +56,7 @@ export async function fetchAccountInsights(since: string, until: string) {
       values: Array<{ value: number; end_time: string }>
     }>
   }>(`/${id}/insights`, {
-    metric: 'impressions,reach,profile_views,website_clicks,accounts_engaged',
+    metric: 'impressions,reach,accounts_engaged,follows_and_unfollows',
     period: 'day',
     since,
     until,
@@ -93,7 +94,7 @@ export async function fetchMediaInsights(mediaId: string) {
         values: Array<{ value: number }>
       }>
     }>(`/${mediaId}/insights`, {
-      metric: 'reach,impressions,saved,shares,plays',
+      metric: 'reach,impressions,saved,shares,plays,views',
     })
 
     const metrics: Record<string, number> = {}
