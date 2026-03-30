@@ -270,7 +270,7 @@ export default function InsightsPage() {
         {/* AUDIENCE */}
         <div className="mb-12">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Zielgruppe</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4">
             {/* Countries */}
             <div className="bg-white border border-gray-200 rounded-2xl p-5">
               <p className="text-sm font-semibold text-gray-900 mb-3">Länder</p>
@@ -317,42 +317,6 @@ export default function InsightsPage() {
               ) : <p className="text-xs text-gray-400">Keine Daten</p>}
             </div>
 
-            {/* Age & Gender */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <p className="text-sm font-semibold text-gray-900 mb-3">Alter & Geschlecht</p>
-              {data.audience.ageGender && data.audience.ageGender.length > 0 ? (() => {
-                const maxAG = data.audience.ageGender[0]?.value || 1
-                const maleTotal = data.audience.ageGender.filter(a => a.key.startsWith('M')).reduce((s, a) => s + a.value, 0)
-                const femaleTotal = data.audience.ageGender.filter(a => a.key.startsWith('F')).reduce((s, a) => s + a.value, 0)
-                const total = maleTotal + femaleTotal || 1
-                const groups: Record<string, { m: number; f: number }> = {}
-                data.audience.ageGender.forEach(a => {
-                  const [gender, age] = a.key.split('.')
-                  if (!age) return
-                  if (!groups[age]) groups[age] = { m: 0, f: 0 }
-                  if (gender === 'M') groups[age].m = a.value
-                  if (gender === 'F') groups[age].f = a.value
-                })
-                const sortedGroups = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]))
-                return (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-xs mb-2">
-                      <span className="w-3 h-3 rounded bg-blue-500" /> Männlich {((maleTotal / total) * 100).toFixed(0)}%
-                      <span className="w-3 h-3 rounded bg-pink-500 ml-2" /> Weiblich {((femaleTotal / total) * 100).toFixed(0)}%
-                    </div>
-                    {sortedGroups.map(([age, vals]) => (
-                      <div key={age}>
-                        <p className="text-xs text-gray-500 mb-1">{age}</p>
-                        <div className="flex gap-0.5">
-                          <div className="h-2 bg-blue-500 rounded-l-full" style={{ width: `${(vals.m / maxAG) * 100}%` }} />
-                          <div className="h-2 bg-pink-500 rounded-r-full" style={{ width: `${(vals.f / maxAG) * 100}%` }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })() : <p className="text-xs text-gray-400">Keine Daten</p>}
-            </div>
           </div>
         </div>
 
