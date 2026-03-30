@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import manualStories from '@/data/manual-stories.json'
 import {
   BarChart3,
   Eye,
@@ -636,52 +637,51 @@ export default function PublicInsightsPage() {
         </div>
       </section>
 
-      {/* STORIES SECTION (active only, no archiving) */}
+      {/* STORIES SECTION */}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white flex items-center gap-2">
             <Camera size={18} />
-            Aktuelle Stories
+            Stories ({(manualStories as Array<{id:string}>).length})
           </h2>
         </div>
 
-        {storiesLoading ? (
-          <div className="flex items-center gap-2 py-6 justify-center">
-            <RefreshCw size={16} className="animate-spin text-zinc-400" />
-            <span className="text-sm text-zinc-500">Stories laden...</span>
-          </div>
-        ) : activeStories.length > 0 ? (
-          <div className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
-            {activeStories.map((story) => (
-              <div
-                key={story.id}
-                className="flex-shrink-0 w-[120px]"
-              >
-                <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-pink-500">
-                  {(story.thumbnail_url || story.media_url) ? (
-                    <img
-                      src={story.thumbnail_url || story.media_url}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                      <Camera size={24} />
-                    </div>
-                  )}
+        {/* Active stories from API */}
+        {activeStories.length > 0 && (
+          <div className="mb-4">
+            <p className="text-xs text-zinc-400 mb-2">Aktive Stories</p>
+            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+              {activeStories.map((story) => (
+                <div key={story.id} className="flex-shrink-0 w-[100px]">
+                  <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-pink-500">
+                    {(story.thumbnail_url || story.media_url) ? (
+                      <img src={story.thumbnail_url || story.media_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-zinc-400"><Camera size={20} /></div>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-zinc-400 mt-1 text-center">{formatDate(story.timestamp)}</p>
                 </div>
-                <p className="text-[10px] text-zinc-400 mt-1 text-center">
-                  {formatDate(story.timestamp)}
-                </p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center">
-            <Camera size={24} className="mx-auto text-zinc-600 mb-2" />
-            <p className="text-sm text-zinc-500">Keine aktiven Stories gerade</p>
+              ))}
+            </div>
           </div>
         )}
+
+        {/* Archived / manual stories */}
+        <p className="text-xs text-zinc-400 mb-2">Story-Archiv (letzte 10 Tage)</p>
+        <div className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
+          {(manualStories as Array<{id:string; image:string; date:string; views:number}>).map((story) => (
+            <div key={story.id} className="flex-shrink-0 w-[100px]">
+              <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-zinc-700">
+                <img src={story.image} alt="" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-center mt-1">
+                <p className="text-[10px] text-zinc-300 font-medium">{formatNumber(story.views)} Aufrufe</p>
+                <p className="text-[10px] text-zinc-500">{new Date(story.date).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' })}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* POST DETAIL MODAL */}

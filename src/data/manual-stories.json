@@ -1,0 +1,499 @@
+[
+  {
+    "id": "manual-story-001",
+    "image": "/stories/story-001.png",
+    "date": "2026-03-21",
+    "views": 3675,
+    "order": 1
+  },
+  {
+    "id": "manual-story-002",
+    "image": "/stories/story-002.png",
+    "date": "2026-03-21",
+    "views": 3725,
+    "order": 2
+  },
+  {
+    "id": "manual-story-003",
+    "image": "/stories/story-003.png",
+    "date": "2026-03-21",
+    "views": 3775,
+    "order": 3
+  },
+  {
+    "id": "manual-story-004",
+    "image": "/stories/story-004.png",
+    "date": "2026-03-21",
+    "views": 3825,
+    "order": 4
+  },
+  {
+    "id": "manual-story-005",
+    "image": "/stories/story-005.png",
+    "date": "2026-03-21",
+    "views": 3875,
+    "order": 5
+  },
+  {
+    "id": "manual-story-006",
+    "image": "/stories/story-006.png",
+    "date": "2026-03-22",
+    "views": 3350,
+    "order": 6
+  },
+  {
+    "id": "manual-story-007",
+    "image": "/stories/story-007.png",
+    "date": "2026-03-22",
+    "views": 3400,
+    "order": 7
+  },
+  {
+    "id": "manual-story-008",
+    "image": "/stories/story-008.png",
+    "date": "2026-03-22",
+    "views": 3450,
+    "order": 8
+  },
+  {
+    "id": "manual-story-009",
+    "image": "/stories/story-009.png",
+    "date": "2026-03-22",
+    "views": 3500,
+    "order": 9
+  },
+  {
+    "id": "manual-story-010",
+    "image": "/stories/story-010.png",
+    "date": "2026-03-22",
+    "views": 3550,
+    "order": 10
+  },
+  {
+    "id": "manual-story-011",
+    "image": "/stories/story-011.png",
+    "date": "2026-03-22",
+    "views": 3600,
+    "order": 11
+  },
+  {
+    "id": "manual-story-012",
+    "image": "/stories/story-012.png",
+    "date": "2026-03-23",
+    "views": 3025,
+    "order": 12
+  },
+  {
+    "id": "manual-story-013",
+    "image": "/stories/story-013.png",
+    "date": "2026-03-23",
+    "views": 3075,
+    "order": 13
+  },
+  {
+    "id": "manual-story-014",
+    "image": "/stories/story-014.png",
+    "date": "2026-03-23",
+    "views": 3125,
+    "order": 14
+  },
+  {
+    "id": "manual-story-015",
+    "image": "/stories/story-015.png",
+    "date": "2026-03-23",
+    "views": 3175,
+    "order": 15
+  },
+  {
+    "id": "manual-story-016",
+    "image": "/stories/story-016.png",
+    "date": "2026-03-23",
+    "views": 3225,
+    "order": 16
+  },
+  {
+    "id": "manual-story-017",
+    "image": "/stories/story-017.png",
+    "date": "2026-03-23",
+    "views": 3275,
+    "order": 17
+  },
+  {
+    "id": "manual-story-018",
+    "image": "/stories/story-018.png",
+    "date": "2026-03-23",
+    "views": 3325,
+    "order": 18
+  },
+  {
+    "id": "manual-story-019",
+    "image": "/stories/story-019.png",
+    "date": "2026-03-24",
+    "views": 2825,
+    "order": 19
+  },
+  {
+    "id": "manual-story-020",
+    "image": "/stories/story-020.png",
+    "date": "2026-03-24",
+    "views": 2875,
+    "order": 20
+  },
+  {
+    "id": "manual-story-021",
+    "image": "/stories/story-021.png",
+    "date": "2026-03-24",
+    "views": 2925,
+    "order": 21
+  },
+  {
+    "id": "manual-story-022",
+    "image": "/stories/story-022.png",
+    "date": "2026-03-24",
+    "views": 2975,
+    "order": 22
+  },
+  {
+    "id": "manual-story-023",
+    "image": "/stories/story-023.png",
+    "date": "2026-03-24",
+    "views": 3025,
+    "order": 23
+  },
+  {
+    "id": "manual-story-024",
+    "image": "/stories/story-024.png",
+    "date": "2026-03-24",
+    "views": 3075,
+    "order": 24
+  },
+  {
+    "id": "manual-story-025",
+    "image": "/stories/story-025.png",
+    "date": "2026-03-24",
+    "views": 3125,
+    "order": 25
+  },
+  {
+    "id": "manual-story-026",
+    "image": "/stories/story-026.png",
+    "date": "2026-03-25",
+    "views": 2625,
+    "order": 26
+  },
+  {
+    "id": "manual-story-027",
+    "image": "/stories/story-027.png",
+    "date": "2026-03-25",
+    "views": 2675,
+    "order": 27
+  },
+  {
+    "id": "manual-story-028",
+    "image": "/stories/story-028.png",
+    "date": "2026-03-25",
+    "views": 2725,
+    "order": 28
+  },
+  {
+    "id": "manual-story-029",
+    "image": "/stories/story-029.png",
+    "date": "2026-03-25",
+    "views": 2775,
+    "order": 29
+  },
+  {
+    "id": "manual-story-030",
+    "image": "/stories/story-030.png",
+    "date": "2026-03-25",
+    "views": 2825,
+    "order": 30
+  },
+  {
+    "id": "manual-story-031",
+    "image": "/stories/story-031.png",
+    "date": "2026-03-25",
+    "views": 2875,
+    "order": 31
+  },
+  {
+    "id": "manual-story-032",
+    "image": "/stories/story-032.png",
+    "date": "2026-03-25",
+    "views": 2925,
+    "order": 32
+  },
+  {
+    "id": "manual-story-033",
+    "image": "/stories/story-033.png",
+    "date": "2026-03-26",
+    "views": 2725,
+    "order": 33
+  },
+  {
+    "id": "manual-story-034",
+    "image": "/stories/story-034.png",
+    "date": "2026-03-26",
+    "views": 2775,
+    "order": 34
+  },
+  {
+    "id": "manual-story-035",
+    "image": "/stories/story-035.png",
+    "date": "2026-03-26",
+    "views": 2825,
+    "order": 35
+  },
+  {
+    "id": "manual-story-036",
+    "image": "/stories/story-036.png",
+    "date": "2026-03-26",
+    "views": 2875,
+    "order": 36
+  },
+  {
+    "id": "manual-story-037",
+    "image": "/stories/story-037.png",
+    "date": "2026-03-26",
+    "views": 2925,
+    "order": 37
+  },
+  {
+    "id": "manual-story-038",
+    "image": "/stories/story-038.png",
+    "date": "2026-03-26",
+    "views": 2975,
+    "order": 38
+  },
+  {
+    "id": "manual-story-039",
+    "image": "/stories/story-039.png",
+    "date": "2026-03-26",
+    "views": 3025,
+    "order": 39
+  },
+  {
+    "id": "manual-story-040",
+    "image": "/stories/story-040.png",
+    "date": "2026-03-27",
+    "views": 2500,
+    "order": 40
+  },
+  {
+    "id": "manual-story-041",
+    "image": "/stories/story-041.png",
+    "date": "2026-03-27",
+    "views": 2550,
+    "order": 41
+  },
+  {
+    "id": "manual-story-042",
+    "image": "/stories/story-042.png",
+    "date": "2026-03-27",
+    "views": 2600,
+    "order": 42
+  },
+  {
+    "id": "manual-story-043",
+    "image": "/stories/story-043.png",
+    "date": "2026-03-27",
+    "views": 2650,
+    "order": 43
+  },
+  {
+    "id": "manual-story-044",
+    "image": "/stories/story-044.png",
+    "date": "2026-03-27",
+    "views": 2700,
+    "order": 44
+  },
+  {
+    "id": "manual-story-045",
+    "image": "/stories/story-045.png",
+    "date": "2026-03-27",
+    "views": 2750,
+    "order": 45
+  },
+  {
+    "id": "manual-story-046",
+    "image": "/stories/story-046.png",
+    "date": "2026-03-27",
+    "views": 2800,
+    "order": 46
+  },
+  {
+    "id": "manual-story-047",
+    "image": "/stories/story-047.png",
+    "date": "2026-03-27",
+    "views": 2850,
+    "order": 47
+  },
+  {
+    "id": "manual-story-048",
+    "image": "/stories/story-048.png",
+    "date": "2026-03-28",
+    "views": 2300,
+    "order": 48
+  },
+  {
+    "id": "manual-story-049",
+    "image": "/stories/story-049.png",
+    "date": "2026-03-28",
+    "views": 2350,
+    "order": 49
+  },
+  {
+    "id": "manual-story-050",
+    "image": "/stories/story-050.png",
+    "date": "2026-03-28",
+    "views": 2400,
+    "order": 50
+  },
+  {
+    "id": "manual-story-051",
+    "image": "/stories/story-051.png",
+    "date": "2026-03-28",
+    "views": 2450,
+    "order": 51
+  },
+  {
+    "id": "manual-story-052",
+    "image": "/stories/story-052.png",
+    "date": "2026-03-28",
+    "views": 2500,
+    "order": 52
+  },
+  {
+    "id": "manual-story-053",
+    "image": "/stories/story-053.png",
+    "date": "2026-03-28",
+    "views": 2550,
+    "order": 53
+  },
+  {
+    "id": "manual-story-054",
+    "image": "/stories/story-054.png",
+    "date": "2026-03-28",
+    "views": 2600,
+    "order": 54
+  },
+  {
+    "id": "manual-story-055",
+    "image": "/stories/story-055.png",
+    "date": "2026-03-28",
+    "views": 2650,
+    "order": 55
+  },
+  {
+    "id": "manual-story-056",
+    "image": "/stories/story-056.png",
+    "date": "2026-03-29",
+    "views": 2800,
+    "order": 56
+  },
+  {
+    "id": "manual-story-057",
+    "image": "/stories/story-057.png",
+    "date": "2026-03-29",
+    "views": 2850,
+    "order": 57
+  },
+  {
+    "id": "manual-story-058",
+    "image": "/stories/story-058.png",
+    "date": "2026-03-29",
+    "views": 2900,
+    "order": 58
+  },
+  {
+    "id": "manual-story-059",
+    "image": "/stories/story-059.png",
+    "date": "2026-03-29",
+    "views": 2950,
+    "order": 59
+  },
+  {
+    "id": "manual-story-060",
+    "image": "/stories/story-060.png",
+    "date": "2026-03-29",
+    "views": 3000,
+    "order": 60
+  },
+  {
+    "id": "manual-story-061",
+    "image": "/stories/story-061.png",
+    "date": "2026-03-29",
+    "views": 3050,
+    "order": 61
+  },
+  {
+    "id": "manual-story-062",
+    "image": "/stories/story-062.png",
+    "date": "2026-03-29",
+    "views": 3100,
+    "order": 62
+  },
+  {
+    "id": "manual-story-063",
+    "image": "/stories/story-063.png",
+    "date": "2026-03-29",
+    "views": 3150,
+    "order": 63
+  },
+  {
+    "id": "manual-story-064",
+    "image": "/stories/story-064.png",
+    "date": "2026-03-30",
+    "views": 3100,
+    "order": 64
+  },
+  {
+    "id": "manual-story-065",
+    "image": "/stories/story-065.png",
+    "date": "2026-03-30",
+    "views": 3150,
+    "order": 65
+  },
+  {
+    "id": "manual-story-066",
+    "image": "/stories/story-066.png",
+    "date": "2026-03-30",
+    "views": 3200,
+    "order": 66
+  },
+  {
+    "id": "manual-story-067",
+    "image": "/stories/story-067.png",
+    "date": "2026-03-30",
+    "views": 3250,
+    "order": 67
+  },
+  {
+    "id": "manual-story-068",
+    "image": "/stories/story-068.png",
+    "date": "2026-03-30",
+    "views": 3300,
+    "order": 68
+  },
+  {
+    "id": "manual-story-069",
+    "image": "/stories/story-069.png",
+    "date": "2026-03-30",
+    "views": 3350,
+    "order": 69
+  },
+  {
+    "id": "manual-story-070",
+    "image": "/stories/story-070.png",
+    "date": "2026-03-30",
+    "views": 3400,
+    "order": 70
+  },
+  {
+    "id": "manual-story-071",
+    "image": "/stories/story-071.png",
+    "date": "2026-03-30",
+    "views": 3450,
+    "order": 71
+  }
+]

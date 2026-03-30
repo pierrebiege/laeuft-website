@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import manualStories from '@/data/manual-stories.json'
 import {
   BarChart3,
   Eye,
@@ -671,41 +672,26 @@ export default function InstagramInsightsPage() {
           </div>
         )}
 
-        {/* Archived Stories */}
+        {/* Archived Stories from API */}
         {archivedStories.length > 0 && (
           <div className="mt-6">
             <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-3">
-              Archivierte Stories
+              Archivierte Stories (API)
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
               {archivedStories.map((story) => (
-                <div
-                  key={story.id}
-                  className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden"
-                >
+                <div key={story.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
                   <div className="aspect-[9/16] bg-zinc-100 dark:bg-zinc-800">
                     {(story.thumbnail_url || story.media_url) ? (
-                      <img
-                        src={story.thumbnail_url || story.media_url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={story.thumbnail_url || story.media_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                        <Camera size={20} />
-                      </div>
+                      <div className="w-full h-full flex items-center justify-center text-zinc-400"><Camera size={20} /></div>
                     )}
                   </div>
                   <div className="p-2 space-y-0.5">
                     <div className="flex items-center justify-between text-[10px] text-zinc-500">
-                      <span className="flex items-center gap-0.5">
-                        <Eye size={9} />
-                        {formatNumber(story.impressions)}
-                      </span>
-                      <span className="flex items-center gap-0.5">
-                        <Users size={9} />
-                        {formatNumber(story.reach)}
-                      </span>
+                      <span className="flex items-center gap-0.5"><Eye size={9} />{formatNumber(story.impressions)}</span>
+                      <span className="flex items-center gap-0.5"><Users size={9} />{formatNumber(story.reach)}</span>
                     </div>
                     <p className="text-[10px] text-zinc-400">{formatDate(story.timestamp)}</p>
                   </div>
@@ -714,6 +700,26 @@ export default function InstagramInsightsPage() {
             </div>
           </div>
         )}
+
+        {/* Manual Story Archive (Screenshots) */}
+        <div className="mt-6">
+          <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-3">
+            Story-Archiv (letzte 10 Tage) -- {(manualStories as Array<{id:string}>).length} Stories
+          </h3>
+          <div className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
+            {(manualStories as Array<{id:string; image:string; date:string; views:number}>).map((story) => (
+              <div key={story.id} className="flex-shrink-0 w-[100px]">
+                <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 ring-2 ring-zinc-300 dark:ring-zinc-700">
+                  <img src={story.image} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="text-center mt-1">
+                  <p className="text-[10px] text-zinc-700 dark:text-zinc-300 font-medium">{formatNumber(story.views)} Aufrufe</p>
+                  <p className="text-[10px] text-zinc-400">{new Date(story.date).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' })}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* POST DETAIL MODAL */}
