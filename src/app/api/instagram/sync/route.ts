@@ -56,13 +56,18 @@ export async function POST(request: NextRequest) {
         twoDaysAgo.toISOString().split('T')[0],
         yesterday.toISOString().split('T')[0]
       )
-      for (const metric of insights.data || []) {
+      // Daily metrics
+      for (const metric of insights.daily || []) {
         const val = metric.values?.[metric.values.length - 1]?.value || 0
         switch (metric.name) {
           case 'reach': reach = val; break
-          case 'impressions': impressions = val; break
-          case 'profile_views': profileViews = val; break
-          case 'website_clicks': websiteClicks = val; break
+        }
+      }
+      // Total value metrics
+      for (const metric of insights.totals || []) {
+        const val = metric.total_value?.value ?? (metric.values?.[metric.values.length - 1]?.value || 0)
+        switch (metric.name) {
+          case 'views': impressions = val; break
           case 'accounts_engaged': accountsEngaged = val; break
         }
       }
