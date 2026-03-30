@@ -71,14 +71,25 @@ export async function GET(request: Request) {
       (m) => new Date(m.timestamp).getTime() >= cutoff
     )
 
-    // Parse account-level insights
+    // Parse account-level insights (daily + total_value metrics)
     const accountInsights: Record<string, number> = {}
-    for (const metric of accountInsightsRaw.data || []) {
+    // Daily metrics (reach): sum all daily values
+    for (const metric of accountInsightsRaw.daily || []) {
       const total = (metric.values || []).reduce(
-        (sum: number, v: { value: number }) => sum + (v.value || 0),
-        0
+        (sum: number, v: { value: number }) => sum + (v.value || 0), 0
       )
       accountInsights[metric.name] = total
+    }
+    // Total value metrics (views, accounts_engaged, follows_and_unfollows)
+    for (const metric of accountInsightsRaw.totals || []) {
+      if (metric.total_value?.value !== undefined) {
+        accountInsights[metric.name] = metric.total_value.value
+      } else {
+        const total = (metric.values || []).reduce(
+          (sum: number, v: { value: number }) => sum + (v.value || 0), 0
+        )
+        accountInsights[metric.name] = total
+      }
     }
 
     // Parse audience demographics
@@ -89,7 +100,8 @@ export async function GET(request: Request) {
 
     // Aggregate metrics from period media
     const totalReach = accountInsights.reach || periodMedia.reduce((s, p) => s + p.reach, 0)
-    const totalImpressions = accountInsights.views || accountInsights.impressions || periodMedia.reduce((s, p) => s + p.impressions, 0)
+    const totalViews = accountInsights.views || periodMedia.reduce((s, p) => s + p.impressions, 0)
+    const totalImpressions = totalViews // views replaces impressions in v21+
     const totalLikes = periodMedia.reduce((s, p) => s + p.like_count, 0)
     const totalComments = periodMedia.reduce((s, p) => s + p.comments_count, 0)
     const totalSaved = periodMedia.reduce((s, p) => s + p.saved, 0)
@@ -97,7 +109,7 @@ export async function GET(request: Request) {
     const totalPlays = periodMedia.reduce((s, p) => s + p.plays, 0)
     const totalInteractions = totalLikes + totalComments + totalSaved + totalShares
     const followsAndUnfollows = accountInsights.follows_and_unfollows || 0
-    const accountsEngaged = accountInsights.accounts_engaged || 0
+    const accountsEngaged = accountInsights.accounts_engaged || periodMedia.reduce((s, p) => s + p.like_count + p.comments_count, 0)
 
     const engagementRate =
       profile.followers_count > 0 && periodMedia.length > 0

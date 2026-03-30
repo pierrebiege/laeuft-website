@@ -46,37 +46,43 @@ export async function fetchAccountProfile() {
 }
 
 // Fetch account-level insights
-// v21+: impressions deprecated, use views. profile_views/website_clicks removed.
+// v21+: views/accounts_engaged/follows_and_unfollows need metric_type=total_value
 export async function fetchAccountInsights(since: string, until: string) {
   const id = getAccountId()
 
-  // Try multiple metric combinations since availability varies by account type
-  const metricSets = [
-    'views,reach,accounts_engaged,follows_and_unfollows',
-    'impressions,reach,accounts_engaged',
-    'reach',
-  ]
+  // Fetch daily metrics (reach works with period=day)
+  const [dailyRes, totalRes] = await Promise.all([
+    graphFetch<{
+      data: Array<{
+        name: string
+        period: string
+        values: Array<{ value: number; end_time: string }>
+      }>
+    }>(`/${id}/insights`, {
+      metric: 'reach',
+      period: 'day',
+      since,
+      until,
+    }).catch(() => ({ data: [] })),
 
-  for (const metrics of metricSets) {
-    try {
-      const result = await graphFetch<{
-        data: Array<{
-          name: string
-          period: string
-          values: Array<{ value: number; end_time: string }>
-        }>
-      }>(`/${id}/insights`, {
-        metric: metrics,
-        period: 'day',
-        since,
-        until,
-      })
-      return result
-    } catch {
-      continue
-    }
-  }
-  return { data: [] }
+    // Fetch total_value metrics (views, accounts_engaged, follows_and_unfollows)
+    graphFetch<{
+      data: Array<{
+        name: string
+        period: string
+        total_value?: { value: number }
+        values: Array<{ value: number; end_time: string }>
+      }>
+    }>(`/${id}/insights`, {
+      metric: 'views,accounts_engaged,follows_and_unfollows',
+      metric_type: 'total_value',
+      period: 'day',
+      since,
+      until,
+    }).catch(() => ({ data: [] })),
+  ])
+
+  return { daily: dailyRes.data || [], totals: totalRes.data || [] }
 }
 
 // Fetch recent media
@@ -107,8 +113,8 @@ export async function fetchMediaInsights(mediaId: string, mediaType?: string) {
   const isReel = mediaType === 'VIDEO' || mediaType === 'REEL'
 
   const metricSets = isReel
-    ? ['reach,saved,shares,views', 'reach,saved,shares,plays']  // try views first, fallback to plays
-    : ['impressions,reach,saved,shares', 'reach,saved']  // images/carousels
+    ? ['reach,saved,shares,views']  // Reels: views works, impressions/plays deprecated
+    : ['reach,saved,views', 'reach,saved']  // images/carousels: impressions deprecated, try views
 
   for (const metrics of metricSets) {
     try {
