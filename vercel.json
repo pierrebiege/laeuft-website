@@ -3,6 +3,18 @@
     {
       "path": "/api/instagram/sync",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/archive-stories",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/training-morning",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/training-evening",
+      "schedule": "0 20 * * *"
     }
   ]
 }
