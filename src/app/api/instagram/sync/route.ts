@@ -137,41 +137,23 @@ export async function POST(request: NextRequest) {
     try {
       const audience = await fetchAudienceDemographics()
 
-      for (const metric of audience.demographics) {
-        const values = metric.values?.[0]?.value
-        if (!values) continue
-
-        let metricType = 'age_gender'
-        if (metric.name.includes('country')) metricType = 'country'
-        else if (metric.name.includes('city')) metricType = 'city'
-
-        for (const [key, value] of Object.entries(values)) {
-          await supabase
-            .from('instagram_audience')
-            .upsert({
-              date: today,
-              metric_type: metricType,
-              dimension_key: key,
-              value: value as number,
-            }, { onConflict: 'date,metric_type,dimension_key' })
-        }
+      // Save countries
+      for (const c of audience.countries) {
+        await supabase.from('instagram_audience').upsert({
+          date: today, metric_type: 'country', dimension_key: c.key, value: c.value,
+        }, { onConflict: 'date,metric_type,dimension_key' })
       }
-
-      // Online followers
-      for (const metric of audience.online_followers) {
-        for (const dayEntry of metric.values || []) {
-          if (!dayEntry.value) continue
-          for (const [hour, count] of Object.entries(dayEntry.value)) {
-            await supabase
-              .from('instagram_audience')
-              .upsert({
-                date: today,
-                metric_type: 'online_followers',
-                dimension_key: hour,
-                value: count as number,
-              }, { onConflict: 'date,metric_type,dimension_key' })
-          }
-        }
+      // Save cities
+      for (const c of audience.cities) {
+        await supabase.from('instagram_audience').upsert({
+          date: today, metric_type: 'city', dimension_key: c.key, value: c.value,
+        }, { onConflict: 'date,metric_type,dimension_key' })
+      }
+      // Save age/gender
+      for (const a of audience.ageGender) {
+        await supabase.from('instagram_audience').upsert({
+          date: today, metric_type: 'age_gender', dimension_key: a.key, value: a.value,
+        }, { onConflict: 'date,metric_type,dimension_key' })
       }
       results.push('Audience data saved')
     } catch (e) {
