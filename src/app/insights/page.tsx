@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import manualStories from '@/data/manual-stories.json'
 import {
   BarChart3,
@@ -60,7 +60,6 @@ const COUNTRY_FLAGS: Record<string, { flag: string; name: string }> = {
 function getCountryDisplay(code: string) {
   const entry = COUNTRY_FLAGS[code]
   if (entry) return { flag: entry.flag, name: entry.name }
-  // Generate flag from code
   const flag = code
     .toUpperCase()
     .split('')
@@ -172,7 +171,17 @@ interface StoryItem {
   permalink?: string
 }
 
+type ManualStory = {
+  id: string
+  image: string
+  date: string
+  views: number
+  order: number
+}
+
 const INSIGHTS_PASSWORD = process.env.NEXT_PUBLIC_INSIGHTS_PASSWORD || 'laeuft2026'
+
+const PINK = '#E1306C'
 
 export default function PublicInsightsPage() {
   // Password gate
@@ -194,6 +203,21 @@ export default function PublicInsightsPage() {
 
   // Carousel scroll
   const carouselRef = useRef<HTMLDivElement>(null)
+
+  // Compute total story views
+  const totalStoryViews = useMemo(() => {
+    return (manualStories as ManualStory[]).reduce((sum, s) => sum + s.views, 0)
+  }, [])
+
+  // Compute date range string
+  const dateRangeString = useMemo(() => {
+    const end = new Date()
+    const start = new Date()
+    start.setDate(end.getDate() - period)
+    const fmt = (d: Date) =>
+      d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: '2-digit' })
+    return `${fmt(start)} - ${fmt(end)}`
+  }, [period])
 
   // Check sessionStorage on mount
   useEffect(() => {
@@ -270,10 +294,9 @@ export default function PublicInsightsPage() {
     let totalUnknown = 0
 
     for (const entry of entries) {
-      // Format: "M.25-34" or "F.18-24" or "U.35-44"
       const parts = entry.key.split('.')
       if (parts.length !== 2) continue
-      const gender = parts[0] // M, F, or U
+      const gender = parts[0]
       const age = parts[1]
 
       if (!ageGroups[age]) ageGroups[age] = { male: 0, female: 0, unknown: 0 }
@@ -315,7 +338,7 @@ export default function PublicInsightsPage() {
   // PASSWORD GATE
   if (!unlocked) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-black tracking-tight text-white mb-2">
@@ -357,8 +380,8 @@ export default function PublicInsightsPage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 py-20 justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="flex items-center gap-3">
           <RefreshCw size={20} className="animate-spin text-zinc-400" />
           <p className="text-zinc-500">Instagram Insights laden...</p>
         </div>
@@ -368,8 +391,8 @@ export default function PublicInsightsPage() {
 
   if (error || !data) {
     return (
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-red-950/30 border border-red-800 rounded-xl p-6 mt-8">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="bg-red-950/30 border border-red-800 rounded-xl p-6 max-w-md w-full">
           <p className="text-red-400">{error || 'Keine Daten'}</p>
           <button
             onClick={fetchData}
@@ -385,78 +408,133 @@ export default function PublicInsightsPage() {
   const last20Media = data.media.slice(0, 20)
   const audienceData = parseAgeGender(data.audience.ageGender || [])
   const countriesTotal = data.audience.countries.reduce((s, c) => s + c.value, 0)
-  const topCountries = data.audience.countries.slice(0, 10)
-  const topCities = data.audience.cities.slice(0, 10)
+  const topCountries = data.audience.countries.slice(0, 8)
+  const topCities = data.audience.cities.slice(0, 8)
   const maxCityValue = topCities[0]?.value || 1
+  const maxCountryValue = topCountries[0]?.value || 1
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 px-4 py-8">
-      {/* HEADER */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-white">Instagram Insights</h1>
-          <div className="flex gap-1">
-            {[7, 14, 30].map((p) => (
-              <button key={p} onClick={() => setPeriod(p)}
-                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
-                  period === p ? 'bg-white text-zinc-900' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-                }`}>
-                {p} Tage
-              </button>
-            ))}
+    <div className="min-h-screen bg-zinc-950">
+      {/* ============================================ */}
+      {/* 1. HERO SECTION */}
+      {/* ============================================ */}
+      <section className="relative w-full bg-zinc-950 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-10 md:gap-16">
+          {/* Left: text */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[0.9]">
+              INSIGHTS
+            </h1>
+            <h2 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[0.9] mt-2">
+              PIERRE BIEGE
+            </h2>
+
+            {/* Period tabs */}
+            <div className="flex items-center gap-2 mt-8">
+              {[7, 14, 30].map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPeriod(p)}
+                  className={`text-sm font-semibold px-5 py-2 rounded-full transition-all ${
+                    period === p
+                      ? 'bg-white text-zinc-900'
+                      : 'bg-zinc-800/60 text-zinc-400 hover:bg-zinc-700/80 hover:text-zinc-200'
+                  }`}
+                >
+                  {p} Tage
+                </button>
+              ))}
+            </div>
+
+            {/* Date range + LIVE badge */}
+            <div className="flex items-center gap-4 mt-4">
+              <span className="text-zinc-400 text-sm tracking-wide">{dateRangeString}</span>
+              <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-800/40">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                LIVE
+              </span>
+            </div>
+          </div>
+
+          {/* Right: 3 stacked images */}
+          <div className="flex flex-row md:flex-col gap-3 flex-shrink-0">
+            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+              <img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover" />
+            </div>
+            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+              <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" />
+            </div>
+            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+              <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          {data.fetchedAt && (
-            <span className="text-xs text-zinc-400">
-              Aktualisiert: {new Date(data.fetchedAt).toLocaleString('de-CH')}
-            </span>
-          )}
+      </section>
+
+      {/* ============================================ */}
+      {/* 2. INSTAGRAM OVERVIEW - 4 KPI CARDS */}
+      {/* ============================================ */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500 mb-6">
+          Instagram Overview
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+              Total Followers
+            </p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(data.profile.followers_count)}
+            </p>
+          </div>
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
+              Views
+            </p>
+            <p className="text-[10px] text-zinc-400 mb-2">Last {period} Days</p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(data.accountInsights.impressions || data.metrics.totalImpressions)}
+            </p>
+          </div>
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+              Total Story Views
+            </p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(totalStoryViews)}
+            </p>
+          </div>
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+              Interactions
+            </p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(data.accountInsights.accountsEngaged || data.metrics.totalInteractions)}
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* 4 KPI CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard
-          label="Aufrufe"
-          value={data.accountInsights.impressions || data.metrics.totalImpressions}
-          icon={<Eye size={18} />}
-        />
-        <KPICard
-          label="Erreichte Konten"
-          value={data.accountInsights.reach || data.metrics.totalReach}
-          icon={<Users size={18} />}
-        />
-        <KPICard
-          label="Interagierte Konten"
-          value={data.accountInsights.accountsEngaged || data.metrics.totalInteractions}
-          icon={<Heart size={18} />}
-        />
-        <KPICard
-          label="Follower"
-          value={data.profile.followers_count}
-          icon={<UserCircle size={18} />}
-        />
-      </div>
-
-      {/* POST CAROUSEL */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">
+      {/* ============================================ */}
+      {/* 3. POST CAROUSEL */}
+      {/* ============================================ */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
             Letzte 20 Beitr&auml;ge
           </h2>
           <div className="flex items-center gap-1">
             <button
               onClick={() => scrollCarousel('left')}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+              className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => scrollCarousel('right')}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+              className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>
@@ -507,184 +585,214 @@ export default function PublicInsightsPage() {
                     {post.comments_count}
                   </span>
                 </div>
-                <p className="text-[11px] text-zinc-400">{formatDate(post.timestamp)}</p>
+                <p className="text-[11px] text-zinc-500">{formatDate(post.timestamp)}</p>
               </div>
             </button>
           ))}
         </div>
       </section>
 
-      {/* AUDIENCE SECTION */}
-      <section>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Users size={18} />
+      {/* ============================================ */}
+      {/* 4. AUDIENCE SECTION */}
+      {/* ============================================ */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
           Zielgruppe
         </h2>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Countries */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          {/* Top-Standorte (Laender) */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
               <Globe size={14} />
-              L&auml;nder
+              Top-Standorte (L&auml;nder)
             </h3>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {topCountries.map((c) => {
                 const display = getCountryDisplay(c.key)
                 const pct = countriesTotal > 0 ? (c.value / countriesTotal) * 100 : 0
                 return (
-                  <div key={c.key} className="flex items-center gap-2">
-                    <span className="text-sm w-6 text-center">{display.flag}</span>
-                    <span className="text-xs text-zinc-300 w-24 truncate">{display.name}</span>
-                    <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div key={c.key}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-zinc-200 flex items-center gap-2">
+                        <span>{display.flag}</span>
+                        {display.name}
+                      </span>
+                      <span className="text-xs text-zinc-500">{pct.toFixed(1)}%</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-white rounded-full transition-all"
-                        style={{ width: `${pct}%` }}
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${pct}%`, backgroundColor: PINK }}
                       />
                     </div>
-                    <span className="text-xs text-zinc-500 w-10 text-right">{pct.toFixed(1)}%</span>
                   </div>
                 )
               })}
             </div>
           </div>
 
-          {/* Cities */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <MapPin size={14} />
-              St&auml;dte
-            </h3>
-            <div className="space-y-2.5">
-              {topCities.map((c) => {
-                const pct = maxCityValue > 0 ? (c.value / maxCityValue) * 100 : 0
-                return (
-                  <div key={c.key} className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-300 w-28 truncate">{c.key}</span>
-                    <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-white rounded-full transition-all"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-zinc-500 w-12 text-right">{formatNumber(c.value)}</span>
-                  </div>
-                )
-              })}
-              {topCities.length === 0 && (
-                <p className="text-xs text-zinc-400">Keine St&auml;dte-Daten</p>
-              )}
-            </div>
-          </div>
-
-          {/* Age & Gender */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          {/* Altersgruppen */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
               <BarChart3 size={14} />
-              Alter &amp; Geschlecht
+              Altersgruppen
             </h3>
-
-            {/* Gender split bar */}
-            {audienceData.total > 0 && (
-              <div className="mb-5">
-                <div className="flex items-center justify-between text-xs text-zinc-500 mb-1.5">
-                  <span>M&auml;nnlich {audienceData.genderSplit.male}%</span>
-                  <span>Weiblich {audienceData.genderSplit.female}%</span>
-                </div>
-                <div className="h-3 bg-zinc-800 rounded-full overflow-hidden flex">
-                  <div
-                    className="h-full bg-blue-500 rounded-l-full"
-                    style={{ width: `${audienceData.genderSplit.male}%` }}
-                  />
-                  <div
-                    className="h-full bg-pink-500 rounded-r-full"
-                    style={{ width: `${audienceData.genderSplit.female}%` }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Age groups */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               {audienceData.ageGroups.map((ag) => {
                 const maxAge = Math.max(...audienceData.ageGroups.map((a) => a.total), 1)
                 const pct = (ag.total / maxAge) * 100
                 return (
-                  <div key={ag.age} className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400 w-14">{ag.age}</span>
-                    <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden flex">
+                  <div key={ag.age}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-zinc-200">{ag.age}</span>
+                      <span className="text-xs text-zinc-500">{formatNumber(ag.total)}</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500"
-                        style={{
-                          width: `${ag.total > 0 ? (ag.male / maxAge) * 100 : 0}%`,
-                        }}
-                      />
-                      <div
-                        className="h-full bg-pink-500"
-                        style={{
-                          width: `${ag.total > 0 ? (ag.female / maxAge) * 100 : 0}%`,
-                        }}
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${pct}%`, backgroundColor: PINK }}
                       />
                     </div>
-                    <span className="text-xs text-zinc-500 w-10 text-right">{formatNumber(ag.total)}</span>
                   </div>
                 )
               })}
               {audienceData.ageGroups.length === 0 && (
-                <p className="text-xs text-zinc-400">Keine Alters-Daten</p>
+                <p className="text-xs text-zinc-500">Keine Alters-Daten</p>
+              )}
+            </div>
+          </div>
+
+          {/* Top-Standorte (Staedte) */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
+              <MapPin size={14} />
+              Top-Standorte (St&auml;dte)
+            </h3>
+            <div className="space-y-3">
+              {topCities.map((c) => {
+                const pct = maxCityValue > 0 ? (c.value / maxCityValue) * 100 : 0
+                return (
+                  <div key={c.key}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-zinc-200">{c.key}</span>
+                      <span className="text-xs text-zinc-500">{formatNumber(c.value)}</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${pct}%`, backgroundColor: PINK }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+              {topCities.length === 0 && (
+                <p className="text-xs text-zinc-500">Keine St&auml;dte-Daten</p>
               )}
             </div>
           </div>
         </div>
-      </section>
 
-      {/* STORIES SECTION */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Camera size={18} />
-            Stories ({(manualStories as Array<{id:string}>).length})
-          </h2>
-        </div>
-
-        {/* Active stories from API */}
-        {activeStories.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-zinc-400 mb-2">Aktive Stories</p>
-            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-              {activeStories.map((story) => (
-                <div key={story.id} className="flex-shrink-0 w-[100px]">
-                  <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-pink-500">
-                    {(story.thumbnail_url || story.media_url) ? (
-                      <img src={story.thumbnail_url || story.media_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-400"><Camera size={20} /></div>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-zinc-400 mt-1 text-center">{formatDate(story.timestamp)}</p>
-                </div>
-              ))}
+        {/* Geschlecht bar */}
+        {audienceData.total > 0 && (
+          <div className="mt-6 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-xl">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4">
+              Geschlecht
+            </h3>
+            <div className="flex items-center justify-between text-sm text-zinc-300 mb-2">
+              <span>M&auml;nner {audienceData.genderSplit.male}%</span>
+              <span>Frauen {audienceData.genderSplit.female}%</span>
+            </div>
+            <div className="h-4 bg-zinc-800 rounded-full overflow-hidden flex">
+              <div
+                className="h-full rounded-l-full"
+                style={{ width: `${audienceData.genderSplit.male}%`, backgroundColor: '#3B82F6' }}
+              />
+              <div
+                className="h-full rounded-r-full"
+                style={{ width: `${audienceData.genderSplit.female}%`, backgroundColor: PINK }}
+              />
             </div>
           </div>
         )}
+      </section>
 
-        {/* Archived / manual stories */}
-        <p className="text-xs text-zinc-400 mb-2">Story-Archiv (letzte 10 Tage)</p>
-        <div className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
-          {(manualStories as Array<{id:string; image:string; date:string; views:number}>).map((story) => (
-            <div key={story.id} className="flex-shrink-0 w-[100px]">
-              <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-zinc-700">
-                <img src={story.image} alt="" className="w-full h-full object-cover" />
+      {/* ============================================ */}
+      {/* 5. STORIES SECTION */}
+      {/* ============================================ */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+          Storys (Last 14 Days)
+        </h2>
+        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))' }}>
+          {(manualStories as ManualStory[]).map((story) => (
+            <div key={story.id} className="relative group">
+              <div className="aspect-[9/16] rounded-lg overflow-hidden bg-zinc-800">
+                <img
+                  src={story.image}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="text-center mt-1">
-                <p className="text-[10px] text-zinc-300 font-medium">{formatNumber(story.views)} Aufrufe</p>
-                <p className="text-[10px] text-zinc-500">{new Date(story.date).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' })}</p>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg px-1 py-1">
+                <p className="text-[9px] md:text-[10px] text-white font-semibold text-center leading-tight">
+                  {formatNumber(story.views)}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
+      {/* ============================================ */}
+      {/* 6. CTA SECTION */}
+      {/* ============================================ */}
+      <section className="relative w-full mt-12">
+        <div className="relative h-[500px] md:h-[600px] overflow-hidden">
+          <img
+            src="/insights/hero-trail.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-3xl leading-tight">
+              Lass uns gemeinsam etwas bewegen.
+            </h2>
+            <a
+              href="mailto:pierre@laeuft.ch"
+              className="mt-8 inline-block text-sm font-semibold px-8 py-3.5 rounded-full transition-all hover:scale-105"
+              style={{ backgroundColor: PINK, color: 'white' }}
+            >
+              Kontakt aufnehmen
+            </a>
+            <a
+              href="mailto:pierre@laeuft.ch"
+              className="mt-4 text-sm text-zinc-300 hover:text-white transition-colors"
+            >
+              pierre@laeuft.ch
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* 7. FOOTER */}
+      {/* ============================================ */}
+      <footer className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-zinc-800/50">
+        <div className="flex items-center gap-2 text-xs text-zinc-500">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          Live Daten von Instagram
+        </div>
+        <p className="text-xs text-zinc-600">
+          Powered by l&auml;uft.
+        </p>
+      </footer>
+
+      {/* ============================================ */}
       {/* POST DETAIL MODAL */}
+      {/* ============================================ */}
       {selectedPost && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -695,7 +803,6 @@ export default function PublicInsightsPage() {
             className="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close button */}
             <button
               onClick={() => setSelectedPost(null)}
               className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors"
@@ -703,7 +810,6 @@ export default function PublicInsightsPage() {
               <X size={16} />
             </button>
 
-            {/* Image */}
             <div className="aspect-[4/5] bg-zinc-800 rounded-t-2xl overflow-hidden">
               {(selectedPost.thumbnail_url || selectedPost.media_url) ? (
                 <img
@@ -718,9 +824,7 @@ export default function PublicInsightsPage() {
               )}
             </div>
 
-            {/* Metrics */}
             <div className="p-5 space-y-4">
-              {/* Type & Date */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="bg-zinc-800 text-zinc-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
@@ -740,7 +844,6 @@ export default function PublicInsightsPage() {
                 </a>
               </div>
 
-              {/* Metric grid */}
               <div className="grid grid-cols-3 gap-3">
                 <MetricCell icon={<Eye size={14} />} label="Aufrufe" value={selectedPost.impressions || selectedPost.plays || 0} />
                 <MetricCell icon={<Users size={14} />} label="Reichweite" value={selectedPost.reach} />
@@ -750,7 +853,6 @@ export default function PublicInsightsPage() {
                 <MetricCell icon={<Share2 size={14} />} label="Geteilt" value={selectedPost.shares} />
               </div>
 
-              {/* Caption */}
               {selectedPost.caption && (
                 <div>
                   <p
@@ -774,29 +876,6 @@ export default function PublicInsightsPage() {
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-// KPI Card component
-function KPICard({
-  label,
-  value,
-  icon,
-}: {
-  label: string
-  value: number
-  icon: React.ReactNode
-}) {
-  return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-      <div className="flex items-center gap-2 text-zinc-400 mb-2">
-        {icon}
-        <span className="text-xs font-medium">{label}</span>
-      </div>
-      <p className="text-2xl font-bold text-white">
-        {formatNumber(value)}
-      </p>
     </div>
   )
 }
