@@ -441,9 +441,9 @@ export default function InsightsPage() {
                 {audience.countries.slice(0, 5).map((c) => {
                   const pct = profile.followers_count > 0 ? (c.value / profile.followers_count) * 100 : 0
                   return (
-                    <div key={c.code} className="flex items-center gap-2">
-                      <span className="text-sm w-6">{countryFlag(c.code)}</span>
-                      <span className="text-xs text-gray-600 w-8">{c.code}</span>
+                    <div key={c.key} className="flex items-center gap-2">
+                      <span className="text-sm w-6">{countryFlag(c.key)}</span>
+                      <span className="text-xs text-gray-600 w-8">{c.key}</span>
                       <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: PINK }} />
                       </div>
