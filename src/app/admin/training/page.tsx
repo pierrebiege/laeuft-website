@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Copy, ExternalLink, Trash2, Check, Clock, Send, CheckCircle, Archive } from "lucide-react";
+import { Plus, Copy, ExternalLink, Trash2, Check, Clock, Send, CheckCircle, Archive, MessageCircle } from "lucide-react";
 import type { TrainingPlan, Client } from "@/lib/supabase";
 
 type PlanWithClient = TrainingPlan & { client: Client };
@@ -56,6 +56,16 @@ export default function TrainingListPage() {
     } catch {
       alert("Verbindungsfehler");
     }
+  }
+
+  function sendWhatsApp(plan: PlanWithClient) {
+    const phone = plan.client?.phone;
+    if (!phone) { alert("Telefonnummer fehlt beim Client."); return; }
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const planUrl = `${window.location.origin}/training/${plan.unique_token}`;
+    const pinLine = plan.access_pin ? `\nPIN: ${plan.access_pin}` : "";
+    const message = `Hey ${plan.client.name}! 👋\n\nDein neuer Trainingsplan "${plan.title}" ist bereit:\n${planUrl}\n${pinLine}\nViel Spass beim Training! 💪\n-- Pierre`;
+    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, "_blank");
   }
 
   function formatDate(date: string) {
@@ -151,6 +161,13 @@ export default function TrainingListPage() {
                               Link
                             </>
                           )}
+                        </button>
+                        <button
+                          onClick={() => sendWhatsApp(plan)}
+                          title={plan.client?.phone ? "Per WhatsApp senden" : "Telefonnummer fehlt"}
+                          className="inline-flex items-center gap-1 px-2 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                        >
+                          <MessageCircle size={14} />
                         </button>
                         <Link
                           href={`/admin/training/${plan.id}`}

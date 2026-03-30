@@ -21,6 +21,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Pencil,
+  Search,
+  MessageCircle,
 } from "lucide-react";
 import type {
   TrainingPlan,
@@ -28,6 +30,8 @@ import type {
   TrainingSession,
   SessionType,
   Client,
+  Exercise,
+  SessionExercise,
 } from "@/lib/supabase";
 import {
   SESSION_SUBTYPES,
@@ -99,6 +103,11 @@ export default function TrainingPlanEditorPage() {
   const [dragOverTarget, setDragOverTarget] = useState<string | null>(null);
   const [editingWeekLabel, setEditingWeekLabel] = useState<string | null>(null);
   const [weekLabelValue, setWeekLabelValue] = useState("");
+  const [sessionExercises, setSessionExercises] = useState<SessionExercise[]>([]);
+  const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
+  const [showExercisePicker, setShowExercisePicker] = useState(false);
+  const [exerciseSearch, setExerciseSearch] = useState("");
+  const [pinValue, setPinValue] = useState("");
 
   const loadPlan = useCallback(async () => {
     try {
@@ -107,6 +116,7 @@ export default function TrainingPlanEditorPage() {
       const data: PlanWithRelations = await res.json();
       setPlan(data);
       setTitleValue(data.title);
+      setPinValue(data.access_pin || "");
     } catch { console.error("Error loading plan"); }
     setLoading(false);
   }, [planId, router]);
@@ -165,6 +175,30 @@ export default function TrainingPlanEditorPage() {
     loadPlan();
   }
 
+  // --- Save PIN ---
+  async function savePin() {
+    if (!plan) return;
+    const newPin = pinValue.trim() || null;
+    if (newPin === (plan.access_pin || null)) return;
+    await fetch(`/api/training/${planId}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_pin: newPin }),
+    });
+    setPlan(prev => prev ? { ...prev, access_pin: newPin } : prev);
+  }
+
+  // --- WhatsApp ---
+  function sendWhatsApp() {
+    if (!plan || !plan.client) return;
+    const phone = plan.client.phone;
+    if (!phone) { alert("Telefonnummer fehlt beim Client."); return; }
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const planUrl = `${window.location.origin}/training/${plan.unique_token}`;
+    const pinLine = plan.access_pin ? `\nPIN: ${plan.access_pin}` : "";
+    const message = `Hey ${plan.client.name}! 👋\n\nDein neuer Trainingsplan "${plan.title}" ist bereit:\n${planUrl}\n${pinLine}\nViel Spass beim Training! 💪\n-- Pierre`;
+    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, "_blank");
+  }
+
   // --- Week operations ---
   async function addWeek() {
     const res = await fetch(`/api/training/${planId}/weeks`, {
@@ -208,12 +242,64 @@ export default function TrainingPlanEditorPage() {
     await loadPlan();
   }
 
+  // --- Exercise helpers ---
+  async function loadSessionExercises(sessionId: string) {
+    try {
+      const res = await fetch(`/api/training/${planId}/sessions/exercises?session_id=${sessionId}`);
+      if (res.ok) {
+        const data: SessionExercise[] = await res.json();
+        setSessionExercises(data);
+      }
+    } catch { console.error("Error loading session exercises"); }
+  }
+
+  async function loadAvailableExercises(category: SessionType) {
+    try {
+      const res = await fetch(`/api/exercises?category=${category}`);
+      if (res.ok) {
+        const data: Exercise[] = await res.json();
+        setAvailableExercises(data);
+      }
+    } catch { console.error("Error loading exercises"); }
+  }
+
+  async function addExerciseToSession(exercise: Exercise) {
+    if (!editingSession) return;
+    const sortOrder = sessionExercises.length;
+    const res = await fetch(`/api/training/${planId}/sessions/exercises`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: editingSession.id, exercise_id: exercise.id, sort_order: sortOrder }),
+    });
+    if (res.ok) {
+      const newLink: SessionExercise = await res.json();
+      setSessionExercises(prev => [...prev, newLink]);
+    }
+    setShowExercisePicker(false);
+    setExerciseSearch("");
+  }
+
+  async function updateSessionExercise(id: string, field: "sets" | "notes", value: string) {
+    await fetch(`/api/training/${planId}/sessions/exercises`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, [field]: value || null }),
+    });
+    setSessionExercises(prev => prev.map(se => se.id === id ? { ...se, [field]: value || null } : se));
+  }
+
+  async function removeSessionExercise(id: string) {
+    await fetch(`/api/training/${planId}/sessions/exercises?id=${id}`, { method: "DELETE" });
+    setSessionExercises(prev => prev.filter(se => se.id !== id));
+  }
+
   // --- Session modal ---
   function openNewSession(weekId: string, dayOfWeek: number) {
     setEditingSession(null);
     setModalWeekId(weekId);
     setModalDayOfWeek(dayOfWeek);
     setSessionForm({ ...defaultSessionForm });
+    setSessionExercises([]);
+    setShowExercisePicker(false);
+    setExerciseSearch("");
     setShowModal(true);
   }
 
@@ -229,6 +315,10 @@ export default function TrainingPlanEditorPage() {
       intensity: session.intensity || 5,
       description: session.description || "",
     });
+    setSessionExercises([]);
+    setShowExercisePicker(false);
+    setExerciseSearch("");
+    loadSessionExercises(session.id);
     setShowModal(true);
   }
 
@@ -389,8 +479,24 @@ export default function TrainingPlanEditorPage() {
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${status.color}`}>{status.label}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <label className="text-[11px] text-zinc-400">PIN:</label>
+            <input
+              type="text"
+              value={pinValue}
+              onChange={(e) => setPinValue(e.target.value)}
+              onBlur={savePin}
+              onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+              placeholder="--"
+              className="w-16 px-2 py-1 text-xs text-center bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white"
+            />
+          </div>
           <button onClick={copyLink} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
             {copiedLink ? <><Check size={14} className="text-green-500" />Kopiert</> : <><Copy size={14} />Link kopieren</>}
+          </button>
+          <button onClick={sendWhatsApp} title={plan.client?.phone ? "Per WhatsApp senden" : "Telefonnummer fehlt"}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700 rounded-lg font-medium transition-colors">
+            <MessageCircle size={14} />WhatsApp
           </button>
           <button onClick={sendPlan} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors">
             <Send size={14} />Senden
@@ -686,6 +792,115 @@ export default function TrainingPlanEditorPage() {
                 <textarea value={sessionForm.description} onChange={e => setSessionForm(prev => ({ ...prev, description: e.target.value }))}
                   rows={3} className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white resize-none"
                   placeholder="Notizen zur Session..." />
+              </div>
+
+              {/* Exercises */}
+              <div>
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5 flex items-center gap-1.5">
+                  <Dumbbell size={14} />Übungen
+                </label>
+
+                {!editingSession ? (
+                  <p className="text-xs text-zinc-400 italic">
+                    Speichere die Session, dann kannst du Übungen verknüpfen.
+                  </p>
+                ) : (
+                  <>
+                    {/* Linked exercises list */}
+                    {sessionExercises.length > 0 && (
+                      <div className="space-y-2 mb-3 max-h-[240px] overflow-y-auto">
+                        {sessionExercises.map(se => (
+                          <div key={se.id} className="flex items-start gap-2 p-2 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">{se.exercise?.name}</span>
+                                {se.exercise?.muscle_group && (
+                                  <span className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">
+                                    {se.exercise.muscle_group}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <input
+                                  type="text"
+                                  defaultValue={se.sets || ""}
+                                  placeholder="z.B. 3x12"
+                                  onBlur={e => updateSessionExercise(se.id, "sets", e.target.value)}
+                                  className="w-24 px-2 py-1 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white"
+                                />
+                                <input
+                                  type="text"
+                                  defaultValue={se.notes || ""}
+                                  placeholder="z.B. 8kg Kurzhantel"
+                                  onBlur={e => updateSessionExercise(se.id, "notes", e.target.value)}
+                                  className="flex-1 px-2 py-1 text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white"
+                                />
+                              </div>
+                            </div>
+                            <button onClick={() => removeSessionExercise(se.id)}
+                              className="shrink-0 p-1 text-zinc-400 hover:text-red-500 transition-colors rounded">
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Exercise picker */}
+                    {showExercisePicker ? (
+                      <div className="border border-zinc-200 dark:border-zinc-700 rounded-lg overflow-hidden">
+                        <div className="flex items-center gap-2 px-3 py-2 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50">
+                          <Search size={14} className="text-zinc-400 shrink-0" />
+                          <input
+                            type="text"
+                            value={exerciseSearch}
+                            onChange={e => setExerciseSearch(e.target.value)}
+                            placeholder="Übung suchen..."
+                            autoFocus
+                            className="flex-1 bg-transparent text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none"
+                          />
+                          <button onClick={() => { setShowExercisePicker(false); setExerciseSearch(""); }}
+                            className="p-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+                            <X size={14} />
+                          </button>
+                        </div>
+                        <div className="max-h-[200px] overflow-y-auto">
+                          {availableExercises
+                            .filter(ex =>
+                              !exerciseSearch || ex.name.toLowerCase().includes(exerciseSearch.toLowerCase())
+                            )
+                            .filter(ex => !sessionExercises.some(se => se.exercise_id === ex.id))
+                            .map(ex => (
+                              <button key={ex.id} onClick={() => addExerciseToSession(ex)}
+                                className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-b-0">
+                                <span className="text-sm text-zinc-900 dark:text-white">{ex.name}</span>
+                                {ex.muscle_group && (
+                                  <span className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">
+                                    {ex.muscle_group}
+                                  </span>
+                                )}
+                              </button>
+                            ))}
+                          {availableExercises
+                            .filter(ex => !exerciseSearch || ex.name.toLowerCase().includes(exerciseSearch.toLowerCase()))
+                            .filter(ex => !sessionExercises.some(se => se.exercise_id === ex.id))
+                            .length === 0 && (
+                            <div className="px-3 py-4 text-center text-xs text-zinc-400">
+                              Keine Übungen gefunden
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => { setShowExercisePicker(true); loadAvailableExercises(sessionForm.session_type); }}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 transition-colors w-full justify-center"
+                      >
+                        <Plus size={14} />Übung hinzufügen
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 

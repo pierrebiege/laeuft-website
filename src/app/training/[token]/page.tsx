@@ -106,6 +106,12 @@ export default function TrainingPlanPage() {
   const [feedbackValues, setFeedbackValues] = useState<Record<string, string>>({})
   const feedbackTimeouts = useRef<Record<string, NodeJS.Timeout>>({})
 
+  // PIN protection state
+  const [pinRequired, setPinRequired] = useState(false)
+  const [pinUnlocked, setPinUnlocked] = useState(false)
+  const [pinInput, setPinInput] = useState('')
+  const [pinError, setPinError] = useState(false)
+
   useEffect(() => { loadPlan() }, [token])
 
   async function loadPlan() {
@@ -122,6 +128,23 @@ export default function TrainingPlanPage() {
       fullPlan.weeks.sort((a, b) => a.sort_order - b.sort_order)
       fullPlan.weeks.forEach((w) => w.sessions?.sort((a, b) => a.sort_order - b.sort_order))
       setPlan(fullPlan)
+
+      // PIN protection check
+      if (fullPlan.access_pin) {
+        const storedPin = sessionStorage.getItem(`training_pin_${token}`)
+        if (storedPin === fullPlan.access_pin) {
+          setPinUnlocked(true)
+          setPinRequired(false)
+        } else {
+          setPinRequired(true)
+          setPinUnlocked(false)
+          setLoading(false)
+          return
+        }
+      } else {
+        setPinUnlocked(true)
+        setPinRequired(false)
+      }
 
       const { data: compData } = await supabase
         .from('training_completions')
@@ -189,10 +212,60 @@ export default function TrainingPlanPage() {
     })
   }, [])
 
+  function handlePinSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!plan) return
+    if (pinInput === plan.access_pin) {
+      sessionStorage.setItem(`training_pin_${token}`, pinInput)
+      setPinUnlocked(true)
+      setPinRequired(false)
+      setPinError(false)
+    } else {
+      setPinError(true)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-zinc-700 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (pinRequired && !pinUnlocked) {
+    return (
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="text-2xl font-bold mb-1 text-zinc-900 dark:text-white">
+            Lauft<span className="text-zinc-400">.</span>
+          </div>
+          <p className="text-sm text-zinc-500 mb-8">Trainingsplan</p>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-4">Bitte gib deinen PIN ein</p>
+            <form onSubmit={handlePinSubmit} className="space-y-4">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={pinInput}
+                onChange={(e) => { setPinInput(e.target.value); setPinError(false) }}
+                placeholder="PIN"
+                autoFocus
+                className="w-full text-center text-2xl tracking-[0.3em] px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
+              />
+              {pinError && (
+                <p className="text-sm text-red-500">Falscher PIN. Bitte versuche es erneut.</p>
+              )}
+              <button
+                type="submit"
+                disabled={!pinInput}
+                className="w-full py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Entsperren
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     )
   }

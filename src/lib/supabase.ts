@@ -11,6 +11,7 @@ export interface Client {
   name: string
   company: string | null
   email: string
+  phone: string | null
   created_at: string
 }
 
@@ -536,6 +537,7 @@ export interface TrainingPlan {
   start_date: string
   unique_token: string
   intro_text: string | null
+  access_pin: string | null
   sent_at: string | null
   created_at: string
   updated_at: string

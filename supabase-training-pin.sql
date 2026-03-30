@@ -1,0 +1,2 @@
+ALTER TABLE training_plans ADD COLUMN IF NOT EXISTS access_pin TEXT;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS phone TEXT;
