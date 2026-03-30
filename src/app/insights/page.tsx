@@ -92,6 +92,12 @@ function fmt(n: number): string {
   return n.toLocaleString('de-CH')
 }
 
+function countryFlag(code: string): string {
+  try {
+    return code.toUpperCase().replace(/./g, (c) => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65))
+  } catch { return code }
+}
+
 function fmtCompact(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
   if (n >= 10_000) return `${(n / 1_000).toFixed(1)}k`
@@ -190,7 +196,7 @@ export default function InsightsPage() {
   const [contentFilter, setContentFilter] = useState<'all' | 'stories' | 'reels' | 'posts'>('all')
   const [contentSort, setContentSort] = useState<'impressions' | 'interactions'>('impressions')
   const [contentOrder, setContentOrder] = useState<'desc' | 'asc'>('desc')
-  const [activeDay, setActiveDay] = useState(1) // Monday
+  // activeDay removed - online_followers API returns empty data
   // aufrufeTab removed - API doesn't provide follower/non-follower breakdown per content type
 
   const load = useCallback(async (days: number) => {
@@ -270,10 +276,7 @@ export default function InsightsPage() {
   const genderSplit = parseGenderSplit(audience.ageGender)
 
   // Online followers for active day
-  const dayLabels = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
-  const dayHours = onlineFollowers[activeDay] || {}
-  const hourSlots = [0, 3, 6, 9, 12, 15, 18, 21]
-  const maxOnline = Math.max(...hourSlots.map((h) => dayHours[h] || 0), 1)
+  // dayLabels/hourSlots/maxOnline removed - online_followers not available
 
   // Content grid filtering
   const filteredMedia = periodMedia.filter((m) => {
@@ -422,49 +425,29 @@ export default function InsightsPage() {
                   <span className="text-sm font-semibold">{fmt(accountInsights.reach)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Follower-Veranderungen</span>
-                  <span className="text-sm font-semibold">{accountInsights.followsAndUnfollows > 0 ? '+' : ''}{fmt(accountInsights.followsAndUnfollows)}</span>
+                  <span className="text-sm text-gray-600">Follower</span>
+                  <span className="text-sm font-semibold">{fmt(profile.followers_count)}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right: Followers + active times */}
+            {/* Right: Follower stats */}
             <div className="p-6">
               <p className="text-2xl font-bold">{fmt(profile.followers_count)}</p>
               <p className="text-sm text-gray-500 mt-1 mb-5">Follower insgesamt</p>
 
-              <p className="text-sm font-semibold text-gray-900 mb-3">Aktivste Zeiten</p>
-              {/* Day tabs */}
-              <div className="flex gap-1 mb-4">
-                {[1, 2, 3, 4, 5, 6, 0].map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => setActiveDay(d)}
-                    className={`w-8 h-8 text-xs font-medium rounded-full transition-all ${
-                      activeDay === d
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                    }`}
-                  >
-                    {dayLabels[d]}
-                  </button>
-                ))}
-              </div>
-              {/* Hour bars */}
-              <div className="space-y-1.5">
-                {hourSlots.map((h) => {
-                  const val = dayHours[h] || 0
-                  const barW = maxOnline > 0 ? (val / maxOnline) * 100 : 0
+              <p className="text-sm font-semibold text-gray-900 mb-3">Top Lander</p>
+              <div className="space-y-2">
+                {audience.countries.slice(0, 5).map((c) => {
+                  const pct = profile.followers_count > 0 ? (c.value / profile.followers_count) * 100 : 0
                   return (
-                    <div key={h} className="flex items-center gap-2">
-                      <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">{String(h).padStart(2, '0')}:00</span>
-                      <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{ width: `${Math.max(barW, 2)}%`, backgroundColor: PINK }}
-                        />
+                    <div key={c.code} className="flex items-center gap-2">
+                      <span className="text-sm w-6">{countryFlag(c.code)}</span>
+                      <span className="text-xs text-gray-600 w-8">{c.code}</span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: PINK }} />
                       </div>
-                      <span className="text-[11px] text-gray-400 w-12 tabular-nums">{fmtCompact(val)}</span>
+                      <span className="text-xs text-gray-500 w-12 text-right tabular-nums">{pct.toFixed(1)}%</span>
                     </div>
                   )
                 })}
