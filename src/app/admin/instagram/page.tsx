@@ -1,593 +1,845 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
-  RefreshCw,
-  Plus,
-  Trash2,
-  Copy,
-  Check,
+  BarChart3,
+  Eye,
+  Heart,
+  MessageCircle,
+  Bookmark,
+  Share2,
   ExternalLink,
-  ToggleLeft,
-  ToggleRight,
-  Save,
   X,
-  Upload,
-  Image as ImageIcon,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
+  Play,
+  Camera,
+  Users,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+  MapPin,
+  UserCircle,
 } from 'lucide-react'
-import type { DashboardConfig, DashboardToken, PartnerLogo } from '@/lib/instagram-types'
 
-interface ImagePreview {
-  data: string
-  media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
-  preview: string
-  name: string
+// Country code to flag emoji + name
+const COUNTRY_FLAGS: Record<string, { flag: string; name: string }> = {
+  CH: { flag: '\u{1F1E8}\u{1F1ED}', name: 'Schweiz' },
+  DE: { flag: '\u{1F1E9}\u{1F1EA}', name: 'Deutschland' },
+  AT: { flag: '\u{1F1E6}\u{1F1F9}', name: '\u00D6sterreich' },
+  US: { flag: '\u{1F1FA}\u{1F1F8}', name: 'USA' },
+  GB: { flag: '\u{1F1EC}\u{1F1E7}', name: 'Grossbritannien' },
+  FR: { flag: '\u{1F1EB}\u{1F1F7}', name: 'Frankreich' },
+  IT: { flag: '\u{1F1EE}\u{1F1F9}', name: 'Italien' },
+  ES: { flag: '\u{1F1EA}\u{1F1F8}', name: 'Spanien' },
+  NL: { flag: '\u{1F1F3}\u{1F1F1}', name: 'Niederlande' },
+  BR: { flag: '\u{1F1E7}\u{1F1F7}', name: 'Brasilien' },
+  CA: { flag: '\u{1F1E8}\u{1F1E6}', name: 'Kanada' },
+  SE: { flag: '\u{1F1F8}\u{1F1EA}', name: 'Schweden' },
+  NO: { flag: '\u{1F1F3}\u{1F1F4}', name: 'Norwegen' },
+  BE: { flag: '\u{1F1E7}\u{1F1EA}', name: 'Belgien' },
+  PT: { flag: '\u{1F1F5}\u{1F1F9}', name: 'Portugal' },
+  PL: { flag: '\u{1F1F5}\u{1F1F1}', name: 'Polen' },
+  AU: { flag: '\u{1F1E6}\u{1F1FA}', name: 'Australien' },
+  MX: { flag: '\u{1F1F2}\u{1F1FD}', name: 'Mexiko' },
+  IN: { flag: '\u{1F1EE}\u{1F1F3}', name: 'Indien' },
+  JP: { flag: '\u{1F1EF}\u{1F1F5}', name: 'Japan' },
+  KR: { flag: '\u{1F1F0}\u{1F1F7}', name: 'S\u00FCdkorea' },
+  TR: { flag: '\u{1F1F9}\u{1F1F7}', name: 'T\u00FCrkei' },
+  DK: { flag: '\u{1F1E9}\u{1F1F0}', name: 'D\u00E4nemark' },
+  FI: { flag: '\u{1F1EB}\u{1F1EE}', name: 'Finnland' },
+  LI: { flag: '\u{1F1F1}\u{1F1EE}', name: 'Liechtenstein' },
+  LU: { flag: '\u{1F1F1}\u{1F1FA}', name: 'Luxemburg' },
+  CZ: { flag: '\u{1F1E8}\u{1F1FF}', name: 'Tschechien' },
+  RO: { flag: '\u{1F1F7}\u{1F1F4}', name: 'Rum\u00E4nien' },
+  HU: { flag: '\u{1F1ED}\u{1F1FA}', name: 'Ungarn' },
+  GR: { flag: '\u{1F1EC}\u{1F1F7}', name: 'Griechenland' },
 }
 
-type ExtractStep = 'idle' | 'uploading' | 'extracting' | 'review' | 'saving' | 'done'
+function getCountryDisplay(code: string) {
+  const entry = COUNTRY_FLAGS[code]
+  if (entry) return { flag: entry.flag, name: entry.name }
+  // Generate flag from code
+  const flag = code
+    .toUpperCase()
+    .split('')
+    .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+    .join('')
+  return { flag, name: code }
+}
 
-export default function InstagramAdminPage() {
-  const [tokens, setTokens] = useState<DashboardToken[]>([])
-  const [config, setConfig] = useState<DashboardConfig | null>(null)
-  const [newTokenLabel, setNewTokenLabel] = useState('')
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [configSaving, setConfigSaving] = useState(false)
-  const [configSaved, setConfigSaved] = useState(false)
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace('.', ',') + ' Mio'
+  if (n >= 10_000) return Math.round(n).toLocaleString('de-CH')
+  if (n >= 1_000) return n.toLocaleString('de-CH')
+  return n.toString()
+}
 
-  // Screenshot extraction state
-  const [images, setImages] = useState<ImagePreview[]>([])
-  const [extractStep, setExtractStep] = useState<ExtractStep>('idle')
-  const [extracted, setExtracted] = useState<Record<string, unknown> | null>(null)
-  const [extractError, setExtractError] = useState<string | null>(null)
-  const [saveResult, setSaveResult] = useState<string | null>(null)
-  const [rawJson, setRawJson] = useState('')
-  const [showJson, setShowJson] = useState(false)
+function formatDate(ts: string): string {
+  return new Date(ts).toLocaleDateString('de-CH', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  })
+}
 
-  // Section collapse state
-  const [showTokens, setShowTokens] = useState(true)
-  const [showConfig, setShowConfig] = useState(false)
+function mediaTypeLabel(type: string): string {
+  switch (type) {
+    case 'VIDEO':
+    case 'REEL':
+      return 'Reel'
+    case 'IMAGE':
+      return 'Bild'
+    case 'CAROUSEL_ALBUM':
+      return 'Karussell'
+    default:
+      return type
+  }
+}
+
+function mediaTypeIcon(type: string) {
+  switch (type) {
+    case 'VIDEO':
+    case 'REEL':
+      return <Play size={12} />
+    case 'CAROUSEL_ALBUM':
+      return <Camera size={12} />
+    default:
+      return null
+  }
+}
+
+interface MediaItem {
+  id: string
+  media_type: string
+  media_url: string | null
+  thumbnail_url: string | null
+  permalink: string
+  caption: string | null
+  timestamp: string
+  like_count: number
+  comments_count: number
+  reach: number
+  impressions: number
+  saved: number
+  shares: number
+  plays: number
+}
+
+interface InsightsData {
+  profile: {
+    name: string
+    biography: string
+    followers_count: number
+    follows_count: number
+    media_count: number
+    profile_picture_url: string
+  }
+  media: MediaItem[]
+  audience: {
+    countries: Array<{ key: string; value: number }>
+    cities: Array<{ key: string; value: number }>
+    ageGender: Array<{ key: string; value: number }>
+  }
+  accountInsights: {
+    impressions: number
+    reach: number
+    accountsEngaged: number
+    followsAndUnfollows: number
+  }
+  metrics: {
+    totalReach: number
+    totalImpressions: number
+    totalLikes: number
+    totalComments: number
+    totalSaved: number
+    totalShares: number
+    totalPlays: number
+    totalInteractions: number
+    engagementRate: number
+  }
+  period: number
+  fetchedAt: string
+}
+
+interface StoryItem {
+  id: string
+  media_type: string
+  media_url: string
+  thumbnail_url?: string
+  timestamp: string
+  permalink?: string
+}
+
+interface ArchivedStory {
+  id: string
+  story_id: string
+  media_type: string
+  media_url: string
+  thumbnail_url: string | null
+  timestamp: string
+  permalink: string | null
+  reach: number
+  impressions: number
+  replies: number
+  exits: number
+}
+
+export default function InstagramInsightsPage() {
+  const [data, setData] = useState<InsightsData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedPost, setSelectedPost] = useState<MediaItem | null>(null)
+  const [captionExpanded, setCaptionExpanded] = useState(false)
+
+  // Stories
+  const [activeStories, setActiveStories] = useState<StoryItem[]>([])
+  const [archivedStories, setArchivedStories] = useState<ArchivedStory[]>([])
+  const [archiving, setArchiving] = useState(false)
+  const [archiveResult, setArchiveResult] = useState<string | null>(null)
+  const [storiesLoading, setStoriesLoading] = useState(false)
+
+  // Carousel scroll
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    loadTokens()
-    loadConfig()
+    fetchData()
+    fetchStories()
   }, [])
 
-  async function loadTokens() {
-    const res = await fetch('/api/instagram/tokens')
-    if (res.ok) setTokens(await res.json())
-  }
-
-  async function loadConfig() {
-    const res = await fetch('/api/instagram/config')
-    if (res.ok) setConfig(await res.json())
-  }
-
-  // --- Screenshot Upload & Extraction ---
-
-  function processFile(file: File) {
-    if (!file.type.startsWith('image/')) return
-    if (file.size > 20 * 1024 * 1024) {
-      alert('Bild zu gross (max. 20MB)')
-      return
-    }
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
-      const base64 = dataUrl.split(',')[1]
-      setImages((prev) => [
-        ...prev,
-        {
-          data: base64,
-          media_type: file.type as ImagePreview['media_type'],
-          preview: dataUrl,
-          name: file.name,
-        },
-      ])
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    for (const file of Array.from(e.dataTransfer.files)) {
-      processFile(file)
-    }
-  }, [])
-
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    for (const item of Array.from(e.clipboardData.items)) {
-      if (item.type.startsWith('image/')) {
-        const file = item.getAsFile()
-        if (file) processFile(file)
-      }
-    }
-  }, [])
-
-  function removeImage(index: number) {
-    setImages((prev) => prev.filter((_, i) => i !== index))
-  }
-
-  async function handleExtract() {
-    if (!images.length) return
-    setExtractStep('extracting')
-    setExtractError(null)
-    setExtracted(null)
-
+  async function fetchData() {
+    setLoading(true)
+    setError(null)
     try {
-      const res = await fetch('/api/instagram/extract', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          images: images.map((img) => ({
-            data: img.data,
-            media_type: img.media_type,
-          })),
-        }),
-      })
-
-      const data = await res.json()
-      if (!res.ok || !data.extracted) {
-        setExtractError(data.error || 'Extraktion fehlgeschlagen')
-        setExtractStep('idle')
-        return
-      }
-
-      setExtracted(data.extracted)
-      setRawJson(JSON.stringify(data.extracted, null, 2))
-      setExtractStep('review')
+      const res = await fetch('/api/insights?days=30')
+      if (!res.ok) throw new Error('Fehler beim Laden')
+      const json = await res.json()
+      setData(json)
     } catch (e) {
-      setExtractError(String(e))
-      setExtractStep('idle')
+      setError(String(e))
+    } finally {
+      setLoading(false)
     }
   }
 
-  async function handleSave() {
-    if (!extracted) return
-    setExtractStep('saving')
-
+  async function fetchStories() {
+    setStoriesLoading(true)
     try {
-      // Use edited JSON if user modified it
-      const dataToSave = showJson ? JSON.parse(rawJson) : extracted
-
-      const res = await fetch('/api/instagram/extract', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ extracted: dataToSave }),
-      })
-
-      const data = await res.json()
+      const res = await fetch('/api/instagram/stories')
       if (res.ok) {
-        setSaveResult(data.results?.join(', ') || 'Gespeichert')
-        setExtractStep('done')
+        const json = await res.json()
+        setActiveStories(json.stories || [])
+      }
+    } catch {
+      // silent
+    } finally {
+      setStoriesLoading(false)
+    }
+  }
+
+  async function archiveStories() {
+    setArchiving(true)
+    setArchiveResult(null)
+    try {
+      const res = await fetch('/api/instagram/stories', { method: 'POST' })
+      const json = await res.json()
+      if (res.ok) {
+        setArchiveResult(json.message || 'Archiviert')
+        setArchivedStories(json.archivedStories || [])
+        fetchStories()
       } else {
-        setExtractError(data.error || 'Speichern fehlgeschlagen')
-        setExtractStep('review')
+        setArchiveResult(json.error || 'Fehler')
       }
     } catch (e) {
-      setExtractError(String(e))
-      setExtractStep('review')
+      setArchiveResult(String(e))
+    } finally {
+      setArchiving(false)
     }
   }
 
-  function resetExtraction() {
-    setImages([])
-    setExtracted(null)
-    setExtractError(null)
-    setSaveResult(null)
-    setRawJson('')
-    setShowJson(false)
-    setExtractStep('idle')
+  function scrollCarousel(direction: 'left' | 'right') {
+    if (!carouselRef.current) return
+    const amount = 300
+    carouselRef.current.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    })
   }
 
-  // --- Token Management ---
+  // Audience data parsing
+  function parseAgeGender(entries: Array<{ key: string; value: number }>) {
+    const ageGroups: Record<string, { male: number; female: number; unknown: number }> = {}
+    let totalMale = 0
+    let totalFemale = 0
+    let totalUnknown = 0
 
-  async function createToken() {
-    if (!newTokenLabel.trim()) return
-    const res = await fetch('/api/instagram/tokens', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label: newTokenLabel }),
+    for (const entry of entries) {
+      // Format: "M.25-34" or "F.18-24" or "U.35-44"
+      const parts = entry.key.split('.')
+      if (parts.length !== 2) continue
+      const gender = parts[0] // M, F, or U
+      const age = parts[1]
+
+      if (!ageGroups[age]) ageGroups[age] = { male: 0, female: 0, unknown: 0 }
+
+      if (gender === 'M') {
+        ageGroups[age].male += entry.value
+        totalMale += entry.value
+      } else if (gender === 'F') {
+        ageGroups[age].female += entry.value
+        totalFemale += entry.value
+      } else {
+        ageGroups[age].unknown += entry.value
+        totalUnknown += entry.value
+      }
+    }
+
+    const total = totalMale + totalFemale + totalUnknown
+    const sortedAges = Object.entries(ageGroups).sort((a, b) => {
+      const aNum = parseInt(a[0].split('-')[0]) || 0
+      const bNum = parseInt(b[0].split('-')[0]) || 0
+      return aNum - bNum
     })
-    if (res.ok) {
-      setNewTokenLabel('')
-      loadTokens()
+
+    return {
+      ageGroups: sortedAges.map(([age, counts]) => ({
+        age,
+        total: counts.male + counts.female + counts.unknown,
+        male: counts.male,
+        female: counts.female,
+      })),
+      genderSplit: {
+        male: total > 0 ? Math.round((totalMale / total) * 100) : 0,
+        female: total > 0 ? Math.round((totalFemale / total) * 100) : 0,
+      },
+      total,
     }
   }
 
-  async function toggleToken(id: string, isActive: boolean) {
-    await fetch(`/api/instagram/tokens/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_active: !isActive }),
-    })
-    loadTokens()
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center gap-3 py-20 justify-center">
+          <RefreshCw size={20} className="animate-spin text-zinc-400" />
+          <p className="text-zinc-500">Instagram Insights laden...</p>
+        </div>
+      </div>
+    )
   }
 
-  async function deleteToken(id: string) {
-    if (!confirm('Token wirklich löschen?')) return
-    await fetch(`/api/instagram/tokens/${id}`, { method: 'DELETE' })
-    loadTokens()
+  if (error || !data) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-6 mt-8">
+          <p className="text-red-700 dark:text-red-400">{error || 'Keine Daten'}</p>
+          <button
+            onClick={fetchData}
+            className="mt-3 text-sm text-red-600 dark:text-red-400 underline"
+          >
+            Erneut versuchen
+          </button>
+        </div>
+      </div>
+    )
   }
 
-  function copyLink(token: string, id: string) {
-    const url = `${window.location.origin}/dashboard/${token}`
-    navigator.clipboard.writeText(url)
-    setCopiedId(id)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
-
-  // --- Config ---
-
-  async function saveConfig() {
-    if (!config) return
-    setConfigSaving(true)
-    await fetch('/api/instagram/config', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(config),
-    })
-    setConfigSaving(false)
-    setConfigSaved(true)
-    setTimeout(() => setConfigSaved(false), 2000)
-  }
-
-  function updatePartnerLogo(index: number, field: keyof PartnerLogo, value: string) {
-    if (!config) return
-    const logos = [...config.partner_logos]
-    logos[index] = { ...logos[index], [field]: value }
-    setConfig({ ...config, partner_logos: logos })
-  }
-
-  function addPartnerLogo() {
-    if (!config) return
-    setConfig({
-      ...config,
-      partner_logos: [...config.partner_logos, { name: '', url: '', image_url: '' }],
-    })
-  }
-
-  function removePartnerLogo(index: number) {
-    if (!config) return
-    setConfig({
-      ...config,
-      partner_logos: config.partner_logos.filter((_, i) => i !== index),
-    })
-  }
+  const last20Media = data.media.slice(0, 20)
+  const audienceData = parseAgeGender(data.audience.ageGender || [])
+  const countriesTotal = data.audience.countries.reduce((s, c) => s + c.value, 0)
+  const topCountries = data.audience.countries.slice(0, 10)
+  const topCities = data.audience.cities.slice(0, 10)
+  const maxCityValue = topCities[0]?.value || 1
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">Instagram Dashboard</h1>
-
-      {/* Screenshot Upload & AI Extraction */}
-      <section className="bg-white border-2 border-purple-200 rounded-lg p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles size={18} className="text-purple-500" />
-          <h2 className="text-lg font-semibold">Insights Screenshots hochladen</h2>
+    <div className="max-w-6xl mx-auto space-y-8">
+      {/* HEADER */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Instagram Insights</h1>
+          <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-medium px-2.5 py-1 rounded-full">
+            30 Tage
+          </span>
         </div>
-        <p className="text-sm text-zinc-500 mb-4">
-          Lade Screenshots aus deinen Instagram Insights hoch. Claude erkennt automatisch alle Metriken und speichert sie.
-        </p>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={archiveStories}
+            disabled={archiving}
+            className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm px-4 py-2 rounded-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-50 transition-colors"
+          >
+            {archiving ? <RefreshCw size={14} className="animate-spin" /> : <Camera size={14} />}
+            Stories archivieren
+          </button>
+          {data.fetchedAt && (
+            <span className="text-xs text-zinc-400">
+              Aktualisiert: {new Date(data.fetchedAt).toLocaleString('de-CH')}
+            </span>
+          )}
+        </div>
+      </div>
 
-        {extractStep === 'idle' && (
-          <>
-            {/* Drop Zone */}
-            <div
-              onDrop={handleDrop}
-              onDragOver={(e) => e.preventDefault()}
-              onPaste={handlePaste}
-              className="border-2 border-dashed border-zinc-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors cursor-pointer"
-              onClick={() => document.getElementById('ig-file-input')?.click()}
+      {/* 4 KPI CARDS */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <KPICard
+          label="Aufrufe"
+          value={data.accountInsights.impressions || data.metrics.totalImpressions}
+          icon={<Eye size={18} />}
+        />
+        <KPICard
+          label="Erreichte Konten"
+          value={data.accountInsights.reach || data.metrics.totalReach}
+          icon={<Users size={18} />}
+        />
+        <KPICard
+          label="Interagierte Konten"
+          value={data.accountInsights.accountsEngaged || data.metrics.totalInteractions}
+          icon={<Heart size={18} />}
+        />
+        <KPICard
+          label="Follower"
+          value={data.profile.followers_count}
+          icon={<UserCircle size={18} />}
+        />
+      </div>
+
+      {/* POST CAROUSEL */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+            Letzte 20 Beitr\u00E4ge
+          </h2>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => scrollCarousel('left')}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
-              <Upload size={32} className="mx-auto text-zinc-400 mb-3" />
-              <p className="text-sm text-zinc-600 font-medium">Screenshots hierher ziehen, einfügen oder klicken</p>
-              <p className="text-xs text-zinc-400 mt-1">Mehrere Bilder gleichzeitig möglich (Übersicht, Zielgruppe, Posts...)</p>
-              <input
-                id="ig-file-input"
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-                  for (const file of Array.from(e.target.files || [])) {
-                    processFile(file)
-                  }
-                  e.target.value = ''
-                }}
-              />
-            </div>
-
-            {/* Image Previews */}
-            {images.length > 0 && (
-              <div className="mt-4">
-                <div className="flex flex-wrap gap-3 mb-4">
-                  {images.map((img, i) => (
-                    <div key={i} className="relative group">
-                      <img
-                        src={img.preview}
-                        alt={img.name}
-                        className="w-24 h-24 object-cover rounded-lg border"
-                      />
-                      <button
-                        onClick={() => removeImage(i)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X size={12} />
-                      </button>
-                      <p className="text-[9px] text-zinc-500 mt-0.5 truncate w-24">{img.name}</p>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={handleExtract}
-                  className="flex items-center gap-2 bg-purple-600 text-white text-sm px-5 py-2.5 rounded-lg hover:bg-purple-500 transition-colors"
-                >
-                  <Sparkles size={14} />
-                  {images.length} Screenshot{images.length > 1 ? 's' : ''} analysieren
-                </button>
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => scrollCarousel('right')}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+        <div
+          ref={carouselRef}
+          className="flex gap-4 overflow-x-auto pb-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {last20Media.map((post) => (
+            <button
+              key={post.id}
+              onClick={() => {
+                setSelectedPost(post)
+                setCaptionExpanded(false)
+              }}
+              className="flex-shrink-0 w-[180px] group text-left"
+            >
+              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                {(post.thumbnail_url || post.media_url) ? (
+                  <img
+                    src={post.thumbnail_url || post.media_url || ''}
+                    alt=""
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                    <Camera size={32} />
+                  </div>
+                )}
+                {(post.media_type === 'VIDEO' || post.media_type === 'REEL') && (
+                  <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
+                    <Play size={12} />
+                  </div>
+                )}
               </div>
-            )}
-          </>
-        )}
-
-        {extractStep === 'extracting' && (
-          <div className="flex items-center gap-3 py-8 justify-center">
-            <RefreshCw size={18} className="animate-spin text-purple-500" />
-            <p className="text-sm text-zinc-600">Claude analysiert die Screenshots...</p>
-          </div>
-        )}
-
-        {extractStep === 'review' && extracted && (
-          <div>
-            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
-              <p className="text-sm font-medium text-emerald-800 mb-2">Erkannte Daten:</p>
-
-              {(() => {
-                const ext = extracted as Record<string, unknown>
-                const metrics = ext.account_metrics as Record<string, unknown> | undefined
-                const audience = ext.audience_data as Record<string, unknown> | undefined
-                const posts = ext.post_data as unknown[] | undefined
-                const rawText = ext.raw_text as string | undefined
-
-                return (
-                  <>
-                    {metrics && (
-                      <div className="mb-3">
-                        <p className="text-xs font-semibold text-emerald-700 mb-1">Account Metriken</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          {Object.entries(metrics).map(([key, val]) => (
-                            <div key={key} className="bg-white rounded px-2 py-1.5 text-xs">
-                              <span className="text-zinc-500">{key}: </span>
-                              <span className="font-medium">{String(val)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {audience && (
-                      <div className="mb-3">
-                        <p className="text-xs font-semibold text-emerald-700 mb-1">Zielgruppen-Daten</p>
-                        <p className="text-xs text-emerald-600">{Object.keys(audience).join(', ')}</p>
-                      </div>
-                    )}
-                    {posts && posts.length > 0 && (
-                      <div className="mb-3">
-                        <p className="text-xs font-semibold text-emerald-700 mb-1">{posts.length} Posts erkannt</p>
-                      </div>
-                    )}
-                    {rawText && (
-                      <p className="text-xs text-emerald-600 mt-2 italic">{rawText}</p>
-                    )}
-                  </>
-                )
-              })()}
-            </div>
-
-            {/* Editable JSON */}
-            <button
-              onClick={() => setShowJson(!showJson)}
-              className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 mb-2 transition-colors"
-            >
-              {showJson ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              JSON bearbeiten
+              <div className="mt-2 space-y-0.5">
+                <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                  <span className="flex items-center gap-1">
+                    <Eye size={11} />
+                    {formatNumber(post.impressions || post.plays || 0)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Heart size={11} />
+                    {formatNumber(post.like_count)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageCircle size={11} />
+                    {post.comments_count}
+                  </span>
+                </div>
+                <p className="text-[11px] text-zinc-400">{formatDate(post.timestamp)}</p>
+              </div>
             </button>
-            {showJson && (
-              <textarea
-                value={rawJson}
-                onChange={(e) => setRawJson(e.target.value)}
-                rows={15}
-                className="w-full border rounded-lg px-3 py-2 text-xs font-mono mb-4"
-              />
-            )}
-
-            <div className="flex gap-3">
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-2 bg-emerald-600 text-white text-sm px-5 py-2.5 rounded-lg hover:bg-emerald-500 transition-colors"
-              >
-                <Save size={14} />
-                In Dashboard speichern
-              </button>
-              <button
-                onClick={resetExtraction}
-                className="text-sm text-zinc-500 hover:text-zinc-900 px-4 py-2.5 transition-colors"
-              >
-                Abbrechen
-              </button>
-            </div>
-          </div>
-        )}
-
-        {extractStep === 'saving' && (
-          <div className="flex items-center gap-3 py-8 justify-center">
-            <RefreshCw size={18} className="animate-spin text-emerald-500" />
-            <p className="text-sm text-zinc-600">Speichere in Supabase...</p>
-          </div>
-        )}
-
-        {extractStep === 'done' && (
-          <div className="text-center py-6">
-            <Check size={32} className="mx-auto text-emerald-500 mb-2" />
-            <p className="text-sm font-medium text-emerald-700 mb-1">Erfolgreich gespeichert!</p>
-            {saveResult && <p className="text-xs text-emerald-600">{saveResult}</p>}
-            <button
-              onClick={resetExtraction}
-              className="mt-4 text-sm text-purple-600 hover:text-purple-800 font-medium transition-colors"
-            >
-              Weitere Screenshots hochladen
-            </button>
-          </div>
-        )}
-
-        {extractError && (
-          <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded mt-3">{extractError}</p>
-        )}
+          ))}
+        </div>
       </section>
 
-      {/* Token Manager */}
-      <section className="bg-white border rounded-lg p-6">
-        <button
-          onClick={() => setShowTokens(!showTokens)}
-          className="flex items-center justify-between w-full"
-        >
-          <h2 className="text-lg font-semibold">Zugangslinks</h2>
-          {showTokens ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
-
-        {showTokens && (
-          <div className="mt-4">
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newTokenLabel}
-                onChange={(e) => setNewTokenLabel(e.target.value)}
-                placeholder="Label (z.B. Nike Q2 2026)"
-                className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                onKeyDown={(e) => e.key === 'Enter' && createToken()}
-              />
-              <button
-                onClick={createToken}
-                disabled={!newTokenLabel.trim()}
-                className="flex items-center gap-1.5 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-zinc-700 disabled:opacity-30 transition-colors"
-              >
-                <Plus size={14} />
-                Erstellen
-              </button>
+      {/* AUDIENCE SECTION */}
+      <section>
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+          <Users size={18} />
+          Zielgruppe
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Countries */}
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+              <Globe size={14} />
+              L\u00E4nder
+            </h3>
+            <div className="space-y-2.5">
+              {topCountries.map((c) => {
+                const display = getCountryDisplay(c.key)
+                const pct = countriesTotal > 0 ? (c.value / countriesTotal) * 100 : 0
+                return (
+                  <div key={c.key} className="flex items-center gap-2">
+                    <span className="text-sm w-6 text-center">{display.flag}</span>
+                    <span className="text-xs text-zinc-700 dark:text-zinc-300 w-24 truncate">{display.name}</span>
+                    <div className="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-zinc-900 dark:bg-white rounded-full transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-zinc-500 w-10 text-right">{pct.toFixed(1)}%</span>
+                  </div>
+                )
+              })}
             </div>
+          </div>
 
-            <div className="space-y-2">
-              {tokens.map((t) => (
-                <div key={t.id} className="flex items-center gap-3 border rounded-lg px-4 py-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${t.is_active ? 'bg-emerald-400' : 'bg-zinc-300'}`} />
-                      <span className="font-medium text-sm">{t.label}</span>
+          {/* Cities */}
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+              <MapPin size={14} />
+              St\u00E4dte
+            </h3>
+            <div className="space-y-2.5">
+              {topCities.map((c) => {
+                const pct = maxCityValue > 0 ? (c.value / maxCityValue) * 100 : 0
+                return (
+                  <div key={c.key} className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-700 dark:text-zinc-300 w-28 truncate">{c.key}</span>
+                    <div className="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-zinc-900 dark:bg-white rounded-full transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
                     </div>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-zinc-500">
-                      <span>{t.views_count} Views</span>
-                      {t.last_viewed_at && (
-                        <span>Zuletzt: {new Date(t.last_viewed_at).toLocaleDateString('de-CH')}</span>
-                      )}
-                      <span>Erstellt: {new Date(t.created_at).toLocaleDateString('de-CH')}</span>
-                    </div>
+                    <span className="text-xs text-zinc-500 w-12 text-right">{formatNumber(c.value)}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <button onClick={() => copyLink(t.token, t.id)} className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Link kopieren">
-                      {copiedId === t.id ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                    </button>
-                    <a href={`/dashboard/${t.token}`} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title="Öffnen">
-                      <ExternalLink size={14} />
-                    </a>
-                    <button onClick={() => toggleToken(t.id, t.is_active)} className="p-2 hover:bg-zinc-100 rounded-lg transition-colors" title={t.is_active ? 'Deaktivieren' : 'Aktivieren'}>
-                      {t.is_active ? <ToggleRight size={16} className="text-emerald-500" /> : <ToggleLeft size={16} className="text-zinc-400" />}
-                    </button>
-                    <button onClick={() => deleteToken(t.id)} className="p-2 hover:bg-red-50 text-zinc-400 hover:text-red-500 rounded-lg transition-colors" title="Löschen">
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-              {tokens.length === 0 && (
-                <p className="text-sm text-zinc-500 text-center py-4">Noch keine Zugangslinks erstellt.</p>
+                )
+              })}
+              {topCities.length === 0 && (
+                <p className="text-xs text-zinc-400">Keine St\u00E4dte-Daten</p>
               )}
             </div>
           </div>
+
+          {/* Age & Gender */}
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+              <BarChart3 size={14} />
+              Alter &amp; Geschlecht
+            </h3>
+
+            {/* Gender split bar */}
+            {audienceData.total > 0 && (
+              <div className="mb-5">
+                <div className="flex items-center justify-between text-xs text-zinc-500 mb-1.5">
+                  <span>M\u00E4nnlich {audienceData.genderSplit.male}%</span>
+                  <span>Weiblich {audienceData.genderSplit.female}%</span>
+                </div>
+                <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden flex">
+                  <div
+                    className="h-full bg-blue-500 rounded-l-full"
+                    style={{ width: `${audienceData.genderSplit.male}%` }}
+                  />
+                  <div
+                    className="h-full bg-pink-500 rounded-r-full"
+                    style={{ width: `${audienceData.genderSplit.female}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Age groups */}
+            <div className="space-y-2">
+              {audienceData.ageGroups.map((ag) => {
+                const maxAge = Math.max(...audienceData.ageGroups.map((a) => a.total), 1)
+                const pct = (ag.total / maxAge) * 100
+                return (
+                  <div key={ag.age} className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-600 dark:text-zinc-400 w-14">{ag.age}</span>
+                    <div className="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden flex">
+                      <div
+                        className="h-full bg-blue-500"
+                        style={{
+                          width: `${ag.total > 0 ? (ag.male / maxAge) * 100 : 0}%`,
+                        }}
+                      />
+                      <div
+                        className="h-full bg-pink-500"
+                        style={{
+                          width: `${ag.total > 0 ? (ag.female / maxAge) * 100 : 0}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-zinc-500 w-10 text-right">{formatNumber(ag.total)}</span>
+                  </div>
+                )
+              })}
+              {audienceData.ageGroups.length === 0 && (
+                <p className="text-xs text-zinc-400">Keine Alters-Daten</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STORIES SECTION */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+            <Camera size={18} />
+            Aktuelle Stories
+          </h2>
+          <button
+            onClick={archiveStories}
+            disabled={archiving}
+            className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+          >
+            {archiving ? (
+              <RefreshCw size={14} className="animate-spin" />
+            ) : (
+              <Camera size={14} />
+            )}
+            Stories jetzt archivieren
+          </button>
+        </div>
+
+        {archiveResult && (
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm rounded-lg px-4 py-2 mb-4">
+            {archiveResult}
+          </div>
+        )}
+
+        {storiesLoading ? (
+          <div className="flex items-center gap-2 py-6 justify-center">
+            <RefreshCw size={16} className="animate-spin text-zinc-400" />
+            <span className="text-sm text-zinc-500">Stories laden...</span>
+          </div>
+        ) : activeStories.length > 0 ? (
+          <div className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
+            {activeStories.map((story) => (
+              <div
+                key={story.id}
+                className="flex-shrink-0 w-[120px]"
+              >
+                <div className="aspect-[9/16] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 ring-2 ring-pink-500">
+                  {(story.thumbnail_url || story.media_url) ? (
+                    <img
+                      src={story.thumbnail_url || story.media_url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                      <Camera size={24} />
+                    </div>
+                  )}
+                </div>
+                <p className="text-[10px] text-zinc-400 mt-1 text-center">
+                  {formatDate(story.timestamp)}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 text-center">
+            <Camera size={24} className="mx-auto text-zinc-300 dark:text-zinc-600 mb-2" />
+            <p className="text-sm text-zinc-500">Keine aktiven Stories gerade</p>
+          </div>
+        )}
+
+        {/* Archived Stories */}
+        {archivedStories.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-3">
+              Archivierte Stories
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+              {archivedStories.map((story) => (
+                <div
+                  key={story.id}
+                  className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden"
+                >
+                  <div className="aspect-[9/16] bg-zinc-100 dark:bg-zinc-800">
+                    {(story.thumbnail_url || story.media_url) ? (
+                      <img
+                        src={story.thumbnail_url || story.media_url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                        <Camera size={20} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-2 space-y-0.5">
+                    <div className="flex items-center justify-between text-[10px] text-zinc-500">
+                      <span className="flex items-center gap-0.5">
+                        <Eye size={9} />
+                        {formatNumber(story.impressions)}
+                      </span>
+                      <span className="flex items-center gap-0.5">
+                        <Users size={9} />
+                        {formatNumber(story.reach)}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-zinc-400">{formatDate(story.timestamp)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </section>
 
-      {/* Config Editor */}
-      {config && (
-        <section className="bg-white border rounded-lg p-6">
-          <button
-            onClick={() => setShowConfig(!showConfig)}
-            className="flex items-center justify-between w-full"
+      {/* POST DETAIL MODAL */}
+      {selectedPost && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedPost(null)}
+        >
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-semibold">Dashboard Konfiguration</h2>
-            {showConfig ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedPost(null)}
+              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors"
+            >
+              <X size={16} />
+            </button>
 
-          {showConfig && (
-            <div className="mt-4">
-              <div className="flex justify-end mb-4">
-                <button
-                  onClick={saveConfig}
-                  disabled={configSaving}
-                  className="flex items-center gap-1.5 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-zinc-700 disabled:opacity-50 transition-colors"
-                >
-                  {configSaved ? <Check size={14} /> : <Save size={14} />}
-                  {configSaved ? 'Gespeichert' : configSaving ? 'Speichern...' : 'Speichern'}
-                </button>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-xs text-zinc-500 mb-1">Account Name</label>
-                  <input type="text" value={config.account_name || ''} onChange={(e) => setConfig({ ...config, account_name: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" />
+            {/* Image */}
+            <div className="aspect-[4/5] bg-zinc-100 dark:bg-zinc-800 rounded-t-2xl overflow-hidden">
+              {(selectedPost.thumbnail_url || selectedPost.media_url) ? (
+                <img
+                  src={selectedPost.thumbnail_url || selectedPost.media_url || ''}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                  <Camera size={48} />
                 </div>
-                <div>
-                  <label className="block text-xs text-zinc-500 mb-1">Kontakt-Email</label>
-                  <input type="email" value={config.contact_email || ''} onChange={(e) => setConfig({ ...config, contact_email: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-zinc-500 mb-1">Headline</label>
-                  <input type="text" value={config.hero_headline || ''} onChange={(e) => setConfig({ ...config, hero_headline: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs text-zinc-500 mb-1">Subtext</label>
-                  <input type="text" value={config.hero_subtext || ''} onChange={(e) => setConfig({ ...config, hero_subtext: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs text-zinc-500 mb-1">Bio</label>
-                  <textarea value={config.account_bio || ''} onChange={(e) => setConfig({ ...config, account_bio: e.target.value })} rows={2} className="w-full border rounded-lg px-3 py-2 text-sm" />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs text-zinc-500 mb-1">CTA Text</label>
-                  <input type="text" value={config.contact_cta_text || ''} onChange={(e) => setConfig({ ...config, contact_cta_text: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" />
-                </div>
-              </div>
-
-              <h3 className="text-sm font-semibold mb-3">Partner-Logos</h3>
-              <div className="space-y-2 mb-3">
-                {config.partner_logos.map((logo, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <input type="text" value={logo.name} onChange={(e) => updatePartnerLogo(i, 'name', e.target.value)} placeholder="Name" className="w-32 border rounded-lg px-2 py-1.5 text-xs" />
-                    <input type="text" value={logo.url} onChange={(e) => updatePartnerLogo(i, 'url', e.target.value)} placeholder="Website URL" className="flex-1 border rounded-lg px-2 py-1.5 text-xs" />
-                    <input type="text" value={logo.image_url} onChange={(e) => updatePartnerLogo(i, 'image_url', e.target.value)} placeholder="Logo URL" className="flex-1 border rounded-lg px-2 py-1.5 text-xs" />
-                    <button onClick={() => removePartnerLogo(i)} className="p-1.5 hover:bg-red-50 text-zinc-400 hover:text-red-500 rounded transition-colors">
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <button onClick={addPartnerLogo} className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 transition-colors">
-                <Plus size={12} /> Partner hinzufügen
-              </button>
+              )}
             </div>
-          )}
-        </section>
+
+            {/* Metrics */}
+            <div className="p-5 space-y-4">
+              {/* Type & Date */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
+                    {mediaTypeIcon(selectedPost.media_type)}
+                    {mediaTypeLabel(selectedPost.media_type)}
+                  </span>
+                  <span className="text-xs text-zinc-500">{formatDate(selectedPost.timestamp)}</span>
+                </div>
+                <a
+                  href={selectedPost.permalink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                >
+                  <ExternalLink size={12} />
+                  Instagram
+                </a>
+              </div>
+
+              {/* Metric grid */}
+              <div className="grid grid-cols-3 gap-3">
+                <MetricCell icon={<Eye size={14} />} label="Aufrufe" value={selectedPost.impressions || selectedPost.plays || 0} />
+                <MetricCell icon={<Users size={14} />} label="Reichweite" value={selectedPost.reach} />
+                <MetricCell icon={<Heart size={14} />} label="Likes" value={selectedPost.like_count} />
+                <MetricCell icon={<MessageCircle size={14} />} label="Kommentare" value={selectedPost.comments_count} />
+                <MetricCell icon={<Bookmark size={14} />} label="Gespeichert" value={selectedPost.saved} />
+                <MetricCell icon={<Share2 size={14} />} label="Geteilt" value={selectedPost.shares} />
+              </div>
+
+              {/* Caption */}
+              {selectedPost.caption && (
+                <div>
+                  <p
+                    className={`text-xs text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap ${
+                      !captionExpanded ? 'line-clamp-3' : ''
+                    }`}
+                  >
+                    {selectedPost.caption}
+                  </p>
+                  {selectedPost.caption.length > 150 && (
+                    <button
+                      onClick={() => setCaptionExpanded(!captionExpanded)}
+                      className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white mt-1 transition-colors"
+                    >
+                      {captionExpanded ? 'Weniger' : 'Mehr anzeigen'}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
+    </div>
+  )
+}
+
+// KPI Card component
+function KPICard({
+  label,
+  value,
+  icon,
+}: {
+  label: string
+  value: number
+  icon: React.ReactNode
+}) {
+  return (
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5">
+      <div className="flex items-center gap-2 text-zinc-400 mb-2">
+        {icon}
+        <span className="text-xs font-medium">{label}</span>
+      </div>
+      <p className="text-2xl font-bold text-zinc-900 dark:text-white">
+        {formatNumber(value)}
+      </p>
+    </div>
+  )
+}
+
+// Metric cell for the modal
+function MetricCell({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: number
+}) {
+  return (
+    <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-3 text-center">
+      <div className="flex items-center justify-center text-zinc-400 mb-1">{icon}</div>
+      <p className="text-sm font-semibold text-zinc-900 dark:text-white">{formatNumber(value)}</p>
+      <p className="text-[10px] text-zinc-500">{label}</p>
     </div>
   )
 }
