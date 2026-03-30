@@ -35,25 +35,46 @@ export async function GET(request: NextRequest) {
   })
 
   // Test 2: Account insights with different metric combinations
-  const metricTests = [
-    'views',
-    'reach',
-    'accounts_engaged',
-    'follows_and_unfollows',
-    'impressions',
-    'views,reach',
-    'views,reach,accounts_engaged',
-  ]
+  // Test daily metrics (reach works with period=day)
+  results.reach_daily = await tryFetch(`/${id}/insights`, {
+    metric: 'reach',
+    period: 'day',
+    since: since.toISOString().split('T')[0],
+    until: now.toISOString().split('T')[0],
+  })
 
-  results.account_insights = {}
-  for (const metric of metricTests) {
-    results.account_insights[metric] = await tryFetch(`/${id}/insights`, {
-      metric,
-      period: 'day',
-      since: since.toISOString().split('T')[0],
-      until: now.toISOString().split('T')[0],
-    })
-  }
+  // Test total_value metrics (views, accounts_engaged, follows_and_unfollows NEED metric_type=total_value)
+  results.views_total = await tryFetch(`/${id}/insights`, {
+    metric: 'views',
+    metric_type: 'total_value',
+    period: 'day',
+    since: since.toISOString().split('T')[0],
+    until: now.toISOString().split('T')[0],
+  })
+
+  results.accounts_engaged_total = await tryFetch(`/${id}/insights`, {
+    metric: 'accounts_engaged',
+    metric_type: 'total_value',
+    period: 'day',
+    since: since.toISOString().split('T')[0],
+    until: now.toISOString().split('T')[0],
+  })
+
+  results.follows_total = await tryFetch(`/${id}/insights`, {
+    metric: 'follows_and_unfollows',
+    metric_type: 'total_value',
+    period: 'day',
+    since: since.toISOString().split('T')[0],
+    until: now.toISOString().split('T')[0],
+  })
+
+  results.all_totals = await tryFetch(`/${id}/insights`, {
+    metric: 'views,accounts_engaged,follows_and_unfollows',
+    metric_type: 'total_value',
+    period: 'day',
+    since: since.toISOString().split('T')[0],
+    until: now.toISOString().split('T')[0],
+  })
 
   // Test 3: Online followers
   results.online_followers = await tryFetch(`/${id}/insights`, {
