@@ -567,6 +567,7 @@ export interface TrainingSession {
   sort_order: number
   created_at: string
   completion?: TrainingCompletion | null
+  exercises?: SessionExercise[]
 }
 
 export interface TrainingCompletion {
@@ -576,3 +577,31 @@ export interface TrainingCompletion {
   completed_at: string
   feedback: string | null
 }
+
+export interface Exercise {
+  id: string
+  name: string
+  description: string | null
+  category: SessionType
+  muscle_group: string | null
+  video_url: string | null
+  image_url: string | null
+  instructions: string | null
+  created_at: string
+}
+
+export interface SessionExercise {
+  id: string
+  session_id: string
+  exercise_id: string
+  sort_order: number
+  sets: string | null
+  notes: string | null
+  created_at: string
+  exercise?: Exercise
+}
+
+export const MUSCLE_GROUPS = [
+  'Beine', 'Waden', 'Core', 'Rücken', 'Brust',
+  'Schultern', 'Arme', 'Hüfte', 'Ganzkörper', 'Sonstiges'
+] as const

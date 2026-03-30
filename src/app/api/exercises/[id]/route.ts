@@ -12,11 +12,9 @@ export async function GET(
   const { id } = await params
 
   const { data, error } = await supabaseAdmin
-    .from('training_plans')
-    .select('*, client:clients(*), weeks:training_weeks(*, sessions:training_sessions(*, completion:training_completions(*), exercises:session_exercises(*, exercise:exercises(*))))')
+    .from('exercises')
+    .select('*')
     .eq('id', id)
-    .order('sort_order', { referencedTable: 'training_weeks', ascending: true })
-    .order('sort_order', { referencedTable: 'training_weeks.training_sessions', ascending: true })
     .single()
 
   if (error) {
@@ -24,7 +22,7 @@ export async function GET(
   }
 
   if (!data) {
-    return NextResponse.json({ error: 'Plan nicht gefunden' }, { status: 404 })
+    return NextResponse.json({ error: 'Übung nicht gefunden' }, { status: 404 })
   }
 
   return NextResponse.json(data)
@@ -40,8 +38,10 @@ export async function PATCH(
   const { id } = await params
   const body = await request.json()
 
-  // Only allow specific fields to be updated
-  const allowedFields = ['title', 'status', 'start_date', 'sent_at', 'intro_text']
+  const allowedFields = [
+    'name', 'description', 'category', 'muscle_group',
+    'video_url', 'image_url', 'instructions',
+  ]
   const updates: Record<string, unknown> = {}
   for (const field of allowedFields) {
     if (field in body) {
@@ -56,13 +56,11 @@ export async function PATCH(
     )
   }
 
-  updates.updated_at = new Date().toISOString()
-
   const { data, error } = await supabaseAdmin
-    .from('training_plans')
+    .from('exercises')
     .update(updates)
     .eq('id', id)
-    .select('*, client:clients(*)')
+    .select()
     .single()
 
   if (error) {
@@ -82,7 +80,7 @@ export async function DELETE(
   const { id } = await params
 
   const { error } = await supabaseAdmin
-    .from('training_plans')
+    .from('exercises')
     .delete()
     .eq('id', id)
 

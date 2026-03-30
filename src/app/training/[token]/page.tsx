@@ -8,6 +8,8 @@ import {
   TrainingWeek,
   TrainingSession,
   TrainingCompletion,
+  SessionExercise,
+  Exercise,
   SessionType,
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
@@ -26,6 +28,68 @@ const TYPE_ICONS: Record<SessionType, React.ElementType> = {
   kraft: Dumbbell,
   mobility: Wind,
   ruhe: Moon,
+}
+
+function getVideoEmbedUrl(url: string): string | null {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/)
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`
+  const vim = url.match(/vimeo\.com\/(\d+)/)
+  if (vim) return `https://player.vimeo.com/video/${vim[1]}`
+  return null
+}
+
+function ExerciseCard({ exercise, sets, notes }: {
+  exercise: { name: string; instructions: string | null; video_url: string | null; image_url: string | null; muscle_group: string | null }
+  sets: string | null
+  notes: string | null
+}) {
+  const embedUrl = exercise.video_url ? getVideoEmbedUrl(exercise.video_url) : null
+
+  return (
+    <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-3 space-y-2">
+      {/* Header: name + badges */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-sm font-semibold text-zinc-900 dark:text-white">{exercise.name}</span>
+        {sets && (
+          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">{sets}</span>
+        )}
+        {exercise.muscle_group && (
+          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500">{exercise.muscle_group}</span>
+        )}
+      </div>
+
+      {/* Video embed */}
+      {embedUrl && (
+        <div className="aspect-video rounded-lg overflow-hidden">
+          <iframe
+            src={embedUrl}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      )}
+
+      {/* Image fallback (only if no video) */}
+      {!embedUrl && exercise.image_url && (
+        <img
+          src={exercise.image_url}
+          alt={exercise.name}
+          className="w-full max-h-48 object-cover rounded-lg"
+        />
+      )}
+
+      {/* Instructions */}
+      {exercise.instructions && (
+        <p className="text-xs text-zinc-600 dark:text-zinc-400 whitespace-pre-line">{exercise.instructions}</p>
+      )}
+
+      {/* Session-specific notes */}
+      {notes && (
+        <p className="text-xs text-zinc-500 italic">{notes}</p>
+      )}
+    </div>
+  )
 }
 
 export default function TrainingPlanPage() {
@@ -48,7 +112,7 @@ export default function TrainingPlanPage() {
     try {
       const { data: planData, error: planError } = await supabase
         .from('training_plans')
-        .select(`*, client:clients(id, name, company), weeks:training_weeks(*, sessions:training_sessions(*))`)
+        .select(`*, client:clients(id, name, company), weeks:training_weeks(*, sessions:training_sessions(*, exercises:session_exercises(*, exercise:exercises(*))))`)
         .eq('unique_token', token)
         .single()
 
@@ -374,7 +438,7 @@ export default function TrainingPlanPage() {
                               </button>
                             </div>
 
-                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
                               <div className="ml-9 pl-3 border-l-2 border-zinc-100 dark:border-zinc-800 space-y-2 pb-1">
                                 {session.session_subtype && <p className="text-xs text-zinc-500">{session.session_subtype}</p>}
                                 {session.description && <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-line">{session.description}</p>}
@@ -385,6 +449,17 @@ export default function TrainingPlanPage() {
                                       <span className="text-zinc-900 dark:text-white">{'●'.repeat(Math.min(session.intensity, 10))}</span>
                                       <span className="text-zinc-300 dark:text-zinc-700">{'○'.repeat(10 - Math.min(session.intensity, 10))}</span>
                                     </span>
+                                  </div>
+                                )}
+                                {/* Exercises */}
+                                {session.exercises && session.exercises.length > 0 && (
+                                  <div className="space-y-3 mt-3">
+                                    <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Übungen</h4>
+                                    {session.exercises
+                                      .sort((a: SessionExercise, b: SessionExercise) => a.sort_order - b.sort_order)
+                                      .map((se: SessionExercise) => se.exercise && (
+                                        <ExerciseCard key={se.id} exercise={se.exercise} sets={se.sets} notes={se.notes} />
+                                      ))}
                                   </div>
                                 )}
                                 {isCompleted && (
