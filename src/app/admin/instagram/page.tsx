@@ -185,6 +185,7 @@ interface ArchivedStory {
 }
 
 export default function InstagramInsightsPage() {
+  const [period, setPeriod] = useState(30)
   const [data, setData] = useState<InsightsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -204,13 +205,13 @@ export default function InstagramInsightsPage() {
   useEffect(() => {
     fetchData()
     fetchStories()
-  }, [])
+  }, [period])
 
   async function fetchData() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/insights?days=30')
+      const res = await fetch(`/api/insights?days=${period}`)
       if (!res.ok) throw new Error('Fehler beim Laden')
       const json = await res.json()
       setData(json)
@@ -355,9 +356,16 @@ export default function InstagramInsightsPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Instagram Insights</h1>
-          <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-medium px-2.5 py-1 rounded-full">
-            30 Tage
-          </span>
+          <div className="flex gap-1">
+            {[7, 14, 30].map((p) => (
+              <button key={p} onClick={() => setPeriod(p)}
+                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
+                  period === p ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                }`}>
+                {p} Tage
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button

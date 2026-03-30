@@ -180,6 +180,7 @@ export default function PublicInsightsPage() {
   const [passwordError, setPasswordError] = useState(false)
 
   // Data
+  const [period, setPeriod] = useState(30)
   const [data, setData] = useState<InsightsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -208,7 +209,7 @@ export default function PublicInsightsPage() {
       fetchData()
       fetchStories()
     }
-  }, [unlocked])
+  }, [unlocked, period])
 
   function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -225,7 +226,7 @@ export default function PublicInsightsPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/insights?days=30')
+      const res = await fetch(`/api/insights?days=${period}`)
       if (!res.ok) throw new Error('Fehler beim Laden')
       const json = await res.json()
       setData(json)
@@ -393,9 +394,16 @@ export default function PublicInsightsPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-white">Instagram Insights</h1>
-          <span className="bg-zinc-800 text-zinc-400 text-xs font-medium px-2.5 py-1 rounded-full">
-            30 Tage
-          </span>
+          <div className="flex gap-1">
+            {[7, 14, 30].map((p) => (
+              <button key={p} onClick={() => setPeriod(p)}
+                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
+                  period === p ? 'bg-white text-zinc-900' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                }`}>
+                {p} Tage
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {data.fetchedAt && (

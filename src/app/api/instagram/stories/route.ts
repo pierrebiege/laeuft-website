@@ -23,12 +23,32 @@ export async function GET() {
 
       const insights = await fetchMediaInsights(story.id, 'VIDEO')
 
+      // Upload image to Supabase Storage for permanent access
+      let permanentUrl = story.media_url
+      try {
+        if (story.media_url) {
+          const imgRes = await fetch(story.media_url)
+          if (imgRes.ok) {
+            const blob = await imgRes.blob()
+            const ext = story.media_type === 'VIDEO' ? 'mp4' : 'jpg'
+            const path = `stories/${story.id}.${ext}`
+            const { data: uploadData } = await supabaseAdmin.storage
+              .from('instagram')
+              .upload(path, blob, { upsert: true, contentType: blob.type })
+            if (uploadData?.path) {
+              const { data: urlData } = supabaseAdmin.storage.from('instagram').getPublicUrl(path)
+              permanentUrl = urlData.publicUrl
+            }
+          }
+        }
+      } catch { /* keep original URL as fallback */ }
+
       const { error } = await supabaseAdmin
         .from('instagram_story_archive')
         .insert({
           story_id: story.id,
           media_type: story.media_type,
-          media_url: story.media_url,
+          media_url: permanentUrl,
           thumbnail_url: story.thumbnail_url || null,
           timestamp: story.timestamp,
           permalink: story.permalink || null,
