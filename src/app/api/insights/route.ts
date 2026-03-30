@@ -92,11 +92,8 @@ export async function GET(request: Request) {
       }
     }
 
-    // Parse audience demographics
-    const audience = parseAudienceDemographics(audienceRaw.demographics)
-
-    // Parse online followers
-    const onlineFollowers = parseOnlineFollowers(audienceRaw.online_followers)
+    // Audience data comes pre-parsed from the new fetchAudienceDemographics
+    const audience = audienceRaw
 
     // Aggregate metrics from period media
     const totalReach = accountInsights.reach || periodMedia.reduce((s, p) => s + p.reach, 0)
@@ -193,7 +190,7 @@ export async function GET(request: Request) {
       topByImpressions,
       topByInteractions,
       audience,
-      onlineFollowers,
+      // onlineFollowers removed - API returns empty data
       accountInsights: {
         impressions: totalImpressions,
         reach: totalReach,
@@ -245,83 +242,4 @@ export async function GET(request: Request) {
 }
 
 // Parse the demographics data from the Instagram Graph API response
-function parseAudienceDemographics(demographics: Array<{
-  name: string
-  values: Array<{ value: Record<string, number> }>
-}>) {
-  const result: {
-    countries: Array<{ key: string; value: number }>
-    cities: Array<{ key: string; value: number }>
-    ageGender: Array<{ key: string; value: number }>
-  } = {
-    countries: [],
-    cities: [],
-    ageGender: [],
-  }
-
-  for (const metric of demographics) {
-    const valueMap = metric.values?.[0]?.value || {}
-    const entries = Object.entries(valueMap)
-      .map(([key, value]) => ({ key, value }))
-      .sort((a, b) => b.value - a.value)
-
-    if (metric.name === 'follower_demographics') {
-      for (const entry of entries) {
-        if (entry.key.match(/^[A-Z]{2}$/)) {
-          result.countries.push(entry)
-        } else if (entry.key.includes(',') || entry.key.includes(' ')) {
-          result.cities.push(entry)
-        } else {
-          result.ageGender.push(entry)
-        }
-      }
-    }
-  }
-
-  result.countries.sort((a, b) => b.value - a.value)
-  result.cities.sort((a, b) => b.value - a.value)
-  result.ageGender.sort((a, b) => b.value - a.value)
-
-  return result
-}
-
-// Parse online followers data into per-day, per-hour structure
-function parseOnlineFollowers(
-  onlineData: Array<{
-    name: string
-    values: Array<{ value: Record<string, number>; end_time: string }>
-  }>
-) {
-  // online_followers returns hourly data per day for the last ~7 days
-  // We aggregate into day-of-week -> hour -> average count
-  const dayHourMap: Record<number, Record<number, number[]>> = {}
-
-  for (const metric of onlineData) {
-    if (metric.name !== 'online_followers') continue
-    for (const entry of metric.values || []) {
-      const hourlyValues = entry.value || {}
-      const endTime = new Date(entry.end_time)
-      const dayOfWeek = endTime.getDay() // 0=Sun, 1=Mon...
-
-      if (!dayHourMap[dayOfWeek]) dayHourMap[dayOfWeek] = {}
-
-      for (const [hour, count] of Object.entries(hourlyValues)) {
-        const h = parseInt(hour, 10)
-        if (!dayHourMap[dayOfWeek][h]) dayHourMap[dayOfWeek][h] = []
-        dayHourMap[dayOfWeek][h].push(count)
-      }
-    }
-  }
-
-  // Average values per day/hour
-  const result: Record<number, Record<number, number>> = {}
-  for (const [day, hours] of Object.entries(dayHourMap)) {
-    result[parseInt(day)] = {}
-    for (const [hour, values] of Object.entries(hours)) {
-      const avg = values.reduce((a, b) => a + b, 0) / values.length
-      result[parseInt(day)][parseInt(hour)] = Math.round(avg)
-    }
-  }
-
-  return result
-}
+// Old parse functions removed - demographics now parsed in fetchAudienceDemographics()

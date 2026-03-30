@@ -140,36 +140,39 @@ export async function fetchMediaInsights(mediaId: string, mediaType?: string) {
   return {}
 }
 
-// Fetch audience demographics
+// Fetch audience demographics (separate calls per breakdown type)
 export async function fetchAudienceDemographics() {
   const id = getAccountId()
 
-  const [demographicsRes, onlineRes] = await Promise.all([
+  const fetchBreakdown = (breakdown: string) =>
     graphFetch<{
       data: Array<{
         name: string
-        values: Array<{ value: Record<string, number> }>
+        total_value?: { breakdowns: Array<{ dimension_keys: string[]; results: Array<{ dimension_values: string[]; value: number }> }> }
       }>
     }>(`/${id}/insights`, {
       metric: 'follower_demographics',
       period: 'lifetime',
       metric_type: 'total_value',
-      breakdown: 'age,gender,country,city',
-    }).catch(() => ({ data: [] })),
-    graphFetch<{
-      data: Array<{
-        name: string
-        values: Array<{ value: Record<string, number>; end_time: string }>
-      }>
-    }>(`/${id}/insights`, {
-      metric: 'online_followers',
-      period: 'lifetime',
-    }).catch(() => ({ data: [] })),
+      breakdown,
+    }).catch(() => ({ data: [] }))
+
+  const [countryRes, cityRes, ageGenderRes] = await Promise.all([
+    fetchBreakdown('country'),
+    fetchBreakdown('city'),
+    fetchBreakdown('age,gender'),
   ])
 
+  function parseBreakdown(res: { data: Array<{ total_value?: { breakdowns: Array<{ results: Array<{ dimension_values: string[]; value: number }> }> } }> }) {
+    const results = res.data?.[0]?.total_value?.breakdowns?.[0]?.results || []
+    return results.map(r => ({ key: r.dimension_values.join(','), value: r.value }))
+      .sort((a, b) => b.value - a.value)
+  }
+
   return {
-    demographics: demographicsRes.data || [],
-    online_followers: onlineRes.data || [],
+    countries: parseBreakdown(countryRes),
+    cities: parseBreakdown(cityRes),
+    ageGender: parseBreakdown(ageGenderRes),
   }
 }
 
