@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
   const since = new Date(now)
   since.setDate(since.getDate() - 30)
 
-  const results: Record<string, unknown> = {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const results: Record<string, any> = {}
 
   // Test 1: Profile
   results.profile = await tryFetch(`/${id}`, {
