@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import manualStories from '@/data/manual-stories.json'
 import {
-  BarChart3,
   Eye,
   Heart,
   MessageCircle,
@@ -19,7 +18,6 @@ import {
   ChevronRight,
   Globe,
   MapPin,
-  UserCircle,
   Lock,
 } from 'lucide-react'
 
@@ -286,55 +284,6 @@ export default function PublicInsightsPage() {
     })
   }
 
-  // Audience data parsing
-  function parseAgeGender(entries: Array<{ key: string; value: number }>) {
-    const ageGroups: Record<string, { male: number; female: number; unknown: number }> = {}
-    let totalMale = 0
-    let totalFemale = 0
-    let totalUnknown = 0
-
-    for (const entry of entries) {
-      const parts = entry.key.split('.')
-      if (parts.length !== 2) continue
-      const gender = parts[0]
-      const age = parts[1]
-
-      if (!ageGroups[age]) ageGroups[age] = { male: 0, female: 0, unknown: 0 }
-
-      if (gender === 'M') {
-        ageGroups[age].male += entry.value
-        totalMale += entry.value
-      } else if (gender === 'F') {
-        ageGroups[age].female += entry.value
-        totalFemale += entry.value
-      } else {
-        ageGroups[age].unknown += entry.value
-        totalUnknown += entry.value
-      }
-    }
-
-    const total = totalMale + totalFemale + totalUnknown
-    const sortedAges = Object.entries(ageGroups).sort((a, b) => {
-      const aNum = parseInt(a[0].split('-')[0]) || 0
-      const bNum = parseInt(b[0].split('-')[0]) || 0
-      return aNum - bNum
-    })
-
-    return {
-      ageGroups: sortedAges.map(([age, counts]) => ({
-        age,
-        total: counts.male + counts.female + counts.unknown,
-        male: counts.male,
-        female: counts.female,
-      })),
-      genderSplit: {
-        male: total > 0 ? Math.round((totalMale / total) * 100) : 0,
-        female: total > 0 ? Math.round((totalFemale / total) * 100) : 0,
-      },
-      total,
-    }
-  }
-
   // PASSWORD GATE
   if (!unlocked) {
     return (
@@ -406,7 +355,6 @@ export default function PublicInsightsPage() {
   }
 
   const last20Media = data.media.slice(0, 20)
-  const audienceData = parseAgeGender(data.audience.ageGender || [])
   const countriesTotal = data.audience.countries.reduce((s, c) => s + c.value, 0)
   const topCountries = data.audience.countries.slice(0, 8)
   const topCities = data.audience.cities.slice(0, 8)
@@ -416,55 +364,52 @@ export default function PublicInsightsPage() {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* ============================================ */}
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION - Full bleed background */}
       {/* ============================================ */}
-      <section className="relative w-full bg-zinc-950 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-10 md:gap-16">
-          {/* Left: text */}
-          <div className="flex-1 min-w-0">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[0.9]">
-              INSIGHTS
-            </h1>
-            <h2 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[0.9] mt-2">
-              PIERRE BIEGE
-            </h2>
+      <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden">
+        {/* Background image */}
+        <img
+          src="/insights/hero-trail.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
 
-            {/* Period tabs */}
-            <div className="flex items-center gap-2 mt-8">
-              {[7, 14, 30].map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPeriod(p)}
-                  className={`text-sm font-semibold px-5 py-2 rounded-full transition-all ${
-                    period === p
-                      ? 'bg-white text-zinc-900'
-                      : 'bg-zinc-800/60 text-zinc-400 hover:bg-zinc-700/80 hover:text-zinc-200'
-                  }`}
-                >
-                  {p} Tage
-                </button>
-              ))}
-            </div>
+        {/* Content */}
+        <div className="relative z-10 text-center px-6 py-20">
+          <h1 className="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85]">
+            INSIGHTS
+          </h1>
+          <h2 className="text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mt-1">
+            PIERRE BIEGE
+          </h2>
 
-            {/* Date range + LIVE badge */}
-            <div className="flex items-center gap-4 mt-4">
-              <span className="text-zinc-400 text-sm tracking-wide">{dateRangeString}</span>
-              <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-800/40">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                LIVE
-              </span>
-            </div>
+          {/* Tagline */}
+          <p className="mt-6 text-sm sm:text-base tracking-[0.25em] uppercase text-zinc-300/80 font-light">
+            Ultrarunner &middot; Content Creator &middot; Wallis
+          </p>
+
+          {/* Handle + LIVE badge */}
+          <div className="flex items-center justify-center gap-4 mt-5">
+            <span className="text-sm font-medium text-white/90 px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm bg-white/5 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+              @pierrebiege
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              LIVE
+            </span>
           </div>
 
-          {/* Right: 3 stacked images */}
-          <div className="flex flex-row md:flex-col gap-3 flex-shrink-0">
-            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+          {/* Small circular images row */}
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
               <img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover" />
             </div>
-            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
               <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" />
             </div>
-            <div className="w-[140px] md:w-[180px] aspect-[3/4] rounded-2xl overflow-hidden">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20">
               <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" />
             </div>
           </div>
@@ -475,9 +420,29 @@ export default function PublicInsightsPage() {
       {/* 2. INSTAGRAM OVERVIEW - 4 KPI CARDS */}
       {/* ============================================ */}
       <section className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500 mb-6">
-          Instagram Overview
-        </h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Instagram Overview
+            </h2>
+            <span className="text-[11px] text-zinc-600 mt-1 block">{dateRangeString}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {[7, 14, 30].map((p) => (
+              <button
+                key={p}
+                onClick={() => setPeriod(p)}
+                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${
+                  period === p
+                    ? 'bg-white text-zinc-900'
+                    : 'bg-zinc-800/60 text-zinc-400 hover:bg-zinc-700/80 hover:text-zinc-200'
+                }`}
+              >
+                {p} Tage
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-zinc-100 rounded-2xl p-6">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
@@ -600,7 +565,7 @@ export default function PublicInsightsPage() {
           Zielgruppe
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top-Standorte (Laender) */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
@@ -629,37 +594,6 @@ export default function PublicInsightsPage() {
                   </div>
                 )
               })}
-            </div>
-          </div>
-
-          {/* Altersgruppen */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
-              <BarChart3 size={14} />
-              Altersgruppen
-            </h3>
-            <div className="space-y-3">
-              {audienceData.ageGroups.map((ag) => {
-                const maxAge = Math.max(...audienceData.ageGroups.map((a) => a.total), 1)
-                const pct = (ag.total / maxAge) * 100
-                return (
-                  <div key={ag.age}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-zinc-200">{ag.age}</span>
-                      <span className="text-xs text-zinc-500">{formatNumber(ag.total)}</span>
-                    </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, backgroundColor: PINK }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-              {audienceData.ageGroups.length === 0 && (
-                <p className="text-xs text-zinc-500">Keine Alters-Daten</p>
-              )}
             </div>
           </div>
 
@@ -693,29 +627,6 @@ export default function PublicInsightsPage() {
             </div>
           </div>
         </div>
-
-        {/* Geschlecht bar */}
-        {audienceData.total > 0 && (
-          <div className="mt-6 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-xl">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4">
-              Geschlecht
-            </h3>
-            <div className="flex items-center justify-between text-sm text-zinc-300 mb-2">
-              <span>M&auml;nner {audienceData.genderSplit.male}%</span>
-              <span>Frauen {audienceData.genderSplit.female}%</span>
-            </div>
-            <div className="h-4 bg-zinc-800 rounded-full overflow-hidden flex">
-              <div
-                className="h-full rounded-l-full"
-                style={{ width: `${audienceData.genderSplit.male}%`, backgroundColor: '#3B82F6' }}
-              />
-              <div
-                className="h-full rounded-r-full"
-                style={{ width: `${audienceData.genderSplit.female}%`, backgroundColor: PINK }}
-              />
-            </div>
-          </div>
-        )}
       </section>
 
       {/* ============================================ */}
@@ -725,21 +636,28 @@ export default function PublicInsightsPage() {
         <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
           Storys (Last 14 Days)
         </h2>
-        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))' }}>
+        <div
+          className="flex gap-4 overflow-x-auto pb-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {(manualStories as ManualStory[]).map((story) => (
-            <div key={story.id} className="relative group">
-              <div className="aspect-[9/16] rounded-lg overflow-hidden bg-zinc-800">
+            <div key={story.id} className="flex-shrink-0 w-[140px] sm:w-[160px]">
+              <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800">
                 <img
                   src={story.image}
                   alt=""
                   className="w-full h-full object-cover"
                 />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-xl px-2 py-2">
+                  <div className="flex items-center justify-center gap-1">
+                    <Eye size={12} className="text-white/80" />
+                    <p className="text-xs text-white font-semibold">
+                      {formatNumber(story.views)}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg px-1 py-1">
-                <p className="text-[9px] md:text-[10px] text-white font-semibold text-center leading-tight">
-                  {formatNumber(story.views)}
-                </p>
-              </div>
+              <p className="text-[11px] text-zinc-500 mt-2 text-center">{story.date}</p>
             </div>
           ))}
         </div>
