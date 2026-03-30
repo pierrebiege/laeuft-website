@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       fetchAccountProfile(),
       fetchRecentMedia(50),
       fetchAudienceDemographics(),
-      fetchAccountInsights(since, until).catch(() => ({ data: [] })),
+      fetchAccountInsights(since, until).catch(() => ({ daily: [], totals: [] })),
     ])
 
     // Fetch per-media insights in parallel
