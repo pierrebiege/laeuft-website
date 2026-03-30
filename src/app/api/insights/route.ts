@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import type { DashboardData, InstagramAudience } from '@/lib/instagram-types'
+import type { InstagramAudience } from '@/lib/instagram-types'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = supabaseAdmin
+
+  const { searchParams } = new URL(request.url)
+  const periodDays = parseInt(searchParams.get('period') || '30', 10)
+  const validPeriods = [7, 14, 30]
+  const days = validPeriods.includes(periodDays) ? periodDays : 30
 
   const [metricsRes, postsRes, audienceRes, configRes] = await Promise.all([
     supabase
@@ -28,8 +33,8 @@ export async function GET() {
       .single(),
   ])
 
-  const metrics = metricsRes.data || []
-  const posts = postsRes.data || []
+  const allMetrics = metricsRes.data || []
+  const allPosts = postsRes.data || []
   const allAudience: InstagramAudience[] = audienceRes.data || []
   const config = configRes.data
 
@@ -48,57 +53,63 @@ export async function GET() {
     online_followers: allAudience.filter((a) => a.metric_type === 'online_followers'),
   }
 
-  const last30 = metrics.slice(-30)
+  // Filter metrics to the requested period
+  const metrics = allMetrics.slice(-days)
   const latest = metrics[metrics.length - 1]
-  const oldest30 = last30[0]
+  const oldest = metrics[0]
 
-  const summary = latest && oldest30
-    ? {
-        current_followers: latest.followers_count,
-        follower_growth: latest.followers_count - oldest30.followers_count,
-        follower_growth_pct: parseFloat(
-          ((latest.followers_count - oldest30.followers_count) / oldest30.followers_count * 100).toFixed(2)
-        ),
-        avg_engagement_rate: parseFloat(
-          (last30.reduce((s, m) => s + (m.engagement_rate || 0), 0) / last30.length).toFixed(2)
-        ),
-        avg_reach: Math.round(
-          last30.reduce((s, m) => s + (m.reach || 0), 0) / last30.length
-        ),
-        total_views: last30.reduce((s, m) => s + (m.impressions || 0), 0),
-        total_interactions: last30.reduce((s, m) => s + (m.accounts_engaged || 0), 0),
-        total_posts_period: posts.length,
-        posts_per_week: parseFloat((posts.length / (90 / 7)).toFixed(1)),
-        views_follower_pct: 67,
-        views_non_follower_pct: 33,
-        reached_accounts: last30.reduce((s, m) => s + (m.reach || 0), 0),
-      }
-    : {
-        current_followers: 0,
-        follower_growth: 0,
-        follower_growth_pct: 0,
-        avg_engagement_rate: 0,
-        avg_reach: 0,
-        total_views: 0,
-        total_interactions: 0,
-        total_posts_period: 0,
-        posts_per_week: 0,
-        views_follower_pct: 0,
-        views_non_follower_pct: 0,
-        reached_accounts: 0,
-      }
+  // Filter posts to the requested period
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - days)
+  const posts = allPosts.filter((p) => new Date(p.timestamp) >= cutoff)
 
-  const dashboardData: DashboardData = {
-    config,
-    metrics,
-    posts,
-    audience,
-    summary,
-  }
+  // Build summary from real data only -- no hardcoded fallbacks
+  const summary =
+    latest && oldest
+      ? {
+          current_followers: latest.followers_count,
+          follower_growth: latest.followers_count - oldest.followers_count,
+          follower_growth_pct: parseFloat(
+            (
+              ((latest.followers_count - oldest.followers_count) /
+                oldest.followers_count) *
+              100
+            ).toFixed(2)
+          ),
+          avg_engagement_rate: parseFloat(
+            (
+              metrics.reduce((s, m) => s + (m.engagement_rate || 0), 0) /
+              metrics.length
+            ).toFixed(2)
+          ),
+          avg_reach: Math.round(
+            metrics.reduce((s, m) => s + (m.reach || 0), 0) / metrics.length
+          ),
+          total_views: metrics.reduce((s, m) => s + (m.impressions || 0), 0),
+          total_interactions: metrics.reduce(
+            (s, m) => s + (m.accounts_engaged || 0),
+            0
+          ),
+          total_posts_period: posts.length,
+          posts_per_week: parseFloat((posts.length / (days / 7)).toFixed(1)),
+          reached_accounts: metrics.reduce((s, m) => s + (m.reach || 0), 0),
+          media_count: latest.media_count || 0,
+          last_updated: latest.date,
+        }
+      : null
 
-  return NextResponse.json(dashboardData, {
-    headers: {
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+  return NextResponse.json(
+    {
+      config,
+      metrics,
+      posts,
+      audience,
+      summary,
     },
-  })
+    {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    }
+  )
 }
