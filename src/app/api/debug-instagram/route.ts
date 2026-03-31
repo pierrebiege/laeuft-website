@@ -116,5 +116,10 @@ export async function GET(request: NextRequest) {
     results.media_type = mediaType
   }
 
+  // Test 6: Stories
+  results.stories = await tryFetch(`/${id}/stories`, {
+    fields: 'id,media_type,media_url,thumbnail_url,timestamp,permalink',
+  })
+
   return NextResponse.json(results, { status: 200 })
 }

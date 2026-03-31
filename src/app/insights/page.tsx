@@ -222,6 +222,8 @@ const PURPLE = '#5851DB'
 const AMBER = '#F59E0B'
 
 export default function PublicInsightsPage() {
+  const [mounted, setMounted] = useState(false)
+
   // Password gate
   const [unlocked, setUnlocked] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
@@ -311,8 +313,9 @@ export default function PublicInsightsPage() {
     return allStories.reduce((sum, s) => sum + s.views, 0)
   }, [allStories])
 
-  // Check sessionStorage on mount
+  // Check sessionStorage on mount + fix hydration
   useEffect(() => {
+    setMounted(true)
     if (typeof window !== 'undefined') {
       const stored = sessionStorage.getItem('insights_unlocked')
       if (stored === 'true') {
@@ -320,6 +323,15 @@ export default function PublicInsightsPage() {
       }
     }
   }, [])
+
+  // Don't render anything until mounted (prevents hydration mismatch)
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-zinc-700 border-t-zinc-300 rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   useEffect(() => {
     if (unlocked) {
