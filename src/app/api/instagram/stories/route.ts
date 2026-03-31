@@ -10,38 +10,62 @@ export async function GET() {
     // 1. Fetch active stories from Instagram
     const activeStories = await fetchActiveStories()
 
-    // 2. Auto-archive any new active stories
+    // 2. Auto-archive active stories + re-upload expired images
     let newlyArchived = 0
+    let reUploaded = 0
+
+    async function uploadToStorage(url: string, storyId: string, mediaType: string): Promise<string | null> {
+      try {
+        const imgRes = await fetch(url)
+        if (!imgRes.ok) return null
+        const blob = await imgRes.blob()
+        const ext = mediaType === 'VIDEO' ? 'mp4' : 'jpg'
+        const path = `stories/${storyId}.${ext}`
+        const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+          .from('instagram')
+          .upload(path, blob, { upsert: true, contentType: blob.type })
+        if (uploadError) {
+          console.error('Storage upload error:', uploadError.message)
+          return null
+        }
+        if (uploadData?.path) {
+          const { data: urlData } = supabaseAdmin.storage.from('instagram').getPublicUrl(path)
+          return urlData.publicUrl
+        }
+        return null
+      } catch (e) {
+        console.error('Upload failed:', e)
+        return null
+      }
+    }
+
     for (const story of activeStories) {
       const { data: existing } = await supabaseAdmin
         .from('instagram_story_archive')
-        .select('id')
+        .select('id, media_url')
         .eq('story_id', story.id)
         .single()
 
-      if (existing) continue
-
-      const insights = await fetchMediaInsights(story.id, 'VIDEO')
-
-      // Upload image to Supabase Storage for permanent access
-      let permanentUrl = story.media_url
-      try {
-        if (story.media_url) {
-          const imgRes = await fetch(story.media_url)
-          if (imgRes.ok) {
-            const blob = await imgRes.blob()
-            const ext = story.media_type === 'VIDEO' ? 'mp4' : 'jpg'
-            const path = `stories/${story.id}.${ext}`
-            const { data: uploadData } = await supabaseAdmin.storage
-              .from('instagram')
-              .upload(path, blob, { upsert: true, contentType: blob.type })
-            if (uploadData?.path) {
-              const { data: urlData } = supabaseAdmin.storage.from('instagram').getPublicUrl(path)
-              permanentUrl = urlData.publicUrl
-            }
+      if (existing) {
+        // Already archived -- but check if image needs re-upload (CDN URL expired)
+        const url = existing.media_url || ''
+        const isExpired = url.includes('scontent') || url.includes('video.cdninstagram') || !url.includes('supabase')
+        if (isExpired && story.media_url) {
+          const permanentUrl = await uploadToStorage(story.media_url, story.id, story.media_type)
+          if (permanentUrl) {
+            await supabaseAdmin
+              .from('instagram_story_archive')
+              .update({ media_url: permanentUrl })
+              .eq('id', existing.id)
+            reUploaded++
           }
         }
-      } catch { /* keep original URL as fallback */ }
+        continue
+      }
+
+      // New story -- archive it
+      const insights = await fetchMediaInsights(story.id, 'VIDEO')
+      const permanentUrl = await uploadToStorage(story.media_url, story.id, story.media_type) || story.media_url
 
       const { error } = await supabaseAdmin
         .from('instagram_story_archive')
@@ -72,8 +96,9 @@ export async function GET() {
       stories: activeStories,
       archivedStories: archivedStories || [],
       newlyArchived,
+      reUploaded,
     }, {
-      headers: { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600' }
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' }
     })
   } catch (error) {
     console.error('Fetch stories error:', error)
