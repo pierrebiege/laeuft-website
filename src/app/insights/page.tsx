@@ -256,8 +256,7 @@ export default function PublicInsightsPage() {
   const [storiesLoading, setStoriesLoading] = useState(false)
 
   // Carousel scroll refs
-  const viewsCarouselRef = useRef<HTMLDivElement>(null)
-  const interactionsCarouselRef = useRef<HTMLDivElement>(null)
+  const postsCarouselRef = useRef<HTMLDivElement>(null)
 
   // Merge stories from API archived + manual JSON, dedup by date proximity
   const allStories: MergedStory[] = useMemo(() => {
@@ -500,15 +499,8 @@ export default function PublicInsightsPage() {
 
   const interEngagedAccounts = data.accountInsights.accountsEngaged || 0
 
-  // Top content sorted by views
-  const topByViews = [...data.media].sort((a, b) => (b.impressions || b.plays || 0) - (a.impressions || a.plays || 0)).slice(0, 6)
-
-  // Top content sorted by interactions
-  const topByInteractions = [...data.media].sort((a, b) => {
-    const ia = (a.like_count || 0) + (a.comments_count || 0) + (a.saved || 0) + (a.shares || 0)
-    const ib = (b.like_count || 0) + (b.comments_count || 0) + (b.saved || 0) + (b.shares || 0)
-    return ib - ia
-  }).slice(0, 6)
+  // All media sorted by date (newest first) for the post slider
+  const periodMedia = [...data.media].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
   const countriesTotal = data.audience.countries.reduce((s, c) => s + c.value, 0)
   const topCountries = data.audience.countries.slice(0, 8)
@@ -595,101 +587,167 @@ export default function PublicInsightsPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 1: AUFRUFE (combined 2-column card) */}
+      {/* SECTION 1: AUFRUFE + INTERAKTIONEN SIDE BY SIDE */}
       {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            {/* Left column */}
-            <div className="p-6 md:p-8 flex flex-col justify-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Aufrufe</p>
-              <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
-                {formatNumberBig(aufrufeTotal)}
-              </p>
-              <p className="text-xs text-zinc-400 mb-5">Aufrufe</p>
-
-              {/* Follower / Non-Follower split */}
-              {manualAufrufe && manualAufrufe.follower_pct != null && manualAufrufe.non_follower_pct != null && (
-                <div className="space-y-2 mb-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
-                    <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualAufrufe.follower_pct}%</span></span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
-                    <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualAufrufe.non_follower_pct}%</span></span>
-                  </div>
-                </div>
-              )}
-
-              <div className="border-t border-zinc-100 pt-4">
-                <p className="text-sm text-zinc-600">
-                  Erreichte Konten: <span className="font-semibold text-zinc-900">{formatNumberBig(erreichteKonten)}</span>
+      <section className="max-w-7xl mx-auto px-6 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Aufrufe card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="p-6 md:p-8 flex flex-col justify-center">
+                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Aufrufe</p>
+                <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
+                  {formatNumberBig(aufrufeTotal)}
                 </p>
+                <p className="text-xs text-zinc-400 mb-5">Aufrufe</p>
+
+                {manualAufrufe && manualAufrufe.follower_pct != null && manualAufrufe.non_follower_pct != null && (
+                  <div className="space-y-2 mb-5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
+                      <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualAufrufe.follower_pct}%</span></span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
+                      <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualAufrufe.non_follower_pct}%</span></span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="border-t border-zinc-100 pt-4">
+                  <p className="text-sm text-zinc-600">
+                    Erreichte Konten: <span className="font-semibold text-zinc-900">{formatNumberBig(erreichteKonten)}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
+                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Art</p>
+                {aufrufeBreakdown && aufrufeBreakdown.total > 0 && (
+                  <div className="space-y-5">
+                    <HorizontalBar
+                      label="Stories"
+                      value={aufrufeBreakdown.stories}
+                      maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                      color={PINK}
+                      total={aufrufeBreakdown.total}
+                    />
+                    <HorizontalBar
+                      label="Reels"
+                      value={aufrufeBreakdown.reels}
+                      maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                      color={PURPLE}
+                      total={aufrufeBreakdown.total}
+                    />
+                    <HorizontalBar
+                      label="Beiträge"
+                      value={aufrufeBreakdown.posts}
+                      maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                      color={AMBER}
+                      total={aufrufeBreakdown.total}
+                    />
+                  </div>
+                )}
               </div>
             </div>
+          </div>
 
-            {/* Right column - Content-Art breakdown */}
-            <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Art</p>
-              {aufrufeBreakdown && aufrufeBreakdown.total > 0 && (
-                <div className="space-y-5">
-                  <HorizontalBar
-                    label="Stories"
-                    value={aufrufeBreakdown.stories}
-                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
-                    color={PINK}
-                    total={aufrufeBreakdown.total}
-                  />
-                  <HorizontalBar
-                    label="Reels"
-                    value={aufrufeBreakdown.reels}
-                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
-                    color={PURPLE}
-                    total={aufrufeBreakdown.total}
-                  />
-                  <HorizontalBar
-                    label="Beiträge"
-                    value={aufrufeBreakdown.posts}
-                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
-                    color={AMBER}
-                    total={aufrufeBreakdown.total}
-                  />
+          {/* Interaktionen card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="p-6 md:p-8 flex flex-col justify-center">
+                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Interaktionen</p>
+                <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
+                  {formatNumberBig(interTotal)}
+                </p>
+                <p className="text-xs text-zinc-400 mb-5">Interaktionen</p>
+
+                {manualInter && manualInter.follower_pct != null && manualInter.non_follower_pct != null && (
+                  <div className="space-y-2 mb-5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
+                      <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualInter.follower_pct}%</span></span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
+                      <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualInter.non_follower_pct}%</span></span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="border-t border-zinc-100 pt-4">
+                  <p className="text-sm text-zinc-600">
+                    Konten die interagiert haben: <span className="font-semibold text-zinc-900">{formatNumberBig(interEngagedAccounts)}</span>
+                  </p>
                 </div>
-              )}
+              </div>
+
+              <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
+                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Interaktionen</p>
+                {interBreakdown && interBreakdown.total > 0 && (
+                  <div className="space-y-5">
+                    <HorizontalBar
+                      label="Reels"
+                      value={interBreakdown.reels}
+                      maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                      color={PURPLE}
+                      total={interBreakdown.total}
+                    />
+                    <HorizontalBar
+                      label="Beiträge"
+                      value={interBreakdown.posts}
+                      maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                      color={AMBER}
+                      total={interBreakdown.total}
+                    />
+                    <HorizontalBar
+                      label="Stories"
+                      value={interBreakdown.stories}
+                      maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                      color={PINK}
+                      total={interBreakdown.total}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 2: TOP CONTENT NACH AUFRUFEN */}
+      {/* SECTION 2: LETZTE BEITRAEGE (all posts slider) */}
       {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
+      <section className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Top Content nach Aufrufen</h2>
-          <a
-            href="https://instagram.com/pierrebiege"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
-          >
-            Alle ansehen
-            <ChevronRight size={14} />
-          </a>
+          <h2 className="text-lg font-bold text-white">Letzte Beitr{'\u00e4'}ge</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => scrollCarousel(postsCarouselRef, 'left')}
+              className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors"
+            >
+              <ChevronLeft size={16} className="text-white" />
+            </button>
+            <button
+              onClick={() => scrollCarousel(postsCarouselRef, 'right')}
+              className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors"
+            >
+              <ChevronRight size={16} className="text-white" />
+            </button>
+          </div>
         </div>
         <div
-          ref={viewsCarouselRef}
+          ref={postsCarouselRef}
           className="flex gap-3 overflow-x-auto pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {topByViews.map((post) => (
+          {periodMedia.map((post) => (
             <button
               key={post.id}
               onClick={() => { setSelectedPost(post); setCaptionExpanded(false) }}
-              className="flex-shrink-0 w-[140px] group text-left"
+              className="flex-shrink-0 w-[180px] sm:w-[200px] group text-left"
             >
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-800">
+              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-zinc-800">
                 {(post.thumbnail_url || post.media_url) ? (
                   <img
                     src={post.thumbnail_url || post.media_url || ''}
@@ -699,6 +757,12 @@ export default function PublicInsightsPage() {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-zinc-600">
                     <Camera size={24} />
+                  </div>
+                )}
+                {/* Type badge */}
+                {mediaTypeIcon(post.media_type) && (
+                  <div className="absolute top-2 left-2 bg-black/50 rounded-full p-1.5 text-white">
+                    {mediaTypeIcon(post.media_type)}
                   </div>
                 )}
                 {/* View count badge at bottom */}
@@ -716,132 +780,9 @@ export default function PublicInsightsPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 3: INTERAKTIONEN (combined 2-column card) */}
-      {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            {/* Left column */}
-            <div className="p-6 md:p-8 flex flex-col justify-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Interaktionen</p>
-              <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
-                {formatNumberBig(interTotal)}
-              </p>
-              <p className="text-xs text-zinc-400 mb-5">Interaktionen</p>
-
-              {/* Follower / Non-Follower split */}
-              {manualInter && manualInter.follower_pct != null && manualInter.non_follower_pct != null && (
-                <div className="space-y-2 mb-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
-                    <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualInter.follower_pct}%</span></span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
-                    <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualInter.non_follower_pct}%</span></span>
-                  </div>
-                </div>
-              )}
-
-              <div className="border-t border-zinc-100 pt-4">
-                <p className="text-sm text-zinc-600">
-                  Konten die interagiert haben: <span className="font-semibold text-zinc-900">{formatNumberBig(interEngagedAccounts)}</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Right column - Content-Interaktionen breakdown */}
-            <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Interaktionen</p>
-              {interBreakdown && interBreakdown.total > 0 && (
-                <div className="space-y-5">
-                  <HorizontalBar
-                    label="Reels"
-                    value={interBreakdown.reels}
-                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
-                    color={PURPLE}
-                    total={interBreakdown.total}
-                  />
-                  <HorizontalBar
-                    label="Beiträge"
-                    value={interBreakdown.posts}
-                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
-                    color={AMBER}
-                    total={interBreakdown.total}
-                  />
-                  <HorizontalBar
-                    label="Stories"
-                    value={interBreakdown.stories}
-                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
-                    color={PINK}
-                    total={interBreakdown.total}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* SECTION 4: TOP CONTENT NACH INTERAKTIONEN */}
-      {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Top Content nach Interaktionen</h2>
-          <a
-            href="https://instagram.com/pierrebiege"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
-          >
-            Alle ansehen
-            <ChevronRight size={14} />
-          </a>
-        </div>
-        <div
-          ref={interactionsCarouselRef}
-          className="flex gap-3 overflow-x-auto pb-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {topByInteractions.map((post) => {
-            const totalInt = (post.like_count || 0) + (post.comments_count || 0) + (post.saved || 0) + (post.shares || 0)
-            return (
-              <button
-                key={post.id}
-                onClick={() => { setSelectedPost(post); setCaptionExpanded(false) }}
-                className="flex-shrink-0 w-[140px] group text-left"
-              >
-                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-800">
-                  {(post.thumbnail_url || post.media_url) ? (
-                    <img
-                      src={post.thumbnail_url || post.media_url || ''}
-                      alt=""
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-zinc-600">
-                      <Camera size={24} />
-                    </div>
-                  )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-2">
-                    <div className="flex items-center justify-center gap-1">
-                      <Heart size={11} className="text-white/80" />
-                      <span className="text-xs font-semibold text-white">{formatNumber(totalInt)}</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{formatDate(post.timestamp)}</p>
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* ============================================ */}
       {/* SECTION 5: ZIELGRUPPE */}
       {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
+      <section className="max-w-7xl mx-auto px-6 py-4">
         <h2 className="text-lg font-bold text-white mb-4">Zielgruppe</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -911,7 +852,7 @@ export default function PublicInsightsPage() {
       {/* ============================================ */}
       {/* SECTION 6: STORIES (merged API + manual) */}
       {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 py-4">
+      <section className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-white">Story Archiv</h2>
           <div className="flex gap-2">
@@ -929,10 +870,24 @@ export default function PublicInsightsPage() {
           className="flex gap-3 overflow-x-auto pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {allStories.map((story) => (
-            <div key={story.id} className="flex-shrink-0 w-[120px] sm:w-[140px]">
+          {allStories.map((story) => {
+            const SUPABASE_STORAGE_PREFIX = process.env.NEXT_PUBLIC_SUPABASE_URL ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage` : 'supabase.co/storage'
+            const isLocalFile = story.image.startsWith('/stories/')
+            const isSupabaseUrl = story.image.includes('supabase.co/storage') || story.image.includes(SUPABASE_STORAGE_PREFIX)
+            const isExpiredCdn = !isLocalFile && !isSupabaseUrl && (story.image.includes('scontent') || story.image.includes('video'))
+            const showPlaceholder = isExpiredCdn
+
+            return (
+            <div key={story.id} className="flex-shrink-0 w-[140px] sm:w-[160px]">
               <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800">
-                <img src={story.image} alt="" className="w-full h-full object-cover" />
+                {showPlaceholder ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 bg-zinc-800">
+                    <Camera size={28} className="text-zinc-500 mb-1" />
+                    <span className="text-[10px] text-zinc-500">Abgelaufen</span>
+                  </div>
+                ) : (
+                  <img src={story.image} alt="" className="w-full h-full object-cover" />
+                )}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-xl px-2 py-2">
                   <div className="flex items-center justify-center gap-1">
                     <Eye size={11} className="text-white/80" />
@@ -942,7 +897,8 @@ export default function PublicInsightsPage() {
               </div>
               <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{story.date}</p>
             </div>
-          ))}
+            )
+          })}
           {allStories.length === 0 && !storiesLoading && (
             <p className="text-sm text-zinc-500 py-8">Keine Stories verfuegbar</p>
           )}
@@ -993,7 +949,7 @@ export default function PublicInsightsPage() {
       {/* ============================================ */}
       {/* SECTION 8: FOOTER */}
       {/* ============================================ */}
-      <footer className="max-w-3xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-zinc-800/50">
+      <footer className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-zinc-800/50">
         <div className="flex items-center gap-2 text-xs text-zinc-500">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           Live Daten von Instagram
