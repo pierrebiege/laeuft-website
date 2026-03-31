@@ -573,7 +573,8 @@ export default function PublicInsightsPage() {
             <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               LIVE
-          </span>
+            </span>
+          </div>
         </div>
         <p className="text-sm tracking-[0.2em] uppercase text-zinc-500 font-light mb-8">
           Pierre Biege &middot; Ultrarunner &middot; Content Creator &middot; Wallis
