@@ -208,6 +208,21 @@ export default function PublicInsightsPage() {
   const [selectedPost, setSelectedPost] = useState<MediaItem | null>(null)
   const [captionExpanded, setCaptionExpanded] = useState(false)
 
+  // Manual insights from OCR/Telegram
+  interface ManualInsightRow {
+    period: number
+    metric_type: string
+    total_value: number
+    follower_pct: number | null
+    non_follower_pct: number | null
+    stories_pct: number | null
+    reels_pct: number | null
+    posts_pct: number | null
+    erreichte_konten: number | null
+    updated_at: string
+  }
+  const [manualInsights, setManualInsights] = useState<ManualInsightRow[]>([])
+
   // Stories (active only, no archiving)
   const [activeStories, setActiveStories] = useState<StoryItem[]>([])
   const [storiesLoading, setStoriesLoading] = useState(false)
@@ -244,8 +259,21 @@ export default function PublicInsightsPage() {
     if (unlocked) {
       fetchData()
       fetchStories()
+      fetchManualInsights()
     }
   }, [unlocked, period])
+
+  async function fetchManualInsights() {
+    try {
+      const res = await fetch('/api/insights/manual')
+      if (res.ok) {
+        const json = await res.json()
+        setManualInsights(json)
+      }
+    } catch {
+      // silent
+    }
+  }
 
   function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -583,6 +611,67 @@ export default function PublicInsightsPage() {
           </div>
         </section>
       )}
+
+      {/* ============================================ */}
+      {/* MANUELLE INSIGHTS - Follower / Nicht-Follower Split */}
+      {/* ============================================ */}
+      {(() => {
+        const matching = manualInsights.filter(m => m.period === period)
+        if (matching.length === 0) return null
+        const aufrufe = matching.find(m => m.metric_type === 'aufrufe')
+        const interaktionen = matching.find(m => m.metric_type === 'interaktionen')
+        if (!aufrufe && !interaktionen) return null
+
+        const renderFollowerSplit = (row: ManualInsightRow) => {
+          if (row.follower_pct == null || row.non_follower_pct == null) return null
+          return (
+            <div className="space-y-2">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-zinc-200">Follower</span>
+                  <span className="text-sm text-zinc-400">{row.follower_pct}%</span>
+                </div>
+                <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${row.follower_pct}%` }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-zinc-200">Nicht-Follower</span>
+                  <span className="text-sm text-zinc-400">{row.non_follower_pct}%</span>
+                </div>
+                <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full bg-blue-500 transition-all duration-500" style={{ width: `${row.non_follower_pct}%` }} />
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        return (
+          <section className="max-w-7xl mx-auto px-6 py-12">
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+              Follower vs. Nicht-Follower
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {aufrufe && aufrufe.follower_pct != null && (
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Aufrufe</h3>
+                  <p className="text-2xl font-black text-white">{formatNumber(aufrufe.total_value)}</p>
+                  {renderFollowerSplit(aufrufe)}
+                </div>
+              )}
+              {interaktionen && interaktionen.follower_pct != null && (
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Interaktionen</h3>
+                  <p className="text-2xl font-black text-white">{formatNumber(interaktionen.total_value)}</p>
+                  {renderFollowerSplit(interaktionen)}
+                </div>
+              )}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* ============================================ */}
       {/* AKTIVSTE ZEITEN */}

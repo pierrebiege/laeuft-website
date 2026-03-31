@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import manualStories from '@/data/manual-stories.json'
 import {
   BarChart3,
@@ -20,6 +20,9 @@ import {
   Globe,
   MapPin,
   UserCircle,
+  Upload,
+  CheckCircle,
+  AlertCircle,
 } from 'lucide-react'
 
 // Country code to flag emoji + name
@@ -200,13 +203,93 @@ export default function InstagramInsightsPage() {
   const [archiveResult, setArchiveResult] = useState<string | null>(null)
   const [storiesLoading, setStoriesLoading] = useState(false)
 
+  // Manual Insights
+  interface ManualInsightRow {
+    period: number
+    metric_type: string
+    total_value: number
+    follower_pct: number | null
+    non_follower_pct: number | null
+    stories_pct: number | null
+    reels_pct: number | null
+    posts_pct: number | null
+    erreichte_konten: number | null
+    updated_at: string
+  }
+  const [manualInsights, setManualInsights] = useState<ManualInsightRow[]>([])
+  const [manualLoading, setManualLoading] = useState(false)
+  const [ocrUploading, setOcrUploading] = useState(false)
+  const [ocrResult, setOcrResult] = useState<string | null>(null)
+  const [ocrError, setOcrError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const fetchManualInsights = useCallback(async () => {
+    setManualLoading(true)
+    try {
+      const res = await fetch('/api/insights/manual')
+      if (res.ok) {
+        const json = await res.json()
+        setManualInsights(json)
+      }
+    } catch {
+      // silent
+    } finally {
+      setManualLoading(false)
+    }
+  }, [])
+
+  async function handleOcrUpload(file: File) {
+    setOcrUploading(true)
+    setOcrResult(null)
+    setOcrError(null)
+    try {
+      const formData = new FormData()
+      formData.append('image', file)
+      const ocrRes = await fetch('/api/insights/ocr', { method: 'POST', body: formData })
+      if (!ocrRes.ok) {
+        const err = await ocrRes.json()
+        throw new Error(err.error || 'OCR fehlgeschlagen')
+      }
+      const parsed = await ocrRes.json()
+      // Save to DB
+      const saveRes = await fetch('/api/insights/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed),
+      })
+      if (!saveRes.ok) {
+        const err = await saveRes.json()
+        throw new Error(err.error || 'Speichern fehlgeschlagen')
+      }
+      setOcrResult(`${parsed.metric_type === 'aufrufe' ? 'Aufrufe' : 'Interaktionen'} (${parsed.period} Tage) gespeichert: ${parsed.total_value.toLocaleString('de-CH')}`)
+      fetchManualInsights()
+    } catch (e) {
+      setOcrError((e as Error).message)
+    } finally {
+      setOcrUploading(false)
+    }
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith('image/')) handleOcrUpload(file)
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) handleOcrUpload(file)
+    e.target.value = ''
+  }
+
   // Carousel scroll
   const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchData()
     fetchStories()
-  }, [period])
+    fetchManualInsights()
+  }, [period, fetchManualInsights])
 
   async function fetchData() {
     setLoading(true)
@@ -383,6 +466,87 @@ export default function InstagramInsightsPage() {
             </span>
           )}
         </div>
+      </div>
+
+      {/* MANUELLE INSIGHTS SECTION */}
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Manuelle Insights (Screenshot OCR)</h2>
+          <span className="text-xs text-zinc-400">Via Telegram: @laeuft_insights_bot</span>
+        </div>
+
+        {/* Upload area */}
+        <div
+          onDrop={handleDrop}
+          onDragOver={(e) => e.preventDefault()}
+          onClick={() => fileInputRef.current?.click()}
+          className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-6 text-center cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+        >
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+          {ocrUploading ? (
+            <div className="flex items-center justify-center gap-2">
+              <RefreshCw size={16} className="animate-spin text-zinc-400" />
+              <span className="text-sm text-zinc-500">Screenshot wird analysiert...</span>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <Upload size={24} className="mx-auto text-zinc-400" />
+              <p className="text-sm text-zinc-500">Instagram Insights Screenshot hierhin ziehen oder klicken</p>
+              <p className="text-xs text-zinc-400">Aufrufe oder Interaktionen (7/14/30 Tage)</p>
+            </div>
+          )}
+        </div>
+
+        {ocrResult && (
+          <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-3">
+            <CheckCircle size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span className="text-sm text-emerald-700 dark:text-emerald-300">{ocrResult}</span>
+          </div>
+        )}
+        {ocrError && (
+          <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+            <AlertCircle size={16} className="text-red-600 dark:text-red-400 shrink-0" />
+            <span className="text-sm text-red-700 dark:text-red-300">{ocrError}</span>
+          </div>
+        )}
+
+        {/* Saved data table */}
+        {manualLoading ? (
+          <p className="text-xs text-zinc-400">Lade gespeicherte Daten...</p>
+        ) : manualInsights.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-zinc-200 dark:border-zinc-700">
+                  <th className="text-left py-2 px-2 text-zinc-500 font-medium">Zeitraum</th>
+                  <th className="text-left py-2 px-2 text-zinc-500 font-medium">Typ</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Gesamt</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Stories%</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Reels%</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Beitr.</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Follower%</th>
+                  <th className="text-right py-2 px-2 text-zinc-500 font-medium">Aktualisiert</th>
+                </tr>
+              </thead>
+              <tbody>
+                {manualInsights.map((row) => (
+                  <tr key={`${row.period}-${row.metric_type}`} className="border-b border-zinc-100 dark:border-zinc-800">
+                    <td className="py-2 px-2 text-zinc-700 dark:text-zinc-300">{row.period} Tage</td>
+                    <td className="py-2 px-2 text-zinc-700 dark:text-zinc-300 capitalize">{row.metric_type}</td>
+                    <td className="py-2 px-2 text-right font-medium text-zinc-900 dark:text-white">{row.total_value.toLocaleString('de-CH')}</td>
+                    <td className="py-2 px-2 text-right text-zinc-500">{row.stories_pct != null ? `${row.stories_pct}%` : '-'}</td>
+                    <td className="py-2 px-2 text-right text-zinc-500">{row.reels_pct != null ? `${row.reels_pct}%` : '-'}</td>
+                    <td className="py-2 px-2 text-right text-zinc-500">{row.posts_pct != null ? `${row.posts_pct}%` : '-'}</td>
+                    <td className="py-2 px-2 text-right text-zinc-500">{row.follower_pct != null ? `${row.follower_pct}%` : '-'}</td>
+                    <td className="py-2 px-2 text-right text-zinc-400">{row.updated_at ? new Date(row.updated_at).toLocaleDateString('de-CH') : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-xs text-zinc-400">Noch keine manuellen Insights gespeichert. Lade einen Screenshot hoch oder nutze den Telegram Bot.</p>
+        )}
       </div>
 
       {/* 4 KPI CARDS */}
