@@ -531,24 +531,32 @@ export default function PublicInsightsPage() {
       </section>
 
       {/* ============================================ */}
-      {/* AUFRUFE NACH CONTENT-ART */}
+      {/* AUFRUFE NACH CONTENT-ART (manual data preferred) */}
       {/* ============================================ */}
-      {data.impressionsBreakdown && data.impressionsBreakdown.total > 0 && (
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-            Aufrufe nach Content-Art
-          </h2>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
-            {(() => {
-              const bd = data.impressionsBreakdown
-              const items = [
+      {(() => {
+        const manualAufrufe = manualInsights.find(m => m.period === period && m.metric_type === 'aufrufe')
+        const bd = manualAufrufe
+          ? {
+              stories: Math.round(manualAufrufe.total_value * (manualAufrufe.stories_pct || 0) / 100),
+              reels: Math.round(manualAufrufe.total_value * (manualAufrufe.reels_pct || 0) / 100),
+              posts: Math.round(manualAufrufe.total_value * (manualAufrufe.posts_pct || 0) / 100),
+              total: manualAufrufe.total_value,
+            }
+          : data.impressionsBreakdown
+        if (!bd || bd.total <= 0) return null
+        return (
+          <section className="max-w-7xl mx-auto px-6 py-12">
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+              Aufrufe nach Content-Art
+            </h2>
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
+              {[
                 { label: 'Stories', value: bd.stories, color: '#E1306C' },
                 { label: 'Reels', value: bd.reels, color: '#5851DB' },
                 { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
-              ]
-              const maxVal = Math.max(...items.map(i => i.value), 1)
-              return items.map(item => {
+              ].map(item => {
                 const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
+                const maxVal = Math.max(bd.stories, bd.reels, bd.posts, 1)
                 return (
                   <div key={item.label}>
                     <div className="flex items-center justify-between mb-1.5">
@@ -558,38 +566,44 @@ export default function PublicInsightsPage() {
                       </span>
                     </div>
                     <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }}
-                      />
+                      <div className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }} />
                     </div>
                   </div>
                 )
-              })
-            })()}
-          </div>
-        </section>
-      )}
+              })}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* ============================================ */}
       {/* INTERAKTIONEN NACH CONTENT-ART */}
       {/* ============================================ */}
-      {data.interactionsBreakdown && data.interactionsBreakdown.total > 0 && (
+      {(() => {
+        const manualInter = manualInsights.find(m => m.period === period && m.metric_type === 'interaktionen')
+        const bd = manualInter
+          ? {
+              stories: Math.round(manualInter.total_value * (manualInter.stories_pct || 0) / 100),
+              reels: Math.round(manualInter.total_value * (manualInter.reels_pct || 0) / 100),
+              posts: Math.round(manualInter.total_value * (manualInter.posts_pct || 0) / 100),
+              total: manualInter.total_value,
+            }
+          : data.interactionsBreakdown
+        if (!bd || bd.total <= 0) return null
+        return (
         <section className="max-w-7xl mx-auto px-6 py-12">
           <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
             Interaktionen nach Content-Art
           </h2>
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
-            {(() => {
-              const bd = data.interactionsBreakdown
-              const items = [
+            {[
                 { label: 'Stories', value: bd.stories, color: '#E1306C' },
                 { label: 'Reels', value: bd.reels, color: '#5851DB' },
                 { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
-              ]
-              const maxVal = Math.max(...items.map(i => i.value), 1)
-              return items.map(item => {
+              ].map(item => {
                 const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
+                const maxVal = Math.max(bd.stories, bd.reels, bd.posts, 1)
                 return (
                   <div key={item.label}>
                     <div className="flex items-center justify-between mb-1.5">
@@ -599,18 +613,16 @@ export default function PublicInsightsPage() {
                       </span>
                     </div>
                     <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }}
-                      />
+                      <div className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }} />
                     </div>
                   </div>
                 )
-              })
-            })()}
+              })}
           </div>
         </section>
-      )}
+        )
+      })()}
 
       {/* ============================================ */}
       {/* MANUELLE INSIGHTS - Follower / Nicht-Follower Split */}
