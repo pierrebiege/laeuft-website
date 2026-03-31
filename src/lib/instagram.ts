@@ -176,6 +176,38 @@ export async function fetchAudienceDemographics() {
   }
 }
 
+// Fetch online followers (hour-by-hour data)
+export async function fetchOnlineFollowers(): Promise<Record<number, number>> {
+  const id = getAccountId()
+  try {
+    const result = await graphFetch<{
+      data: Array<{
+        name: string
+        values: Array<{ value: Record<string, number>; end_time: string }>
+      }>
+    }>(`/${id}/insights`, {
+      metric: 'online_followers',
+      period: 'lifetime',
+    })
+
+    // Find the first entry with a non-empty value object
+    for (const metric of result.data || []) {
+      for (const entry of metric.values || []) {
+        if (entry.value && Object.keys(entry.value).length > 0) {
+          const parsed: Record<number, number> = {}
+          for (const [hour, count] of Object.entries(entry.value)) {
+            parsed[parseInt(hour, 10)] = count
+          }
+          return parsed
+        }
+      }
+    }
+    return {}
+  } catch {
+    return {}
+  }
+}
+
 // Fetch currently active stories (only available for 24h!)
 export async function fetchActiveStories() {
   const id = getAccountId()

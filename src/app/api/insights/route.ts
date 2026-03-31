@@ -5,6 +5,7 @@ import {
   fetchRecentMedia,
   fetchMediaInsights,
   fetchAudienceDemographics,
+  fetchOnlineFollowers,
 } from '@/lib/instagram'
 
 // Simple in-memory cache keyed by period
@@ -34,12 +35,13 @@ export async function GET(request: Request) {
     const since = sinceDate.toISOString().split('T')[0]
     const until = now.toISOString().split('T')[0]
 
-    // Fetch profile + media + audience + account insights in parallel
-    const [profile, media, audienceRaw, accountInsightsRaw] = await Promise.all([
+    // Fetch profile + media + audience + account insights + online followers in parallel
+    const [profile, media, audienceRaw, accountInsightsRaw, onlineFollowers] = await Promise.all([
       fetchAccountProfile(),
       fetchRecentMedia(50),
       fetchAudienceDemographics(),
       fetchAccountInsights(since, until).catch(() => ({ daily: [], totals: [] })),
+      fetchOnlineFollowers(),
     ])
 
     // Fetch per-media insights in parallel
@@ -190,7 +192,7 @@ export async function GET(request: Request) {
       topByImpressions,
       topByInteractions,
       audience,
-      // onlineFollowers removed - API returns empty data
+      onlineFollowers,
       accountInsights: {
         impressions: totalImpressions,
         reach: totalReach,

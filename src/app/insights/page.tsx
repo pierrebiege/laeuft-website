@@ -145,6 +145,19 @@ interface InsightsData {
     accountsEngaged: number
     followsAndUnfollows: number
   }
+  impressionsBreakdown: {
+    stories: number
+    reels: number
+    posts: number
+    total: number
+  }
+  interactionsBreakdown: {
+    stories: number
+    reels: number
+    posts: number
+    total: number
+  }
+  onlineFollowers: Record<number, number>
   metrics: {
     totalReach: number
     totalImpressions: number
@@ -308,7 +321,7 @@ export default function PublicInsightsPage() {
 
           {/* 3 small preview images */}
           <div className="flex justify-center gap-2 mb-8">
-            <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover" /></div>
+            <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-selfie.jpg" alt="" className="w-full h-full object-cover grayscale" /></div>
             <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" /></div>
             <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" /></div>
           </div>
@@ -403,7 +416,7 @@ export default function PublicInsightsPage() {
         {/* 3 Hero images as large tiles */}
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           <div className="aspect-[3/4] rounded-2xl overflow-hidden">
-            <img src="/insights/hero-track.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            <img src="/insights/hero-selfie.jpg" alt="" className="w-full h-full object-cover grayscale hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="aspect-[3/4] rounded-2xl overflow-hidden">
             <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
@@ -441,42 +454,177 @@ export default function PublicInsightsPage() {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
-              Total Followers
-            </p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(data.profile.followers_count)}
-            </p>
-          </div>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-zinc-100 rounded-2xl p-6">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
-              Views
+              Aufrufe
             </p>
-            <p className="text-[10px] text-zinc-400 mb-2">Last {period} Days</p>
+            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
             <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
               {formatNumber(data.accountInsights.impressions || data.metrics.totalImpressions)}
             </p>
           </div>
           <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
-              Total Story Views
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
+              Story Views
             </p>
+            <p className="text-[10px] text-zinc-400 mb-2">Gesamt</p>
             <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
               {formatNumber(totalStoryViews)}
             </p>
           </div>
           <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
-              Interactions
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
+              Erreichte Konten
             </p>
+            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(data.accountInsights.reach || data.metrics.totalReach)}
+            </p>
+          </div>
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
+              Interagierte Konten
+            </p>
+            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
             <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
               {formatNumber(data.accountInsights.accountsEngaged || data.metrics.totalInteractions)}
             </p>
           </div>
+          <div className="bg-zinc-100 rounded-2xl p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+              Follower
+            </p>
+            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+              {formatNumber(data.profile.followers_count)}
+            </p>
+          </div>
         </div>
       </section>
+
+      {/* ============================================ */}
+      {/* AUFRUFE NACH CONTENT-ART */}
+      {/* ============================================ */}
+      {data.impressionsBreakdown && data.impressionsBreakdown.total > 0 && (
+        <section className="max-w-7xl mx-auto px-6 py-12">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+            Aufrufe nach Content-Art
+          </h2>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
+            {(() => {
+              const bd = data.impressionsBreakdown
+              const items = [
+                { label: 'Stories', value: bd.stories, color: '#E1306C' },
+                { label: 'Reels', value: bd.reels, color: '#5851DB' },
+                { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
+              ]
+              const maxVal = Math.max(...items.map(i => i.value), 1)
+              return items.map(item => {
+                const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
+                return (
+                  <div key={item.label}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-zinc-200">{item.label}</span>
+                      <span className="text-sm text-zinc-400">
+                        {formatNumber(item.value)} <span className="text-xs text-zinc-500">({pct.toFixed(1)}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }}
+                      />
+                    </div>
+                  </div>
+                )
+              })
+            })()}
+          </div>
+        </section>
+      )}
+
+      {/* ============================================ */}
+      {/* INTERAKTIONEN NACH CONTENT-ART */}
+      {/* ============================================ */}
+      {data.interactionsBreakdown && data.interactionsBreakdown.total > 0 && (
+        <section className="max-w-7xl mx-auto px-6 py-12">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+            Interaktionen nach Content-Art
+          </h2>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
+            {(() => {
+              const bd = data.interactionsBreakdown
+              const items = [
+                { label: 'Stories', value: bd.stories, color: '#E1306C' },
+                { label: 'Reels', value: bd.reels, color: '#5851DB' },
+                { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
+              ]
+              const maxVal = Math.max(...items.map(i => i.value), 1)
+              return items.map(item => {
+                const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
+                return (
+                  <div key={item.label}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-zinc-200">{item.label}</span>
+                      <span className="text-sm text-zinc-400">
+                        {formatNumber(item.value)} <span className="text-xs text-zinc-500">({pct.toFixed(1)}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }}
+                      />
+                    </div>
+                  </div>
+                )
+              })
+            })()}
+          </div>
+        </section>
+      )}
+
+      {/* ============================================ */}
+      {/* AKTIVSTE ZEITEN */}
+      {/* ============================================ */}
+      {data.onlineFollowers && Object.keys(data.onlineFollowers).length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 py-12">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
+            Aktivste Zeiten
+          </h2>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+            {(() => {
+              const of_ = data.onlineFollowers
+              // Group by 3-hour blocks
+              const blocks = [0, 3, 6, 9, 12, 15, 18, 21].map(startHour => {
+                let total = 0
+                for (let h = startHour; h < startHour + 3; h++) {
+                  total += of_[h] || 0
+                }
+                const avg = Math.round(total / 3)
+                const endHour = startHour + 3
+                return { label: `${String(startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00`, value: avg }
+              })
+              const maxVal = Math.max(...blocks.map(b => b.value), 1)
+              return blocks.map(block => (
+                <div key={block.label}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-zinc-300 font-mono">{block.label}</span>
+                    <span className="text-sm text-zinc-400">{formatNumber(block.value)}</span>
+                  </div>
+                  <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${(block.value / maxVal) * 100}%`, backgroundColor: '#E1306C' }}
+                    />
+                  </div>
+                </div>
+              ))
+            })()}
+            <p className="text-[10px] text-zinc-600 mt-2">Durchschnittliche Online-Follower pro Zeitblock</p>
+          </div>
+        </section>
+      )}
 
       {/* ============================================ */}
       {/* 3. POST CAROUSEL */}
