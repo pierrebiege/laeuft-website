@@ -313,7 +313,7 @@ export default function PublicInsightsPage() {
     return allStories.reduce((sum, s) => sum + s.views, 0)
   }, [allStories])
 
-  // Check sessionStorage on mount + fix hydration
+  // Check sessionStorage on mount
   useEffect(() => {
     setMounted(true)
     if (typeof window !== 'undefined') {
@@ -323,15 +323,6 @@ export default function PublicInsightsPage() {
       }
     }
   }, [])
-
-  // Don't render anything until mounted (prevents hydration mismatch)
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-zinc-700 border-t-zinc-300 rounded-full animate-spin" />
-      </div>
-    )
-  }
 
   useEffect(() => {
     if (unlocked) {
@@ -402,6 +393,15 @@ export default function PublicInsightsPage() {
       left: direction === 'left' ? -amount : amount,
       behavior: 'smooth',
     })
+  }
+
+  // Wait for client mount (prevents hydration mismatch)
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-zinc-700 border-t-zinc-300 rounded-full animate-spin" />
+      </div>
+    )
   }
 
   // PASSWORD GATE
