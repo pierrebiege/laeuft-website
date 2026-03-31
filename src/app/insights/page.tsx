@@ -538,15 +538,15 @@ export default function PublicInsightsPage() {
   return (
     <div className="min-h-screen bg-zinc-950 relative">
       {/* ============================================ */}
-      {/* FLOATING PERIOD SELECTOR */}
+      {/* FLOATING PERIOD SELECTOR - bottom center, pulsing */}
       {/* ============================================ */}
-      <div className="sticky top-0 z-40 flex justify-end px-6 pt-4 pb-2">
-        <div className="flex items-center gap-1 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/60 rounded-full px-1.5 py-1.5 shadow-lg">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-[pulse_3s_ease-in-out_infinite]">
+        <div className="flex items-center gap-1 bg-zinc-900/90 backdrop-blur-xl border border-zinc-700/60 rounded-full px-2 py-2 shadow-2xl shadow-black/40">
           {[7, 14, 30].map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${
+              className={`text-xs font-semibold px-5 py-2 rounded-full transition-all ${
                 period === p
                   ? 'bg-white text-zinc-900 shadow-sm'
                   : 'text-zinc-400 hover:text-zinc-200'
@@ -559,17 +559,38 @@ export default function PublicInsightsPage() {
       </div>
 
       {/* ============================================ */}
-      {/* HEADER */}
+      {/* HERO SECTION - Landing Page Feel */}
       {/* ============================================ */}
-      <section className="max-w-3xl mx-auto px-6 pt-6 pb-4">
-        <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-2xl font-bold text-white tracking-tight">Insights</h1>
-          <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-emerald-800/40">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            LIVE
+      <section className="w-full px-6 pt-12 pb-6 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none">
+            INSIGHTS
+          </h1>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-white/90 px-4 py-1.5 rounded-full border border-white/20 bg-white/5">
+              @pierrebiege
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              LIVE
           </span>
         </div>
-        <p className="text-sm text-zinc-500">@pierrebiege</p>
+        <p className="text-sm tracking-[0.2em] uppercase text-zinc-500 font-light mb-8">
+          Pierre Biege &middot; Ultrarunner &middot; Content Creator &middot; Wallis
+        </p>
+
+        {/* 3 Hero images as large tiles */}
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-selfie.jpg" alt="" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105" />
+          </div>
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          </div>
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          </div>
+        </div>
       </section>
 
       {/* ============================================ */}
@@ -627,7 +648,7 @@ export default function PublicInsightsPage() {
                     total={aufrufeBreakdown.total}
                   />
                   <HorizontalBar
-                    label="Beitr\u00e4ge"
+                    label="Beiträge"
                     value={aufrufeBreakdown.posts}
                     maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
                     color={AMBER}
@@ -741,7 +762,7 @@ export default function PublicInsightsPage() {
                     total={interBreakdown.total}
                   />
                   <HorizontalBar
-                    label="Beitr\u00e4ge"
+                    label="Beiträge"
                     value={interBreakdown.posts}
                     maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
                     color={AMBER}
