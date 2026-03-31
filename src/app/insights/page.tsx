@@ -73,6 +73,10 @@ function formatNumber(n: number): string {
   return n.toString()
 }
 
+function formatNumberBig(n: number): string {
+  return n.toLocaleString('de-CH')
+}
+
 function formatDate(ts: string): string {
   return new Date(ts).toLocaleDateString('de-CH', {
     day: '2-digit',
@@ -182,6 +186,19 @@ interface StoryItem {
   permalink?: string
 }
 
+interface ArchivedStoryItem {
+  story_id: string
+  media_type: string
+  media_url: string
+  thumbnail_url?: string
+  timestamp: string
+  permalink?: string
+  impressions: number
+  reach: number
+  replies: number
+  exits: number
+}
+
 type ManualStory = {
   id: string
   image: string
@@ -190,9 +207,19 @@ type ManualStory = {
   order: number
 }
 
+type MergedStory = {
+  id: string
+  image: string
+  date: string
+  views: number
+  source: 'manual' | 'api'
+}
+
 const INSIGHTS_PASSWORD = process.env.NEXT_PUBLIC_INSIGHTS_PASSWORD || 'laeuft2026'
 
 const PINK = '#E1306C'
+const PURPLE = '#5851DB'
+const AMBER = '#F59E0B'
 
 export default function PublicInsightsPage() {
   // Password gate
@@ -223,27 +250,67 @@ export default function PublicInsightsPage() {
   }
   const [manualInsights, setManualInsights] = useState<ManualInsightRow[]>([])
 
-  // Stories (active only, no archiving)
+  // Stories (active + archived from API)
   const [activeStories, setActiveStories] = useState<StoryItem[]>([])
+  const [archivedStories, setArchivedStories] = useState<ArchivedStoryItem[]>([])
   const [storiesLoading, setStoriesLoading] = useState(false)
 
-  // Carousel scroll
-  const carouselRef = useRef<HTMLDivElement>(null)
+  // Carousel scroll refs
+  const viewsCarouselRef = useRef<HTMLDivElement>(null)
+  const interactionsCarouselRef = useRef<HTMLDivElement>(null)
+
+  // Merge stories from API archived + manual JSON, dedup by date proximity
+  const allStories: MergedStory[] = useMemo(() => {
+    const fromApi: MergedStory[] = archivedStories.map(s => ({
+      id: s.story_id,
+      image: s.media_url,
+      date: s.timestamp.split('T')[0],
+      views: s.impressions || 0,
+      source: 'api' as const,
+    }))
+
+    const fromManual: MergedStory[] = (manualStories as ManualStory[]).map(s => ({
+      id: s.id,
+      image: s.image,
+      date: s.date,
+      views: s.views,
+      source: 'manual' as const,
+    }))
+
+    // Combine all
+    const combined = [...fromApi, ...fromManual]
+
+    // Deduplicate: if an API story has a date within 1 day of a manual story, keep the manual one (more reliable views data)
+    const deduplicated: MergedStory[] = []
+    const usedApiIds = new Set<string>()
+
+    // First add all manual stories
+    for (const ms of fromManual) {
+      deduplicated.push(ms)
+    }
+
+    // Then add API stories that don't overlap with manual stories by date+proximity
+    for (const apiStory of fromApi) {
+      const apiDate = new Date(apiStory.date).getTime()
+      const hasManualOverlap = fromManual.some(ms => {
+        const manualDate = new Date(ms.date).getTime()
+        return Math.abs(apiDate - manualDate) < 86400000 // within 1 day
+      })
+      if (!hasManualOverlap && !usedApiIds.has(apiStory.id)) {
+        deduplicated.push(apiStory)
+        usedApiIds.add(apiStory.id)
+      }
+    }
+
+    // Sort by date descending
+    deduplicated.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    return deduplicated
+  }, [archivedStories])
 
   // Compute total story views
   const totalStoryViews = useMemo(() => {
-    return (manualStories as ManualStory[]).reduce((sum, s) => sum + s.views, 0)
-  }, [])
-
-  // Compute date range string
-  const dateRangeString = useMemo(() => {
-    const end = new Date()
-    const start = new Date()
-    start.setDate(end.getDate() - period)
-    const fmt = (d: Date) =>
-      d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: '2-digit' })
-    return `${fmt(start)} - ${fmt(end)}`
-  }, [period])
+    return allStories.reduce((sum, s) => sum + s.views, 0)
+  }, [allStories])
 
   // Check sessionStorage on mount
   useEffect(() => {
@@ -308,6 +375,7 @@ export default function PublicInsightsPage() {
       if (res.ok) {
         const json = await res.json()
         setActiveStories(json.stories || [])
+        setArchivedStories(json.archivedStories || [])
       }
     } catch {
       // silent
@@ -316,10 +384,10 @@ export default function PublicInsightsPage() {
     }
   }
 
-  function scrollCarousel(direction: 'left' | 'right') {
-    if (!carouselRef.current) return
+  function scrollCarousel(ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') {
+    if (!ref.current) return
     const amount = 300
-    carouselRef.current.scrollBy({
+    ref.current.scrollBy({
       left: direction === 'left' ? -amount : amount,
       behavior: 'smooth',
     })
@@ -329,12 +397,10 @@ export default function PublicInsightsPage() {
   if (!unlocked) {
     return (
       <div className="min-h-screen bg-zinc-950 relative overflow-hidden flex items-center justify-center p-4">
-        {/* Background image */}
         <img src="/insights/hero-selfie.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/60 to-zinc-950/90" />
 
         <div className="relative z-10 w-full max-w-sm text-center">
-          {/* Logo + Title */}
           <div className="mb-10">
             <p className="text-xs tracking-[0.3em] uppercase text-zinc-500 mb-3">Live Instagram Daten von</p>
             <h1 className="text-5xl font-black tracking-tight text-white mb-2">
@@ -347,14 +413,12 @@ export default function PublicInsightsPage() {
             </div>
           </div>
 
-          {/* 3 small preview images */}
           <div className="flex justify-center gap-2 mb-8">
             <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-selfie.jpg" alt="" className="w-full h-full object-cover grayscale" /></div>
             <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover" /></div>
             <div className="w-20 h-28 rounded-lg overflow-hidden"><img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover" /></div>
           </div>
 
-          {/* Login form */}
           <form onSubmit={handlePasswordSubmit} className="space-y-3">
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
@@ -373,7 +437,6 @@ export default function PublicInsightsPage() {
             </button>
           </form>
 
-          {/* Powered by */}
           <p className="mt-8 text-[10px] text-zinc-600">
             Powered by <a href="https://laeuft.ch" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white transition-colors">laeuft.ch</a>
           </p>
@@ -409,362 +472,202 @@ export default function PublicInsightsPage() {
     )
   }
 
-  const last20Media = data.media.slice(0, 20)
+  // --- Compute derived data ---
+  const manualAufrufe = manualInsights.find(m => m.period === period && m.metric_type === 'aufrufe')
+  const manualInter = manualInsights.find(m => m.period === period && m.metric_type === 'interaktionen')
+
+  const aufrufeTotal = manualAufrufe?.total_value || data.accountInsights.impressions || data.metrics.totalImpressions
+  const aufrufeBreakdown = manualAufrufe
+    ? {
+        stories: Math.round(manualAufrufe.total_value * (manualAufrufe.stories_pct || 0) / 100),
+        reels: Math.round(manualAufrufe.total_value * (manualAufrufe.reels_pct || 0) / 100),
+        posts: Math.round(manualAufrufe.total_value * (manualAufrufe.posts_pct || 0) / 100),
+        total: manualAufrufe.total_value,
+      }
+    : data.impressionsBreakdown
+
+  const erreichteKonten = manualAufrufe?.erreichte_konten || data.accountInsights.reach || data.metrics.totalReach
+
+  const interTotal = manualInter?.total_value || data.metrics.totalInteractions
+  const interBreakdown = manualInter
+    ? {
+        stories: Math.round(manualInter.total_value * (manualInter.stories_pct || 0) / 100),
+        reels: Math.round(manualInter.total_value * (manualInter.reels_pct || 0) / 100),
+        posts: Math.round(manualInter.total_value * (manualInter.posts_pct || 0) / 100),
+        total: manualInter.total_value,
+      }
+    : data.interactionsBreakdown
+
+  const interEngagedAccounts = data.accountInsights.accountsEngaged || 0
+
+  // Top content sorted by views
+  const topByViews = [...data.media].sort((a, b) => (b.impressions || b.plays || 0) - (a.impressions || a.plays || 0)).slice(0, 6)
+
+  // Top content sorted by interactions
+  const topByInteractions = [...data.media].sort((a, b) => {
+    const ia = (a.like_count || 0) + (a.comments_count || 0) + (a.saved || 0) + (a.shares || 0)
+    const ib = (b.like_count || 0) + (b.comments_count || 0) + (b.saved || 0) + (b.shares || 0)
+    return ib - ia
+  }).slice(0, 6)
+
   const countriesTotal = data.audience.countries.reduce((s, c) => s + c.value, 0)
   const topCountries = data.audience.countries.slice(0, 8)
   const topCities = data.audience.cities.slice(0, 8)
   const maxCityValue = topCities[0]?.value || 1
-  const maxCountryValue = topCountries[0]?.value || 1
+
+  // Helper for horizontal bar rendering
+  function HorizontalBar({ label, value, maxValue, color, total }: { label: string; value: number; maxValue: number; color: string; total: number }) {
+    const pct = total > 0 ? (value / total) * 100 : 0
+    return (
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-zinc-700">{label}</span>
+          <span className="text-sm font-semibold text-zinc-900">{pct.toFixed(0)}%</span>
+        </div>
+        <div className="h-3 bg-zinc-100 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{ width: `${maxValue > 0 ? (value / maxValue) * 100 : 0}%`, backgroundColor: color }}
+          />
+        </div>
+        <p className="text-xs text-zinc-400">{formatNumber(value)}</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-950 relative">
       {/* ============================================ */}
-      {/* 1. HERO SECTION */}
+      {/* FLOATING PERIOD SELECTOR */}
       {/* ============================================ */}
-      <section className="w-full px-6 pt-12 pb-6 max-w-7xl mx-auto">
-        {/* Title row */}
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none">
-            INSIGHTS
-          </h1>
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-white/90 px-4 py-1.5 rounded-full border border-white/20 bg-white/5">
-              @pierrebiege
-            </span>
-            <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-800/40">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              LIVE
-            </span>
-          </div>
+      <div className="sticky top-0 z-40 flex justify-end px-6 pt-4 pb-2">
+        <div className="flex items-center gap-1 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/60 rounded-full px-1.5 py-1.5 shadow-lg">
+          {[7, 14, 30].map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${
+                period === p
+                  ? 'bg-white text-zinc-900 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              {p} Tage
+            </button>
+          ))}
         </div>
-        <p className="text-sm tracking-[0.2em] uppercase text-zinc-500 font-light mb-8">
-          Pierre Biege &middot; Ultrarunner &middot; Content Creator &middot; Wallis
-        </p>
+      </div>
 
-        {/* 3 Hero images as large tiles */}
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
-            <img src="/insights/hero-selfie.jpg" alt="" className="w-full h-full object-cover grayscale hover:scale-105 transition-transform duration-500" />
-          </div>
-          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
-            <img src="/insights/hero-hat.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-          </div>
-          <div className="aspect-[3/4] rounded-2xl overflow-hidden">
-            <img src="/insights/hero-dryll.jpg" alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+      {/* ============================================ */}
+      {/* HEADER */}
+      {/* ============================================ */}
+      <section className="max-w-3xl mx-auto px-6 pt-6 pb-4">
+        <div className="flex items-center gap-3 mb-1">
+          <h1 className="text-2xl font-bold text-white tracking-tight">Insights</h1>
+          <span className="inline-flex items-center gap-1.5 bg-emerald-950/60 text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-emerald-800/40">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            LIVE
+          </span>
+        </div>
+        <p className="text-sm text-zinc-500">@pierrebiege</p>
+      </section>
+
+      {/* ============================================ */}
+      {/* SECTION 1: AUFRUFE (combined 2-column card) */}
+      {/* ============================================ */}
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Left column */}
+            <div className="p-6 md:p-8 flex flex-col justify-center">
+              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Aufrufe</p>
+              <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
+                {formatNumberBig(aufrufeTotal)}
+              </p>
+              <p className="text-xs text-zinc-400 mb-5">Aufrufe</p>
+
+              {/* Follower / Non-Follower split */}
+              {manualAufrufe && manualAufrufe.follower_pct != null && manualAufrufe.non_follower_pct != null && (
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
+                    <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualAufrufe.follower_pct}%</span></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
+                    <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualAufrufe.non_follower_pct}%</span></span>
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-zinc-100 pt-4">
+                <p className="text-sm text-zinc-600">
+                  Erreichte Konten: <span className="font-semibold text-zinc-900">{formatNumberBig(erreichteKonten)}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Right column - Content-Art breakdown */}
+            <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
+              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Art</p>
+              {aufrufeBreakdown && aufrufeBreakdown.total > 0 && (
+                <div className="space-y-5">
+                  <HorizontalBar
+                    label="Stories"
+                    value={aufrufeBreakdown.stories}
+                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                    color={PINK}
+                    total={aufrufeBreakdown.total}
+                  />
+                  <HorizontalBar
+                    label="Reels"
+                    value={aufrufeBreakdown.reels}
+                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                    color={PURPLE}
+                    total={aufrufeBreakdown.total}
+                  />
+                  <HorizontalBar
+                    label="Beitr\u00e4ge"
+                    value={aufrufeBreakdown.posts}
+                    maxValue={Math.max(aufrufeBreakdown.stories, aufrufeBreakdown.reels, aufrufeBreakdown.posts, 1)}
+                    color={AMBER}
+                    total={aufrufeBreakdown.total}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* 2. INSTAGRAM OVERVIEW - 4 KPI CARDS */}
+      {/* SECTION 2: TOP CONTENT NACH AUFRUFEN */}
       {/* ============================================ */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Instagram Overview
-            </h2>
-            <span className="text-[11px] text-zinc-600 mt-1 block">{dateRangeString}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {[7, 14, 30].map((p) => (
-              <button
-                key={p}
-                onClick={() => setPeriod(p)}
-                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${
-                  period === p
-                    ? 'bg-white text-zinc-900'
-                    : 'bg-zinc-800/60 text-zinc-400 hover:bg-zinc-700/80 hover:text-zinc-200'
-                }`}
-              >
-                {p} Tage
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
-              Aufrufe
-            </p>
-            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(data.accountInsights.impressions || data.metrics.totalImpressions)}
-            </p>
-          </div>
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
-              Story Views
-            </p>
-            <p className="text-[10px] text-zinc-400 mb-2">Gesamt</p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(totalStoryViews)}
-            </p>
-          </div>
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
-              Erreichte Konten
-            </p>
-            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(data.accountInsights.reach || data.metrics.totalReach)}
-            </p>
-          </div>
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-1">
-              Interagierte Konten
-            </p>
-            <p className="text-[10px] text-zinc-400 mb-2">{period} Tage</p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(data.accountInsights.accountsEngaged || data.metrics.totalInteractions)}
-            </p>
-          </div>
-          <div className="bg-zinc-100 rounded-2xl p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
-              Follower
-            </p>
-            <p className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
-              {formatNumber(data.profile.followers_count)}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* AUFRUFE NACH CONTENT-ART (manual data preferred) */}
-      {/* ============================================ */}
-      {(() => {
-        const manualAufrufe = manualInsights.find(m => m.period === period && m.metric_type === 'aufrufe')
-        const bd = manualAufrufe
-          ? {
-              stories: Math.round(manualAufrufe.total_value * (manualAufrufe.stories_pct || 0) / 100),
-              reels: Math.round(manualAufrufe.total_value * (manualAufrufe.reels_pct || 0) / 100),
-              posts: Math.round(manualAufrufe.total_value * (manualAufrufe.posts_pct || 0) / 100),
-              total: manualAufrufe.total_value,
-            }
-          : data.impressionsBreakdown
-        if (!bd || bd.total <= 0) return null
-        return (
-          <section className="max-w-7xl mx-auto px-6 py-12">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-              Aufrufe nach Content-Art
-            </h2>
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
-              {[
-                { label: 'Stories', value: bd.stories, color: '#E1306C' },
-                { label: 'Reels', value: bd.reels, color: '#5851DB' },
-                { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
-              ].map(item => {
-                const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
-                const maxVal = Math.max(bd.stories, bd.reels, bd.posts, 1)
-                return (
-                  <div key={item.label}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium text-zinc-200">{item.label}</span>
-                      <span className="text-sm text-zinc-400">
-                        {formatNumber(item.value)} <span className="text-xs text-zinc-500">({pct.toFixed(1)}%)</span>
-                      </span>
-                    </div>
-                    <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }} />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </section>
-        )
-      })()}
-
-      {/* ============================================ */}
-      {/* INTERAKTIONEN NACH CONTENT-ART */}
-      {/* ============================================ */}
-      {(() => {
-        const manualInter = manualInsights.find(m => m.period === period && m.metric_type === 'interaktionen')
-        const bd = manualInter
-          ? {
-              stories: Math.round(manualInter.total_value * (manualInter.stories_pct || 0) / 100),
-              reels: Math.round(manualInter.total_value * (manualInter.reels_pct || 0) / 100),
-              posts: Math.round(manualInter.total_value * (manualInter.posts_pct || 0) / 100),
-              total: manualInter.total_value,
-            }
-          : data.interactionsBreakdown
-        if (!bd || bd.total <= 0) return null
-        return (
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-            Interaktionen nach Content-Art
-          </h2>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
-            {[
-                { label: 'Stories', value: bd.stories, color: '#E1306C' },
-                { label: 'Reels', value: bd.reels, color: '#5851DB' },
-                { label: 'Beitr\u00e4ge', value: bd.posts, color: '#F59E0B' },
-              ].map(item => {
-                const pct = bd.total > 0 ? (item.value / bd.total) * 100 : 0
-                const maxVal = Math.max(bd.stories, bd.reels, bd.posts, 1)
-                return (
-                  <div key={item.label}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium text-zinc-200">{item.label}</span>
-                      <span className="text-sm text-zinc-400">
-                        {formatNumber(item.value)} <span className="text-xs text-zinc-500">({pct.toFixed(1)}%)</span>
-                      </span>
-                    </div>
-                    <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(item.value / maxVal) * 100}%`, backgroundColor: item.color }} />
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
-        </section>
-        )
-      })()}
-
-      {/* ============================================ */}
-      {/* MANUELLE INSIGHTS - Follower / Nicht-Follower Split */}
-      {/* ============================================ */}
-      {(() => {
-        const matching = manualInsights.filter(m => m.period === period)
-        if (matching.length === 0) return null
-        const aufrufe = matching.find(m => m.metric_type === 'aufrufe')
-        const interaktionen = matching.find(m => m.metric_type === 'interaktionen')
-        if (!aufrufe && !interaktionen) return null
-
-        const renderFollowerSplit = (row: ManualInsightRow) => {
-          if (row.follower_pct == null || row.non_follower_pct == null) return null
-          return (
-            <div className="space-y-2">
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-zinc-200">Follower</span>
-                  <span className="text-sm text-zinc-400">{row.follower_pct}%</span>
-                </div>
-                <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${row.follower_pct}%` }} />
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-zinc-200">Nicht-Follower</span>
-                  <span className="text-sm text-zinc-400">{row.non_follower_pct}%</span>
-                </div>
-                <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-blue-500 transition-all duration-500" style={{ width: `${row.non_follower_pct}%` }} />
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        return (
-          <section className="max-w-7xl mx-auto px-6 py-12">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-              Follower vs. Nicht-Follower
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {aufrufe && aufrufe.follower_pct != null && (
-                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Aufrufe</h3>
-                  <p className="text-2xl font-black text-white">{formatNumber(aufrufe.total_value)}</p>
-                  {renderFollowerSplit(aufrufe)}
-                </div>
-              )}
-              {interaktionen && interaktionen.follower_pct != null && (
-                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Interaktionen</h3>
-                  <p className="text-2xl font-black text-white">{formatNumber(interaktionen.total_value)}</p>
-                  {renderFollowerSplit(interaktionen)}
-                </div>
-              )}
-            </div>
-          </section>
-        )
-      })()}
-
-      {/* ============================================ */}
-      {/* AKTIVSTE ZEITEN */}
-      {/* ============================================ */}
-      {data.onlineFollowers && Object.keys(data.onlineFollowers).length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-            Aktivste Zeiten
-          </h2>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
-            {(() => {
-              const of_ = data.onlineFollowers
-              // Group by 3-hour blocks
-              const blocks = [0, 3, 6, 9, 12, 15, 18, 21].map(startHour => {
-                let total = 0
-                for (let h = startHour; h < startHour + 3; h++) {
-                  total += of_[h] || 0
-                }
-                const avg = Math.round(total / 3)
-                const endHour = startHour + 3
-                return { label: `${String(startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00`, value: avg }
-              })
-              const maxVal = Math.max(...blocks.map(b => b.value), 1)
-              return blocks.map(block => (
-                <div key={block.label}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-zinc-300 font-mono">{block.label}</span>
-                    <span className="text-sm text-zinc-400">{formatNumber(block.value)}</span>
-                  </div>
-                  <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${(block.value / maxVal) * 100}%`, backgroundColor: '#E1306C' }}
-                    />
-                  </div>
-                </div>
-              ))
-            })()}
-            <p className="text-[10px] text-zinc-600 mt-2">Durchschnittliche Online-Follower pro Zeitblock</p>
-          </div>
-        </section>
-      )}
-
-      {/* ============================================ */}
-      {/* 3. POST CAROUSEL */}
-      {/* ============================================ */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-            Letzte 20 Beitr&auml;ge
-          </h2>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => scrollCarousel('left')}
-              className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() => scrollCarousel('right')}
-              className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">Top Content nach Aufrufen</h2>
+          <a
+            href="https://instagram.com/pierrebiege"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+          >
+            Alle ansehen
+            <ChevronRight size={14} />
+          </a>
         </div>
         <div
-          ref={carouselRef}
-          className="flex gap-4 overflow-x-auto pb-4"
+          ref={viewsCarouselRef}
+          className="flex gap-3 overflow-x-auto pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {last20Media.map((post) => (
+          {topByViews.map((post) => (
             <button
               key={post.id}
-              onClick={() => {
-                setSelectedPost(post)
-                setCaptionExpanded(false)
-              }}
-              className="flex-shrink-0 w-[180px] group text-left"
+              onClick={() => { setSelectedPost(post); setCaptionExpanded(false) }}
+              className="flex-shrink-0 w-[140px] group text-left"
             >
-              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-zinc-800">
+              <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-800">
                 {(post.thumbnail_url || post.media_url) ? (
                   <img
                     src={post.thumbnail_url || post.media_url || ''}
@@ -772,52 +675,159 @@ export default function PublicInsightsPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                    <Camera size={32} />
+                  <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                    <Camera size={24} />
                   </div>
                 )}
-                {(post.media_type === 'VIDEO' || post.media_type === 'REEL') && (
-                  <div className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1">
-                    <Play size={12} />
+                {/* View count badge at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-2">
+                  <div className="flex items-center justify-center gap-1">
+                    <Eye size={11} className="text-white/80" />
+                    <span className="text-xs font-semibold text-white">{formatNumber(post.impressions || post.plays || 0)}</span>
                   </div>
-                )}
-              </div>
-              <div className="mt-2 space-y-0.5">
-                <div className="flex items-center gap-2 text-xs text-zinc-400">
-                  <span className="flex items-center gap-1">
-                    <Eye size={11} />
-                    {formatNumber(post.impressions || post.plays || 0)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Heart size={11} />
-                    {formatNumber(post.like_count)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MessageCircle size={11} />
-                    {post.comments_count}
-                  </span>
                 </div>
-                <p className="text-[11px] text-zinc-500">{formatDate(post.timestamp)}</p>
               </div>
+              <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{formatDate(post.timestamp)}</p>
             </button>
           ))}
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* 4. AUDIENCE SECTION */}
+      {/* SECTION 3: INTERAKTIONEN (combined 2-column card) */}
       {/* ============================================ */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-8">
-          Zielgruppe
-        </h2>
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Left column */}
+            <div className="p-6 md:p-8 flex flex-col justify-center">
+              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">Interaktionen</p>
+              <p className="text-5xl font-black text-zinc-900 tracking-tight leading-none mb-1">
+                {formatNumberBig(interTotal)}
+              </p>
+              <p className="text-xs text-zinc-400 mb-5">Interaktionen</p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Follower / Non-Follower split */}
+              {manualInter && manualInter.follower_pct != null && manualInter.non_follower_pct != null && (
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PINK }} />
+                    <span className="text-sm text-zinc-700">Follower: <span className="font-semibold">{manualInter.follower_pct}%</span></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PURPLE }} />
+                    <span className="text-sm text-zinc-700">Nicht-Follower: <span className="font-semibold">{manualInter.non_follower_pct}%</span></span>
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-zinc-100 pt-4">
+                <p className="text-sm text-zinc-600">
+                  Konten die interagiert haben: <span className="font-semibold text-zinc-900">{formatNumberBig(interEngagedAccounts)}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Right column - Content-Interaktionen breakdown */}
+            <div className="p-6 md:p-8 bg-zinc-50/50 border-t md:border-t-0 md:border-l border-zinc-100">
+              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-6">Nach Content-Interaktionen</p>
+              {interBreakdown && interBreakdown.total > 0 && (
+                <div className="space-y-5">
+                  <HorizontalBar
+                    label="Reels"
+                    value={interBreakdown.reels}
+                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                    color={PURPLE}
+                    total={interBreakdown.total}
+                  />
+                  <HorizontalBar
+                    label="Beitr\u00e4ge"
+                    value={interBreakdown.posts}
+                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                    color={AMBER}
+                    total={interBreakdown.total}
+                  />
+                  <HorizontalBar
+                    label="Stories"
+                    value={interBreakdown.stories}
+                    maxValue={Math.max(interBreakdown.stories, interBreakdown.reels, interBreakdown.posts, 1)}
+                    color={PINK}
+                    total={interBreakdown.total}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SECTION 4: TOP CONTENT NACH INTERAKTIONEN */}
+      {/* ============================================ */}
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">Top Content nach Interaktionen</h2>
+          <a
+            href="https://instagram.com/pierrebiege"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+          >
+            Alle ansehen
+            <ChevronRight size={14} />
+          </a>
+        </div>
+        <div
+          ref={interactionsCarouselRef}
+          className="flex gap-3 overflow-x-auto pb-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {topByInteractions.map((post) => {
+            const totalInt = (post.like_count || 0) + (post.comments_count || 0) + (post.saved || 0) + (post.shares || 0)
+            return (
+              <button
+                key={post.id}
+                onClick={() => { setSelectedPost(post); setCaptionExpanded(false) }}
+                className="flex-shrink-0 w-[140px] group text-left"
+              >
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-800">
+                  {(post.thumbnail_url || post.media_url) ? (
+                    <img
+                      src={post.thumbnail_url || post.media_url || ''}
+                      alt=""
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                      <Camera size={24} />
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-2">
+                    <div className="flex items-center justify-center gap-1">
+                      <Heart size={11} className="text-white/80" />
+                      <span className="text-xs font-semibold text-white">{formatNumber(totalInt)}</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{formatDate(post.timestamp)}</p>
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SECTION 5: ZIELGRUPPE */}
+      {/* ============================================ */}
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <h2 className="text-lg font-bold text-white mb-4">Zielgruppe</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Top-Standorte (Laender) */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 p-6">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
-              <Globe size={14} />
-              Top-Standorte (L&auml;nder)
+              <Globe size={14} className="text-zinc-400" />
+              Top-Standorte (L{'\u00e4'}nder)
             </h3>
             <div className="space-y-3">
               {topCountries.map((c) => {
@@ -826,13 +836,13 @@ export default function PublicInsightsPage() {
                 return (
                   <div key={c.key}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-zinc-200 flex items-center gap-2">
+                      <span className="text-sm text-zinc-700 flex items-center gap-2">
                         <span>{display.flag}</span>
                         {display.name}
                       </span>
-                      <span className="text-xs text-zinc-500">{pct.toFixed(1)}%</span>
+                      <span className="text-xs text-zinc-400">{pct.toFixed(1)}%</span>
                     </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
                         style={{ width: `${pct}%`, backgroundColor: PINK }}
@@ -845,10 +855,10 @@ export default function PublicInsightsPage() {
           </div>
 
           {/* Top-Standorte (Staedte) */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-zinc-200/60 p-6">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-5 flex items-center gap-2">
-              <MapPin size={14} />
-              Top-Standorte (St&auml;dte)
+              <MapPin size={14} className="text-zinc-400" />
+              Top-Standorte (St{'\u00e4'}dte)
             </h3>
             <div className="space-y-3">
               {topCities.map((c) => {
@@ -856,10 +866,10 @@ export default function PublicInsightsPage() {
                 return (
                   <div key={c.key}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-zinc-200">{c.key}</span>
-                      <span className="text-xs text-zinc-500">{formatNumber(c.value)}</span>
+                      <span className="text-sm text-zinc-700">{c.key}</span>
+                      <span className="text-xs text-zinc-400">{formatNumber(c.value)}</span>
                     </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
                         style={{ width: `${pct}%`, backgroundColor: PINK }}
@@ -869,7 +879,7 @@ export default function PublicInsightsPage() {
                 )
               })}
               {topCities.length === 0 && (
-                <p className="text-xs text-zinc-500">Keine St&auml;dte-Daten</p>
+                <p className="text-xs text-zinc-400">Keine St{'\u00e4'}dte-Daten</p>
               )}
             </div>
           </div>
@@ -877,49 +887,59 @@ export default function PublicInsightsPage() {
       </section>
 
       {/* ============================================ */}
-      {/* 5. STORIES SECTION */}
+      {/* SECTION 6: STORIES (merged API + manual) */}
       {/* ============================================ */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-            Storys (Last 14 Days)
-          </h2>
+      <section className="max-w-3xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">Story Archiv</h2>
           <div className="flex gap-2">
             <button onClick={() => { const el = document.getElementById('stories-scroll'); if (el) el.scrollBy({ left: -400, behavior: 'smooth' }) }}
-              className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
-              <ChevronLeft size={18} className="text-white" />
+              className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
+              <ChevronLeft size={16} className="text-white" />
             </button>
             <button onClick={() => { const el = document.getElementById('stories-scroll'); if (el) el.scrollBy({ left: 400, behavior: 'smooth' }) }}
-              className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
-              <ChevronRight size={18} className="text-white" />
+              className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors">
+              <ChevronRight size={16} className="text-white" />
             </button>
           </div>
         </div>
         <div id="stories-scroll"
-          className="flex gap-4 overflow-x-auto pb-4"
+          className="flex gap-3 overflow-x-auto pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {(manualStories as ManualStory[]).map((story) => (
-            <div key={story.id} className="flex-shrink-0 w-[140px] sm:w-[160px]">
+          {allStories.map((story) => (
+            <div key={story.id} className="flex-shrink-0 w-[120px] sm:w-[140px]">
               <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-zinc-800">
                 <img src={story.image} alt="" className="w-full h-full object-cover" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent rounded-b-xl px-2 py-2">
                   <div className="flex items-center justify-center gap-1">
-                    <Eye size={12} className="text-white/80" />
+                    <Eye size={11} className="text-white/80" />
                     <p className="text-xs text-white font-semibold">{formatNumber(story.views)}</p>
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] text-zinc-500 mt-2 text-center">{story.date}</p>
+              <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{story.date}</p>
             </div>
           ))}
+          {allStories.length === 0 && !storiesLoading && (
+            <p className="text-sm text-zinc-500 py-8">Keine Stories verfuegbar</p>
+          )}
+          {storiesLoading && (
+            <div className="flex items-center gap-2 py-8">
+              <RefreshCw size={14} className="animate-spin text-zinc-500" />
+              <p className="text-sm text-zinc-500">Stories laden...</p>
+            </div>
+          )}
         </div>
+        <p className="text-[10px] text-zinc-600 mt-2">
+          {allStories.length} Stories &middot; {formatNumber(totalStoryViews)} Views gesamt
+        </p>
       </section>
 
       {/* ============================================ */}
-      {/* 6. CTA SECTION */}
+      {/* SECTION 7: CTA */}
       {/* ============================================ */}
-      <section className="relative w-full mt-12">
+      <section className="relative w-full mt-8">
         <div className="relative h-[500px] md:h-[600px] overflow-hidden">
           <img
             src="/insights/hero-trail.jpg"
@@ -949,9 +969,9 @@ export default function PublicInsightsPage() {
       </section>
 
       {/* ============================================ */}
-      {/* 7. FOOTER */}
+      {/* SECTION 8: FOOTER */}
       {/* ============================================ */}
-      <footer className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-zinc-800/50">
+      <footer className="max-w-3xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-zinc-800/50">
         <div className="flex items-center gap-2 text-xs text-zinc-500">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           Live Daten von Instagram
@@ -971,7 +991,7 @@ export default function PublicInsightsPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="relative bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -981,7 +1001,7 @@ export default function PublicInsightsPage() {
               <X size={16} />
             </button>
 
-            <div className="aspect-[4/5] bg-zinc-800 rounded-t-2xl overflow-hidden">
+            <div className="aspect-[4/5] bg-zinc-100 rounded-t-2xl overflow-hidden">
               {(selectedPost.thumbnail_url || selectedPost.media_url) ? (
                 <img
                   src={selectedPost.thumbnail_url || selectedPost.media_url || ''}
@@ -998,17 +1018,17 @@ export default function PublicInsightsPage() {
             <div className="p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="bg-zinc-800 text-zinc-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span className="bg-zinc-100 text-zinc-700 text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
                     {mediaTypeIcon(selectedPost.media_type)}
                     {mediaTypeLabel(selectedPost.media_type)}
                   </span>
-                  <span className="text-xs text-zinc-500">{formatDate(selectedPost.timestamp)}</span>
+                  <span className="text-xs text-zinc-400">{formatDate(selectedPost.timestamp)}</span>
                 </div>
                 <a
                   href={selectedPost.permalink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors"
+                  className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
                 >
                   <ExternalLink size={12} />
                   Instagram
@@ -1027,7 +1047,7 @@ export default function PublicInsightsPage() {
               {selectedPost.caption && (
                 <div>
                   <p
-                    className={`text-xs text-zinc-400 whitespace-pre-wrap ${
+                    className={`text-xs text-zinc-500 whitespace-pre-wrap ${
                       !captionExpanded ? 'line-clamp-3' : ''
                     }`}
                   >
@@ -1036,7 +1056,7 @@ export default function PublicInsightsPage() {
                   {selectedPost.caption.length > 150 && (
                     <button
                       onClick={() => setCaptionExpanded(!captionExpanded)}
-                      className="text-xs text-zinc-500 hover:text-white mt-1 transition-colors"
+                      className="text-xs text-zinc-400 hover:text-zinc-900 mt-1 transition-colors"
                     >
                       {captionExpanded ? 'Weniger' : 'Mehr anzeigen'}
                     </button>
@@ -1062,10 +1082,10 @@ function MetricCell({
   value: number
 }) {
   return (
-    <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+    <div className="bg-zinc-50 rounded-lg p-3 text-center">
       <div className="flex items-center justify-center text-zinc-400 mb-1">{icon}</div>
-      <p className="text-sm font-semibold text-white">{formatNumber(value)}</p>
-      <p className="text-[10px] text-zinc-500">{label}</p>
+      <p className="text-sm font-semibold text-zinc-900">{formatNumber(value)}</p>
+      <p className="text-[10px] text-zinc-400">{label}</p>
     </div>
   )
 }
