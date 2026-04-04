@@ -12,6 +12,13 @@ type Rating = "S" | "A";
 type Setting = "keller" | "outdoor" | "challenge" | "collab" | "race";
 type ViewMode = "calendar" | "clusters" | "arcs";
 
+interface Partner {
+  id: string;
+  name: string;
+  partner_type: string;
+  status: string;
+}
+
 interface Video {
   id: number;
   title: string;
@@ -27,6 +34,8 @@ interface Video {
   arc_race: string | null;
   notes: string | null;
   publish_date: string | null;
+  partner_id: string | null;
+  partner: Partner | null;
 }
 
 const STATUS_CONFIG: Record<VideoStatus, { label: string; color: string; bg: string }> = {
@@ -76,19 +85,24 @@ const MONTHS = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", 
 
 export default function YouTubePage() {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewMode>("calendar");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | VideoStatus>("all");
   const [expanded, setExpanded] = useState<number | null>(null);
   const [showAdd, setShowAdd] = useState(false);
-  const [newVideo, setNewVideo] = useState({ title: "", cluster: CLUSTERS[0], rating: "A" as Rating, setting: "keller" as Setting, week: "", description: "", formula: "", arc_phase: "", arc_race: "" });
+  const [newVideo, setNewVideo] = useState({ title: "", cluster: CLUSTERS[0], rating: "A" as Rating, setting: "keller" as Setting, week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "" });
 
   const fetchVideos = useCallback(async () => {
-    const res = await fetch("/api/youtube");
-    if (res.ok) {
-      const data = await res.json();
-      setVideos(data);
+    const [vRes, pRes] = await Promise.all([
+      fetch("/api/youtube"),
+      fetch("/api/partners"),
+    ]);
+    if (vRes.ok) setVideos(await vRes.json());
+    if (pRes.ok) {
+      const pData = await pRes.json();
+      setPartners(Array.isArray(pData) ? pData : pData.partners || []);
     }
     setLoading(false);
   }, []);
@@ -123,12 +137,13 @@ export default function YouTubePage() {
         color: CLUSTER_COLORS[newVideo.cluster] || "#888888",
         arc_phase: newVideo.arc_phase || null,
         arc_race: newVideo.arc_race || null,
+        partner_id: newVideo.partner_id || null,
       }),
     });
     if (res.ok) {
       await fetchVideos();
       setShowAdd(false);
-      setNewVideo({ title: "", cluster: CLUSTERS[0], rating: "A", setting: "keller", week: "", description: "", formula: "", arc_phase: "", arc_race: "" });
+      setNewVideo({ title: "", cluster: CLUSTERS[0], rating: "A", setting: "keller", week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "" });
     }
   }
 
@@ -167,12 +182,28 @@ export default function YouTubePage() {
               <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{setCfg.emoji} {setCfg.label}</span>
               {v.arc_phase && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={{ background: `${v.color}20`, color: v.color }}>{v.arc_phase}</span>}
               {v.formula && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">{v.formula}</span>}
+              {v.partner && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">🤝 {v.partner.name}</span>}
             </div>
           </div>
         </div>
         {isExp && (
           <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
             {v.description && <p className="text-xs text-zinc-500">{v.description}</p>}
+            {/* Partner */}
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Partner</div>
+              <select
+                value={v.partner_id || ""}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => { e.stopPropagation(); updateVideo(v.id, { partner_id: e.target.value || null }); }}
+                className="text-[11px] px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
+              >
+                <option value="">Kein Partner</option>
+                {partners.filter(p => p.status === "Active" || p.status === "Negotiating" || p.id === v.partner_id).map((p) => (
+                  <option key={p.id} value={p.id}>{p.name} ({p.partner_type})</option>
+                ))}
+              </select>
+            </div>
             {/* Status */}
             <div>
               <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Status</div>
@@ -420,6 +451,10 @@ export default function YouTubePage() {
                 <option value="Aftermath">Aftermath</option>
               </select>
             </div>
+            <select value={newVideo.partner_id} onChange={(e) => setNewVideo({ ...newVideo, partner_id: e.target.value })} className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white">
+              <option value="">Kein Partner</option>
+              {partners.map((p) => <option key={p.id} value={p.id}>🤝 {p.name} ({p.partner_type})</option>)}
+            </select>
             <button onClick={addVideo} disabled={!newVideo.title} className="w-full py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-30 flex items-center justify-center gap-2">
               <Save size={16} /> Speichern
             </button>

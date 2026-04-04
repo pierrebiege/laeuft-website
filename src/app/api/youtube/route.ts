@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from('youtube_videos')
-    .select('*')
+    .select('*, partner:partners(id, name, partner_type, status)')
     .order('week', { ascending: true })
     .order('rating', { ascending: true })
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (authError) return authError
 
   const body = await request.json()
-  const { title, rating, cluster, color, description, formula, week, setting, arc_phase, arc_race, notes } = body
+  const { title, rating, cluster, color, description, formula, week, setting, arc_phase, arc_race, notes, partner_id } = body
 
   if (!title || !cluster) {
     return NextResponse.json({ error: 'Title and cluster required' }, { status: 400 })
@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
       arc_phase,
       arc_race,
       notes,
+      partner_id: partner_id || null,
     })
     .select()
     .single()
