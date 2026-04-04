@@ -189,6 +189,24 @@ export default function YouTubePage() {
         {isExp && (
           <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
             {v.description && <p className="text-xs text-zinc-500">{v.description}</p>}
+            {/* Woche verschieben */}
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Woche</div>
+              <div className="flex items-center gap-2">
+                <select
+                  value={v.week || ""}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => { e.stopPropagation(); updateVideo(v.id, { week: e.target.value || null }); }}
+                  className="text-[11px] px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                >
+                  <option value="">Nicht eingeplant</option>
+                  {Array.from({ length: 39 }, (_, i) => i + 15).map((w) => (
+                    <option key={w} value={`W${w}`}>W{w} · {getWeekLabel(`W${w}`)}</option>
+                  ))}
+                </select>
+                <span className="text-[10px] text-zinc-400">aktuell: {v.week || "–"}</span>
+              </div>
+            </div>
             {/* Partner */}
             <div>
               <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Partner</div>
@@ -279,9 +297,8 @@ export default function YouTubePage() {
               )}
               <div className="flex gap-2 items-start">
                 <div className="text-xs text-zinc-400 pt-3 font-mono w-[70px] shrink-0">{week}<br /><span className="text-[10px]">{getWeekLabel(week)}</span></div>
-                <div className="flex-1 grid grid-cols-2 gap-2">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
                   {weekVideos.map((v) => <VideoCard key={v.id} v={v} />)}
-                  {weekVideos.length < 2 && <div className="rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 p-3 opacity-20"><div className="text-xs text-zinc-500">Flex</div></div>}
                 </div>
               </div>
             </div>
