@@ -277,10 +277,12 @@ export default function YouTubePage() {
                   <span className="text-sm font-semibold" style={{ color: raceThisWeek.color }}>{raceThisWeek.name}</span>
                 </div>
               )}
-              <div className="grid grid-cols-[70px_1fr_1fr] gap-2 items-start">
-                <div className="text-xs text-zinc-400 pt-3 font-mono">{week}<br /><span className="text-[10px]">{getWeekLabel(week)}</span></div>
-                {weekVideos.map((v) => <VideoCard key={v.id} v={v} />)}
-                {weekVideos.length < 2 && <div className="rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 p-3 opacity-20"><div className="text-xs text-zinc-500">Flex</div></div>}
+              <div className="flex gap-2 items-start">
+                <div className="text-xs text-zinc-400 pt-3 font-mono w-[70px] shrink-0">{week}<br /><span className="text-[10px]">{getWeekLabel(week)}</span></div>
+                <div className="flex-1 grid grid-cols-2 gap-2">
+                  {weekVideos.map((v) => <VideoCard key={v.id} v={v} />)}
+                  {weekVideos.length < 2 && <div className="rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 p-3 opacity-20"><div className="text-xs text-zinc-500">Flex</div></div>}
+                </div>
               </div>
             </div>
           );
