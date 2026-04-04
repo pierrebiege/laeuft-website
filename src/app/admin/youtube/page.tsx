@@ -92,6 +92,8 @@ export default function YouTubePage() {
   const [statusFilter, setStatusFilter] = useState<"all" | VideoStatus>("all");
   const [expanded, setExpanded] = useState<number | null>(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [dragVideoId, setDragVideoId] = useState<number | null>(null);
+  const [dragOverWeek, setDragOverWeek] = useState<string | null>(null);
   const [newVideo, setNewVideo] = useState({ title: "", cluster: CLUSTERS[0], rating: "A" as Rating, setting: "keller" as Setting, week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "" });
 
   const fetchVideos = useCallback(async () => {
@@ -171,7 +173,13 @@ export default function YouTubePage() {
     const setCfg = SETTING_CONFIG[v.setting];
 
     return (
-      <div onClick={() => setExpanded(isExp ? null : v.id)} className={`rounded-lg border p-3 cursor-pointer transition-all bg-white dark:bg-zinc-900 ${v.status === "published" ? "opacity-40 border-green-800" : v.status !== "open" ? "border-amber-500/50" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600"}`}>
+      <div
+        draggable
+        onDragStart={(e) => { e.dataTransfer.setData("text/plain", String(v.id)); setDragVideoId(v.id); setExpanded(null); }}
+        onDragEnd={() => setDragVideoId(null)}
+        onClick={() => setExpanded(isExp ? null : v.id)}
+        className={`rounded-lg border p-3 cursor-grab active:cursor-grabbing transition-all bg-white dark:bg-zinc-900 ${dragVideoId === v.id ? "opacity-50 scale-95" : ""} ${v.status === "published" ? "opacity-40 border-green-800" : v.status !== "open" ? "border-amber-500/50" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600"}`}
+      >
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="text-[10px] text-zinc-400 mb-0.5">#{v.id} {v.week && `· ${v.week} · ${getWeekLabel(v.week)}`}</div>
@@ -256,7 +264,10 @@ export default function YouTubePage() {
   // Calendar View
   // ============================================================
   function CalendarView() {
-    const weeks = Array.from(new Set(filtered.map((v) => v.week).filter(Boolean))).sort((a, b) => parseInt(a!.replace("W", "")) - parseInt(b!.replace("W", ""))) as string[];
+    // Show ALL weeks W15-W53 so empty weeks are drop targets too
+    const allWeeks = Array.from({ length: 39 }, (_, i) => `W${i + 15}`);
+    const usedWeeks = new Set(filtered.map((v) => v.week).filter(Boolean));
+    const weeks = dragVideoId ? allWeeks : allWeeks.filter(w => usedWeeks.has(w));
     let currentMonth = -1;
 
     return (
@@ -277,6 +288,8 @@ export default function YouTubePage() {
             return rd >= start && rd <= end;
           });
 
+          const isDropTarget = dragOverWeek === week;
+
           return (
             <div key={week}>
               {showMonth && (
@@ -295,10 +308,24 @@ export default function YouTubePage() {
                   <span className="text-sm font-semibold" style={{ color: raceThisWeek.color }}>{raceThisWeek.name}</span>
                 </div>
               )}
-              <div className="flex gap-2 items-start">
+              <div
+                className={`flex gap-2 items-start rounded-lg transition-colors ${isDropTarget ? "bg-amber-50 dark:bg-amber-950/30 ring-2 ring-amber-400 ring-inset" : ""}`}
+                onDragOver={(e) => { e.preventDefault(); setDragOverWeek(week); }}
+                onDragLeave={() => setDragOverWeek(null)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOverWeek(null);
+                  const videoId = Number(e.dataTransfer.getData("text/plain"));
+                  if (videoId) updateVideo(videoId, { week });
+                  setDragVideoId(null);
+                }}
+              >
                 <div className="text-xs text-zinc-400 pt-3 font-mono w-[70px] shrink-0">{week}<br /><span className="text-[10px]">{getWeekLabel(week)}</span></div>
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 py-1">
                   {weekVideos.map((v) => <VideoCard key={v.id} v={v} />)}
+                  {weekVideos.length === 0 && isDropTarget && (
+                    <div className="rounded-lg border-2 border-dashed border-amber-400 p-4 text-center text-xs text-amber-600">Hier ablegen</div>
+                  )}
                 </div>
               </div>
             </div>
