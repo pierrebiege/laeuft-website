@@ -20,6 +20,7 @@ import {
   Video,
   Dumbbell,
   Library,
+  Youtube,
 } from "lucide-react";
 import { AdminRoleProvider } from "./AdminRoleContext";
 
@@ -53,6 +54,7 @@ export default function AdminShell({
     { href: "/admin/training", label: "Training", icon: Dumbbell, roles: ["admin"] as Role[] },
     { href: "/admin/exercises", label: "Übungen", icon: Library, roles: ["admin"] as Role[] },
     { href: "/admin/content", label: "Content", icon: Video, roles: ["admin"] as Role[] },
+    { href: "/admin/youtube", label: "YouTube", icon: Youtube, roles: ["admin"] as Role[] },
     { href: "/admin/instagram", label: "Instagram", icon: BarChart3, roles: ["admin"] as Role[] },
   ];
 
