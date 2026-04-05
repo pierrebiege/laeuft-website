@@ -115,15 +115,13 @@ export default function YouTubePage() {
   useEffect(() => { fetchVideos(); }, [fetchVideos]);
 
   async function updateVideo(id: number, updates: Partial<Video>) {
-    const res = await fetch("/api/youtube", {
+    // Optimistic update: change UI immediately, then sync to DB
+    setVideos((prev) => prev.map((v) => (v.id === id ? { ...v, ...updates } as Video : v)));
+    fetch("/api/youtube", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, ...updates }),
     });
-    if (res.ok) {
-      const updated = await res.json();
-      setVideos((prev) => prev.map((v) => (v.id === updated.id ? updated : v)));
-    }
   }
 
   async function deleteVideo(id: number) {
@@ -202,7 +200,30 @@ export default function YouTubePage() {
         </div>
         {isExp && (
           <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
-            {v.description && <p className="text-xs text-zinc-500">{v.description}</p>}
+            {/* Titel bearbeiten */}
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Titel</div>
+              <input
+                type="text"
+                defaultValue={v.title}
+                onClick={(e) => e.stopPropagation()}
+                onBlur={(e) => { if (e.target.value !== v.title) updateVideo(v.id, { title: e.target.value }); }}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.currentTarget.blur(); } }}
+                className="w-full text-sm px-2 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white outline-none focus:border-amber-400"
+              />
+            </div>
+            {/* Beschreibung bearbeiten */}
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Beschreibung</div>
+              <input
+                type="text"
+                defaultValue={v.description || ""}
+                onClick={(e) => e.stopPropagation()}
+                onBlur={(e) => { if (e.target.value !== (v.description || "")) updateVideo(v.id, { description: e.target.value }); }}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.currentTarget.blur(); } }}
+                className="w-full text-xs px-2 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-500 outline-none focus:border-amber-400"
+              />
+            </div>
             {/* Woche verschieben */}
             <div>
               <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Woche</div>
