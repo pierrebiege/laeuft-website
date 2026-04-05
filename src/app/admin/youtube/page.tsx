@@ -10,6 +10,7 @@ import {
 type VideoStatus = "open" | "scripted" | "filmed" | "edited" | "published";
 type Rating = "S" | "A";
 type Setting = "keller" | "outdoor" | "challenge" | "collab" | "race";
+type Production = "inhouse" | "extern";
 type ViewMode = "calendar" | "clusters" | "arcs";
 
 interface Partner {
@@ -36,6 +37,8 @@ interface Video {
   publish_date: string | null;
   partner_id: string | null;
   partner: Partner | null;
+  production: Production;
+  producer: string | null;
 }
 
 const STATUS_CONFIG: Record<VideoStatus, { label: string; color: string; bg: string }> = {
@@ -94,7 +97,7 @@ export default function YouTubePage() {
   const [showAdd, setShowAdd] = useState(false);
   const [dragVideoId, setDragVideoId] = useState<number | null>(null);
   const [dragOverWeek, setDragOverWeek] = useState<string | null>(null);
-  const [newVideo, setNewVideo] = useState({ title: "", cluster: CLUSTERS[0], rating: "A" as Rating, setting: "keller" as Setting, week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "" });
+  const [newVideo, setNewVideo] = useState({ title: "", cluster: CLUSTERS[0], rating: "A" as Rating, setting: "keller" as Setting, week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "", production: "inhouse" as Production, producer: "" });
 
   const fetchVideos = useCallback(async () => {
     const [vRes, pRes] = await Promise.all([
@@ -140,12 +143,14 @@ export default function YouTubePage() {
         arc_phase: newVideo.arc_phase || null,
         arc_race: newVideo.arc_race || null,
         partner_id: newVideo.partner_id || null,
+        production: newVideo.production,
+        producer: newVideo.producer || null,
       }),
     });
     if (res.ok) {
       await fetchVideos();
       setShowAdd(false);
-      setNewVideo({ title: "", cluster: CLUSTERS[0], rating: "A", setting: "keller", week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "" });
+      setNewVideo({ title: "", cluster: CLUSTERS[0], rating: "A", setting: "keller", week: "", description: "", formula: "", arc_phase: "", arc_race: "", partner_id: "", production: "inhouse", producer: "" });
     }
   }
 
@@ -190,6 +195,7 @@ export default function YouTubePage() {
               <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{setCfg.emoji} {setCfg.label}</span>
               {v.arc_phase && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={{ background: `${v.color}20`, color: v.color }}>{v.arc_phase}</span>}
               {v.formula && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">{v.formula}</span>}
+              {v.production === "extern" && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">🎬 {v.producer || "Extern"}</span>}
               {v.partner && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">🤝 {v.partner.name}</span>}
             </div>
           </div>
@@ -250,6 +256,28 @@ export default function YouTubePage() {
                     className={`text-[11px] px-2.5 py-1 rounded-md border transition-colors ${v.setting === s ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border-transparent" : "border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"}`}
                   >{SETTING_CONFIG[s].emoji} {SETTING_CONFIG[s].label}</button>
                 ))}
+              </div>
+            </div>
+            {/* Produktion */}
+            <div>
+              <div className="text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">Produktion</div>
+              <div className="flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); updateVideo(v.id, { production: "inhouse", producer: null }); }}
+                  className={`text-[11px] px-2.5 py-1 rounded-md border transition-colors ${v.production === "inhouse" ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border-transparent" : "border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"}`}
+                >🏠 Inhouse</button>
+                <button onClick={(e) => { e.stopPropagation(); updateVideo(v.id, { production: "extern" }); }}
+                  className={`text-[11px] px-2.5 py-1 rounded-md border transition-colors ${v.production === "extern" ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border-transparent" : "border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"}`}
+                >🎬 Extern</button>
+                {v.production === "extern" && (
+                  <input
+                    type="text"
+                    value={v.producer || ""}
+                    placeholder="Produzent..."
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => { e.stopPropagation(); updateVideo(v.id, { producer: e.target.value }); }}
+                    className="text-[11px] px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white w-40"
+                  />
+                )}
               </div>
             </div>
             {/* Delete */}
@@ -496,6 +524,15 @@ export default function YouTubePage() {
                 <option value="Race Day">Race Day</option>
                 <option value="Aftermath">Aftermath</option>
               </select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <select value={newVideo.production} onChange={(e) => setNewVideo({ ...newVideo, production: e.target.value as Production })} className="px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white">
+                <option value="inhouse">🏠 Inhouse</option>
+                <option value="extern">🎬 Extern</option>
+              </select>
+              {newVideo.production === "extern" && (
+                <input type="text" placeholder="Produzent (z.B. Performance Media)" value={newVideo.producer} onChange={(e) => setNewVideo({ ...newVideo, producer: e.target.value })} className="px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white outline-none" />
+              )}
             </div>
             <select value={newVideo.partner_id} onChange={(e) => setNewVideo({ ...newVideo, partner_id: e.target.value })} className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white">
               <option value="">Kein Partner</option>
