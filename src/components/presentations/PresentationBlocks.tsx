@@ -397,7 +397,7 @@ function ContactBlock({ block, customer }: { block: Extract<Block, { type: "cont
         </FadeUp>
         <FadeUp delay={1.0}>
           <a
-            href="/sponsor-insights"
+            href="/insights"
             target="_blank"
             className="mt-16 inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white hover:text-black transition-colors group"
           >
