@@ -627,82 +627,129 @@ function Packages() {
   );
 }
 
-function Beispielrechnungen() {
+function RealCases() {
   const cases = [
     {
-      tag: "Treuhand",
-      name: "Belegverarbeitung automatisiert",
-      problem: "300 Belege/Monat manuell erfasst, 12 Std/Woche Aufwand für eine Mitarbeiterin.",
-      solution: "AI liest, sortiert, prüft, verbucht. Mitarbeiterin prüft nur Edge-Cases.",
-      result: "9 Std/Woche gespart = CHF 2'700/Monat (bei CHF 75/h).",
-      invest: "CHF 18'000",
-      payback: "Payback nach 7 Monaten",
+      client: "ParkourONE Schweiz",
+      tag: "AI Ticket-Routing",
+      title: "Tickets erkennen sich selbst.",
+      problem: "Hunderte Support-Anfragen pro Monat aus 12 Standorten — Kategorisierung manuell, Bearbeitung verzögert.",
+      solution: "AI liest jedes eingehende Ticket, erkennt Standort, Thema und Dringlichkeit, sortiert es automatisch in den richtigen Kanal und priorisiert.",
+      stack: "Custom AI-Klassifizierung · Webhooks · Dashboard",
+      live: true,
     },
     {
-      tag: "Praxis",
-      name: "Voice Agent für Terminbuchung",
-      problem: "Empfang nimmt täglich 40+ Anrufe entgegen. Hälfte sind Terminbuchungen.",
-      solution: "AI Voice Agent nimmt Anrufe 24/7, bucht Termine im Kalender, beantwortet FAQ.",
-      result: "60% der Anrufe automatisiert = 4 Std/Tag freie Empfangs-Kapazität.",
-      invest: "CHF 22'000",
-      payback: "Payback nach 5 Monaten",
+      client: "Gemeinde Albinen",
+      tag: "Telegram-CMS",
+      title: "Eine Webseite, gesteuert via Chat.",
+      problem: "Kleine Walliser Gemeinde — keine IT-Abteilung, ständig Updates nötig (Wanderwege schliessen, Events posten, Infos raushauen).",
+      solution: "Komplette Webseite mit Datenbank im Backend. Mitarbeiter steuern alles per Telegram-Bot: Wanderweg schliessen, Event hinzufügen, Update raushauen — Webseite passt sich sofort an.",
+      stack: "Next.js · Supabase · Telegram Bot API · Custom CMS",
+      live: false,
+      note: "in Entwicklung",
+    },
+    {
+      client: "läuft.ch (eigenes System)",
+      tag: "Production-Backend",
+      title: "Wir essen unser eigenes Hundefutter.",
+      problem: "Solo-Betrieb mit Akquise, Offerten, Mandaten, Rechnungen, YouTube-Planner, Training-System, Buchhaltung — alles in einem Tool nötig, ohne 10 Subscriptions.",
+      solution: "Komplettes Custom-CRM gebaut. AI-Insights, Cron-getriebene Reminder, Telegram + WhatsApp-Integration, Stripe-Anbindung, automatisierte Mahnwesen-Pipeline. Daily im Einsatz.",
+      stack: "Next.js · Supabase · Stripe · Cron · Claude API · Telegram",
+      live: true,
     },
   ];
   return (
     <section className="py-32 px-6 border-t border-border">
       <div className="max-w-7xl mx-auto">
         <FadeUp>
-          <p className="text-sm uppercase tracking-widest text-muted mb-4">Beispielrechnungen</p>
+          <p className="text-sm uppercase tracking-widest text-muted mb-4">Was wir gebaut haben</p>
         </FadeUp>
         <FadeUp delay={0.1}>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            Konkret <span className="italic font-serif font-normal">durchgerechnet</span>.
+            Echte <span className="italic font-serif font-normal">Systeme</span>. Im Einsatz.
           </h2>
         </FadeUp>
         <FadeUp delay={0.2}>
           <p className="text-muted text-lg max-w-2xl mb-16">
-            Zwei reale Beispiele wie ein AI Sprint aussieht — von Problem über Lösung bis zum Payback. Genau so rechnen wir auch deinen Use-Case durch.
+            Drei reale Projekte. Keine Mockups, keine Slides — produktive Systeme die täglich laufen.
           </p>
         </FadeUp>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {cases.map((c, i) => (
-            <FadeUp key={i} delay={i * 0.15}>
-              <div className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-10 h-full">
-                <div className="text-xs uppercase tracking-wider text-muted mb-4">{c.tag}</div>
-                <h3 className="text-3xl font-bold mb-8">{c.name}</h3>
-                <div className="space-y-5">
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-muted mb-1">Das Problem</div>
-                    <p className="text-foreground/80">{c.problem}</p>
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-muted mb-1">Die Lösung</div>
-                    <p className="text-foreground/80">{c.solution}</p>
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-muted mb-1">Das Ergebnis</div>
-                    <p className="font-semibold">{c.result}</p>
-                  </div>
-                  <div className="pt-4 border-t border-border flex items-baseline justify-between">
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-muted mb-1">Investment</div>
-                      <p className="font-bold tabular-nums">{c.invest}</p>
+            <FadeUp key={i} delay={i * 0.1}>
+              <div className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8 h-full flex flex-col hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-xs uppercase tracking-wider text-muted">{c.tag}</div>
+                  {c.live ? (
+                    <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      Live
                     </div>
-                    <div className="text-right">
-                      <div className="text-xs uppercase tracking-wider text-muted mb-1">Payback</div>
-                      <p className="text-green-700 dark:text-green-400 font-semibold text-sm">{c.payback}</p>
-                    </div>
+                  ) : (
+                    <div className="text-xs text-muted">{c.note}</div>
+                  )}
+                </div>
+                <div className="text-sm font-medium text-muted mb-2">{c.client}</div>
+                <h3 className="text-2xl font-bold mb-6 leading-tight">{c.title}</h3>
+                <div className="space-y-4 flex-1">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted mb-1">Das Problem</div>
+                    <p className="text-sm text-foreground/80 leading-relaxed">{c.problem}</p>
                   </div>
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted mb-1">Die Lösung</div>
+                    <p className="text-sm text-foreground/80 leading-relaxed">{c.solution}</p>
+                  </div>
+                </div>
+                <div className="mt-6 pt-4 border-t border-border">
+                  <div className="text-[11px] uppercase tracking-wider text-muted mb-1">Stack</div>
+                  <p className="text-xs text-muted font-mono leading-relaxed">{c.stack}</p>
                 </div>
               </div>
             </FadeUp>
           ))}
         </div>
-        <FadeUp delay={0.3}>
-          <p className="mt-8 text-center text-sm text-muted">
-            Beispielrechnungen basierend auf typischen Schweizer KMU-Szenarien. Tatsächliche Zahlen variieren je nach Setup.
-          </p>
-        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section className="py-32 px-6 border-t border-border">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <FadeUp>
+            <div className="aspect-square rounded-3xl overflow-hidden">
+              <img src="/pierre.jpg" alt="Pierre Biege" className="w-full h-full object-cover" />
+            </div>
+          </FadeUp>
+          <div>
+            <FadeUp>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-6">Ich bin Pierre.</h2>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <div className="space-y-4 text-muted">
+                <p>
+                  Bei mir läuft vieles. Drei Kinder. Ultralauf-Rennen durch die Nacht.{" "}
+                  <a href="https://schweiz.parkourone.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:opacity-70 transition-opacity">
+                    Parkour Coach bei ParkourONE
+                  </a>
+                  . Und seit 15 Jahren nur ein Ziel: Dinge zum Laufen bringen.
+                </p>
+                <p>
+                  Ich lebe im Wallis und baue, bis es läuft. Aufgeben ist keine Option – weder auf Kilometer 80 noch bei deinem AI-Projekt.
+                </p>
+                <p>
+                  AI ist für mich kein Hype. Es ist das nächste Werkzeug das Schweizer KMU brauchen — und ich bin einer der wenigen die es ehrlich umsetzen können, weil ich seit Jahren Systeme baue auf denen es läuft.
+                </p>
+                <p className="text-foreground font-medium pt-2">
+                  Du redest mit mir. Nicht mit einem Verkäufer. Mit dem, der es baut.
+                </p>
+              </div>
+            </FadeUp>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -866,7 +913,8 @@ export default function AiPage() {
       <UseCases />
       <HowItWorks />
       <Packages />
-      <Beispielrechnungen />
+      <RealCases />
+      <About />
       <WhyCH />
       <FAQ />
       <Contact />
