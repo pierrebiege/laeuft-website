@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView, type Variants } from "framer-motion";
-import { Youtube, Instagram, Camera, Users, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { Youtube, Instagram, Camera, Users, Mail, Phone, MapPin, Calendar, BarChart3 } from "lucide-react";
 
 export type Block =
   | { type: "cover"; title: string; subtitle?: string; image?: string }
@@ -333,7 +333,7 @@ function TeamBlock({ block }: { block: Extract<Block, { type: "team" }> }) {
   );
 }
 
-function OfferBlock({ block }: { block: Extract<Block, { type: "offer" }> }) {
+function OfferBlock({ block, customer: _customer }: { block: Extract<Block, { type: "offer" }>; customer?: PresentationData }) {
   return (
     <section className="min-h-screen flex items-center bg-zinc-950 text-white py-32 px-6 overflow-hidden">
       <div className="max-w-5xl mx-auto w-full">
@@ -394,6 +394,16 @@ function ContactBlock({ block, customer }: { block: Extract<Block, { type: "cont
               </a>
             )}
           </div>
+        </FadeUp>
+        <FadeUp delay={1.0}>
+          <a
+            href="/sponsor-insights"
+            target="_blank"
+            className="mt-16 inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white hover:text-black transition-colors group"
+          >
+            <BarChart3 size={16} className="group-hover:scale-110 transition-transform" />
+            Live-Insights ansehen
+          </a>
         </FadeUp>
         <FadeUp delay={1.2}>
           <div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">läuft.ch</div>
