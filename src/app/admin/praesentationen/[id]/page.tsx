@@ -222,6 +222,7 @@ function BlockEditor({ block, onChange }: { block: Block; onChange: (patch: any)
           </div>
           <Field label="Beschreibung"><textarea rows={3} className={inputClass} value={block.description} onChange={(e) => onChange({ description: e.target.value })} /></Field>
           <Field label="Bild URL"><input className={inputClass} value={block.image || ""} onChange={(e) => onChange({ image: e.target.value })} /></Field>
+          <Field label="Logo URL (weiß auf transparent)"><input className={inputClass} value={block.logo || ""} onChange={(e) => onChange({ logo: e.target.value })} /></Field>
         </div>
       );
     case "goal":

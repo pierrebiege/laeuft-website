@@ -9,7 +9,7 @@ export type Block =
   | { type: "cover"; title: string; subtitle?: string; image?: string }
   | { type: "bio"; heading: string; text: string; image?: string; stats?: { label: string; value: string }[] }
   | { type: "content-overview"; heading: string; channels: { icon: string; name: string; reach: string }[] }
-  | { type: "race"; name: string; date: string; location: string; description: string; image?: string }
+  | { type: "race"; name: string; date: string; location: string; description: string; image?: string; logo?: string }
   | { type: "goal"; heading: string; text: string }
   | { type: "team"; heading: string; members: { name: string; role: string; image?: string }[] }
   | { type: "offer"; heading: string; bullets: string[]; price?: string }
@@ -261,6 +261,13 @@ function RaceBlock({ block, index }: { block: Extract<Block, { type: "race" }>; 
               Race {String(index).padStart(2, "0")}
             </div>
           </FadeUp>
+          {block.logo && (
+            <FadeUp y={20} delay={0.1}>
+              <div className={`mb-8 ${dark ? "" : "invert"}`}>
+                <Image src={block.logo} alt={`${block.name} Logo`} width={220} height={80} className="object-contain object-left" style={{ height: "auto", maxHeight: "80px", width: "auto" }} />
+              </div>
+            </FadeUp>
+          )}
           <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-[0.9]">
             <AnimatedWords text={block.name} stagger={0.07} />
           </h2>
