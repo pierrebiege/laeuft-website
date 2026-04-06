@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useInView, AnimatePresence, type MotionValue } from "framer-motion";
 import {
   FileSearch,
   Phone,
@@ -14,6 +14,8 @@ import {
   Shield,
   Zap,
   MapPin,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -227,6 +229,40 @@ function Marquee() {
   );
 }
 
+function ProblemStatement() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.9", "end 0.5"] });
+  const statements = [
+    "Tausend KI-Tools.",
+    "Zehn Berater.",
+    "Hundert LinkedIn-Posts.",
+    "Und du fragst dich:",
+    "Was bringt mich konkret weiter?",
+    "Du brauchst keinen weiteren Workshop.",
+    "Du brauchst keine Strategie auf 60 Slides.",
+    "Du brauchst jemanden, der baut.",
+    "Etwas, das morgen läuft.",
+    "Etwas, das deinem Team hilft.",
+    "Etwas, das sich rechnet.",
+    "Genau dafür sind wir da.",
+  ];
+  const allWords = statements.join(" ").split(" ");
+  const total = allWords.length;
+  return (
+    <section ref={ref} className="bg-white text-zinc-900 py-40 px-6 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
+        <p className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15]">
+          {allWords.map((word, i) => {
+            const start = i / total;
+            const end = start + 1 / total;
+            return <RevealWord key={i} progress={scrollYProgress} range={[start, end]}>{word}</RevealWord>;
+          })}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function Manifesto() {
   return (
     <section className="bg-black text-white py-48 px-6 overflow-hidden">
@@ -305,6 +341,154 @@ function UseCases() {
         </div>
       </div>
     </section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    {
+      number: "01",
+      title: "Erstgespräch",
+      duration: "30 Minuten · kostenlos",
+      text: "Wir reden 30 Minuten. Du erzählst, was bei dir manuell läuft. Ich sage dir, ob AI hilft – und wenn ja, welche.",
+    },
+    {
+      number: "02",
+      title: "AI Audit",
+      duration: "1 Tag vor Ort · CHF 4'500",
+      text: "Ich komme zu dir, schaue mir deine Prozesse an, spreche mit deinem Team. Du bekommst einen Report mit 5 priorisierten Use-Cases inkl. ROI-Schätzung.",
+    },
+    {
+      number: "03",
+      title: "AI Sprint",
+      duration: "4 Wochen · ab CHF 18'000",
+      text: "Wir bauen einen Use-Case end-to-end. Custom wo nötig, Tools wo möglich. Hosting in der Schweiz. Nach 4 Wochen läuft es bei dir live.",
+    },
+    {
+      number: "04",
+      title: "AI Champion",
+      duration: "Optional · ab CHF 2'500/Monat",
+      text: "Wir bleiben dran. Neue Use-Cases, Erweiterungen, Updates. Direkter Slack-Kontakt. Du wirst Schritt für Schritt zum AI-Champion deiner Branche.",
+    },
+  ];
+  return (
+    <section className="bg-zinc-950 text-white py-40 px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">So funktioniert's</div>
+        </FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]">
+          <AnimatedWords text="Vom Gespräch zum Live-System." stagger={0.05} />
+        </h2>
+        <FadeUp delay={0.3}>
+          <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
+            Vier klare Schritte. Du kannst nach jedem stoppen. Kein Vertrag der dich bindet, kein Lock-in.
+          </p>
+        </FadeUp>
+        <div className="space-y-px bg-white/10 rounded-3xl overflow-hidden">
+          {steps.map((s, i) => (
+            <FadeUp key={i} delay={0.15 + i * 0.1}>
+              <div className="bg-zinc-950 px-8 py-10 md:px-12 md:py-12 hover:bg-zinc-900 transition-colors">
+                <div className="grid md:grid-cols-[120px_1fr_auto] gap-6 md:gap-12 items-start">
+                  <div className="text-5xl md:text-7xl font-bold text-white/20 tabular-nums leading-none">{s.number}</div>
+                  <div>
+                    <h3 className="text-2xl md:text-4xl font-bold mb-3">{s.title}</h3>
+                    <p className="text-white/60 text-lg leading-relaxed">{s.text}</p>
+                  </div>
+                  <div className="text-sm uppercase tracking-wider text-white/50 md:text-right md:max-w-[180px]">
+                    {s.duration}
+                  </div>
+                </div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQ() {
+  const faqs = [
+    {
+      q: "Was kostet ein typisches Projekt am Ende wirklich?",
+      a: "Audit CHF 4'500. Ein Sprint 18'000–28'000 je nach Komplexität. Optional Champion-Retainer ab 2'500/Monat. Keine versteckten Kosten, keine Stundenabrechnung. Du weißt vorher genau was du zahlst.",
+    },
+    {
+      q: "Wir haben schon ChatGPT/Copilot. Was bringt mir das?",
+      a: "ChatGPT ist ein Chat. Wir bauen Lösungen die in deine Prozesse eingebettet sind: Belege werden automatisch verarbeitet während du schläfst. Anrufe werden 24/7 entgegengenommen. Wissen aus deinen Dokumenten ist sofort abrufbar. Das ersetzt nicht ChatGPT — es nutzt die Modelle dahinter, aber ohne dass jemand bei euch tippen muss.",
+    },
+    {
+      q: "Was passiert mit unseren Daten? DSGVO?",
+      a: "Wir hosten in der Schweiz. Wir nutzen wo immer möglich europäische oder selbst-gehostete Modelle. Wo OpenAI/Anthropic eingesetzt wird, immer mit Zero-Retention-API. FINMA-tauglich für regulierte Branchen. Du bekommst eine schriftliche Datenschutz-Übersicht im Audit.",
+    },
+    {
+      q: "Was wenn die AI Fehler macht?",
+      a: "Macht sie. Deshalb bauen wir Systeme so, dass Menschen Edge-Cases prüfen — nicht 100% der Fälle. Bei kritischen Prozessen (Buchhaltung, Recht) ist immer ein Human-in-the-Loop. Du sparst 80% der Zeit, die anderen 20% kontrollierst du. Das ist sicherer als 100% manuell, weil Menschen auch Fehler machen.",
+    },
+    {
+      q: "Wie lange dauert es bis ich Resultate sehe?",
+      a: "Audit-Resultate: nach 1 Tag. Erste Sprint-Implementation live: nach 4 Wochen. Erste messbare Zeitersparnis: ab Woche 5. Payback typischerweise nach 5–9 Monaten je nach Use-Case.",
+    },
+    {
+      q: "Ich bin keine grosse Firma. Lohnt sich das überhaupt?",
+      a: "Gerade dann. Grosse Firmen haben IT-Abteilungen — die machen das selbst. KMU haben den größten Hebel pro investiertem Franken, weil eine einzige Automatisierung oft eine ganze Mitarbeiter-Stelle entlastet. Unsere besten Kunden sind 10–80 Personen.",
+    },
+    {
+      q: "Was unterscheidet euch von anderen AI-Beratern?",
+      a: "Wir bauen selbst. Wir liefern Code, nicht PowerPoints. Kein Junior, kein Projektmanager dazwischen — du redest immer mit Pierre. Wir sind Schweizer mit Schweizer Hosting. Und wir zeigen unsere Preise offen.",
+    },
+    {
+      q: "Was wenn ich nach dem Audit nicht weitermache?",
+      a: "Dann hast du für CHF 4'500 einen Report mit konkreten Use-Cases bekommen den du selbst oder mit anderen umsetzen kannst. Kein Druck. Wir empfehlen den Sprint nur wenn er klar Sinn macht.",
+    },
+  ];
+  return (
+    <section className="bg-white text-zinc-900 py-40 px-6 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">Häufige Fragen</div>
+        </FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-20 leading-[0.9]">
+          <AnimatedWords text="Antworten." stagger={0.08} />
+        </h2>
+        <div className="divide-y divide-zinc-200">
+          {faqs.map((f, i) => (
+            <FAQItem key={i} q={f.q} a={f.a} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="py-6">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-start justify-between gap-6 text-left group"
+      >
+        <span className="text-xl md:text-2xl font-semibold text-zinc-900 group-hover:text-black transition-colors">{q}</span>
+        <span className="shrink-0 mt-1 w-9 h-9 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-500 group-hover:border-zinc-900 group-hover:text-zinc-900 transition-colors">
+          {open ? <Minus size={16} /> : <Plus size={16} />}
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <p className="pt-4 pr-12 text-lg text-zinc-600 leading-relaxed">{a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -594,12 +778,15 @@ export default function AiPage() {
     <div className="font-sans antialiased bg-black">
       <Hero />
       <PainPoints />
+      <ProblemStatement />
       <Marquee />
       <Manifesto />
       <UseCases />
+      <HowItWorks />
       <Packages />
-      <WhyCH />
       <TrackRecord />
+      <WhyCH />
+      <FAQ />
       <About />
       <Contact />
     </div>
