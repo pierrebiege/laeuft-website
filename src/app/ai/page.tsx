@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
 import {
@@ -117,19 +116,19 @@ function Hero() {
           läuft.ch · AI · 2026
         </motion.div>
 
-        <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight leading-[0.9] mb-8">
-          <AnimatedWords text="AI für" delay={0.4} stagger={0.08} />
+        <h1 className="text-5xl md:text-7xl lg:text-[8rem] font-bold tracking-tight leading-[0.95] mb-8">
+          <AnimatedWords text="Wir bauen KI," delay={0.4} stagger={0.06} />
           <br />
-          <AnimatedWords text="Schweizer KMU." delay={0.7} stagger={0.08} />
+          <AnimatedWords text="die hunderte Stunden spart." delay={0.7} stagger={0.06} />
         </h1>
 
         <motion.p
-          className="text-xl md:text-3xl text-white/70 font-light tracking-wide max-w-3xl mx-auto"
+          className="text-xl md:text-2xl text-white/70 font-light tracking-wide max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.4 }}
         >
-          Konkret. In Wochen, nicht Monaten.
+          Code statt Slides. Live in 4 Wochen. Für Schweizer KMU.
         </motion.p>
 
         <motion.div
@@ -167,6 +166,33 @@ function Hero() {
           style={{ transformOrigin: "top" }}
         />
       </motion.div>
+    </section>
+  );
+}
+
+function PainPoints() {
+  const pains = [
+    { q: "Belege, Verträge, Anträge — alles manuell?", a: "Wir automatisieren es." },
+    { q: "Telefon klingelt während du arbeitest?", a: "Ein Voice Agent nimmt ab." },
+    { q: "Wissen verteilt auf 5 verschiedene Tools?", a: "Ein Bot, der alles weiss." },
+  ];
+  return (
+    <section className="bg-black text-white py-32 px-6 overflow-hidden border-t border-white/5">
+      <div className="max-w-6xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Kommt dir bekannt vor?</div>
+        </FadeUp>
+        <div className="grid md:grid-cols-3 gap-6">
+          {pains.map((p, i) => (
+            <FadeUp key={i} delay={0.15 + i * 0.1}>
+              <div className="bg-zinc-950 border border-white/10 rounded-3xl p-8 h-full">
+                <p className="text-xl md:text-2xl font-semibold leading-snug mb-4">{p.q}</p>
+                <p className="text-white/60 text-base">{p.a}</p>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -424,42 +450,77 @@ function WhyCH() {
 
 function TrackRecord() {
   const cases = [
-    { name: "Zykluswissen", desc: "Lernplattform mit Datenbank, Membership, Custom-Backend.", tag: "Plattform" },
-    { name: "Walliserdeutsch.ch", desc: "Datenbank für eine ganze Sprache. Suche, Audio, Community.", tag: "Datenbank" },
-    { name: "Ein richtig guter Tag", desc: "Shop & Brand. End-to-End vom Logo bis zum Checkout.", tag: "Shop" },
-    { name: "KULT klein/gross", desc: "Festival-Branding und digitale Präsenz.", tag: "Brand" },
+    {
+      tag: "Beispielrechnung · Treuhand",
+      name: "Belegverarbeitung automatisieren",
+      problem: "300 Belege pro Monat, manuell erfasst, 12 Std/Woche Aufwand für eine Mitarbeiterin.",
+      solution: "AI liest, sortiert, prüft und verbucht. Mitarbeiterin prüft nur noch Edge-Cases.",
+      result: "9 Std/Woche gespart = 36 Std/Monat = CHF 2'700/Monat bei CHF 75/h.",
+      invest: "AI Sprint CHF 18'000",
+      payback: "Payback nach 7 Monaten. Danach reine Ersparnis.",
+    },
+    {
+      tag: "Beispielrechnung · Praxis",
+      name: "Voice Agent für Terminbuchung",
+      problem: "Empfang nimmt täglich 40+ Anrufe entgegen. Hälfte davon Terminbuchungen, Rest Rückfragen.",
+      solution: "AI Voice Agent nimmt Anrufe 24/7 entgegen, bucht Termine im Kalender, beantwortet FAQ.",
+      result: "60% der Anrufe automatisiert = 4 Std/Tag freie Empfangs-Kapazität.",
+      invest: "AI Sprint CHF 22'000",
+      payback: "Payback nach 5 Monaten. Mehr Kunden, weniger verpasste Anrufe.",
+    },
   ];
   return (
     <section className="bg-white text-zinc-900 py-40 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">Track Record</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">So sieht ein Sprint aus</div>
         </FadeUp>
         <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]">
-          <AnimatedWords text="Wir reden nicht. Wir bauen." stagger={0.06} />
+          <AnimatedWords text="Konkret durchgerechnet." stagger={0.06} />
         </h2>
         <FadeUp delay={0.3}>
           <p className="text-lg md:text-2xl text-zinc-600 font-light leading-relaxed max-w-3xl mb-20">
-            Bevor wir AI machten, bauten wir Plattformen, Datenbanken und Marken für Schweizer Kunden. Hier ist eine Auswahl.
+            Zwei reale Beispiele wie ein AI Sprint aussieht — von Problem über Lösung bis zum Payback. Genau so durchrechnen wir auch deinen Use-Case im Audit.
           </p>
         </FadeUp>
         <div className="grid md:grid-cols-2 gap-6">
           {cases.map((c, i) => (
-            <FadeUp key={i} delay={0.15 + i * 0.1}>
-              <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-10 h-full hover:bg-zinc-100 transition-colors group">
+            <FadeUp key={i} delay={0.15 + i * 0.15}>
+              <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-10 h-full">
                 <div className="text-xs uppercase tracking-wider text-zinc-400 mb-4">{c.tag}</div>
-                <h3 className="text-3xl md:text-4xl font-bold mb-4 group-hover:text-black transition-colors">{c.name}</h3>
-                <p className="text-zinc-600 leading-relaxed">{c.desc}</p>
+                <h3 className="text-3xl md:text-4xl font-bold mb-8">{c.name}</h3>
+                <div className="space-y-5">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-zinc-400 mb-1">Das Problem</div>
+                    <p className="text-zinc-700">{c.problem}</p>
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-zinc-400 mb-1">Die Lösung</div>
+                    <p className="text-zinc-700">{c.solution}</p>
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-zinc-400 mb-1">Das Ergebnis</div>
+                    <p className="text-zinc-900 font-semibold">{c.result}</p>
+                  </div>
+                  <div className="pt-4 border-t border-zinc-200 flex items-baseline justify-between">
+                    <div>
+                      <div className="text-xs uppercase tracking-wider text-zinc-400 mb-1">Investment</div>
+                      <p className="text-zinc-900 font-bold tabular-nums">{c.invest}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs uppercase tracking-wider text-zinc-400 mb-1">Payback</div>
+                      <p className="text-green-700 font-semibold text-sm">{c.payback}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </FadeUp>
           ))}
         </div>
         <FadeUp delay={0.5}>
-          <div className="mt-16 text-center">
-            <Link href="/" className="inline-flex items-center gap-2 text-zinc-600 hover:text-zinc-900 transition-colors text-sm">
-              Alle Projekte ansehen <ArrowRight size={14} />
-            </Link>
-          </div>
+          <p className="mt-12 text-center text-sm text-zinc-500">
+            Beispielrechnungen basierend auf typischen Schweizer KMU-Szenarien. Tatsächliche Zahlen variieren je nach Setup.
+          </p>
         </FadeUp>
       </div>
     </section>
@@ -532,6 +593,7 @@ export default function AiPage() {
   return (
     <div className="font-sans antialiased bg-black">
       <Hero />
+      <PainPoints />
       <Marquee />
       <Manifesto />
       <UseCases />
