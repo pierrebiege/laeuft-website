@@ -378,7 +378,7 @@ function HeroMoment() {
         </FadeUp>
         <h2 className="text-[8rem] md:text-[16rem] lg:text-[20rem] font-bold tracking-tighter leading-[0.8]">
           <AnimatedWords text="3." delay={0.2} stagger={0} />
-          <span className="text-white/40">/150</span>
+          <span className="text-white/40">/100</span>
         </h2>
         <FadeUp delay={0.6}>
           <p className="text-xl md:text-3xl text-white/80 font-light mt-8 max-w-2xl mx-auto">
@@ -645,7 +645,7 @@ export default function YFoodPresentationPage() {
         name="Last Soul Ultra."
         date="14. August 2026"
         location="International"
-        description="Der Event, kreiert von Kim Gottwald, ist das ultimative Ultra-Event: 150 Athlet:innen starten gemeinsam, doch nur eine Person – der Last Soul – wird am Ende übrig bleiben. Jede volle Stunde beginnt eine neue Runde über 6,7 km. Keine Zeitlimits, keine Ziellinie – nur pure Ausdauer, mentale Stärke und Standhaftigkeit zählen."
+        description="Der Event, kreiert von Kim Gottwald, ist das ultimative Ultra-Event: 100 Athlet:innen starten gemeinsam, doch nur eine Person – der Last Soul – wird am Ende übrig bleiben. Jede volle Stunde beginnt eine neue Runde über 6,7 km. Keine Zeitlimits, keine Ziellinie – nur pure Ausdauer, mentale Stärke und Standhaftigkeit zählen."
         bgImage={LSU(5)}
         logo={LOGO.lastsoul}
       />
