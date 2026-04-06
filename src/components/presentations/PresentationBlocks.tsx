@@ -95,6 +95,43 @@ function FadeUp({
   );
 }
 
+// Word-by-word color reveal driven by scroll progress
+function ScrollRevealText({ text, className = "" }: { text: string; className?: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.85", "start 0.2"],
+  });
+  const words = text.split(" ");
+
+  return (
+    <p ref={ref} className={className}>
+      {words.map((word, i) => {
+        const start = i / words.length;
+        const end = start + 1 / words.length;
+        return <RevealWord key={i} progress={scrollYProgress} range={[start, end]}>{word}</RevealWord>;
+      })}
+    </p>
+  );
+}
+
+function RevealWord({
+  children,
+  progress,
+  range,
+}: {
+  children: React.ReactNode;
+  progress: any;
+  range: [number, number];
+}) {
+  const opacity = useTransform(progress, range, [0.18, 1]);
+  return (
+    <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">
+      {children}
+    </motion.span>
+  );
+}
+
 // Infinite marquee strip
 function Marquee({ items, dark = true }: { items: string[]; dark?: boolean }) {
   const repeated = [...items, ...items, ...items, ...items];
@@ -316,25 +353,14 @@ function RaceBlock({ block, index }: { block: Extract<Block, { type: "race" }>; 
 }
 
 function GoalBlock({ block }: { block: Extract<Block, { type: "goal" }> }) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.7, 1, 1.05, 0.95]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-  const blur = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [12, 0, 0, 8]);
-  const blurFilter = useTransform(blur, (v) => `blur(${v}px)`);
-
   return (
-    <section
-      ref={ref}
-      className="relative h-[200vh] bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white overflow-hidden"
-    >
-      <div className="sticky top-0 h-screen flex items-center justify-center px-6">
-        <motion.div className="max-w-5xl mx-auto text-center" style={{ scale, opacity, filter: blurFilter }}>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-10">{block.heading}</div>
-          <p className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tight leading-[1.05]">
-            {block.text}
-          </p>
-        </motion.div>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white px-6 py-40 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">{block.heading}</div>
+        <ScrollRevealText
+          text={block.text}
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
+        />
       </div>
     </section>
   );
