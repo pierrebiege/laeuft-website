@@ -356,21 +356,25 @@ function Hero() {
                   <p className="font-medium">Custom GPT, Voice Agents, Workflow AI</p>
                 </div>
                 <div className="flex items-center gap-4">
+                  <Database className="w-5 h-5" />
+                  <p className="font-medium">Supabase, n8n, Shopify, Next.js</p>
+                </div>
+                <div className="flex items-center gap-4">
                   <Shield className="w-5 h-5" />
-                  <p className="font-medium">Schweizer Hosting · FINMA-ready</p>
+                  <p className="font-medium">Lokales Schweizer Hosting</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <Zap className="w-5 h-5" />
-                  <p className="font-medium">Live in 4 Wochen, nicht 4 Monaten</p>
+                  <p className="font-medium">Live in Wochen, nicht Monaten</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <Building2 className="w-5 h-5" />
-                  <p className="font-medium">Builder, kein Berater. Du redest mit Pierre.</p>
+                  <p className="font-medium">Ein Entwickler. Du redest mit Pierre.</p>
                 </div>
               </div>
               <div className="pt-6 border-t border-background/20">
                 <p className="text-background/60 text-sm">
-                  Audit ab CHF 4'500 · Sprint ab CHF 18'000 · Champion ab CHF 2'500/Mt
+                  Projekt ab CHF 1'500 · AI Sprint ab CHF 18'000 · Partner ab CHF 2'500/Mt
                 </p>
               </div>
             </div>
@@ -831,7 +835,7 @@ function About() {
 function WhyCH() {
   const points = [
     { Icon: MapPin, title: "Vor Ort", text: "Workshops und Implementierung persönlich – Wallis, Bern, Zürich, Basel." },
-    { Icon: Shield, title: "CH-Datenschutz", text: "Schweizer Server, FINMA-ready, kein US-Vendor-Lock-in." },
+    { Icon: Shield, title: "CH-Datenschutz", text: "Lokales Schweizer Hosting. Kein US-Vendor-Lock-in." },
     { Icon: Building2, title: "Wir bauen selbst", text: "Wir liefern Code, nicht nur PowerPoints. End-to-End in einer Hand." },
   ];
   return (
@@ -867,7 +871,7 @@ function FAQ() {
   const faqs = [
     { q: "Was kostet ein typisches Projekt am Ende wirklich?", a: "Audit CHF 4'500. Ein Sprint 18'000–28'000 je nach Komplexität. Optional Champion-Retainer ab 2'500/Monat. Keine versteckten Kosten, keine Stundenabrechnung. Du weißt vorher genau was du zahlst." },
     { q: "Wir haben schon ChatGPT/Copilot. Was bringt mir das?", a: "ChatGPT ist ein Chat. Wir bauen Lösungen die in deine Prozesse eingebettet sind: Belege werden automatisch verarbeitet während du schläfst. Anrufe werden 24/7 entgegengenommen. Wissen aus deinen Dokumenten ist sofort abrufbar. Das ersetzt nicht ChatGPT — es nutzt die Modelle dahinter, aber ohne dass jemand bei euch tippen muss." },
-    { q: "Was passiert mit unseren Daten? DSGVO?", a: "Wir hosten in der Schweiz. Wir nutzen wo immer möglich europäische oder selbst-gehostete Modelle. Wo OpenAI/Anthropic eingesetzt wird, immer mit Zero-Retention-API. FINMA-tauglich für regulierte Branchen. Du bekommst eine schriftliche Datenschutz-Übersicht im Audit." },
+    { q: "Was passiert mit unseren Daten? DSGVO?", a: "Wir hosten lokal in der Schweiz. Wir nutzen wo immer möglich europäische oder selbst-gehostete Modelle. Wo OpenAI/Anthropic eingesetzt wird, immer mit Zero-Retention-API. Du bekommst eine schriftliche Datenschutz-Übersicht im Audit." },
     { q: "Was wenn die AI Fehler macht?", a: "Macht sie. Deshalb bauen wir Systeme so, dass Menschen Edge-Cases prüfen — nicht 100% der Fälle. Bei kritischen Prozessen ist immer ein Human-in-the-Loop. Du sparst 80% der Zeit, die anderen 20% kontrollierst du." },
     { q: "Wie lange bis ich Resultate sehe?", a: "Audit-Resultate nach 1 Tag. Erste Sprint-Implementation live nach 4 Wochen. Erste messbare Zeitersparnis ab Woche 5. Payback typischerweise nach 5–9 Monaten je nach Use-Case." },
     { q: "Wie gross müssen wir sein damit sich das lohnt?", a: "Wir arbeiten mit Solo-Unternehmern bis hin zu Firmen mit mehreren hundert Mitarbeitenden. Der Hebel pro investiertem Franken ist meist am größten dort, wo eine einzige Automatisierung eine ganze Stelle entlastet — das funktioniert bei 5 wie bei 500 Personen." },
