@@ -315,19 +315,19 @@ function Hero() {
             <FadeUp>
               <div className="inline-flex items-center gap-2 bg-foreground/10 text-sm px-4 py-2 rounded-full mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                läuft.ch · AI · Schweiz
+                läuft.ch · Schweiz · seit 2010
               </div>
             </FadeUp>
             <FadeUp delay={0.1}>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
-                Wir bauen KI,
+                Wir bauen Systeme,
                 <br />
-                <span className="italic font-serif font-normal">die wirklich läuft.</span>
+                <span className="italic font-serif font-normal">die wirklich laufen.</span>
               </h1>
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="text-xl text-muted mb-8 max-w-lg">
-                Konkrete AI-Lösungen für Schweizer KMU. Code statt Slides. Live in 4 Wochen. Lokal gehostet.
+                Konkrete AI- und Automatisierungslösungen für Unternehmen jeder Grösse. Code statt Slides. Live in Wochen. Lokal gehostet.
               </p>
             </FadeUp>
             <FadeUp delay={0.3}>
@@ -814,7 +814,7 @@ function About() {
                   Ich lebe im Wallis und baue, bis es läuft. Aufgeben ist keine Option – weder auf Kilometer 80 noch bei deinem AI-Projekt.
                 </p>
                 <p>
-                  AI ist für mich kein Hype. Es ist das nächste Werkzeug das Schweizer KMU brauchen — und ich bin einer der wenigen die es ehrlich umsetzen können, weil ich seit Jahren Systeme baue auf denen es läuft.
+                  AI ist für mich kein Hype. Es ist das nächste Werkzeug das Schweizer Unternehmen brauchen — und ich bin einer der wenigen die es ehrlich umsetzen können, weil ich seit Jahren Systeme baue auf denen es läuft.
                 </p>
                 <p className="text-foreground font-medium pt-2">
                   Du redest mit mir. Nicht mit einem Verkäufer. Mit dem, der es baut.
@@ -870,7 +870,7 @@ function FAQ() {
     { q: "Was passiert mit unseren Daten? DSGVO?", a: "Wir hosten in der Schweiz. Wir nutzen wo immer möglich europäische oder selbst-gehostete Modelle. Wo OpenAI/Anthropic eingesetzt wird, immer mit Zero-Retention-API. FINMA-tauglich für regulierte Branchen. Du bekommst eine schriftliche Datenschutz-Übersicht im Audit." },
     { q: "Was wenn die AI Fehler macht?", a: "Macht sie. Deshalb bauen wir Systeme so, dass Menschen Edge-Cases prüfen — nicht 100% der Fälle. Bei kritischen Prozessen ist immer ein Human-in-the-Loop. Du sparst 80% der Zeit, die anderen 20% kontrollierst du." },
     { q: "Wie lange bis ich Resultate sehe?", a: "Audit-Resultate nach 1 Tag. Erste Sprint-Implementation live nach 4 Wochen. Erste messbare Zeitersparnis ab Woche 5. Payback typischerweise nach 5–9 Monaten je nach Use-Case." },
-    { q: "Ich bin keine grosse Firma. Lohnt sich das?", a: "Gerade dann. Grosse Firmen haben IT-Abteilungen. KMU haben den größten Hebel pro investiertem Franken, weil eine einzige Automatisierung oft eine ganze Stelle entlastet. Unsere besten Kunden sind 10–80 Personen." },
+    { q: "Wie gross müssen wir sein damit sich das lohnt?", a: "Wir arbeiten mit Solo-Unternehmern bis hin zu Firmen mit mehreren hundert Mitarbeitenden. Der Hebel pro investiertem Franken ist meist am größten dort, wo eine einzige Automatisierung eine ganze Stelle entlastet — das funktioniert bei 5 wie bei 500 Personen." },
     { q: "Was unterscheidet euch von anderen AI-Beratern?", a: "Wir bauen selbst. Wir liefern Code, nicht PowerPoints. Kein Junior, kein Projektmanager dazwischen — du redest immer mit Pierre. Wir sind Schweizer mit Schweizer Hosting. Und wir zeigen unsere Preise offen." },
     { q: "Was wenn ich nach dem Audit nicht weitermache?", a: "Dann hast du für CHF 4'500 einen Report mit konkreten Use-Cases bekommen, den du selbst oder mit anderen umsetzen kannst. Kein Druck. Wir empfehlen den Sprint nur wenn er klar Sinn macht." },
   ];
@@ -937,7 +937,7 @@ function MoreThanAI() {
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="text-muted text-lg mb-8 max-w-lg">
-                Wir bauen seit über 10 Jahren komplette Systeme für Schweizer KMU — Webseiten, Datenbanken, Shops, Automationen. AI ist die nächste Schicht, nicht der Ersatz. Wenn du mehr brauchst als nur AI, hier ist alles was wir machen:
+                Wir bauen seit über 10 Jahren komplette Systeme für Schweizer Unternehmen jeder Grösse — Webseiten, Datenbanken, Shops, Automationen. AI ist die nächste Schicht, nicht der Ersatz. Wenn du mehr brauchst als nur AI, hier ist alles was wir machen:
               </p>
             </FadeUp>
             <FadeUp delay={0.3}>
