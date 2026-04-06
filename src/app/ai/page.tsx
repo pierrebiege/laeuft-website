@@ -347,9 +347,33 @@ function Hero() {
               </div>
             </FadeUp>
           </div>
-          {/* Right: Live Demo */}
+          {/* Right: Value Card */}
           <FadeUp delay={0.3}>
-            <InvoiceProcessor />
+            <div className="bg-foreground text-background rounded-3xl p-8 sm:p-10">
+              <div className="space-y-6 mb-8">
+                <div className="flex items-center gap-4">
+                  <Bot className="w-5 h-5" />
+                  <p className="font-medium">Custom GPT, Voice Agents, Workflow AI</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Shield className="w-5 h-5" />
+                  <p className="font-medium">Schweizer Hosting · FINMA-ready</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Zap className="w-5 h-5" />
+                  <p className="font-medium">Live in 4 Wochen, nicht 4 Monaten</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Building2 className="w-5 h-5" />
+                  <p className="font-medium">Builder, kein Berater. Du redest mit Pierre.</p>
+                </div>
+              </div>
+              <div className="pt-6 border-t border-background/20">
+                <p className="text-background/60 text-sm">
+                  Audit ab CHF 4'500 · Sprint ab CHF 18'000 · Champion ab CHF 2'500/Mt
+                </p>
+              </div>
+            </div>
           </FadeUp>
         </div>
       </div>
@@ -460,40 +484,89 @@ function UseCases() {
   const cases = [
     { Icon: FileText, title: "Dokumenten-Automatisierung", text: "Belege, Verträge, Anträge. AI liest, sortiert, verarbeitet — du prüfst nur noch.", tag: "Treuhand · Anwalt · Versicherung" },
     { Icon: Phone, title: "Voice Agents", text: "AI nimmt Anrufe entgegen, qualifiziert Leads, bucht Termine. 24/7. Mehrsprachig.", tag: "Praxis · Hotel · Service" },
-    { Icon: Brain, title: "Wissens-Bots", text: "Dein Firmenwissen, jederzeit abrufbar. Mitarbeiter fragen, AI antwortet aus deinen Dokumenten.", tag: "Industrie · KMU · Schule" },
+    { Icon: Brain, title: "Wissens-Bots", text: "Dein Firmenwissen, jederzeit abrufbar. Mitarbeiter fragen, AI antwortet aus Dokumenten.", tag: "Industrie · KMU · Schule" },
     { Icon: TrendingUp, title: "Sales & Marketing AI", text: "Lead-Recherche, Personalisierung, Follow-Ups. AI macht 80% der Outreach-Arbeit.", tag: "B2B · Agentur · SaaS" },
     { Icon: Workflow, title: "Workflow Automation", text: "Daten zwischen Tools, Triggers, Reports. AI verbindet alles, was bisher manuell lief.", tag: "ERP · CRM · Buchhaltung" },
   ];
   return (
-    <section className="py-32 px-6 border-t border-border">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-32 bg-foreground text-background">
+      <div className="max-w-7xl mx-auto px-6 mb-12">
         <FadeUp>
-          <p className="text-sm uppercase tracking-widest text-muted mb-4">Was wir liefern</p>
+          <p className="text-sm uppercase tracking-widest text-background/60 mb-4">Was wir bauen</p>
         </FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
             Fünf <span className="italic font-serif font-normal">Use-Cases</span>.
           </h2>
         </FadeUp>
         <FadeUp delay={0.2}>
-          <p className="text-muted text-lg max-w-2xl mb-16">
-            Wir bauen keine generischen "AI-Strategien". Wir liefern konkrete Lösungen aus diesen fünf Familien — passend zu deinem Schmerz.
+          <p className="text-background/60 text-lg max-w-2xl">
+            Nicht generische "AI-Strategie". Konkrete Lösungen aus diesen fünf Familien — passend zu deinem Schmerz.
           </p>
         </FadeUp>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>
+      {/* Horizontal scroll */}
+      <div className="overflow-x-auto pb-6 scrollbar-hide">
+        <div className="flex gap-6 px-6 w-max">
           {cases.map(({ Icon, title, text, tag }, i) => (
             <FadeUp key={i} delay={i * 0.08}>
-              <div className="bg-white dark:bg-zinc-900 border border-border rounded-3xl p-8 h-full hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 bg-foreground text-background rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-[320px] sm:w-[360px] bg-background/5 border border-background/10 rounded-3xl p-8 h-full">
+                <div className="w-12 h-12 bg-background text-foreground rounded-2xl flex items-center justify-center mb-6">
                   <Icon size={20} />
                 </div>
                 <h3 className="text-2xl font-bold mb-3">{title}</h3>
-                <p className="text-muted mb-6 leading-relaxed">{text}</p>
-                <p className="text-xs uppercase tracking-wider text-muted">{tag}</p>
+                <p className="text-background/60 mb-6 leading-relaxed">{text}</p>
+                <p className="text-xs uppercase tracking-wider text-background/40">{tag}</p>
               </div>
             </FadeUp>
           ))}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 mt-6">
+        <p className="text-background/40 text-sm">← Scroll für mehr</p>
+      </div>
+    </section>
+  );
+}
+
+function BigStatement() {
+  return (
+    <section className="py-32 px-6 bg-zinc-100 dark:bg-zinc-900 border-y border-border">
+      <div className="max-w-5xl mx-auto text-center">
+        <FadeUp>
+          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
+            Du sagst, was nervt.
+            <br />
+            <span className="italic font-serif font-normal">Wir bauen die KI dazu.</span>
+          </p>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+function MarqueeServices() {
+  const items = ["Custom GPT", "Voice Agents", "Workflow Automation", "Wissens-Bots", "AI Audit", "Belegverarbeitung", "Lead Enrichment", "Telegram Bots", "Sales AI", "Document RAG", "n8n Workflows", "AI Agents"];
+  return (
+    <section className="py-8 overflow-hidden border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
+      <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-50 dark:from-zinc-900/50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-zinc-50 dark:from-zinc-900/50 to-transparent z-10 pointer-events-none" />
+        <motion.div
+          animate={{ x: [0, -1920] }}
+          transition={{ x: { repeat: Infinity, repeatType: "loop", duration: 35, ease: "linear" } }}
+          className="flex gap-8 w-max"
+        >
+          {[...Array(2)].map((_, setIdx) => (
+            <div key={setIdx} className="flex gap-8">
+              {items.map((it) => (
+                <span key={`${setIdx}-${it}`} className="text-lg sm:text-xl font-medium text-muted whitespace-nowrap">
+                  {it}
+                </span>
+              ))}
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
@@ -802,17 +875,14 @@ function FAQ() {
     { q: "Was wenn ich nach dem Audit nicht weitermache?", a: "Dann hast du für CHF 4'500 einen Report mit konkreten Use-Cases bekommen, den du selbst oder mit anderen umsetzen kannst. Kein Druck. Wir empfehlen den Sprint nur wenn er klar Sinn macht." },
   ];
   return (
-    <section className="py-32 px-6 border-t border-border">
-      <div className="max-w-4xl mx-auto">
+    <section className="py-32 px-6 bg-foreground text-background">
+      <div className="max-w-3xl mx-auto">
         <FadeUp>
-          <p className="text-sm uppercase tracking-widest text-muted mb-4">Häufige Fragen</p>
-        </FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-16">
-            <span className="italic font-serif font-normal">Antworten</span>.
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-12 text-center">
+            <span className="italic font-serif font-normal">Fragen</span>
           </h2>
         </FadeUp>
-        <div className="divide-y divide-border">
+        <div>
           {faqs.map((f, i) => <FAQItem key={i} q={f.q} a={f.a} />)}
         </div>
       </div>
@@ -823,12 +893,10 @@ function FAQ() {
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="py-6">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-start justify-between gap-6 text-left group">
-        <span className="text-xl md:text-2xl font-semibold group-hover:text-black dark:group-hover:text-white transition-colors">{q}</span>
-        <span className="shrink-0 mt-1 w-9 h-9 rounded-full border border-border flex items-center justify-center text-muted group-hover:border-foreground group-hover:text-foreground transition-colors">
-          {open ? <Minus size={16} /> : <Plus size={16} />}
-        </span>
+    <div className="border-b border-background/20">
+      <button onClick={() => setOpen(!open)} className="w-full py-6 flex items-start justify-between gap-6 text-left hover:opacity-80 transition-opacity">
+        <span className="text-lg sm:text-xl font-medium pr-8">{q}</span>
+        <span className="shrink-0 mt-0.5 text-2xl leading-none">{open ? "−" : "+"}</span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -839,7 +907,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
             transition={{ duration: 0.4, ease: EASE }}
             className="overflow-hidden"
           >
-            <p className="pt-4 pr-12 text-lg text-muted leading-relaxed">{a}</p>
+            <p className="pb-6 text-background/70 max-w-2xl leading-relaxed">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -909,11 +977,13 @@ export default function AiPage() {
       <Hero />
       <PainPoints />
       <ProblemStatement />
-      <LiveDemos />
       <UseCases />
+      <MarqueeServices />
+      <LiveDemos />
       <HowItWorks />
       <Packages />
       <RealCases />
+      <BigStatement />
       <About />
       <WhyCH />
       <FAQ />
