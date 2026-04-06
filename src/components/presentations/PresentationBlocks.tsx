@@ -95,14 +95,35 @@ function FadeUp({
   );
 }
 
+// Infinite marquee strip
+function Marquee({ items, dark = true }: { items: string[]; dark?: boolean }) {
+  const repeated = [...items, ...items, ...items, ...items];
+  return (
+    <div className={`overflow-hidden py-6 border-y ${dark ? "border-white/10 bg-black" : "border-zinc-200 bg-white"}`}>
+      <motion.div
+        className="flex gap-12 whitespace-nowrap"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      >
+        {repeated.map((item, i) => (
+          <span key={i} className={`text-2xl md:text-4xl font-bold tracking-tight uppercase ${dark ? "text-white/80" : "text-zinc-900"}`}>
+            {item} <span className={dark ? "text-white/30" : "text-zinc-300"}>·</span>
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 // ==================== BLOCKS ====================
 
 function CoverBlock({ block, customer }: { block: Extract<Block, { type: "cover" }>; customer: PresentationData }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.25]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.4]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+  const contentScale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
@@ -113,7 +134,7 @@ function CoverBlock({ block, customer }: { block: Extract<Block, { type: "cover"
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black" />
         </motion.div>
       )}
-      <motion.div className="relative z-10 max-w-5xl mx-auto px-6 text-center" style={{ y: contentY, opacity: contentOpacity }}>
+      <motion.div className="relative z-10 max-w-5xl mx-auto px-6 text-center" style={{ y: contentY, opacity: contentOpacity, scale: contentScale }}>
         {customer.customer_logo_url && (
           <motion.div
             className="mb-12 inline-block"
@@ -249,22 +270,28 @@ function RaceBlock({ block, index }: { block: Extract<Block, { type: "race" }>; 
     >
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center w-full">
         {block.image && (
-          <div className={`relative aspect-square rounded-3xl overflow-hidden ${dark ? "bg-zinc-900" : "bg-zinc-100"} ${reverse ? "md:order-2" : ""}`}>
+          <motion.div
+            className={`relative aspect-square rounded-3xl overflow-hidden ${dark ? "bg-zinc-900" : "bg-zinc-100"} ${reverse ? "md:order-2" : ""}`}
+            initial={{ clipPath: "inset(100% 0 0 0)" }}
+            whileInView={{ clipPath: "inset(0% 0 0 0)" }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 1.4, ease: EASE }}
+          >
             <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
               <Image src={block.image} alt={block.name} fill className="object-cover" />
             </motion.div>
-          </div>
+          </motion.div>
         )}
         <div>
           <FadeUp y={20}>
-            <div className={`text-xs uppercase tracking-[0.4em] mb-6 ${dark ? "text-white/50" : "text-zinc-500"}`}>
+            <div className={`text-xs uppercase tracking-[0.4em] mb-10 ${dark ? "text-white/50" : "text-zinc-500"}`}>
               Race {String(index).padStart(2, "0")}
             </div>
           </FadeUp>
           {block.logo && (
             <FadeUp y={20} delay={0.1}>
-              <div className={`mb-8 ${dark ? "" : "invert"}`}>
-                <Image src={block.logo} alt={`${block.name} Logo`} width={220} height={80} className="object-contain object-left" style={{ height: "auto", maxHeight: "80px", width: "auto" }} />
+              <div className={`mb-10 relative h-24 w-full max-w-[280px] ${dark ? "" : "invert"}`}>
+                <Image src={block.logo} alt={`${block.name} Logo`} fill className="object-contain object-left" />
               </div>
             </FadeUp>
           )}
@@ -290,23 +317,25 @@ function RaceBlock({ block, index }: { block: Extract<Block, { type: "race" }>; 
 
 function GoalBlock({ block }: { block: Extract<Block, { type: "goal" }> }) {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.92, 1, 1.05]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.3]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.7, 1, 1.05, 0.95]);
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const blur = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [12, 0, 0, 8]);
+  const blurFilter = useTransform(blur, (v) => `blur(${v}px)`);
 
   return (
     <section
       ref={ref}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white px-6 py-32 overflow-hidden"
+      className="relative h-[200vh] bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white overflow-hidden"
     >
-      <motion.div className="max-w-5xl mx-auto text-center" style={{ scale, opacity }}>
-        <FadeUp y={20}>
+      <div className="sticky top-0 h-screen flex items-center justify-center px-6">
+        <motion.div className="max-w-5xl mx-auto text-center" style={{ scale, opacity, filter: blurFilter }}>
           <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-10">{block.heading}</div>
-        </FadeUp>
-        <p className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]">
-          <AnimatedWords text={block.text} stagger={0.025} />
-        </p>
-      </motion.div>
+          <p className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tight leading-[1.05]">
+            {block.text}
+          </p>
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -322,10 +351,14 @@ function TeamBlock({ block }: { block: Extract<Block, { type: "team" }> }) {
           {block.members.map((m, i) => (
             <FadeUp key={i} delay={0.2 + i * 0.15} y={40}>
               <div className="group">
-                <div className="aspect-square rounded-3xl bg-zinc-100 mb-6 overflow-hidden relative">
+                <div className="aspect-square rounded-3xl bg-black mb-6 overflow-hidden relative flex items-center justify-center p-12">
                   {m.image && (
-                    <motion.div className="absolute inset-0" whileHover={{ scale: 1.05 }} transition={{ duration: 0.6, ease: EASE }}>
-                      <Image src={m.image} alt={m.name} fill className="object-cover" />
+                    <motion.div
+                      className="relative w-full h-full"
+                      whileHover={{ scale: 1.08 }}
+                      transition={{ duration: 0.6, ease: EASE }}
+                    >
+                      <Image src={m.image} alt={m.name} fill className="object-contain" />
                     </motion.div>
                   )}
                 </div>
@@ -437,10 +470,14 @@ export function RenderBlock({ block, index, customer }: { block: Block; index: n
 }
 
 export function PresentationView({ data }: { data: PresentationData }) {
+  const marqueeItems = ["Pierre Biege", "Ultra", "2026", "Backyard", "Endurance", "Schweiz"];
   return (
     <div className="font-sans antialiased">
       {data.blocks.map((block, i) => (
-        <RenderBlock key={i} block={block} index={i} customer={data} />
+        <div key={i}>
+          <RenderBlock block={block} index={i} customer={data} />
+          {block.type === "cover" && <Marquee items={marqueeItems} />}
+        </div>
       ))}
     </div>
   );
