@@ -212,6 +212,53 @@ function Bio() {
   );
 }
 
+function StatsLine() {
+  const stats = [
+    { value: "200+", label: "Kilometer pro Race", image: LSU(7) },
+    { value: "700", label: "Tage Run-Streak", image: LSU(13) },
+    { value: "3", label: "Ultra Races 2026", image: LSU(8) },
+    { value: "18k+", label: "Community", image: LSU(10) },
+  ];
+  return (
+    <section className="bg-black text-white py-32 px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto mb-16">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Saison in Zahlen</div>
+        </FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl">
+          <AnimatedWords text="An der Grenze." stagger={0.06} />
+        </h2>
+      </div>
+      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {stats.map((s, i) => (
+          <FadeUp key={i} delay={i * 0.1} y={50}>
+            <StatTile value={s.value} label={s.label} image={s.image} />
+          </FadeUp>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function StatTile({ value, label, image }: { value: string; label: string; image: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.2, 1.05]);
+  return (
+    <div ref={ref} className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-900 group">
+      <motion.div className="absolute inset-0" style={{ y, scale }}>
+        <Image src={image} alt="" fill className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+      </motion.div>
+      <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+        <div className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight tabular-nums leading-none mb-3">{value}</div>
+        <div className="text-xs uppercase tracking-wider text-white/70">{label}</div>
+      </div>
+    </div>
+  );
+}
+
 function Channels() {
   const channels = [
     { Icon: Youtube, name: "YouTube Serie", text: "Dokumentation pro Event – mind. zweiteilig, Kinoqualität" },
@@ -600,6 +647,7 @@ export default function YFoodPresentationPage() {
       <Hero />
       <Marquee items={["Pierre Biege", "Ultra", "200 km", "40 h", "Backyard", "Schweiz", "2026"]} />
       <Bio />
+      <StatsLine />
       <Channels />
       <Quote />
       <RaceDivider />
