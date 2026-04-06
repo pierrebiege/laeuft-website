@@ -915,6 +915,58 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+function MoreThanAI() {
+  const services = [
+    { Icon: Workflow, title: "Webseiten", text: "Custom Sites, von Branding bis Live." },
+    { Icon: Database, title: "Datenbanken", text: "Supabase, Postgres, strukturiert sauber." },
+    { Icon: Building2, title: "Shops", text: "Shopify, Custom-Checkouts, Fulfillment." },
+    { Icon: Workflow, title: "Automationen", text: "n8n, Make, Webhooks – alles verbunden." },
+  ];
+  return (
+    <section className="py-32 px-6 border-t border-border">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <FadeUp>
+              <p className="text-sm uppercase tracking-widest text-muted mb-4">Mehr als AI</p>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                AI ist nicht alles, was wir <span className="italic font-serif font-normal">bauen</span>.
+              </h2>
+            </FadeUp>
+            <FadeUp delay={0.2}>
+              <p className="text-muted text-lg mb-8 max-w-lg">
+                Wir bauen seit über 10 Jahren komplette Systeme für Schweizer KMU — Webseiten, Datenbanken, Shops, Automationen. AI ist die nächste Schicht, nicht der Ersatz. Wenn du mehr brauchst als nur AI, hier ist alles was wir machen:
+              </p>
+            </FadeUp>
+            <FadeUp delay={0.3}>
+              <a
+                href="/"
+                className="inline-flex items-center gap-3 h-14 px-8 border border-border font-medium rounded-full hover:border-foreground/30 transition-colors"
+              >
+                Alle Services auf läuft.ch
+                <ArrowRight size={16} />
+              </a>
+            </FadeUp>
+          </div>
+          <FadeUp delay={0.2}>
+            <div className="grid grid-cols-2 gap-4">
+              {services.map(({ Icon, title, text }, i) => (
+                <div key={i} className="bg-white dark:bg-zinc-900 border border-border rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                  <Icon size={20} className="mb-4 text-foreground" />
+                  <h3 className="font-bold mb-1">{title}</h3>
+                  <p className="text-sm text-muted">{text}</p>
+                </div>
+              ))}
+            </div>
+          </FadeUp>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Contact() {
   return (
     <section id="kontakt" className="py-32 px-6 border-t border-border">
@@ -987,6 +1039,7 @@ export default function AiPage() {
       <About />
       <WhyCH />
       <FAQ />
+      <MoreThanAI />
       <Contact />
     </main>
   );
