@@ -21,6 +21,8 @@ const BLOCK_TEMPLATES: Record<string, Block> = {
   team: { type: "team", heading: "Production Team", members: [] },
   offer: { type: "offer", heading: "Angebot", bullets: [] },
   contact: { type: "contact", name: "Anes", email: "anes@laeuft.ch" },
+  "hero-image": { type: "hero-image", image: "", eyebrow: "", title: "Headline", subtitle: "", align: "center" },
+  gallery: { type: "gallery", eyebrow: "", heading: "Gallery", images: [{ src: "", caption: "" }] },
 };
 
 export default function PresentationEditorPage({ params }: { params: Promise<{ id: string }> }) {
@@ -265,6 +267,29 @@ function BlockEditor({ block, onChange }: { block: Block; onChange: (patch: any)
             <textarea rows={5} className={inputClass} value={block.bullets.join("\n")} onChange={(e) => onChange({ bullets: e.target.value.split("\n").filter(Boolean) })} />
           </Field>
           <Field label="Preis (optional)"><input className={inputClass} value={block.price || ""} onChange={(e) => onChange({ price: e.target.value })} /></Field>
+        </div>
+      );
+    case "hero-image":
+      return (
+        <div className="space-y-3">
+          <Field label="Eyebrow"><input className={inputClass} value={block.eyebrow || ""} onChange={(e) => onChange({ eyebrow: e.target.value })} /></Field>
+          <Field label="Titel"><input className={inputClass} value={block.title} onChange={(e) => onChange({ title: e.target.value })} /></Field>
+          <Field label="Subtitle"><input className={inputClass} value={block.subtitle || ""} onChange={(e) => onChange({ subtitle: e.target.value })} /></Field>
+          <Field label="Bild URL"><input className={inputClass} value={block.image} onChange={(e) => onChange({ image: e.target.value })} /></Field>
+          <Field label="Align (center / left)"><input className={inputClass} value={block.align || "center"} onChange={(e) => onChange({ align: e.target.value as "left" | "center" })} /></Field>
+        </div>
+      );
+    case "gallery":
+      return (
+        <div className="space-y-3">
+          <Field label="Eyebrow"><input className={inputClass} value={block.eyebrow || ""} onChange={(e) => onChange({ eyebrow: e.target.value })} /></Field>
+          <Field label="Heading"><input className={inputClass} value={block.heading || ""} onChange={(e) => onChange({ heading: e.target.value })} /></Field>
+          <Field label="Bilder (src|caption, einer pro Zeile)">
+            <textarea rows={6} className={inputClass}
+              value={block.images.map((i) => `${i.src}|${i.caption || ""}`).join("\n")}
+              onChange={(e) => onChange({ images: e.target.value.split("\n").filter(Boolean).map((l) => { const [src, caption] = l.split("|"); return { src: src || "", caption: caption || "" }; }) })}
+            />
+          </Field>
         </div>
       );
     case "contact":

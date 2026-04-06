@@ -10,6 +10,8 @@ export type Block =
   | { type: "bio"; heading: string; text: string; image?: string; stats?: { label: string; value: string }[] }
   | { type: "content-overview"; heading: string; channels: { icon: string; name: string; reach: string }[] }
   | { type: "race"; name: string; date: string; location: string; description: string; image?: string; logo?: string }
+  | { type: "hero-image"; image: string; eyebrow?: string; title: string; subtitle?: string; align?: "left" | "center" }
+  | { type: "gallery"; heading?: string; eyebrow?: string; images: { src: string; caption?: string }[] }
   | { type: "goal"; heading: string; text: string }
   | { type: "team"; heading: string; members: { name: string; role: string; image?: string }[] }
   | { type: "offer"; heading: string; bullets: string[]; price?: string }
@@ -436,6 +438,89 @@ function OfferBlock({ block, customer: _customer }: { block: Extract<Block, { ty
   );
 }
 
+function HeroImageBlock({ block }: { block: Extract<Block, { type: "hero-image" }> }) {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const imageY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.15, 1.05, 1.15]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 0.3, 0.5]);
+  const align = block.align || "center";
+
+  return (
+    <section ref={ref} className="relative h-screen overflow-hidden bg-black">
+      <motion.div className="absolute inset-0" style={{ y: imageY, scale: imageScale }}>
+        <Image src={block.image} alt="" fill className="object-cover" priority={false} />
+      </motion.div>
+      <motion.div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity }} />
+      <motion.div
+        className={`absolute inset-0 flex flex-col justify-center px-8 md:px-20 text-white ${align === "center" ? "items-center text-center" : "items-start"}`}
+        style={{ y: textY }}
+      >
+        {block.eyebrow && (
+          <FadeUp>
+            <div className="text-xs uppercase tracking-[0.4em] text-white/70 mb-6">{block.eyebrow}</div>
+          </FadeUp>
+        )}
+        <h2 className={`text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight leading-[0.9] max-w-5xl ${align === "center" ? "" : "md:max-w-[60%]"}`}>
+          <AnimatedWords text={block.title} stagger={0.06} />
+        </h2>
+        {block.subtitle && (
+          <FadeUp delay={0.6}>
+            <p className={`mt-8 text-xl md:text-2xl text-white/80 font-light max-w-2xl ${align === "center" ? "mx-auto" : ""}`}>
+              {block.subtitle}
+            </p>
+          </FadeUp>
+        )}
+      </motion.div>
+    </section>
+  );
+}
+
+function GalleryBlock({ block }: { block: Extract<Block, { type: "gallery" }> }) {
+  const ref = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  // Horizontal drift on scroll
+  const x = useTransform(scrollYProgress, [0, 1], ["5%", "-25%"]);
+
+  return (
+    <section ref={ref} className="bg-black text-white py-32 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 mb-16">
+        {block.eyebrow && (
+          <FadeUp>
+            <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">{block.eyebrow}</div>
+          </FadeUp>
+        )}
+        {block.heading && (
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9]">
+            <AnimatedWords text={block.heading} stagger={0.06} />
+          </h2>
+        )}
+      </div>
+      <motion.div ref={trackRef} className="flex gap-6 px-6 will-change-transform" style={{ x }}>
+        {block.images.map((img, i) => (
+          <motion.div
+            key={i}
+            className="relative shrink-0 w-[80vw] md:w-[55vw] lg:w-[45vw] aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-900"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1, ease: EASE, delay: i * 0.1 }}
+          >
+            <Image src={img.src} alt={img.caption || ""} fill className="object-cover" />
+            {img.caption && (
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-sm text-white/90">{img.caption}</p>
+              </div>
+            )}
+          </motion.div>
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
 function ContactBlock({ block, customer }: { block: Extract<Block, { type: "contact" }>; customer: PresentationData }) {
   return (
     <section className="min-h-screen flex items-center justify-center bg-black text-white px-6 py-32 overflow-hidden">
@@ -491,6 +576,8 @@ export function RenderBlock({ block, index, customer }: { block: Block; index: n
     case "team": return <TeamBlock block={block} />;
     case "offer": return <OfferBlock block={block} customer={customer} />;
     case "contact": return <ContactBlock block={block} customer={customer} />;
+    case "hero-image": return <HeroImageBlock block={block} />;
+    case "gallery": return <GalleryBlock block={block} />;
     default: return null;
   }
 }
