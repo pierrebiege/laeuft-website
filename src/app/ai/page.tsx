@@ -17,7 +17,6 @@ import {
   Minus,
   Sparkles,
   Calendar,
-  ArrowDown,
   Zap,
   Database,
   Bot,
