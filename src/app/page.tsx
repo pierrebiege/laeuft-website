@@ -313,9 +313,20 @@ function Hero() {
           {/* Left */}
           <div>
             <FadeUp>
-              <div className="inline-flex items-center gap-2 bg-foreground/10 text-sm px-4 py-2 rounded-full mb-6">
+              <div className="inline-flex items-center gap-2 bg-foreground/10 text-sm px-4 py-2 rounded-full mb-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                 läuft.ch · Schweiz · seit 2010
+              </div>
+              <div className="text-xs text-muted mb-6">
+                Du suchst Pierre als Athleten?{" "}
+                <a
+                  href="https://pierrebiege.ch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/70 hover:text-foreground underline underline-offset-2 transition-colors"
+                >
+                  pierrebiege.ch →
+                </a>
               </div>
             </FadeUp>
             <FadeUp delay={0.1}>
@@ -1011,6 +1022,26 @@ function Contact() {
   );
 }
 
+function Footer() {
+  return (
+    <footer className="border-t border-border py-12 px-6">
+      <div className="max-w-7xl mx-auto grid sm:grid-cols-2 gap-6 items-center text-sm text-muted">
+        <div>
+          <p className="font-semibold text-foreground">Läuft.</p>
+          <p className="mt-1">Systeme und AI für Schweizer Unternehmen. Aus dem Wallis.</p>
+        </div>
+        <div className="sm:text-right space-x-6">
+          <a href="https://pierrebiege.ch" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            Pierre als Athlet ↗
+          </a>
+          <a href="/old" className="hover:text-foreground transition-colors">Portfolio</a>
+          <a href="mailto:pierre@laeuft.ch" className="hover:text-foreground transition-colors">Kontakt</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 // ==================== PAGE ====================
 
 export default function AiPage() {
@@ -1024,6 +1055,15 @@ export default function AiPage() {
           <div className="flex items-center gap-4">
             <a href="#pakete" className="hidden sm:block text-sm text-muted hover:text-foreground transition-colors">Pakete</a>
             <a href="#so-funktionierts" className="hidden sm:block text-sm text-muted hover:text-foreground transition-colors">So funktioniert's</a>
+            <a
+              href="https://pierrebiege.ch"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
+            >
+              Athlet
+              <ArrowRight size={12} />
+            </a>
             <a href="#kontakt" className="text-sm font-medium bg-foreground text-background px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
               Gespräch buchen
             </a>
@@ -1045,6 +1085,7 @@ export default function AiPage() {
       <FAQ />
       <MoreThanAI />
       <Contact />
+      <Footer />
     </main>
   );
 }
