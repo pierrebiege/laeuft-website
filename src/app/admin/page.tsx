@@ -232,32 +232,32 @@ export default function AdminPage() {
                     </td>
                     <td className="px-6 py-4 text-zinc-500">{formatDate(offer.created_at)}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1">
                         {offer.status === "draft" && (
                           <>
                             <Link
                               href={`/admin/offerten/${offer.id}`}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                              title="Bearbeiten"
+                              className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                             >
-                              <Pencil size={14} />
-                              Bearbeiten
+                              <Pencil size={15} />
                             </Link>
                             {isAdmin && (
                               <button
                                 onClick={() => sendOffer(offer.id)}
                                 disabled={sendingId === offer.id}
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+                                title="Per E-Mail senden"
+                                className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
                               >
-                                <Mail size={14} />
-                                {sendingId === offer.id ? "Sende..." : "Senden"}
+                                <Mail size={15} />
                               </button>
                             )}
                             <button
                               onClick={() => acceptInternally(offer.id)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                              title="Annehmen"
+                              className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
                             >
-                              <CheckCircle size={14} />
-                              Annehmen
+                              <CheckCircle size={15} />
                             </button>
                           </>
                         )}
@@ -265,50 +265,46 @@ export default function AdminPage() {
                           <>
                             <button
                               onClick={() => completeOffer(offer.id)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
+                              title="Projekt abschliessen"
+                              className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
                             >
-                              <FlagTriangleRight size={14} />
-                              Abschliessen
+                              <FlagTriangleRight size={15} />
                             </button>
                             <Link
                               href={`/admin/rechnungen/neu?from_offer=${offer.id}`}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                              title="Rechnung erstellen"
+                              className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
                             >
-                              <Receipt size={14} />
-                              Rechnung
+                              <Receipt size={15} />
                             </Link>
                           </>
                         )}
                         <button
                           onClick={() => copyLink(offer.unique_token)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                          title="Link kopieren"
+                          className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                         >
                           {copiedId === offer.unique_token ? (
-                            <>
-                              <Check size={14} className="text-green-500" />
-                              Kopiert
-                            </>
+                            <Check size={15} className="text-green-500" />
                           ) : (
-                            <>
-                              <Copy size={14} />
-                              Link
-                            </>
+                            <Copy size={15} />
                           )}
                         </button>
                         <a
                           href={`/angebot/${offer.unique_token}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                          title="Offerte öffnen"
+                          className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                         >
-                          <ExternalLink size={14} />
-                          Öffnen
+                          <ExternalLink size={15} />
                         </a>
                         <button
                           onClick={() => deleteOffer(offer.id)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                          title="Löschen"
+                          className="p-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </td>
