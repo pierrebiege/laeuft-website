@@ -11,6 +11,8 @@ import {
   X,
   RefreshCw,
   Send,
+  Sparkles,
+  Inbox,
 } from "lucide-react";
 
 type FilterTab = "alle" | "neu" | "follow_up" | "geantwortet" | "kein_interesse";
@@ -126,6 +128,8 @@ export default function AkquisePage() {
     subject: string;
     body: string;
   } | null>(null);
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [checkingInbox, setCheckingInbox] = useState(false);
 
   useEffect(() => {
     loadProspects();
@@ -204,6 +208,51 @@ export default function AkquisePage() {
       subject: draft.subject,
       body: draft.body,
     });
+  }
+
+  async function generateAIDraft() {
+    if (!emailModal) return;
+    setGeneratingAI(true);
+    try {
+      const res = await fetch("/api/generate-outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prospectId: emailModal.prospect.id,
+          emailNumber: emailModal.emailNumber,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setEmailModal({ ...emailModal, subject: data.subject, body: data.body });
+      } else {
+        alert("KI-Generierung fehlgeschlagen");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+    setGeneratingAI(false);
+  }
+
+  async function checkInbox() {
+    setCheckingInbox(true);
+    try {
+      const res = await fetch("/api/check-inbox", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.replies > 0) {
+          alert(`${data.replies} Antwort(en) erkannt: ${data.repliedProspects.join(", ")}`);
+          loadProspects();
+        } else {
+          alert(`Inbox geprüft (${data.checked} Prospects) — keine neuen Antworten.`);
+        }
+      } else {
+        alert("Inbox-Check fehlgeschlagen");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+    setCheckingInbox(false);
   }
 
   async function sendEmailFromModal() {
@@ -313,13 +362,24 @@ export default function AkquisePage() {
             {stats.geantwortet} geantwortet
           </p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
-        >
-          <Plus size={18} />
-          Prospect erfassen
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={checkInbox}
+            disabled={checkingInbox}
+            title="Inbox auf Antworten prüfen"
+            className="flex items-center gap-2 px-4 py-2 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+          >
+            {checkingInbox ? <RefreshCw size={18} className="animate-spin" /> : <Inbox size={18} />}
+            {checkingInbox ? "Prüfe..." : "Inbox prüfen"}
+          </button>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+          >
+            <Plus size={18} />
+            Prospect erfassen
+          </button>
+        </div>
       </div>
 
       {/* Inline Form */}
@@ -682,6 +742,14 @@ export default function AkquisePage() {
                 >
                   <Send size={16} />
                   {sendingId === emailModal.prospect.id ? "Wird gesendet..." : "Senden"}
+                </button>
+                <button
+                  onClick={generateAIDraft}
+                  disabled={generatingAI}
+                  className="flex items-center gap-2 px-4 py-2 border border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 rounded-lg font-medium hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors disabled:opacity-50"
+                >
+                  {generatingAI ? <RefreshCw size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                  {generatingAI ? "Generiere..." : "KI-Text"}
                 </button>
                 <button
                   onClick={() => setEmailModal(null)}
