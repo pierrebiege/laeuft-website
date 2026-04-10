@@ -20,12 +20,12 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Läuft. | Alles für KMU. Aus einer Hand.",
-  description: "Web, Branding, Social Media, Automatisierung – ein Abo, ein Ansprechpartner. Pausieren oder kündigen jederzeit.",
-  keywords: ["KMU", "Webdesign", "Branding", "Social Media", "Automatisierung", "Schweiz", "Wallis"],
+  title: "Läuft. | Websites, AI-Integration & digitale Systeme",
+  description: "Moderne Websites, KI-Integration und digitale Systeme für Schweizer Unternehmen. Wir optimieren Prozesse, automatisieren Workflows und bringen dein Business auf das nächste Level.",
+  keywords: ["Webdesign", "AI-Integration", "KI", "digitale Systeme", "Automatisierung", "Schweiz", "Wallis", "Websites", "Chatbot", "CRM"],
   openGraph: {
-    title: "Läuft. | Alles für KMU. Aus einer Hand.",
-    description: "Web, Branding, Social Media, Automatisierung – ein Abo, ein Ansprechpartner.",
+    title: "Läuft. | Websites, AI-Integration & digitale Systeme",
+    description: "Moderne Websites, KI-Integration und digitale Systeme für Schweizer Unternehmen. Prozesse optimieren, Workflows automatisieren.",
     locale: "de_CH",
     type: "website",
   },
