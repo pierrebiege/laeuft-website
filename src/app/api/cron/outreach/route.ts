@@ -23,10 +23,11 @@ function wrapHtml(body: string) {
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="margin-bottom: 30px;">
         <h1 style="font-size: 24px; font-weight: bold; margin: 0;">Läuft<span style="color: #999;">.</span></h1>
+        <p style="font-size: 13px; color: #999; margin: 4px 0 0 0;">Websites · AI-Integration · Digitale Systeme</p>
       </div>
       ${body}
       <div style="border-top: 1px solid #eee; margin-top: 32px; padding-top: 16px; font-size: 12px; color: #999;">
-        <p>Pierre Biege<br>pierre@laeuft.ch</p>
+        <p>Pierre Biege · <a href="https://laeuft.ch" style="color: #999;">laeuft.ch</a><br>Beste Grüsse aus Albinen</p>
       </div>
     </body>
     </html>
