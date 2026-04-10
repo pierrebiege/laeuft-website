@@ -76,25 +76,25 @@ async function handleStoryGrid(chatId: number, imageBuffer: Buffer, base64Image:
     return
   }
 
-  const now = new Date()
-  const timestamp = `${now.toISOString().split('T')[0]}-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`
+  // Get the highest existing telegram story number for auto-increment
+  const { data: lastStory } = await supabaseAdmin
+    .from('instagram_story_archive')
+    .select('story_id')
+    .like('story_id', 'telegram-%')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  let nextNumber = 1
+  if (lastStory?.story_id) {
+    const match = lastStory.story_id.match(/telegram-(\d+)/)
+    if (match) nextNumber = parseInt(match[1]) + 1
+  }
+
   let saved = 0
-  let skipped = 0
 
   for (const story of splitStories) {
-    const storyId = `telegram-${timestamp}-${story.index.toString().padStart(2, '0')}`
-
-    // Check if already exists
-    const { data: existing } = await supabaseAdmin
-      .from('instagram_story_archive')
-      .select('id')
-      .eq('story_id', storyId)
-      .single()
-
-    if (existing) {
-      skipped++
-      continue
-    }
+    const storyId = `telegram-${(nextNumber + story.index).toString().padStart(5, '0')}`
 
     // Upload image to Supabase Storage
     const storagePath = `stories/${storyId}.jpg`
@@ -134,9 +134,8 @@ async function handleStoryGrid(chatId: number, imageBuffer: Buffer, base64Image:
   }
 
   let msg = `✅ ${saved} Stories gespeichert!`
-  if (skipped > 0) msg += ` (${skipped} bereits vorhanden)`
   msg += `\n\n📊 Grid: ${gridResult.rows} Zeilen × ${gridResult.cols} Spalten`
-  msg += `\n📅 Datum: ${now.toISOString().split('T')[0]}`
+  msg += `\n🔢 IDs: ${nextNumber.toString().padStart(5, '0')} – ${(nextNumber + splitStories.length - 1).toString().padStart(5, '0')}`
 
   // List view counts
   const viewsList = splitStories
