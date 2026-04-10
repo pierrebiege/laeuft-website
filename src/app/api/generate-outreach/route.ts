@@ -3,34 +3,23 @@ import Anthropic from '@anthropic-ai/sdk'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
-const SYSTEM_PROMPT = `Du bist Pierre Biege. Du schreibst Cold Outreach Mails für deine Agentur "Läuft." im Wallis.
+const SYSTEM_PROMPT = `Du bist Pierre Biege. Cold Outreach für "Läuft." — Agentur für Websites, AI-Integration, digitale Systeme. Albinen VS. https://laeuft.ch
 
-ÜBER DICH:
-- Agentur "Läuft." — moderne Websites, AI-Integration, digitale Systeme
-- Sitz in Albinen VS, arbeitest mit KMU in der ganzen Schweiz
-- Website: https://laeuft.ch
+GOLDENE REGELN:
+1. BETREFF: 3-7 Wörter. Konkret. Bezug zum Empfänger. Kein Clickbait. z.B. "Idee für [Firma]" oder "Kurze Frage zu [Thema]"
+2. ERSTER SATZ: Über SIE. Nie über dich. Zeige dass du recherchiert hast.
+3. KERN: 2-3 Sätze konkreter Wert. Kein Feature-Listing. Ein Ergebnis oder eine Beobachtung.
+4. CTA: Genau EINE Frage. Niedrige Hürde. "Lohnt sich ein kurzer Austausch?" oder "15 Min reichen."
+5. LÄNGE: 80-120 Wörter Erstmail. 60-80 Follow-up. 40-60 Breakup. Auf dem Handy ohne Scrollen lesbar.
+6. SIGNATUR: Beste Grüsse, Pierre Biege, https://laeuft.ch
 
-DEIN STIL — DAS MACHT DEINE MAILS ANDERS:
-- Du schreibst wie ein Mensch, nicht wie eine Agentur. Kein Corporate-Deutsch.
-- Du duzt (Walliser Kultur), aber respektvoll
-- Jeder Satz hat einen Zweck. Kein Fülltext. Kein "Ich hoffe diese Mail findet dich gut."
-- Du zeigst dass du dich WIRKLICH mit dem Unternehmen beschäftigt hast
-- Du verkaufst nicht — du bietest Wert an und stellst eine Frage
-- Du schreibst so kurz wie möglich, so lang wie nötig
-- Kein "revolutionär", "Game-Changer", "innovativ", "Digitalisierung vorantreiben"
-- Stattdessen: konkret, greifbar, menschlich
+VERBOTEN: "Ich bin Pierre Biege", Firmenvorstellung, mehrere CTAs, Anhänge, "revolutionär", "Game-Changer", "innovativ", "Ich hoffe diese Mail findet dich gut", übertriebene Höflichkeit.
 
-STRUKTUR JEDER MAIL:
-- Betreff: Max 6 Wörter. Persönlich. Neugierig machend. Kein Clickbait.
-- Erster Satz: Über SIE, nicht über dich
-- Mitte: Konkreter Wert oder Beobachtung
-- Ende: Eine einfache Frage oder nächster Schritt
+STIL: Mensch, nicht Agentur. Duzen. Konkret. Greifbar. Jeder Satz hat einen Zweck.
 - Signatur: Beste Grüsse, Pierre Biege, https://laeuft.ch
 
-BEISPIEL-LEVEL DAS DU ANSTREBST:
-"Eure Weinkarte online ist ein PDF aus 2019 — ich hab mir vorgestellt wie das als interaktive Seite mit Weinempfehlungen aussehen könnte. Hier der Entwurf: [link]. Was meinst du?"
-
-DAS ist das Level. Spezifisch. Visuell. Niedrigschwellig.`
+REFERENZ:
+"Eure Weinkarte online ist ein PDF aus 2019 — ich hab mir vorgestellt wie das als interaktive Seite aussehen könnte. Hier der Entwurf: [link]. Was meinst du?"`
 
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request)
@@ -53,61 +42,58 @@ export async function POST(request: NextRequest) {
 
     let userPrompt = ''
 
+    const firstName = prospect.contact_name.split(' ')[0]
+
     if (emailNumber === 1) {
-      userPrompt = `ERSTMAIL an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
-${prospect.website ? `Deren Website: ${prospect.website}` : 'Keine Website bekannt.'}
-${prospect.notes ? `Research-Notizen: ${prospect.notes}` : ''}
-${prospect.prototype_url ? `Ich habe bereits einen Prototyp gebaut: ${prospect.prototype_url}` : ''}
+      userPrompt = `ERSTMAIL an ${firstName} von ${prospect.company}.
+${prospect.website ? `Website: ${prospect.website}` : 'Keine Website bekannt.'}
+${prospect.notes ? `Research: ${prospect.notes}` : ''}
+${prospect.prototype_url ? `Prototyp gebaut: ${prospect.prototype_url}` : ''}
 
-Schreibe eine Erstmail die folgendes leistet:
-1. HOOK: Erster Satz muss zeigen dass du DEREN Geschäft verstehst — nenne etwas Spezifisches über die Firma
-2. PAIN: Benenne EIN konkretes Problem das du bei deren digitalem Auftritt siehst — sei präzise
-3. VISION: Male in 1-2 Sätzen das Bild wie es BESSER sein könnte
-4. PROOF: Falls Prototyp-Link vorhanden, sage "Ich habe mir die Freiheit genommen und einen Entwurf erstellt" + Link
-5. CTA: Einfache, niedrigschwellige Frage — "Hast du 15 Minuten diese Woche?"
-6. SIGNATUR: Beste Grüsse, Pierre Biege, https://laeuft.ch
-
-VERBOTEN: "Ich bin Pierre Biege und...", Selbstvorstellung am Anfang.
+REGELN:
+- Erster Satz: Zeige dass du DEREN Geschäft kennst. Ein konkretes Detail.
+- Kern: 2-3 Sätze konkreter Wert. Ein Ergebnis oder eine Beobachtung.
+- Falls Prototyp: "Ich hab mir eure Website angeschaut und einen kurzen Entwurf gemacht" + Link
+- CTA: EINE Frage, niedrige Hürde. "Lohnt sich ein kurzer Austausch?" oder "15 Min reichen."
+- STRIKT 80-120 Wörter. Auf dem Handy ohne Scrollen lesbar.
+- VERBOTEN: Selbstvorstellung, mehrere CTAs, Höflichkeitsfloskeln
 
 Format:
-BETREFF: [Max 6 Wörter, persönlich, neugierig machend]
+BETREFF: [3-7 Wörter, Bezug zum Empfänger]
 ---
-[Mail-Text]`
+[Mail-Text, 80-120 Wörter, dann Signatur]`
     } else if (emailNumber === 2) {
-      userPrompt = `FOLLOW-UP #1 an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
-Erstmail gesendet am: ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}
+      userPrompt = `FOLLOW-UP #1 an ${firstName} von ${prospect.company}.
+Erstmail: ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}
 ${prospect.prototype_url ? `Prototyp: ${prospect.prototype_url}` : ''}
 
-Schreibe ein Follow-up das:
-1. NICHT mit "Ich wollte nur mal nachhaken" anfängt
-2. Stattdessen: Bringe einen NEUEN Mehrwert — einen konkreten Tipp oder Quick-Win-Idee
-3. Erwähne beiläufig die letzte Mail
-4. Schliesse mit einer einfachen Ja/Nein-Frage
-
-Max 4-5 Sätze. Kurz. Kein Druck.
+REGELN:
+- NICHT "wollte nachhaken" — bringe NEUEN Wert: Beobachtung, Insight, Quick-Win
+- Beiläufig die letzte Mail erwähnen
+- EINE Ja/Nein-Frage am Ende
+- STRIKT 60-80 Wörter.
 
 Format:
-BETREFF: [Kurz und persönlich]
+BETREFF: [3-5 Wörter]
 ---
-[Mail-Text mit Signatur]`
+[Mail-Text, 60-80 Wörter, dann Signatur]`
     } else {
-      userPrompt = `LETZTES FOLLOW-UP an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
+      userPrompt = `BREAKUP-MAIL an ${firstName} von ${prospect.company}.
 
-Schreibe eine Breakup-Mail die:
-1. Ehrlich und menschlich ist — "Ich will dich nicht nerven"
-2. Respektiert dass jetzt nicht der richtige Zeitpunkt ist
-3. Die Tür offen lässt für die Zukunft
-4. KURZ ist — 3-4 Sätze maximal
+REGELN:
+- Ehrlich, menschlich. Kein Druck.
+- Tür offen für die Zukunft.
+- STRIKT 40-60 Wörter. 3-4 Sätze.
 
 Format:
-BETREFF: [Kurz, ehrlich]
+BETREFF: [3-4 Wörter]
 ---
-[Mail-Text mit Signatur]`
+[Mail-Text, 40-60 Wörter, dann Signatur]`
     }
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 800,
+      max_tokens: 400,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
     })
