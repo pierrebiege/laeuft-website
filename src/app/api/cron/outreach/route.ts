@@ -136,7 +136,34 @@ async function checkInboxForReplies(): Promise<number> {
 
 async function sendAutoFollowUps(): Promise<number> {
   const now = new Date()
-  let sent = 0
+  let queued = 0
+
+  // Get Telegram chat ID
+  const { data: config } = await supabaseAdmin
+    .from('dashboard_config')
+    .select('telegram_chat_id')
+    .limit(1)
+    .single()
+
+  const chatId = process.env.TELEGRAM_CHAT_ID || config?.telegram_chat_id
+
+  // Erstmails for new prospects (added by Scheduled Task)
+  const { data: newProspects } = await supabaseAdmin
+    .from('prospects')
+    .select('*')
+    .eq('status', 'neu')
+    .is('email_1_sent_at', null)
+    .lt('created_at', new Date(now.getTime() - 60 * 60 * 1000).toISOString()) // at least 1h old
+
+  for (const prospect of newProspects || []) {
+    try {
+      const { subject, body } = await generateAIEmail(prospect, 1)
+      await queueEmailForApproval(prospect, 1, subject, body, chatId)
+      queued++
+    } catch (e) {
+      console.error(`Erstmail generation failed for ${prospect.company}:`, e)
+    }
+  }
 
   // Follow-up 1: 5 days after first email
   const { data: needFollowUp1 } = await supabaseAdmin
@@ -149,8 +176,8 @@ async function sendAutoFollowUps(): Promise<number> {
   for (const prospect of needFollowUp1 || []) {
     try {
       const { subject, body } = await generateAIEmail(prospect, 2)
-      await sendAndTrack(prospect, 2, subject, body)
-      sent++
+      await queueEmailForApproval(prospect, 2, subject, body, chatId)
+      queued++
     } catch (e) {
       console.error(`Follow-up 1 failed for ${prospect.company}:`, e)
     }
@@ -167,30 +194,104 @@ async function sendAutoFollowUps(): Promise<number> {
   for (const prospect of needFollowUp2 || []) {
     try {
       const { subject, body } = await generateAIEmail(prospect, 3)
-      await sendAndTrack(prospect, 3, subject, body)
-      sent++
+      await queueEmailForApproval(prospect, 3, subject, body, chatId)
+      queued++
     } catch (e) {
       console.error(`Follow-up 2 failed for ${prospect.company}:`, e)
     }
   }
 
-  return sent
+  return queued
+}
+
+async function queueEmailForApproval(
+  prospect: { id: string; company: string; contact_name: string; email: string },
+  emailNumber: 1 | 2 | 3,
+  subject: string,
+  body: string,
+  chatId: string | null
+) {
+  // Check if there's already a pending email for this prospect + emailNumber
+  const { data: existing } = await supabaseAdmin
+    .from('pending_emails')
+    .select('id')
+    .eq('prospect_id', prospect.id)
+    .eq('email_number', emailNumber)
+    .eq('status', 'pending')
+    .limit(1)
+
+  if (existing && existing.length > 0) return // already queued
+
+  // Create pending email
+  const { data: pending, error } = await supabaseAdmin
+    .from('pending_emails')
+    .insert({
+      prospect_id: prospect.id,
+      email_number: emailNumber,
+      subject,
+      body,
+      status: 'pending',
+    })
+    .select()
+    .single()
+
+  if (error || !pending) return
+
+  // Send Telegram approval message
+  if (chatId) {
+    const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
+    const emailLabel = emailNumber === 1 ? 'Erstmail' : `Follow-up ${emailNumber - 1}`
+    const text = `📧 ${emailLabel} bereit:\n\n🏢 ${prospect.company}\n👤 ${prospect.contact_name} (${prospect.email})\n\n📋 Betreff: ${subject}\n---\n${body.slice(0, 500)}${body.length > 500 ? '...' : ''}\n---`
+
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '✅ Senden', callback_data: `approve:${pending.id}` },
+            { text: '❌ Überspringen', callback_data: `reject:${pending.id}` },
+          ]],
+        },
+      }),
+    })
+
+    const data = await res.json()
+    if (data.result?.message_id) {
+      await supabaseAdmin
+        .from('pending_emails')
+        .update({ telegram_message_id: data.result.message_id })
+        .eq('id', pending.id)
+    }
+  }
 }
 
 async function generateAIEmail(
   prospect: { company: string; contact_name: string; website: string | null; notes: string | null; prototype_url: string | null; email_1_sent_at: string | null },
-  emailNumber: 2 | 3
+  emailNumber: 1 | 2 | 3
 ): Promise<{ subject: string; body: string }> {
   const anthropic = new Anthropic()
   const firstName = prospect.contact_name.split(' ')[0]
 
-  const prompt = emailNumber === 2
-    ? `Schreibe ein kurzes, freundliches Follow-up für ${firstName} von ${prospect.company}. Erstmail war am ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}.${prospect.prototype_url ? ` Prototyp: ${prospect.prototype_url}` : ''} Nachhaken ob die Mail angekommen ist. Max 4 Sätze.
+  let prompt: string
+
+  if (emailNumber === 1) {
+    prompt = `Schreibe eine kurze Kaltakquise-Erstmail an ${firstName} von ${prospect.company}.${prospect.website ? ` Website: ${prospect.website}` : ''}${prospect.notes ? ` Notizen: ${prospect.notes}` : ''}${prospect.prototype_url ? ` Prototyp: ${prospect.prototype_url}` : ''}
+
+Erwähne konkret was du an deren digitalem Auftritt verbessern könntest (Website, AI-Integration, Automatisierung). Sei spezifisch, nicht generisch. Max 6 Sätze.
 
 Format: BETREFF: [Betreff]\n---\n[Text]`
-    : `Schreibe ein letztes, freundliches Abschluss-Follow-up für ${firstName} von ${prospect.company}. Tür offen lassen, kein Druck. Max 4 Sätze.
+  } else if (emailNumber === 2) {
+    prompt = `Schreibe ein kurzes, freundliches Follow-up für ${firstName} von ${prospect.company}. Erstmail war am ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}.${prospect.prototype_url ? ` Prototyp: ${prospect.prototype_url}` : ''} Nachhaken ob die Mail angekommen ist. Max 4 Sätze.
 
 Format: BETREFF: [Betreff]\n---\n[Text]`
+  } else {
+    prompt = `Schreibe ein letztes, freundliches Abschluss-Follow-up für ${firstName} von ${prospect.company}. Tür offen lassen, kein Druck. Max 4 Sätze.
+
+Format: BETREFF: [Betreff]\n---\n[Text]`
+  }
 
   const response = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',

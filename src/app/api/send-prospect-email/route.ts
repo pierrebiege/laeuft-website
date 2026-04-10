@@ -55,8 +55,14 @@ const STATUS_AFTER_EMAIL: Record<number, string> = {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = await requireAuth(request)
-  if (authError) return authError
+  // Allow auth via CRON_SECRET or admin session
+  const authHeader = request.headers.get('authorization')
+  if (authHeader === `Bearer ${process.env.CRON_SECRET}`) {
+    // OK — CRON_SECRET auth
+  } else {
+    const authError = await requireAuth(request)
+    if (authError) return authError
+  }
 
   try {
     const { prospectId, emailNumber, customSubject, customBody } = await request.json()

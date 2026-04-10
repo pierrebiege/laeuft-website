@@ -7,10 +7,24 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
+
+  // Handle callback queries (inline button clicks)
+  if (body.callback_query) {
+    await handleCallbackQuery(body.callback_query)
+    return NextResponse.json({ ok: true })
+  }
+
   const message = body.message
 
   if (!message?.photo) {
     if (message?.text) {
+      // Store chat ID for notifications
+      if (!process.env.TELEGRAM_CHAT_ID) {
+        await supabaseAdmin
+          .from('dashboard_config')
+          .update({ telegram_chat_id: message.chat.id.toString() })
+          .not('id', 'is', null)
+      }
       await sendTelegramMessage(
         message.chat.id,
         '📸 Schick mir einen Screenshot!\n\n' +
@@ -198,10 +212,129 @@ async function handleInsights(chatId: number, base64Image: string) {
   await sendTelegramMessage(chatId, msg)
 }
 
+async function handleCallbackQuery(query: { id: string; data: string; message: { chat: { id: number }; message_id: number } }) {
+  const { id: callbackId, data, message } = query
+  const chatId = message.chat.id
+  const messageId = message.message_id
+
+  // Parse callback data: "approve:{pendingEmailId}" or "reject:{pendingEmailId}"
+  const [action, pendingEmailId] = data.split(':')
+
+  if (!pendingEmailId || !['approve', 'reject'].includes(action)) {
+    await answerCallback(callbackId, '❌ Ungültige Aktion')
+    return
+  }
+
+  // Get pending email
+  const { data: pending, error } = await supabaseAdmin
+    .from('pending_emails')
+    .select('*, prospect:prospects(*)')
+    .eq('id', pendingEmailId)
+    .single()
+
+  if (error || !pending) {
+    await answerCallback(callbackId, '❌ Mail nicht gefunden')
+    return
+  }
+
+  if (pending.status !== 'pending') {
+    await answerCallback(callbackId, '⚠️ Bereits verarbeitet')
+    return
+  }
+
+  if (action === 'approve') {
+    // Send the email
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://laeuft.ch'}/api/send-prospect-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': `admin_session=telegram-bypass`,
+          'Authorization': `Bearer ${process.env.CRON_SECRET}`,
+        },
+        body: JSON.stringify({
+          prospectId: pending.prospect_id,
+          emailNumber: pending.email_number,
+          customSubject: pending.subject,
+          customBody: pending.body,
+        }),
+      })
+
+      if (!res.ok) {
+        // Fallback: send directly via nodemailer import
+        await answerCallback(callbackId, '❌ Versand fehlgeschlagen')
+        await editTelegramMessage(chatId, messageId, `❌ Versand fehlgeschlagen für ${pending.prospect?.company}`)
+        return
+      }
+
+      // Update pending email status
+      await supabaseAdmin
+        .from('pending_emails')
+        .update({ status: 'sent', decided_at: new Date().toISOString(), sent_at: new Date().toISOString() })
+        .eq('id', pendingEmailId)
+
+      await answerCallback(callbackId, '✅ Mail gesendet!')
+      await editTelegramMessage(chatId, messageId,
+        `✅ GESENDET an ${pending.prospect?.company}\n📧 ${pending.subject}\n👤 ${pending.prospect?.contact_name} (${pending.prospect?.email})`)
+    } catch {
+      await answerCallback(callbackId, '❌ Fehler beim Senden')
+    }
+  } else {
+    // Reject
+    await supabaseAdmin
+      .from('pending_emails')
+      .update({ status: 'rejected', decided_at: new Date().toISOString() })
+      .eq('id', pendingEmailId)
+
+    await answerCallback(callbackId, '⏭ Übersprungen')
+    await editTelegramMessage(chatId, messageId,
+      `⏭ ÜBERSPRUNGEN: ${pending.prospect?.company}`)
+  }
+}
+
+async function answerCallback(callbackId: string, text: string) {
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/answerCallbackQuery`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ callback_query_id: callbackId, text }),
+  })
+}
+
+async function editTelegramMessage(chatId: number, messageId: number, text: string) {
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/editMessageText`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, message_id: messageId, text }),
+  })
+}
+
 async function sendTelegramMessage(chatId: number, text: string) {
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, text }),
   })
+}
+
+// Send a message with inline approve/reject buttons
+export async function sendTelegramEmailApproval(chatId: string, pendingEmailId: string, prospect: { company: string; contact_name: string; email: string }, subject: string, bodyPreview: string) {
+  const text = `📧 Neue Mail bereit:\n\n🏢 ${prospect.company}\n👤 ${prospect.contact_name} (${prospect.email})\n\n📋 Betreff: ${subject}\n---\n${bodyPreview.slice(0, 500)}\n---`
+
+  const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      reply_markup: {
+        inline_keyboard: [[
+          { text: '✅ Senden', callback_data: `approve:${pendingEmailId}` },
+          { text: '❌ Überspringen', callback_data: `reject:${pendingEmailId}` },
+        ]],
+      },
+    }),
+  })
+
+  const data = await res.json()
+  return data.result?.message_id
 }
