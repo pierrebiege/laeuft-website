@@ -349,7 +349,7 @@ BETREFF: [3-4 Wörter, ehrlich]
 
 GOLDENE REGELN:
 1. BETREFF: 3-7 Wörter. Konkret. Bezug zum Empfänger. Kein Clickbait. z.B. "Idee für [Firma]" oder "Kurze Frage zu [Thema]"
-2. ANREDE: Immer mit "Hallo [Vorname]," starten. Dann Leerzeile. Dann erster Satz.
+2. ANREDE: Wenn die E-Mail eine persönliche Adresse ist (vorname@firma.ch) → "Hallo [Vorname],". Wenn es eine allgemeine Adresse ist (info@, kontakt@, office@) → "Hallo zusammen," und das Team ansprechen, KEINEN einzelnen Namen verwenden.
 3. ERSTER SATZ: Über SIE. Nie über dich. Zeige dass du recherchiert hast.
 3. KERN: 2-3 Sätze konkreter Wert. Kein Feature-Listing. Ein Ergebnis oder eine Beobachtung.
 4. CTA: Genau EINE Frage. Niedrige Hürde. "Lohnt sich ein kurzer Austausch?" oder "15 Min reichen."
