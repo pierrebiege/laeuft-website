@@ -325,32 +325,27 @@ export default function PublicInsightsPage() {
   }, [])
 
   const [syncing, setSyncing] = useState(false)
-  const [syncDone, setSyncDone] = useState(false)
+  const syncStarted = useRef(false)
 
   useEffect(() => {
     if (unlocked) {
-      // Trigger background Instagram sync on first load, then refresh data
-      if (!syncDone) {
+      // Load existing data immediately
+      fetchData()
+      fetchStories()
+      fetchManualInsights()
+
+      // Trigger Instagram sync in background (once), then silently refresh
+      if (!syncStarted.current) {
+        syncStarted.current = true
         setSyncing(true)
         fetch('/api/instagram/sync', { method: 'POST' })
           .then(() => {
-            setSyncDone(true)
-            // Reload data with fresh sync
+            // Silently reload with fresh data
             fetchData()
             fetchStories()
-            fetchManualInsights()
           })
-          .catch(() => {
-            // Sync failed, load stale data anyway
-            fetchData()
-            fetchStories()
-            fetchManualInsights()
-          })
+          .catch(() => {})
           .finally(() => setSyncing(false))
-      } else {
-        fetchData()
-        fetchStories()
-        fetchManualInsights()
       }
     }
   }, [unlocked, period])
@@ -483,7 +478,7 @@ export default function PublicInsightsPage() {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-3">
         <RefreshCw size={20} className="animate-spin text-zinc-400" />
-        <p className="text-zinc-500">{syncing ? 'Aktualisiere Instagram Daten...' : 'Insights laden...'}</p>
+        <p className="text-zinc-500">Insights laden...</p>
       </div>
     )
   }
