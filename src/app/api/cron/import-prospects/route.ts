@@ -1,10 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import { readFile, writeFile } from 'fs/promises'
-import { join } from 'path'
 
-// This cron reads data/pending-prospects.json (committed by the Claude Scheduled Task)
-// and imports new prospects into the database.
+// This cron fetches data/pending-prospects.json from GitHub (committed by Claude Scheduled Task)
+// and imports new prospects into the database, then clears the file via GitHub API.
+
+const GITHUB_REPO = 'pierrebiege/laeuft-website'
+const FILE_PATH = 'data/pending-prospects.json'
+
+async function fetchFromGitHub(): Promise<{ content: string; sha: string } | null> {
+  // Use GitHub API to read the file — no auth needed for public repos,
+  // but we use the token if available for private repos
+  const headers: Record<string, string> = { 'Accept': 'application/vnd.github.v3+json' }
+  const token = process.env.GITHUB_TOKEN
+  if (token) headers['Authorization'] = `token ${token}`
+
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`, { headers })
+
+  if (!res.ok) return null
+
+  const data = await res.json()
+  const content = Buffer.from(data.content, 'base64').toString('utf-8')
+  return { content, sha: data.sha }
+}
+
+async function clearFileOnGitHub(sha: string): Promise<void> {
+  const token = process.env.GITHUB_TOKEN
+  if (!token) return // Can't clear without token
+
+  const emptyContent = Buffer.from('[]').toString('base64')
+
+  await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/vnd.github.v3+json',
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: 'chore: Prospects importiert, Datei geleert',
+      content: emptyContent,
+      sha,
+    }),
+  })
+}
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
@@ -13,7 +51,13 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const filePath = join(process.cwd(), 'data', 'pending-prospects.json')
+    // Fetch from GitHub API instead of filesystem
+    const file = await fetchFromGitHub()
+
+    if (!file) {
+      return NextResponse.json({ message: 'pending-prospects.json nicht auf GitHub gefunden', imported: 0 })
+    }
+
     let prospects: Array<{
       company: string
       contact_name: string
@@ -23,10 +67,9 @@ export async function GET(request: NextRequest) {
     }>
 
     try {
-      const raw = await readFile(filePath, 'utf-8')
-      prospects = JSON.parse(raw)
+      prospects = JSON.parse(file.content)
     } catch {
-      return NextResponse.json({ message: 'Keine pending-prospects.json gefunden', imported: 0 })
+      return NextResponse.json({ message: 'JSON parse error', imported: 0 })
     }
 
     if (!Array.isArray(prospects) || prospects.length === 0) {
@@ -43,7 +86,6 @@ export async function GET(request: NextRequest) {
         continue
       }
 
-      // Skip if no email
       if (!p.email) {
         results.push(`Übersprungen: ${p.company} — keine E-Mail`)
         skipped++
@@ -97,8 +139,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Clear the file after import
-    await writeFile(filePath, '[]', 'utf-8')
+    // Clear the file on GitHub after successful import
+    if (imported > 0) {
+      await clearFileOnGitHub(file.sha)
+    }
 
     return NextResponse.json({ success: true, imported, skipped, results })
   } catch (err) {
