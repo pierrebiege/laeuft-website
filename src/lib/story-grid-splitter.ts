@@ -99,7 +99,15 @@ export async function analyzeStoryGrid(base64Image: string, mediaType: string = 
   const jsonMatch = text.match(/\{[\s\S]*\}/)
   if (!jsonMatch) throw new Error('Kein JSON in der Grid-Analyse gefunden')
 
-  const data = JSON.parse(jsonMatch[0])
+  // Clean up common AI JSON issues: trailing commas, single quotes, comments
+  let jsonStr = jsonMatch[0]
+    .replace(/,\s*([}\]])/g, '$1')          // trailing commas
+    .replace(/'/g, '"')                       // single quotes
+    .replace(/(\w+)\s*:/g, '"$1":')           // unquoted keys
+    .replace(/""/g, '"')                      // double-quoted from previous replace
+    .replace(/:\s*(\d[\d.]*)\s*([,}\]])/g, ': $1$2')  // ensure numbers aren't quoted
+
+  const data = JSON.parse(jsonStr)
   if (!data.rows || !data.cols || !data.stories) {
     throw new Error('Grid-Analyse unvollständig (rows, cols, stories fehlen)')
   }
