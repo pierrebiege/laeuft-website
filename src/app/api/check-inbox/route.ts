@@ -67,6 +67,7 @@ async function handler() {
       )
 
       for await (const msg of messages) {
+        if (!msg.source) continue
         const parsed = await simpleParser(msg.source)
         const fromEmail = parsed.from?.value?.[0]?.address?.toLowerCase()
 
