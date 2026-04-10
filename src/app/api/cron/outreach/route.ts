@@ -340,7 +340,8 @@ BETREFF: [3-4 Wörter, ehrlich]
 
 GOLDENE REGELN:
 1. BETREFF: 3-7 Wörter. Konkret. Bezug zum Empfänger. Kein Clickbait. z.B. "Idee für [Firma]" oder "Kurze Frage zu [Thema]"
-2. ERSTER SATZ: Über SIE. Nie über dich. Zeige dass du recherchiert hast.
+2. ANREDE: Immer mit "Hallo [Vorname]," starten. Dann Leerzeile. Dann erster Satz.
+3. ERSTER SATZ: Über SIE. Nie über dich. Zeige dass du recherchiert hast.
 3. KERN: 2-3 Sätze konkreter Wert. Kein Feature-Listing. Ein Ergebnis oder eine Beobachtung.
 4. CTA: Genau EINE Frage. Niedrige Hürde. "Lohnt sich ein kurzer Austausch?" oder "15 Min reichen."
 5. LÄNGE: 80-120 Wörter Erstmail. 60-80 Follow-up. 40-60 Breakup. Auf dem Handy ohne Scrollen lesbar.
