@@ -82,7 +82,7 @@ async function checkInboxForReplies(): Promise<number> {
   }
 
   const client = new ImapFlow({
-    host: process.env.SMTP_HOST!,
+    host: process.env.IMAP_HOST || 'imap.mail.hostpoint.ch',
     port: 993,
     secure: true,
     auth: {
