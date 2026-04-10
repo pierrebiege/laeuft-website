@@ -278,42 +278,89 @@ async function generateAIEmail(
   let prompt: string
 
   if (emailNumber === 1) {
-    prompt = `Schreibe eine kurze Kaltakquise-Erstmail an ${firstName} von ${prospect.company}.${prospect.website ? ` Website: ${prospect.website}` : ''}${prospect.notes ? ` Notizen: ${prospect.notes}` : ''}${prospect.prototype_url ? ` Prototyp: ${prospect.prototype_url}` : ''}
+    prompt = `ERSTMAIL an ${firstName} von ${prospect.company}.
+${prospect.website ? `Deren Website: ${prospect.website}` : 'Keine Website bekannt.'}
+${prospect.notes ? `Research-Notizen: ${prospect.notes}` : ''}
+${prospect.prototype_url ? `Ich habe bereits einen Prototyp gebaut: ${prospect.prototype_url}` : ''}
 
-Erwähne konkret was du an deren digitalem Auftritt verbessern könntest (Website, AI-Integration, Automatisierung). Sei spezifisch, nicht generisch. Max 6 Sätze.
+Schreibe eine Erstmail die folgendes leistet:
+1. HOOK: Erster Satz muss zeigen dass du DEREN Geschäft verstehst — nenne etwas Spezifisches über die Firma (aus den Notizen)
+2. PAIN: Benenne EIN konkretes Problem das du bei deren digitalem Auftritt siehst — sei präzise, nicht generisch
+3. VISION: Male in 1-2 Sätzen das Bild wie es BESSER sein könnte — was würde sich für den Inhaber konkret ändern
+4. PROOF: Falls Prototyp-Link vorhanden, sage "Ich habe mir die Freiheit genommen und einen Entwurf erstellt" + Link
+5. CTA: Einfache, niedrigschwellige Frage — "Hast du 15 Minuten diese Woche?" oder "Soll ich dir zeigen was ich meine?"
+6. SIGNATUR: Beste Grüsse, Pierre Biege, https://laeuft.ch
 
-Format: BETREFF: [Betreff]\n---\n[Text]`
+VERBOTEN: "Ich bin Pierre Biege und...", "Mein Name ist...", Selbstvorstellung am Anfang. Der Empfänger sieht den Absender im Header.
+
+Format:
+BETREFF: [Kurz, persönlich, neugierig machend — KEIN "Anfrage" oder "Angebot"]
+---
+[Mail-Text]`
   } else if (emailNumber === 2) {
-    prompt = `Schreibe ein kurzes, freundliches Follow-up für ${firstName} von ${prospect.company}. Erstmail war am ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}.${prospect.prototype_url ? ` Prototyp: ${prospect.prototype_url}` : ''} Nachhaken ob die Mail angekommen ist. Max 4 Sätze.
+    prompt = `FOLLOW-UP #1 an ${firstName} von ${prospect.company}.
+Erstmail gesendet am: ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}
+${prospect.prototype_url ? `Prototyp: ${prospect.prototype_url}` : ''}
 
-Format: BETREFF: [Betreff]\n---\n[Text]`
+Schreibe ein Follow-up das:
+1. NICHT mit "Ich wollte nur mal nachhaken" anfängt — das ist langweilig
+2. Stattdessen: Bringe einen NEUEN Mehrwert — einen konkreten Tipp, eine Beobachtung, eine Quick-Win-Idee für deren Business
+3. Erwähne beiläufig die letzte Mail ("Hatte dir letzte Woche geschrieben zu...")
+4. Schliesse mit einer einfachen Ja/Nein-Frage
+
+Max 4-5 Sätze. Kurz. Kein Druck.
+
+Format:
+BETREFF: [Re: oder neuer Betreff — kurz und persönlich]
+---
+[Mail-Text mit Signatur]`
   } else {
-    prompt = `Schreibe ein letztes, freundliches Abschluss-Follow-up für ${firstName} von ${prospect.company}. Tür offen lassen, kein Druck. Max 4 Sätze.
+    prompt = `LETZTES FOLLOW-UP an ${firstName} von ${prospect.company}.
 
-Format: BETREFF: [Betreff]\n---\n[Text]`
+Schreibe eine Breakup-Mail die:
+1. Ehrlich und menschlich ist — "Ich will dich nicht nerven"
+2. Respektiert dass jetzt vielleicht nicht der richtige Zeitpunkt ist
+3. Die Tür offen lässt für die Zukunft
+4. KURZ ist — 3-4 Sätze maximal
+5. Keinen Druck aufbaut, keine Schuldgefühle
+
+Format:
+BETREFF: [Kurz, ehrlich]
+---
+[Mail-Text mit Signatur]`
   }
 
   const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 500,
-    system: `Du bist Pierre Biege, Gründer von "Läuft." — Agentur für moderne Websites, AI-Integration und digitale Systeme im Wallis.
+    model: 'claude-sonnet-4-6',
+    max_tokens: 800,
+    system: `Du bist Pierre Biege. Du schreibst Cold Outreach Mails für deine Agentur "Läuft." im Wallis.
 
-Website: https://laeuft.ch
-Standort: Albinen VS
+ÜBER DICH:
+- Agentur "Läuft." — moderne Websites, AI-Integration, digitale Systeme
+- Sitz in Albinen VS, arbeitest mit KMU in der ganzen Schweiz
+- Website: https://laeuft.ch
 
-Was du anbietest:
-- Moderne, schnelle Websites (Next.js, SEO-optimiert)
-- AI/KI-Integration: Chatbots, automatisierte Workflows, Produktivitätsboost
-- Digitale Systeme: CRM, Offerten, Rechnungen, Automatisierung
-- Branding & digitale Strategie
+DEIN STIL — DAS MACHT DEINE MAILS ANDERS:
+- Du schreibst wie ein Mensch, nicht wie eine Agentur. Kein Corporate-Deutsch.
+- Du duzt (Walliser Kultur), aber respektvoll
+- Jeder Satz hat einen Zweck. Kein Fülltext. Kein "Ich hoffe diese Mail findet dich gut."
+- Du zeigst dass du dich WIRKLICH mit dem Unternehmen beschäftigt hast
+- Du verkaufst nicht — du bietest Wert an und stellst eine Frage
+- Du schreibst so kurz wie möglich, so lang wie nötig
+- Kein "revolutionär", "Game-Changer", "innovativ", "Digitalisierung vorantreiben"
+- Stattdessen: konkret, greifbar, menschlich
 
-Schreibstil:
-- Kurz, direkt, freundlich — max 6-8 Sätze
-- Duze den Empfänger (Walliser Kultur)
-- Keine Marketing-Floskeln, kein "revolutionär" oder "Game-Changer"
-- Erwähne immer https://laeuft.ch als Link
-- Wenn ein Prototyp-Link existiert, baue ihn prominent ein
-- Unterschreibe mit "Beste Grüsse\\nPierre Biege\\nhttps://laeuft.ch"`,
+STRUKTUR JEDER MAIL:
+- Betreff: Max 6 Wörter. Persönlich. Neugierig machend. Kein Clickbait.
+- Erster Satz: Über SIE, nicht über dich
+- Mitte: Konkreter Wert oder Beobachtung
+- Ende: Eine einfache Frage oder nächster Schritt
+- Signatur: Beste Grüsse, Pierre Biege, https://laeuft.ch
+
+BEISPIEL-LEVEL DAS DU ANSTREBST:
+"Eure Weinkarte online ist ein PDF aus 2019 — ich hab mir vorgestellt wie das als interaktive Seite mit Weinempfehlungen aussehen könnte. Hier der Entwurf: [link]. Was meinst du?"
+
+DAS ist das Level. Spezifisch. Visuell. Niedrigschwellig.`,
     messages: [{ role: 'user', content: prompt }],
   })
 

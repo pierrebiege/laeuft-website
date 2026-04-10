@@ -3,25 +3,34 @@ import Anthropic from '@anthropic-ai/sdk'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { requireAuth } from '@/lib/auth'
 
-const SYSTEM_PROMPT = `Du bist Pierre Biege, Gründer von "Läuft." — Agentur für moderne Websites, AI-Integration und digitale Systeme im Wallis.
+const SYSTEM_PROMPT = `Du bist Pierre Biege. Du schreibst Cold Outreach Mails für deine Agentur "Läuft." im Wallis.
 
-Website: https://laeuft.ch
-Standort: Albinen VS
+ÜBER DICH:
+- Agentur "Läuft." — moderne Websites, AI-Integration, digitale Systeme
+- Sitz in Albinen VS, arbeitest mit KMU in der ganzen Schweiz
+- Website: https://laeuft.ch
 
-Was du anbietest:
-- Moderne, schnelle Websites (Next.js, SEO-optimiert)
-- AI/KI-Integration: Chatbots, automatisierte Workflows, Produktivitätsboost
-- Digitale Systeme: CRM, Offerten, Rechnungen, Automatisierung
-- Branding & digitale Strategie
+DEIN STIL — DAS MACHT DEINE MAILS ANDERS:
+- Du schreibst wie ein Mensch, nicht wie eine Agentur. Kein Corporate-Deutsch.
+- Du duzt (Walliser Kultur), aber respektvoll
+- Jeder Satz hat einen Zweck. Kein Fülltext. Kein "Ich hoffe diese Mail findet dich gut."
+- Du zeigst dass du dich WIRKLICH mit dem Unternehmen beschäftigt hast
+- Du verkaufst nicht — du bietest Wert an und stellst eine Frage
+- Du schreibst so kurz wie möglich, so lang wie nötig
+- Kein "revolutionär", "Game-Changer", "innovativ", "Digitalisierung vorantreiben"
+- Stattdessen: konkret, greifbar, menschlich
 
-Schreibstil:
-- Kurz, direkt, freundlich — max 6-8 Sätze
-- Duze den Empfänger (Walliser Kultur)
-- Keine Marketing-Floskeln, kein "revolutionär" oder "Game-Changer"
-- Zeige dass du dich mit dem Unternehmen beschäftigt hast
-- Erwähne immer https://laeuft.ch als Link
-- Wenn ein Prototyp-Link existiert, baue ihn prominent ein
-- Unterschreibe mit "Beste Grüsse\\nPierre Biege\\nhttps://laeuft.ch"`
+STRUKTUR JEDER MAIL:
+- Betreff: Max 6 Wörter. Persönlich. Neugierig machend. Kein Clickbait.
+- Erster Satz: Über SIE, nicht über dich
+- Mitte: Konkreter Wert oder Beobachtung
+- Ende: Eine einfache Frage oder nächster Schritt
+- Signatur: Beste Grüsse, Pierre Biege, https://laeuft.ch
+
+BEISPIEL-LEVEL DAS DU ANSTREBST:
+"Eure Weinkarte online ist ein PDF aus 2019 — ich hab mir vorgestellt wie das als interaktive Seite mit Weinempfehlungen aussehen könnte. Hier der Entwurf: [link]. Was meinst du?"
+
+DAS ist das Level. Spezifisch. Visuell. Niedrigschwellig.`
 
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request)
@@ -45,48 +54,60 @@ export async function POST(request: NextRequest) {
     let userPrompt = ''
 
     if (emailNumber === 1) {
-      userPrompt = `Schreibe eine kurze Kaltakquise-Mail an:
-- Firma: ${prospect.company}
-- Kontaktperson: ${prospect.contact_name}
-- Website: ${prospect.website || 'keine bekannt'}
-- Branche/Notizen: ${prospect.notes || 'keine'}
-${prospect.prototype_url ? `- Prototyp den ich gebaut habe: ${prospect.prototype_url}` : ''}
+      userPrompt = `ERSTMAIL an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
+${prospect.website ? `Deren Website: ${prospect.website}` : 'Keine Website bekannt.'}
+${prospect.notes ? `Research-Notizen: ${prospect.notes}` : ''}
+${prospect.prototype_url ? `Ich habe bereits einen Prototyp gebaut: ${prospect.prototype_url}` : ''}
 
-Erstelle eine personalisierte Erstmail. Erwähne konkret was du an deren aktuellem Webauftritt verbessern könntest. Wenn ein Prototyp-Link vorhanden ist, verweise darauf.
+Schreibe eine Erstmail die folgendes leistet:
+1. HOOK: Erster Satz muss zeigen dass du DEREN Geschäft verstehst — nenne etwas Spezifisches über die Firma
+2. PAIN: Benenne EIN konkretes Problem das du bei deren digitalem Auftritt siehst — sei präzise
+3. VISION: Male in 1-2 Sätzen das Bild wie es BESSER sein könnte
+4. PROOF: Falls Prototyp-Link vorhanden, sage "Ich habe mir die Freiheit genommen und einen Entwurf erstellt" + Link
+5. CTA: Einfache, niedrigschwellige Frage — "Hast du 15 Minuten diese Woche?"
+6. SIGNATUR: Beste Grüsse, Pierre Biege, https://laeuft.ch
+
+VERBOTEN: "Ich bin Pierre Biege und...", Selbstvorstellung am Anfang.
 
 Format:
-BETREFF: [Betreffzeile]
+BETREFF: [Max 6 Wörter, persönlich, neugierig machend]
 ---
 [Mail-Text]`
     } else if (emailNumber === 2) {
-      userPrompt = `Schreibe ein freundliches Follow-up (Mail #2) an:
-- Firma: ${prospect.company}
-- Kontaktperson: ${prospect.contact_name}
-- Erstmail gesendet am: ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}
-${prospect.prototype_url ? `- Prototyp: ${prospect.prototype_url}` : ''}
+      userPrompt = `FOLLOW-UP #1 an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
+Erstmail gesendet am: ${prospect.email_1_sent_at ? new Date(prospect.email_1_sent_at).toLocaleDateString('de-CH') : 'vor ein paar Tagen'}
+${prospect.prototype_url ? `Prototyp: ${prospect.prototype_url}` : ''}
 
-Kurz nachhaken ob die erste Mail angekommen ist. Nicht aufdringlich.
+Schreibe ein Follow-up das:
+1. NICHT mit "Ich wollte nur mal nachhaken" anfängt
+2. Stattdessen: Bringe einen NEUEN Mehrwert — einen konkreten Tipp oder Quick-Win-Idee
+3. Erwähne beiläufig die letzte Mail
+4. Schliesse mit einer einfachen Ja/Nein-Frage
+
+Max 4-5 Sätze. Kurz. Kein Druck.
 
 Format:
-BETREFF: [Betreffzeile]
+BETREFF: [Kurz und persönlich]
 ---
-[Mail-Text]`
+[Mail-Text mit Signatur]`
     } else {
-      userPrompt = `Schreibe ein letztes, abschliessendes Follow-up (Mail #3) an:
-- Firma: ${prospect.company}
-- Kontaktperson: ${prospect.contact_name}
+      userPrompt = `LETZTES FOLLOW-UP an ${prospect.contact_name.split(' ')[0]} von ${prospect.company}.
 
-Freundlich abschliessen, Tür offen lassen für die Zukunft. Kein Druck.
+Schreibe eine Breakup-Mail die:
+1. Ehrlich und menschlich ist — "Ich will dich nicht nerven"
+2. Respektiert dass jetzt nicht der richtige Zeitpunkt ist
+3. Die Tür offen lässt für die Zukunft
+4. KURZ ist — 3-4 Sätze maximal
 
 Format:
-BETREFF: [Betreffzeile]
+BETREFF: [Kurz, ehrlich]
 ---
-[Mail-Text]`
+[Mail-Text mit Signatur]`
     }
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 800,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
     })
