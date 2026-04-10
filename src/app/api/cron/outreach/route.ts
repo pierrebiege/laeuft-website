@@ -290,12 +290,20 @@ ${prospect.notes ? `Research: ${prospect.notes}` : ''}
 ${prospect.prototype_url ? `Prototyp gebaut: ${prospect.prototype_url}` : ''}
 
 REGELN:
-- Erster Satz: Zeige dass du dich mit DEREN Geschäft beschäftigt hast. Ein konkretes Projekt, ein Detail von der Website, ein Problem der Branche.
-- Kernbotschaft: In 2-3 Sätzen den Wert klar machen. Nicht Features auflisten. Ein konkretes Ergebnis oder eine Beobachtung.
+- Erster Satz: Zeige dass du dich mit DEREN Geschäft beschäftigt hast. Nenne ein KONKRETES Detail aus den Research-Notizen.
+- Kernbotschaft: In 2-3 Sätzen den Wert klar machen. Ein konkretes Ergebnis oder eine Beobachtung.
 - Falls Prototyp-Link: "Ich hab mir eure Website angeschaut und einen kurzen Entwurf gemacht" + Link
 - CTA: GENAU EINE Frage, niedrige Hürde. "Lohnt sich ein kurzer Austausch?" oder "Darf ich den Entwurf zeigen — 15 Min reichen."
 - STRIKT 80-120 Wörter. Auf dem Handy ohne Scrollen lesbar.
 - VERBOTEN: Selbstvorstellung, "Ich bin...", "Mein Name ist...", mehrere CTAs, Anhänge erwähnen, Höflichkeitsfloskeln
+
+KRITISCH — KEINE SPEKULATIONEN:
+- Behaupte NUR Dinge die EXPLIZIT in den Research-Notizen stehen
+- Wenn in den Notizen steht "kein Buchungssystem" → darfst du das sagen
+- Wenn es NICHT in den Notizen steht → NICHT behaupten dass etwas fehlt
+- ERFINDE KEINE fehlenden Features. Du hast die Website nicht selbst gesehen.
+- Lieber einen allgemeineren aber wahren Angle als einen spezifischen aber falschen
+- Im Zweifelsfall: Frage stellen statt behaupten. "Wie läuft bei euch X?" statt "Euch fehlt X."
 
 Format:
 BETREFF: [3-7 Wörter, Bezug zum Empfänger, z.B. "Idee für ${prospect.company}"]
@@ -347,11 +355,11 @@ GOLDENE REGELN:
 5. LÄNGE: 80-120 Wörter Erstmail. 60-80 Follow-up. 40-60 Breakup. Auf dem Handy ohne Scrollen lesbar.
 6. SIGNATUR: Beste Grüsse, Pierre Biege, https://laeuft.ch
 
-VERBOTEN: "Ich bin Pierre Biege", Firmenvorstellung, mehrere CTAs, Anhänge, "revolutionär", "Game-Changer", "innovativ", "Ich hoffe diese Mail findet dich gut", übertriebene Höflichkeit.
+VERBOTEN: "Ich bin Pierre Biege", Firmenvorstellung, mehrere CTAs, Anhänge, "revolutionär", "Game-Changer", "innovativ", "Ich hoffe diese Mail findet dich gut", übertriebene Höflichkeit, SPEKULATIONEN über Features die nicht in den Research-Notizen stehen.
 
-STIL: Mensch, nicht Agentur. Duzen. Konkret. Greifbar. Jeder Satz hat einen Zweck.
+STIL: Mensch, nicht Agentur. Duzen. Konkret. Greifbar. Jeder Satz hat einen Zweck. NUR FAKTEN aus den Research-Notizen verwenden — im Zweifel fragen statt behaupten ("Wie löst ihr X aktuell?" statt "Euch fehlt X.").
 
-REFERENZ-QUALITÄT:
+REFERENZ:
 "Eure Weinkarte online ist ein PDF aus 2019 — ich hab mir vorgestellt wie das als interaktive Seite aussehen könnte. Hier der Entwurf: [link]. Was meinst du?"`,
     messages: [{ role: 'user', content: prompt }],
   })
