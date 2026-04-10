@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase, Offer, Client } from "@/lib/supabase";
+import { supabase, Offer, Client, Invoice } from "@/lib/supabase";
 import { useAdminRole } from "@/components/admin/AdminRoleContext";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle, Pencil, FlagTriangleRight } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Trash2, CheckCircle, Pencil, FlagTriangleRight, CreditCard } from "lucide-react";
 
-type OfferWithClient = Offer & { client: Client };
+type OfferWithClient = Offer & { client: Client; linkedInvoices?: Invoice[] };
 
 export default function AdminPage() {
   const [offers, setOffers] = useState<OfferWithClient[]>([]);
@@ -95,14 +95,41 @@ export default function AdminPage() {
     }
   }
 
+  async function createAnzahlung(offerId: string) {
+    if (!confirm("Anzahlungsrechnung (50%) erstellen und per E-Mail senden?")) return;
+
+    try {
+      const res = await fetch("/api/create-partial-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId, type: "anzahlung" }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.invoiceSent) {
+          alert("Anzahlungsrechnung (50%) wurde erstellt und versendet.");
+        } else {
+          alert("Anzahlungsrechnung erstellt, E-Mail-Versand fehlgeschlagen.");
+        }
+        loadOffers();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+  }
+
   async function completeOffer(offerId: string) {
     if (!confirm("Projekt abschliessen? Die Schlussrechnung (50%) wird automatisch erstellt und per E-Mail versendet.")) return;
 
     try {
-      const res = await fetch("/api/complete-offer", {
+      const res = await fetch("/api/create-partial-invoice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offerId }),
+        body: JSON.stringify({ offerId, type: "schlussrechnung" }),
       });
 
       if (res.ok) {
@@ -130,9 +157,32 @@ export default function AdminPage() {
 
     if (error) {
       console.error("Error loading offers:", error);
-    } else {
-      setOffers(data || []);
+      setLoading(false);
+      return;
     }
+
+    // Load linked invoices for accepted offers
+    const acceptedIds = (data || []).filter((o: OfferWithClient) => o.status === "accepted").map((o: OfferWithClient) => o.id);
+    let invoicesByOffer: Record<string, Invoice[]> = {};
+
+    if (acceptedIds.length > 0) {
+      const { data: invoices } = await supabase
+        .from("invoices")
+        .select("*")
+        .in("offer_id", acceptedIds);
+
+      if (invoices) {
+        for (const inv of invoices) {
+          if (!invoicesByOffer[inv.offer_id]) invoicesByOffer[inv.offer_id] = [];
+          invoicesByOffer[inv.offer_id].push(inv);
+        }
+      }
+    }
+
+    setOffers((data || []).map((o: OfferWithClient) => ({
+      ...o,
+      linkedInvoices: invoicesByOffer[o.id] || [],
+    })));
     setLoading(false);
   }
 
@@ -261,24 +311,32 @@ export default function AdminPage() {
                             </button>
                           </>
                         )}
-                        {offer.status === "accepted" && (
-                          <>
-                            <button
-                              onClick={() => completeOffer(offer.id)}
-                              title="Projekt abschliessen"
-                              className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
-                            >
-                              <FlagTriangleRight size={15} />
-                            </button>
-                            <Link
-                              href={`/admin/rechnungen/neu?from_offer=${offer.id}`}
-                              title="Rechnung erstellen"
-                              className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
-                            >
-                              <Receipt size={15} />
-                            </Link>
-                          </>
-                        )}
+                        {offer.status === "accepted" && (() => {
+                          const hasAnzahlung = (offer.linkedInvoices || []).some(i => i.title.includes("Anzahlung"));
+                          const hasSchluss = (offer.linkedInvoices || []).some(i => i.title.includes("Schlussrechnung"));
+                          return (
+                            <>
+                              {!hasAnzahlung && (
+                                <button
+                                  onClick={() => createAnzahlung(offer.id)}
+                                  title="Anzahlung 50% erstellen + senden"
+                                  className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                                >
+                                  <CreditCard size={15} />
+                                </button>
+                              )}
+                              {hasAnzahlung && !hasSchluss && (
+                                <button
+                                  onClick={() => completeOffer(offer.id)}
+                                  title="Projekt abschliessen — Schlussrechnung 50%"
+                                  className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
+                                >
+                                  <FlagTriangleRight size={15} />
+                                </button>
+                              )}
+                            </>
+                          );
+                        })()}
                         <button
                           onClick={() => copyLink(offer.unique_token)}
                           title="Link kopieren"
