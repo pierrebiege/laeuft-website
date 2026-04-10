@@ -8,7 +8,16 @@ import {
   fetchAudienceDemographics,
 } from '@/lib/instagram'
 
+// GET for Vercel Cron, POST for manual trigger
+export async function GET(request: NextRequest) {
+  return handler(request)
+}
+
 export async function POST(request: NextRequest) {
+  return handler(request)
+}
+
+async function handler(request: NextRequest) {
   // Auth: either CRON_SECRET header or admin session
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
