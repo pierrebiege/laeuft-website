@@ -147,13 +147,12 @@ async function sendAutoFollowUps(): Promise<number> {
 
   const chatId = process.env.TELEGRAM_CHAT_ID || config?.telegram_chat_id
 
-  // Erstmails for new prospects (added by Scheduled Task)
+  // Erstmails for new prospects (added by Scheduled Task or manually)
   const { data: newProspects } = await supabaseAdmin
     .from('prospects')
     .select('*')
     .eq('status', 'neu')
     .is('email_1_sent_at', null)
-    .lt('created_at', new Date(now.getTime() - 60 * 60 * 1000).toISOString()) // at least 1h old
 
   for (const prospect of newProspects || []) {
     try {

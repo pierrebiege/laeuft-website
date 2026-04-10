@@ -280,15 +280,30 @@ async function handleCallbackQuery(query: { id: string; data: string; message: {
       await answerCallback(callbackId, '❌ Fehler beim Senden')
     }
   } else {
-    // Reject
+    // Reject — mark pending email and update prospect status
     await supabaseAdmin
       .from('pending_emails')
       .update({ status: 'rejected', decided_at: new Date().toISOString() })
       .eq('id', pendingEmailId)
 
-    await answerCallback(callbackId, '⏭ Übersprungen')
+    // Mark prospect as "kein_interesse" with note
+    if (pending.prospect) {
+      const existingNotes = pending.prospect.notes || ''
+      await supabaseAdmin
+        .from('prospects')
+        .update({
+          status: 'kein_interesse',
+          updated_at: new Date().toISOString(),
+          notes: existingNotes
+            ? `${existingNotes}\n\n--- Per Telegram abgelehnt am ${new Date().toLocaleDateString('de-CH')} ---`
+            : `--- Per Telegram abgelehnt am ${new Date().toLocaleDateString('de-CH')} ---`,
+        })
+        .eq('id', pending.prospect_id)
+    }
+
+    await answerCallback(callbackId, '⏭ Übersprungen — als kein Interesse markiert')
     await editTelegramMessage(chatId, messageId,
-      `⏭ ÜBERSPRUNGEN: ${pending.prospect?.company}`)
+      `⏭ ABGELEHNT: ${pending.prospect?.company}\n📝 Status → Kein Interesse`)
   }
 }
 
