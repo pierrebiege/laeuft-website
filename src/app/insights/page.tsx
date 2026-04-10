@@ -324,11 +324,34 @@ export default function PublicInsightsPage() {
     }
   }, [])
 
+  const [syncing, setSyncing] = useState(false)
+  const [syncDone, setSyncDone] = useState(false)
+
   useEffect(() => {
     if (unlocked) {
-      fetchData()
-      fetchStories()
-      fetchManualInsights()
+      // Trigger background Instagram sync on first load, then refresh data
+      if (!syncDone) {
+        setSyncing(true)
+        fetch('/api/instagram/sync', { method: 'POST' })
+          .then(() => {
+            setSyncDone(true)
+            // Reload data with fresh sync
+            fetchData()
+            fetchStories()
+            fetchManualInsights()
+          })
+          .catch(() => {
+            // Sync failed, load stale data anyway
+            fetchData()
+            fetchStories()
+            fetchManualInsights()
+          })
+          .finally(() => setSyncing(false))
+      } else {
+        fetchData()
+        fetchStories()
+        fetchManualInsights()
+      }
     }
   }, [unlocked, period])
 
@@ -458,11 +481,9 @@ export default function PublicInsightsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="flex items-center gap-3">
-          <RefreshCw size={20} className="animate-spin text-zinc-400" />
-          <p className="text-zinc-500">Instagram Insights laden...</p>
-        </div>
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-3">
+        <RefreshCw size={20} className="animate-spin text-zinc-400" />
+        <p className="text-zinc-500">{syncing ? 'Aktualisiere Instagram Daten...' : 'Insights laden...'}</p>
       </div>
     )
   }
@@ -907,7 +928,7 @@ export default function PublicInsightsPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] text-zinc-500 mt-1.5 text-center">{story.date}</p>
+              {/* Datum ausgeblendet */}
             </div>
             )
           })}

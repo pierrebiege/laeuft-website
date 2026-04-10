@@ -76,12 +76,13 @@ async function handleStoryGrid(chatId: number, imageBuffer: Buffer, base64Image:
     return
   }
 
-  const today = new Date().toISOString().split('T')[0]
+  const now = new Date()
+  const timestamp = `${now.toISOString().split('T')[0]}-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`
   let saved = 0
   let skipped = 0
 
   for (const story of splitStories) {
-    const storyId = `telegram-${today}-${story.index.toString().padStart(2, '0')}`
+    const storyId = `telegram-${timestamp}-${story.index.toString().padStart(2, '0')}`
 
     // Check if already exists
     const { data: existing } = await supabaseAdmin
@@ -135,7 +136,7 @@ async function handleStoryGrid(chatId: number, imageBuffer: Buffer, base64Image:
   let msg = `✅ ${saved} Stories gespeichert!`
   if (skipped > 0) msg += ` (${skipped} bereits vorhanden)`
   msg += `\n\n📊 Grid: ${gridResult.rows} Zeilen × ${gridResult.cols} Spalten`
-  msg += `\n📅 Datum: ${today}`
+  msg += `\n📅 Datum: ${now.toISOString().split('T')[0]}`
 
   // List view counts
   const viewsList = splitStories
