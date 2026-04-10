@@ -240,7 +240,8 @@ async function queueEmailForApproval(
   if (chatId) {
     const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
     const emailLabel = emailNumber === 1 ? 'Erstmail' : `Follow-up ${emailNumber - 1}`
-    const text = `📧 ${emailLabel} bereit:\n\n🏢 ${prospect.company}\n👤 ${prospect.contact_name} (${prospect.email})\n\n📋 Betreff: ${subject}\n---\n${body.slice(0, 500)}${body.length > 500 ? '...' : ''}\n---`
+    const preview = body.slice(0, 300).replace(/\n{3,}/g, '\n\n')
+    const text = `📧 ${emailLabel}\n🏢 ${prospect.company} · ${prospect.contact_name}\n📋 ${subject}\n\n${preview}${body.length > 300 ? '...' : ''}`
 
     const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
