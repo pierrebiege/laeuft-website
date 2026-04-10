@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
 import { useAdminRole } from "@/components/admin/AdminRoleContext";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle, Pencil } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle, Pencil, FlagTriangleRight } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
 
@@ -67,21 +67,58 @@ export default function AdminPage() {
   }
 
   async function acceptInternally(offerId: string) {
-    if (!confirm("Offerte intern als angenommen markieren?")) return;
+    if (!confirm("Offerte annehmen? Die Anzahlung (50%) wird automatisch erstellt und per E-Mail versendet.")) return;
 
-    const { error } = await supabase
-      .from("offers")
-      .update({
-        status: "accepted",
-        accepted_at: new Date().toISOString(),
-      })
-      .eq("id", offerId);
+    try {
+      const res = await fetch("/api/accept-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId }),
+      });
 
-    if (error) {
-      console.error("Error accepting offer:", error);
-      alert("Fehler beim Aktualisieren");
-    } else {
-      loadOffers();
+      if (res.ok) {
+        const data = await res.json();
+        if (data.invoiceSent) {
+          alert("Offerte angenommen. Anzahlungsrechnung (50%) wurde erstellt und versendet.");
+        } else if (data.invoiceCreated) {
+          alert("Offerte angenommen. Rechnung erstellt, E-Mail-Versand fehlgeschlagen.");
+        } else {
+          alert("Offerte angenommen, aber Rechnung konnte nicht erstellt werden.");
+        }
+        loadOffers();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Annehmen");
+      }
+    } catch {
+      alert("Verbindungsfehler");
+    }
+  }
+
+  async function completeOffer(offerId: string) {
+    if (!confirm("Projekt abschliessen? Die Schlussrechnung (50%) wird automatisch erstellt und per E-Mail versendet.")) return;
+
+    try {
+      const res = await fetch("/api/complete-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.invoiceSent) {
+          alert("Schlussrechnung (50%) wurde erstellt und versendet.");
+        } else {
+          alert("Schlussrechnung erstellt, E-Mail-Versand fehlgeschlagen.");
+        }
+        loadOffers();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Abschliessen");
+      }
+    } catch {
+      alert("Verbindungsfehler");
     }
   }
 
@@ -225,13 +262,22 @@ export default function AdminPage() {
                           </>
                         )}
                         {offer.status === "accepted" && (
-                          <Link
-                            href={`/admin/rechnungen/neu?from_offer=${offer.id}`}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
-                          >
-                            <Receipt size={14} />
-                            Rechnung
-                          </Link>
+                          <>
+                            <button
+                              onClick={() => completeOffer(offer.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
+                            >
+                              <FlagTriangleRight size={14} />
+                              Abschliessen
+                            </button>
+                            <Link
+                              href={`/admin/rechnungen/neu?from_offer=${offer.id}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                            >
+                              <Receipt size={14} />
+                              Rechnung
+                            </Link>
+                          </>
                         )}
                         <button
                           onClick={() => copyLink(offer.unique_token)}

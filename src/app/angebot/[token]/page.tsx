@@ -49,19 +49,22 @@ export default function PublicOfferPage() {
 
     setAccepting(true);
 
-    const { error } = await supabase
-      .from("offers")
-      .update({
-        status: "accepted",
-        accepted_at: new Date().toISOString()
-      })
-      .eq("id", offer.id);
+    try {
+      const res = await fetch("/api/accept-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offerId: offer.id }),
+      });
 
-    if (error) {
-      alert("Fehler beim Annehmen der Offerte");
-    } else {
-      setAccepted(true);
-      setOffer({ ...offer, status: "accepted" });
+      if (res.ok) {
+        setAccepted(true);
+        setOffer({ ...offer, status: "accepted" });
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Annehmen der Offerte");
+      }
+    } catch {
+      alert("Verbindungsfehler");
     }
     setAccepting(false);
   }
@@ -243,11 +246,26 @@ export default function PublicOfferPage() {
             </div>
 
             {/* Total */}
-            <div className="flex items-center justify-between py-4 border-t border-zinc-200 dark:border-zinc-700 mb-8 print:border-zinc-400">
+            <div className="flex items-center justify-between py-4 border-t border-zinc-200 dark:border-zinc-700 mb-4 print:border-zinc-400">
               <span className="text-lg text-zinc-600 dark:text-zinc-400 print:text-black">Total</span>
               <span className="text-3xl font-bold text-zinc-900 dark:text-white print:text-black">
                 {formatAmount(offer.total_amount)}
               </span>
+            </div>
+
+            {/* Payment Terms */}
+            <div className="mb-8 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl print:bg-zinc-100 print:rounded-lg">
+              <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300 print:text-black mb-2">Zahlungsbedingungen</div>
+              <div className="text-sm text-zinc-600 dark:text-zinc-400 print:text-zinc-700 space-y-1">
+                <div className="flex justify-between">
+                  <span>50% bei Auftragsannahme (Anzahlung)</span>
+                  <span className="font-medium text-zinc-900 dark:text-white print:text-black">{formatAmount(offer.total_amount / 2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>50% bei Projektabschluss (Schlussrechnung)</span>
+                  <span className="font-medium text-zinc-900 dark:text-white print:text-black">{formatAmount(offer.total_amount / 2)}</span>
+                </div>
+              </div>
             </div>
 
             {/* Accept Button - hidden on print */}
@@ -266,7 +284,8 @@ export default function PublicOfferPage() {
             {accepted && (
               <div className="text-center text-green-600 dark:text-green-400 print:text-green-700">
                 <Check size={24} className="mx-auto mb-2" />
-                Vielen Dank! Die Offerte wurde angenommen.
+                <p className="font-medium">Vielen Dank! Die Offerte wurde angenommen.</p>
+                <p className="text-sm mt-1 text-zinc-500 dark:text-zinc-400 print:text-zinc-600">Die Rechnung über die Anzahlung (50%) wird dir per E-Mail zugestellt.</p>
               </div>
             )}
 
