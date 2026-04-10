@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Offer, Client } from "@/lib/supabase";
 import { useAdminRole } from "@/components/admin/AdminRoleContext";
-import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle } from "lucide-react";
+import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Receipt, Trash2, CheckCircle, Pencil } from "lucide-react";
 
 type OfferWithClient = Offer & { client: Client };
 
@@ -198,6 +198,13 @@ export default function AdminPage() {
                       <div className="flex items-center justify-end gap-2">
                         {offer.status === "draft" && (
                           <>
+                            <Link
+                              href={`/admin/offerten/${offer.id}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                            >
+                              <Pencil size={14} />
+                              Bearbeiten
+                            </Link>
                             {isAdmin && (
                               <button
                                 onClick={() => sendOffer(offer.id)}
