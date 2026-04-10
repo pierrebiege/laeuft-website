@@ -236,19 +236,25 @@ async function queueEmailForApproval(
 
   if (error || !pending) return
 
-  // Send Telegram approval message
+  // Send Telegram approval message — full mail text + buttons
   if (chatId) {
     const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN!
     const emailLabel = emailNumber === 1 ? 'Erstmail' : `Follow-up ${emailNumber - 1}`
-    const preview = body.slice(0, 300).replace(/\n{3,}/g, '\n\n')
-    const text = `📧 ${emailLabel}\n🏢 ${prospect.company} · ${prospect.contact_name}\n📋 ${subject}\n\n${preview}${body.length > 300 ? '...' : ''}`
+
+    // First message: full mail content
+    const fullText = `📧 ${emailLabel} an ${prospect.company}\n👤 ${prospect.contact_name} (${prospect.email})\n📋 Betreff: ${subject}\n\n${body}`
+
+    // Telegram limit is 4096 chars — truncate cleanly if needed
+    const safeText = fullText.length > 4000
+      ? fullText.slice(0, 3997) + '...'
+      : fullText
 
     const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
-        text,
+        text: safeText,
         reply_markup: {
           inline_keyboard: [[
             { text: '✅ Senden', callback_data: `approve:${pending.id}` },
@@ -332,7 +338,7 @@ BETREFF: [Kurz, ehrlich]
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 800,
+    max_tokens: 500,
     system: `Du bist Pierre Biege. Du schreibst Cold Outreach Mails für deine Agentur "Läuft." im Wallis.
 
 ÜBER DICH:
