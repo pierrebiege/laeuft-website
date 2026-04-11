@@ -148,22 +148,8 @@ async function sendAutoFollowUps(): Promise<number> {
 
   const chatId = process.env.TELEGRAM_CHAT_ID || config?.telegram_chat_id
 
-  // Erstmails for new prospects (added by Scheduled Task or manually)
-  const { data: newProspects } = await supabaseAdmin
-    .from('prospects')
-    .select('*')
-    .eq('status', 'neu')
-    .is('email_1_sent_at', null)
-
-  for (const prospect of newProspects || []) {
-    try {
-      const { subject, body } = await generateAIEmail(prospect, 1)
-      await queueEmailForApproval(prospect, 1, subject, body, chatId)
-      queued++
-    } catch (e) {
-      console.error(`Erstmail generation failed for ${prospect.company}:`, e)
-    }
-  }
+  // Erstmails werden nicht mehr automatisch generiert — sie entstehen
+  // über den Prototyp-Reply-Flow in Telegram (siehe handlePrototypeReply)
 
   // Follow-up 1: 5 days after first email
   const { data: needFollowUp1 } = await supabaseAdmin

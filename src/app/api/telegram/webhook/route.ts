@@ -16,21 +16,25 @@ export async function POST(request: NextRequest) {
 
   const message = body.message
 
+  // Handle reply-to-message with prototype URL
+  if (message?.reply_to_message && message?.text) {
+    const repliedMsgId = message.reply_to_message.message_id
+    const urlMatch = message.text.match(/https?:\/\/\S+/)
+
+    if (urlMatch) {
+      await handlePrototypeReply(message.chat.id, repliedMsgId, urlMatch[0])
+      return NextResponse.json({ ok: true })
+    }
+  }
+
   if (!message?.photo) {
     if (message?.text) {
-      // Store chat ID for notifications
-      if (!process.env.TELEGRAM_CHAT_ID) {
-        await supabaseAdmin
-          .from('dashboard_config')
-          .update({ telegram_chat_id: message.chat.id.toString() })
-          .not('id', 'is', null)
-      }
       await sendTelegramMessage(
         message.chat.id,
         '📸 Schick mir einen Screenshot!\n\n' +
         '• Story-Grid → Stories werden automatisch zerschnitten & gespeichert\n' +
         '• Insights-Screenshot → Aufrufe/Interaktionen werden erkannt\n\n' +
-        'Einfach Bild schicken, ich erkenne automatisch was es ist.'
+        'Oder antworte auf eine Prospect-Nachricht mit dem Prototyp-Link.'
       )
     }
     return NextResponse.json({ ok: true })
@@ -210,6 +214,150 @@ async function handleInsights(chatId: number, base64Image: string) {
   }
 
   await sendTelegramMessage(chatId, msg)
+}
+
+async function handlePrototypeReply(chatId: number, replyToMsgId: number, prototypeUrl: string) {
+  // Find prospect by research_msg_id
+  const { data: prospect, error } = await supabaseAdmin
+    .from('prospects')
+    .select('*')
+    .eq('research_msg_id', replyToMsgId)
+    .single()
+
+  if (error || !prospect) {
+    await sendTelegramMessage(chatId, '❌ Keine Prospect-Nachricht gefunden zum Antworten.')
+    return
+  }
+
+  await sendTelegramMessage(chatId, `🔨 Generiere Mail für ${prospect.company}...`)
+
+  // Update prototype URL on prospect
+  await supabaseAdmin
+    .from('prospects')
+    .update({ prototype_url: prototypeUrl })
+    .eq('id', prospect.id)
+
+  // Generate the email via Claude
+  try {
+    const Anthropic = (await import('@anthropic-ai/sdk')).default
+    const anthropic = new Anthropic()
+    const firstName = prospect.contact_name.split(' ')[0]
+    const isGeneric = /^(info|kontakt|office|hello|contact|admin)@/i.test(prospect.email)
+    const salutation = isGeneric ? 'Hallo zusammen,' : `Hallo ${firstName},`
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 500,
+      system: `Du schreibst Cold-Outreach-Mails für Pierre Biege von laeuft.ch.
+
+KONTEXT:
+- Pierre hat für jeden Lead einen personalisierten Prototyp gebaut
+- Der Prototyp-Link wird immer mitgeschickt
+- Region: Wallis, Schweiz. Die Leute kennen sich.
+
+REGELN:
+1. Maximal 6 Sätze. Kein Wort zu viel.
+2. KEIN Kompliment ("tolles Unternehmen", "starke Marke", "Respekt"). Das ist Schleimerei.
+3. KEINE Behauptung über die Firma oder deren Website. Nichts was falsch sein könnte.
+4. KEINE Buzzwords (AI-gestützt, digital transformieren, Potenzial ausschöpfen, Mehrwert).
+5. KEIN Verkaufsgespräch anbieten. KEIN "15 Minuten". KEIN Call-to-Action mit Zeitdruck.
+6. Der Prototyp spricht für sich. Du stellst ihn hin und gehst.
+7. Ton: direkt, ruhig, selbstbewusst. Wie jemand der es nicht nötig hat.
+8. Sprache: Schweizer Hochdeutsch, du-Form.
+
+STRUKTUR:
+- Zeile 1: Anrede (${salutation})
+- Zeile 2: Was du gemacht hast (nicht warum)
+- Zeile 3-4: Was der Prototyp zeigt — konkret, ohne zu übertreiben
+- Zeile 5: Der Link
+- Zeile 6: Ein Satz der signalisiert: kein Druck, Ball liegt bei dir
+- Signatur: Pierre Biege / laeuft.ch
+
+VERBOTEN: "Ich bin überzeugt dass...", "Das könnte euch helfen...", "Viele Unternehmen in eurer Branche...", "Hast du 15 Minuten?", "Lass uns sprechen", jede Form von Dringlichkeit.
+
+BEISPIEL:
+---
+Betreff: Etwas für euch gebaut
+
+Hallo Manfred,
+
+ich hab mir eure Garage angeschaut und ein Buchungssystem zusammengebaut — Kunden wählen Fahrzeug und Service, kriegen automatisch einen Termin und eine Erinnerung per SMS.
+
+Hier zum Anschauen: laeuft.ch/demo/garage-st-christophe
+
+Wenns interessiert, meld dich. Wenns nicht passt, kein Ding.
+
+Pierre Biege
+laeuft.ch
+---`,
+      messages: [{
+        role: 'user',
+        content: `Firma: ${prospect.company}
+Anrede: ${salutation}
+Branche/Research: ${prospect.notes || 'keine Infos'}
+Prototyp-URL: ${prototypeUrl}
+
+Schreibe die Mail gemäss den Regeln. Format:
+BETREFF: [Betreff]
+---
+[Mail-Text]`
+      }],
+    })
+
+    const text = (response.content[0] as { type: string; text: string }).text
+    const subjectMatch = text.match(/BETREFF:\s*(.+)/i)
+    const bodyMatch = text.split(/---\n?/)
+    const subject = subjectMatch?.[1]?.trim() || `Etwas für ${prospect.company} gebaut`
+    const body = (bodyMatch[1] || text).trim()
+
+    // Create pending_email
+    const { data: pending, error: pendingError } = await supabaseAdmin
+      .from('pending_emails')
+      .insert({
+        prospect_id: prospect.id,
+        email_number: 1,
+        subject,
+        body,
+        status: 'pending',
+      })
+      .select()
+      .single()
+
+    if (pendingError || !pending) {
+      await sendTelegramMessage(chatId, '❌ Fehler beim Erstellen der Mail.')
+      return
+    }
+
+    // Send final preview with approve/reject buttons
+    const previewText = `📧 Finale Mail für ${prospect.company}\n👤 ${prospect.contact_name} (${prospect.email})\n📋 Betreff: ${subject}\n\n${body}`
+    const safeText = previewText.length > 4000 ? previewText.slice(0, 3997) + '...' : previewText
+
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: safeText,
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '✅ Senden', callback_data: `approve:${pending.id}` },
+            { text: '❌ Verwerfen', callback_data: `reject:${pending.id}` },
+          ]],
+        },
+      }),
+    })
+
+    const data = await res.json()
+    if (data.result?.message_id) {
+      await supabaseAdmin
+        .from('pending_emails')
+        .update({ telegram_message_id: data.result.message_id })
+        .eq('id', pending.id)
+    }
+  } catch (e) {
+    console.error('Prototype reply error:', e)
+    await sendTelegramMessage(chatId, `❌ Fehler bei Mail-Generierung: ${(e as Error).message}`)
+  }
 }
 
 async function handleCallbackQuery(query: { id: string; data: string; message: { chat: { id: number }; message_id: number } }) {

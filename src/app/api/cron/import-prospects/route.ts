@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
         continue
       }
 
-      const { error } = await supabaseAdmin
+      const { data: inserted, error } = await supabaseAdmin
         .from('prospects')
         .insert({
           company: p.company,
@@ -115,27 +115,43 @@ export async function GET(request: NextRequest) {
           notes: p.notes || null,
           status: 'neu',
         })
+        .select()
+        .single()
 
-      if (error) {
-        results.push(`Fehler: ${p.company} — ${error.message}`)
+      if (error || !inserted) {
+        results.push(`Fehler: ${p.company} — ${error?.message}`)
         skipped++
-      } else {
-        results.push(`Importiert: ${p.company}`)
-        imported++
+        continue
       }
-    }
 
-    // Send Telegram notification
-    if (imported > 0) {
+      results.push(`Importiert: ${p.company}`)
+      imported++
+
+      // Send research Telegram message per prospect
       const chatId = process.env.TELEGRAM_CHAT_ID
       const botToken = process.env.TELEGRAM_BOT_TOKEN
       if (chatId && botToken) {
-        const msg = `🎯 ${imported} neue Prospects importiert!\n\n${results.filter(r => r.startsWith('Importiert')).join('\n')}`
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        const notesText = p.notes ? `\n📋 Research:\n${p.notes.slice(0, 800)}` : ''
+        const text = `🎯 Neuer Prospect: ${p.company}\n👤 ${p.contact_name}\n📧 ${p.email}${p.website ? `\n🌐 ${p.website}` : ''}${notesText}\n\n💡 Baue einen Prototyp und antworte auf diese Nachricht mit dem Link.`
+
+        const safeText = text.length > 4000 ? text.slice(0, 3997) + '...' : text
+
+        const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: msg }),
+          body: JSON.stringify({ chat_id: chatId, text: safeText }),
         })
+
+        const tgData = await tgRes.json()
+        if (tgData.result?.message_id) {
+          await supabaseAdmin
+            .from('prospects')
+            .update({
+              research_msg_id: tgData.result.message_id,
+              research_chat_id: String(chatId),
+            })
+            .eq('id', inserted.id)
+        }
       }
     }
 
