@@ -22,6 +22,7 @@ import {
   Library,
   Youtube,
   Presentation,
+  CheckSquare,
 } from "lucide-react";
 import { AdminRoleProvider } from "./AdminRoleContext";
 
@@ -45,6 +46,7 @@ export default function AdminShell({
 
   const navItems = [
     { href: "/admin/kalender", label: "Kalender", icon: CalendarDays, roles: ["admin", "manager"] as Role[] },
+    { href: "/admin/todos", label: "Aufgaben", icon: CheckSquare, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/partners", label: "Partners", icon: HandshakeIcon, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/akquise", label: "Akquise", icon: Target, roles: ["admin"] as Role[] },
     { href: "/admin", label: "Offerten", icon: FileText, roles: ["admin"] as Role[] },

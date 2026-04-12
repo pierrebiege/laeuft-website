@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const startStr = startISO.split('T')[0]
   const endStr = endISO.split('T')[0]
 
-  const [realRes, partnerRes, invoiceRes, mandateRes] = await Promise.all([
+  const [realRes, partnerRes, invoiceRes, mandateRes, todoRes] = await Promise.all([
     supabaseAdmin
       .from('calendar_events')
       .select('*')
@@ -48,6 +48,14 @@ export async function GET(request: NextRequest) {
       .in('status', ['active'])
       .gte('next_invoice_date', startStr)
       .lte('next_invoice_date', endStr),
+
+    supabaseAdmin
+      .from('todos')
+      .select('id, title, due_date, priority, completed')
+      .eq('completed', false)
+      .not('due_date', 'is', null)
+      .gte('due_date', startStr)
+      .lte('due_date', endStr),
   ])
 
   return NextResponse.json({
@@ -55,6 +63,7 @@ export async function GET(request: NextRequest) {
     partners: partnerRes.data || [],
     invoices: invoiceRes.data || [],
     mandates: mandateRes.data || [],
+    todos: todoRes.data || [],
   })
 }
 

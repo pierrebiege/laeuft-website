@@ -21,7 +21,7 @@ export function useCalendarEvents() {
       return;
     }
 
-    const { events: rawEvents, partners, invoices, mandates } = await res.json();
+    const { events: rawEvents, partners, invoices, mandates, todos } = await res.json();
 
     // Expand real events (including recurrence)
     const realEvents: CalendarDisplayEvent[] = [];
@@ -78,6 +78,29 @@ export function useCalendarEvents() {
         color: VIRTUAL_EVENT_CONFIG.mandate_billing.color,
         sourceId: m.id,
         sourceName: `${m.title} – ${clientName}`,
+      };
+      virtual.push({ ...ve, _virtual: true as const });
+    }
+
+    // Todos as virtual events
+    for (const t of todos || []) {
+      if (!t.due_date) continue;
+      const priorityColors: Record<string, string> = {
+        urgent: '#ef4444',
+        high: '#f97316',
+        normal: '#22c55e',
+        low: '#a1a1aa',
+      };
+      const ve: VirtualCalendarEvent = {
+        id: `vt-${t.id}`,
+        title: `☑ ${t.title}`,
+        start_at: `${t.due_date}T00:00:00`,
+        end_at: `${t.due_date}T23:59:59`,
+        all_day: true,
+        source: 'partner_followup' as const,
+        color: priorityColors[t.priority] || '#22c55e',
+        sourceId: t.id,
+        sourceName: t.title,
       };
       virtual.push({ ...ve, _virtual: true as const });
     }
