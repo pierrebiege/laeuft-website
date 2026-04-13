@@ -161,16 +161,18 @@ export default function TodosPage() {
   }
 
   async function toggleComplete(todoId: string, currentlyCompleted: boolean) {
+    // Optimistic update
+    setTodos(todos.map((t) =>
+      t.id === todoId
+        ? { ...t, completed: !currentlyCompleted, completed_at: currentlyCompleted ? null : new Date().toISOString() }
+        : t
+    ));
+
     const updates = currentlyCompleted
       ? { completed: false, completed_at: null }
       : { completed: true, completed_at: new Date().toISOString() };
 
-    const { error } = await supabase
-      .from("todos")
-      .update(updates)
-      .eq("id", todoId);
-
-    if (!error) loadTodos();
+    supabase.from("todos").update(updates).eq("id", todoId);
   }
 
   async function deleteTodo(todoId: string) {
@@ -213,17 +215,21 @@ export default function TodosPage() {
     const newIndex = allActive.findIndex((t) => t.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
 
-    // Reorder locally first
+    // Optimistic update — sofort im UI ändern
     const reordered = [...allActive];
     const [moved] = reordered.splice(oldIndex, 1);
     reordered.splice(newIndex, 0, moved);
+    const updatedTodos = todos.map((t) => {
+      const newIdx = reordered.findIndex((r) => r.id === t.id);
+      return newIdx >= 0 ? { ...t, sort_order: newIdx } : t;
+    });
+    setTodos(updatedTodos);
 
-    // Update sort_order in DB
-    const updates = reordered.map((t, i) => ({ id: t.id, sort_order: i }));
-    for (const u of updates) {
-      await supabase.from("todos").update({ sort_order: u.sort_order }).eq("id", u.id);
-    }
-    loadTodos();
+    // DB-Updates im Hintergrund (parallel, nicht sequenziell)
+    const updates = reordered.map((t, i) =>
+      supabase.from("todos").update({ sort_order: i }).eq("id", t.id)
+    );
+    Promise.all(updates);
   }
 
   function SortableTodoItem({ todo }: { todo: Todo }) {
