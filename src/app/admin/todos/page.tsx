@@ -75,7 +75,7 @@ export default function TodosPage() {
     const { data, error } = await supabase
       .from("todos")
       .select("*, client:clients(id, name, company), partner:partners(id, name), prospect:prospects(id, company)")
-      .eq("completed", false)
+      .order("completed", { ascending: true })
       .order("due_date", { ascending: true, nullsFirst: false });
 
     if (error) {
@@ -145,10 +145,14 @@ export default function TodosPage() {
     setSaving(false);
   }
 
-  async function toggleComplete(todoId: string) {
+  async function toggleComplete(todoId: string, currentlyCompleted: boolean) {
+    const updates = currentlyCompleted
+      ? { completed: false, completed_at: null }
+      : { completed: true, completed_at: new Date().toISOString() };
+
     const { error } = await supabase
       .from("todos")
-      .update({ completed: true, completed_at: new Date().toISOString() })
+      .update(updates)
       .eq("id", todoId);
 
     if (!error) loadTodos();
@@ -162,10 +166,13 @@ export default function TodosPage() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const overdueTodos = todos.filter((t) => t.due_date && t.due_date < today);
-  const todayTodos = todos.filter((t) => t.due_date === today);
-  const upcomingTodos = todos.filter((t) => t.due_date && t.due_date > today);
-  const noDueTodos = todos.filter((t) => !t.due_date);
+  const activeTodos = todos.filter((t) => !t.completed);
+  const completedTodos = todos.filter((t) => t.completed);
+
+  const overdueTodos = activeTodos.filter((t) => t.due_date && t.due_date < today);
+  const todayTodos = activeTodos.filter((t) => t.due_date === today);
+  const upcomingTodos = activeTodos.filter((t) => t.due_date && t.due_date > today);
+  const noDueTodos = activeTodos.filter((t) => !t.due_date);
 
   function formatDate(date: string) {
     return new Date(date + "T00:00:00").toLocaleDateString("de-CH", {
@@ -188,14 +195,18 @@ export default function TodosPage() {
         className="flex items-start gap-3 py-3 px-4 group hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors"
       >
         <button
-          onClick={() => toggleComplete(todo.id)}
-          className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 border-zinc-300 dark:border-zinc-600 hover:border-zinc-500 dark:hover:border-zinc-400 flex items-center justify-center transition-colors group/check"
+          onClick={() => toggleComplete(todo.id, todo.completed)}
+          className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors group/check ${
+            todo.completed
+              ? "border-green-500 bg-green-500"
+              : "border-zinc-300 dark:border-zinc-600 hover:border-zinc-500 dark:hover:border-zinc-400"
+          }`}
         >
-          <Check size={12} className="text-zinc-300 opacity-0 group-hover/check:opacity-100 transition-opacity" />
+          <Check size={12} className={todo.completed ? "text-white" : "text-zinc-300 opacity-0 group-hover/check:opacity-100 transition-opacity"} />
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-sm text-zinc-900 dark:text-white">{todo.title}</span>
+            <span className={`text-sm ${todo.completed ? "line-through text-zinc-400" : "text-zinc-900 dark:text-white"}`}>{todo.title}</span>
             <div className="flex items-center gap-1 flex-shrink-0">
               {todo.priority !== "normal" && (
                 <span className={`w-2 h-2 rounded-full ${prio.dot}`} title={prio.label} />
@@ -404,6 +415,18 @@ export default function TodosPage() {
           <h2 className="text-sm font-medium text-zinc-500 mb-2">Ohne Datum</h2>
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
             {noDueTodos.map(renderTodo)}
+          </div>
+        </div>
+      )}
+
+      {/* Completed */}
+      {completedTodos.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-zinc-400 mb-2">
+            Erledigt ({completedTodos.length})
+          </h2>
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 opacity-60">
+            {completedTodos.map(renderTodo)}
           </div>
         </div>
       )}
