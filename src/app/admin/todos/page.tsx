@@ -14,6 +14,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
+  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -216,25 +217,19 @@ export default function TodosPage() {
     if (oldIndex === -1 || newIndex === -1) return;
 
     // Optimistic update — sofort im UI ändern
-    const reordered = [...allActive];
-    const [moved] = reordered.splice(oldIndex, 1);
-    reordered.splice(newIndex, 0, moved);
-    const updatedTodos = todos.map((t) => {
-      const newIdx = reordered.findIndex((r) => r.id === t.id);
-      return newIdx >= 0 ? { ...t, sort_order: newIdx } : t;
-    });
-    setTodos(updatedTodos);
+    const reordered = arrayMove(allActive, oldIndex, newIndex);
+    const completedPart = todos.filter((t) => t.completed);
+    setTodos([...reordered.map((t, i) => ({ ...t, sort_order: i })), ...completedPart]);
 
-    // DB-Updates im Hintergrund (parallel, nicht sequenziell)
-    const updates = reordered.map((t, i) =>
+    // DB-Updates parallel im Hintergrund
+    Promise.all(reordered.map((t, i) =>
       supabase.from("todos").update({ sort_order: i }).eq("id", t.id)
-    );
-    Promise.all(updates);
+    ));
   }
 
   function SortableTodoItem({ todo }: { todo: Todo }) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id });
-    const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({ id: todo.id });
+    const style = { transform: CSS.Transform.toString(transform), transition: 'none', opacity: isDragging ? 0.5 : 1 };
     const prio = PRIORITY_CONFIG[todo.priority];
     const isOverdue = todo.due_date && todo.due_date < today;
 
