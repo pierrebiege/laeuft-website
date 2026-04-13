@@ -622,8 +622,10 @@ export default function TrainingPlanEditorPage() {
                           <div key={session.id}>
                             {showDivider && <div className="border-t border-dashed border-zinc-200 dark:border-zinc-700 my-1" />}
                             <div draggable onDragStart={e => handleDragStart(e, session, week.id)}
-                              onClick={() => openEditSession(session, week.id)}
-                              className={`px-1.5 py-1 rounded border-l-2 cursor-pointer hover:shadow-sm transition-shadow text-[11px] overflow-hidden ${tc.bg} ${tc.border}`}>
+                              onMouseDown={() => { (window as unknown as Record<string, boolean>).__dragMoved = false; }}
+                              onMouseMove={() => { (window as unknown as Record<string, boolean>).__dragMoved = true; }}
+                              onClick={() => { if (!(window as unknown as Record<string, boolean>).__dragMoved) openEditSession(session, week.id); }}
+                              className={`px-1.5 py-1 rounded border-l-2 cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow text-[11px] overflow-hidden ${tc.bg} ${tc.border}`}>
                               <div className="flex items-center gap-1 min-w-0">
                                 <Icon size={10} className={`${tc.text} shrink-0`} />
                                 <span className={`font-medium truncate ${tc.text}`}>{session.title}</span>

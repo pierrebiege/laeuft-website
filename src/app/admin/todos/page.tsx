@@ -3,9 +3,23 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   Plus,
   Check,
-  Circle,
+  GripVertical,
   AlertTriangle,
   Calendar,
   ChevronDown,
@@ -76,6 +90,7 @@ export default function TodosPage() {
       .from("todos")
       .select("*, client:clients(id, name, company), partner:partners(id, name), prospect:prospects(id, company)")
       .order("completed", { ascending: true })
+      .order("sort_order", { ascending: true })
       .order("due_date", { ascending: true, nullsFirst: false });
 
     if (error) {
@@ -185,15 +200,45 @@ export default function TodosPage() {
     return new Date(date + "T00:00:00").toLocaleDateString("de-CH", { weekday: "long" });
   }
 
-  function renderTodo(todo: Todo) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const allActive = [...overdueTodos, ...todayTodos, ...upcomingTodos, ...noDueTodos];
+    const oldIndex = allActive.findIndex((t) => t.id === active.id);
+    const newIndex = allActive.findIndex((t) => t.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Reorder locally first
+    const reordered = [...allActive];
+    const [moved] = reordered.splice(oldIndex, 1);
+    reordered.splice(newIndex, 0, moved);
+
+    // Update sort_order in DB
+    const updates = reordered.map((t, i) => ({ id: t.id, sort_order: i }));
+    for (const u of updates) {
+      await supabase.from("todos").update({ sort_order: u.sort_order }).eq("id", u.id);
+    }
+    loadTodos();
+  }
+
+  function SortableTodoItem({ todo }: { todo: Todo }) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id });
+    const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
     const prio = PRIORITY_CONFIG[todo.priority];
     const isOverdue = todo.due_date && todo.due_date < today;
 
     return (
-      <div
-        key={todo.id}
-        className="flex items-start gap-3 py-3 px-4 group hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors"
+      <div ref={setNodeRef} style={style}
+        className="flex items-start gap-2 py-3 px-4 group hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors"
       >
+        <div {...attributes} {...listeners} className="mt-1 flex-shrink-0 cursor-grab active:cursor-grabbing text-zinc-300 hover:text-zinc-500 dark:text-zinc-600 dark:hover:text-zinc-400">
+          <GripVertical size={14} />
+        </div>
         <button
           onClick={() => toggleComplete(todo.id, todo.completed)}
           className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors group/check ${
@@ -248,6 +293,10 @@ export default function TodosPage() {
         </div>
       </div>
     );
+  }
+
+  function renderTodo(todo: Todo) {
+    return <SortableTodoItem key={todo.id} todo={todo} />;
   }
 
   if (loading) {
@@ -355,59 +404,65 @@ export default function TodosPage() {
         </div>
       )}
 
-      {/* Overdue */}
-      {overdueTodos.length > 0 && (
-        <div className="mb-6">
-          <button
-            onClick={() => setShowOverdue(!showOverdue)}
-            className="flex items-center gap-2 mb-2 text-sm font-medium text-red-600"
-          >
-            {showOverdue ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            <AlertTriangle size={14} />
-            Überfällig ({overdueTodos.length})
-          </button>
-          {showOverdue && (
-            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-red-200 dark:border-red-900/30">
-              {overdueTodos.map(renderTodo)}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={[...overdueTodos, ...todayTodos, ...upcomingTodos, ...noDueTodos].map(t => t.id)} strategy={verticalListSortingStrategy}>
+
+          {/* Overdue */}
+          {overdueTodos.length > 0 && (
+            <div className="mb-6">
+              <button
+                onClick={() => setShowOverdue(!showOverdue)}
+                className="flex items-center gap-2 mb-2 text-sm font-medium text-red-600"
+              >
+                {showOverdue ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                <AlertTriangle size={14} />
+                Überfällig ({overdueTodos.length})
+              </button>
+              {showOverdue && (
+                <div className="bg-white dark:bg-zinc-900 rounded-xl border border-red-200 dark:border-red-900/30">
+                  {overdueTodos.map(renderTodo)}
+                </div>
+              )}
             </div>
           )}
-        </div>
-      )}
 
-      {/* Today */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-sm font-medium text-zinc-900 dark:text-white">
-            {formatDate(today)} · Heute · {formatWeekday(today)}
-          </h2>
-        </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          {todayTodos.length > 0 ? (
-            todayTodos.map(renderTodo)
-          ) : (
-            <div className="py-8 text-center text-zinc-400 text-sm">
-              Keine Aufgaben für heute
+          {/* Today */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <h2 className="text-sm font-medium text-zinc-900 dark:text-white">
+                {formatDate(today)} · Heute · {formatWeekday(today)}
+              </h2>
             </div>
-          )}
-          <button
-            onClick={() => setShowForm(true)}
-            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 border-t border-zinc-100 dark:border-zinc-800 transition-colors"
-          >
-            <Plus size={14} />
-            Aufgabe hinzufügen
-          </button>
-        </div>
-      </div>
-
-      {/* Upcoming (next 7 days) */}
-      {upcomingTodos.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-sm font-medium text-zinc-500 mb-2">Demnächst</h2>
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
-            {upcomingTodos.slice(0, 10).map(renderTodo)}
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+              {todayTodos.length > 0 ? (
+                todayTodos.map(renderTodo)
+              ) : (
+                <div className="py-8 text-center text-zinc-400 text-sm">
+                  Keine Aufgaben für heute
+                </div>
+              )}
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 border-t border-zinc-100 dark:border-zinc-800 transition-colors"
+              >
+                <Plus size={14} />
+                Aufgabe hinzufügen
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+
+          {/* Upcoming (next 7 days) */}
+          {upcomingTodos.length > 0 && (
+            <div className="mb-6">
+              <h2 className="text-sm font-medium text-zinc-500 mb-2">Demnächst</h2>
+              <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                {upcomingTodos.slice(0, 10).map(renderTodo)}
+              </div>
+            </div>
+          )}
+
+        </SortableContext>
+      </DndContext>
 
       {/* No due date */}
       {noDueTodos.length > 0 && (
