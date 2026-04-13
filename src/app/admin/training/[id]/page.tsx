@@ -108,6 +108,9 @@ export default function TrainingPlanEditorPage() {
   const [showExercisePicker, setShowExercisePicker] = useState(false);
   const [exerciseSearch, setExerciseSearch] = useState("");
   const [pinValue, setPinValue] = useState("");
+  const [showImport, setShowImport] = useState(false);
+  const [otherPlans, setOtherPlans] = useState<{ id: string; title: string; client_name: string; weeks: { id: string; label: string | null; week_number: number }[] }[]>([]);
+  const [importLoading, setImportLoading] = useState(false);
 
   const loadPlan = useCallback(async () => {
     try {
@@ -214,6 +217,45 @@ export default function TrainingPlanEditorPage() {
       body: JSON.stringify({ action: "duplicate", week_id: weekId }),
     });
     if (res.ok) await loadPlan();
+  }
+
+  async function openImportDialog() {
+    setShowImport(true);
+    setImportLoading(true);
+    const res = await fetch("/api/training");
+    if (res.ok) {
+      const plans = await res.json();
+      const plansWithWeeks = await Promise.all(
+        plans.filter((p: { id: string }) => p.id !== planId).map(async (p: { id: string; title: string; client?: { name: string } }) => {
+          const wRes = await fetch(`/api/training/${p.id}`);
+          if (!wRes.ok) return null;
+          const full = await wRes.json();
+          return {
+            id: p.id,
+            title: p.title,
+            client_name: p.client?.name || '',
+            weeks: (full.weeks || []).map((w: { id: string; label: string | null; week_number: number }) => ({
+              id: w.id, label: w.label, week_number: w.week_number,
+            })),
+          };
+        })
+      );
+      setOtherPlans(plansWithWeeks.filter(Boolean));
+    }
+    setImportLoading(false);
+  }
+
+  async function importWeekFromPlan(sourcePlanId: string, sourceWeekId: string) {
+    const res = await fetch(`/api/training/${planId}/weeks`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "import_week", source_plan_id: sourcePlanId, source_week_id: sourceWeekId }),
+    });
+    if (res.ok) {
+      setShowImport(false);
+      await loadPlan();
+    } else {
+      alert("Fehler beim Importieren");
+    }
   }
 
   async function generateWeekSummary(weekId: string): Promise<string | null> {
@@ -653,12 +695,54 @@ export default function TrainingPlanEditorPage() {
 
         {/* Add week row */}
         <div className="grid grid-cols-[140px_repeat(7,minmax(0,1fr))] gap-1">
-          <button onClick={addWeek}
-            className="flex items-center gap-1 px-2 py-2 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
-            <Plus size={14} />
-            Woche hinzufugen
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={addWeek}
+              className="flex items-center gap-1 px-2 py-2 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+              <Plus size={14} />
+              Neue Woche
+            </button>
+            <button onClick={openImportDialog}
+              className="flex items-center gap-1 px-2 py-2 text-xs text-violet-400 hover:text-violet-700 dark:hover:text-violet-200 hover:bg-violet-50 dark:hover:bg-violet-900/30 rounded-lg transition-colors">
+              <Copy size={14} />
+              Importieren
+            </button>
+          </div>
         </div>
+
+        {/* Import Dialog */}
+        {showImport && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowImport(false)}>
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 w-full max-w-md max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+              <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                <h3 className="font-semibold text-zinc-900 dark:text-white">Woche aus anderem Plan importieren</h3>
+                <button onClick={() => setShowImport(false)} className="text-zinc-400 hover:text-zinc-600"><X size={18} /></button>
+              </div>
+              <div className="p-4">
+                {importLoading ? (
+                  <p className="text-sm text-zinc-500 py-4 text-center">Pläne laden...</p>
+                ) : otherPlans.length === 0 ? (
+                  <p className="text-sm text-zinc-500 py-4 text-center">Keine anderen Pläne gefunden</p>
+                ) : (
+                  <div className="space-y-4">
+                    {otherPlans.map(op => (
+                      <div key={op.id}>
+                        <p className="text-sm font-medium text-zinc-900 dark:text-white">{op.title} <span className="text-zinc-400 font-normal">· {op.client_name}</span></p>
+                        <div className="mt-1 space-y-1">
+                          {op.weeks.map(w => (
+                            <button key={w.id} onClick={() => importWeekFromPlan(op.id, w.id)}
+                              className="w-full text-left px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+                              {w.label || `Woche ${w.week_number}`}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Summary Edit Popup */}

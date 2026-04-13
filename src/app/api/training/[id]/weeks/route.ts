@@ -12,9 +12,14 @@ export async function POST(
   const { id: plan_id } = await params
   const body = await request.json()
 
-  // Duplicate week
+  // Duplicate week (same plan)
   if (body.action === 'duplicate' && body.week_id) {
     return await duplicateWeek(plan_id, body.week_id)
+  }
+
+  // Import week from another plan
+  if (body.action === 'import_week' && body.source_plan_id && body.source_week_id) {
+    return await duplicateWeek(plan_id, body.source_week_id, body.source_plan_id)
   }
 
   // Update label
@@ -85,27 +90,30 @@ export async function DELETE(request: NextRequest) {
   return NextResponse.json({ deleted: true })
 }
 
-async function duplicateWeek(plan_id: string, source_week_id: string) {
-  // Fetch the source week with sessions
-  const { data: sourceWeek, error: fetchError } = await supabaseAdmin
+async function duplicateWeek(target_plan_id: string, source_week_id: string, source_plan_id?: string) {
+  // Fetch the source week with sessions (can be from another plan)
+  const query = supabaseAdmin
     .from('training_weeks')
-    .select('*, sessions:training_sessions(*)')
+    .select('*, sessions:training_sessions(*, exercises:session_exercises(*))')
     .eq('id', source_week_id)
-    .eq('plan_id', plan_id)
-    .single()
 
-  if (fetchError || !sourceWeek) {
-    return NextResponse.json(
-      { error: 'Quell-Woche nicht gefunden' },
-      { status: 404 }
-    )
+  if (source_plan_id) {
+    query.eq('plan_id', source_plan_id)
+  } else {
+    query.eq('plan_id', target_plan_id)
   }
 
-  // Get the next week number and sort order
+  const { data: sourceWeek, error: fetchError } = await query.single()
+
+  if (fetchError || !sourceWeek) {
+    return NextResponse.json({ error: 'Quell-Woche nicht gefunden' }, { status: 404 })
+  }
+
+  // Get the next week number and sort order in target plan
   const { data: allWeeks } = await supabaseAdmin
     .from('training_weeks')
     .select('week_number, sort_order')
-    .eq('plan_id', plan_id)
+    .eq('plan_id', target_plan_id)
     .order('week_number', { ascending: false })
     .limit(1)
 
@@ -116,9 +124,10 @@ async function duplicateWeek(plan_id: string, source_week_id: string) {
   const { data: newWeek, error: weekError } = await supabaseAdmin
     .from('training_weeks')
     .insert({
-      plan_id,
+      plan_id: target_plan_id,
       week_number: nextNum,
-      label: `Woche ${nextNum}`,
+      label: sourceWeek.label || `Woche ${nextNum}`,
+      summary: sourceWeek.summary,
       sort_order: nextSort,
     })
     .select()
@@ -128,34 +137,43 @@ async function duplicateWeek(plan_id: string, source_week_id: string) {
     return NextResponse.json({ error: weekError.message }, { status: 500 })
   }
 
-  // Copy sessions if any exist
-  if (sourceWeek.sessions && sourceWeek.sessions.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionCopies = sourceWeek.sessions.map((s: any) => ({
-      week_id: newWeek.id,
-      day_of_week: s.day_of_week,
-      session_type: s.session_type,
-      session_subtype: s.session_subtype,
-      title: s.title,
-      duration_minutes: s.duration_minutes,
-      description: s.description,
-      intensity: s.intensity,
-      sort_order: s.sort_order,
-    }))
-
-    const { error: sessionsError } = await supabaseAdmin
+  // Copy sessions + their exercises
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const s of (sourceWeek.sessions || []) as any[]) {
+    const { data: newSession } = await supabaseAdmin
       .from('training_sessions')
-      .insert(sessionCopies)
+      .insert({
+        week_id: newWeek.id,
+        day_of_week: s.day_of_week,
+        session_type: s.session_type,
+        session_subtype: s.session_subtype,
+        title: s.title,
+        duration_minutes: s.duration_minutes,
+        description: s.description,
+        intensity: s.intensity,
+        sort_order: s.sort_order,
+      })
+      .select()
+      .single()
 
-    if (sessionsError) {
-      return NextResponse.json({ error: sessionsError.message }, { status: 500 })
+    // Copy exercise links
+    if (newSession && s.exercises && s.exercises.length > 0) {
+      const exerciseCopies = s.exercises.map((ex: { exercise_id: string; sort_order: number; sets: string | null; notes: string | null }) => ({
+        session_id: newSession.id,
+        exercise_id: ex.exercise_id,
+        sort_order: ex.sort_order,
+        sets: ex.sets,
+        notes: ex.notes,
+      }))
+
+      await supabaseAdmin.from('session_exercises').insert(exerciseCopies)
     }
   }
 
-  // Return the new week with copied sessions
+  // Return the new week with sessions + exercises
   const { data: fullWeek, error: fullError } = await supabaseAdmin
     .from('training_weeks')
-    .select('*, sessions:training_sessions(*)')
+    .select('*, sessions:training_sessions(*, exercises:session_exercises(*, exercise:exercises(*)))')
     .eq('id', newWeek.id)
     .single()
 
