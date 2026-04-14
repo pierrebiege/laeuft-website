@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Holzatelier 2000 GmbH",
+    "contact_name": "Holzatelier 2000 GmbH",
+    "email": "info@holzatelier2000.ch",
+    "website": "https://www.holzatelier2000.ch",
+    "notes": "Schreinerei / Holzbau im Oberwallis (Mattenstrasse 14, 3940 Steg, Einzugsgebiet Naters). Bietet Bodenbelaege, Innenausbau, Kuechen, Schreinerei, Holzbau und Sanierungen. Inhaber gemaess oeffentlichen Registern: Andreas Theler. Website listet Dienstleistungen, Partner und Lageplan; einzige oeffentliche E-Mail ist info@holzatelier2000.ch."
+  },
+  {
+    "company": "Caves du Paradis Olivier Roten SA",
+    "contact_name": "Olivier Roten",
+    "email": "roten@cavesduparadis.ch",
+    "website": "https://www.cavesduparadis.ch",
+    "notes": "Weingut / Weinkellerei in Siders (Route de la Gemmi 135, 3960 Siders). Familienbetrieb, 1971 von Alex Roten gegruendet, inzwischen in der zweiten Generation von Raphael Roten mit Sohn Olivier Roten gefuehrt. Firmenname der SA traegt Olivier Rotens Namen. Website bietet Sortiment, Shop und Degustations-Agenda; persoenliche E-Mail roten@cavesduparadis.ch auf Kontaktseite und local.ch gelistet."
+  },
+  {
+    "company": "CMD - Treuhand Dirren",
+    "contact_name": "CMD - Treuhand Dirren",
+    "email": "info@cmdtreuhand.ch",
+    "website": "https://cmdtreuhand.ch",
+    "notes": "Treuhandbuero in Brig-Glis (Belalpstrasse 3, 3900 Brig-Glis). Gefuehrt von Claudia Maria Dirren (dipl. Treuhandexpertin). Leistungen laut Website: Buchhaltung, Steuerberatung, Revisionen und Liegenschaftsverwaltung fuer KMU und Private. Einzige oeffentlich gelistete E-Mail: info@cmdtreuhand.ch."
+  },
+  {
+    "company": "Fitnesscenter ChrisTOP-Park",
+    "contact_name": "Fitnesscenter ChrisTOP-Park",
+    "email": "info@christoppark.ch",
+    "website": "https://christoppark.ch",
+    "notes": "Fitnessstudio in Visp (Kantonsstrasse 6A, 3930 Visp). Gefuehrt von Christoph Oberholzer (Schweizer Bodybuilding-Meister 1988) und Elisabeth Schmidt Oberholzer. Website bietet Gruppenkurse-Anmeldung, Kontaktformular und Informationen zu Krafttraining; oeffentliche E-Mail info@christoppark.ch."
+  },
+  {
+    "company": "Prato Borni Ski- und Snowboardschule",
+    "contact_name": "Prato Borni Ski- und Snowboardschule",
+    "email": "info@pratoborni.ch",
+    "website": "https://www.pratoborni.ch",
+    "notes": "Kleine Skischule in Zermatt (Bahnhofstrasse 78, 3920 Zermatt), spezialisiert auf Privatstunden in Ski, Snowboard und Telemark in den Gebieten Zermatt, Cervinia und Valtournenche. Gegruendet und geleitet von Skischulleiter Elmar Lehner. Website ist mehrsprachig (DE/EN); Kontaktadresse info@pratoborni.ch."
+  }
+]
