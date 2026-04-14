@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Weinschmiede Salgesch",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Kleines Walliser Weingut in Salgesch (Tschütrigstrasse 27, 3970 Salgesch), seit über 60 Jahren in Familienbesitz, heute geführt von den Brüdern Reinhard & Christian Schmid. Bio-Suisse-zertifiziert, mehrfach mit Goldmedaillen ausgezeichnet (Cuvée Christian, Amadeus, Pinot Grand Cru, Göttertrank, Les deux Apôtres). Weinverkauf direkt ab Keller, Degustationen nach Voranmeldung. Typisches KMU im Oberwallis."
+  },
+  {
+    "company": "Schreinerei Ulysses Schmidhalter AG",
+    "contact_name": "Schreinerei Ulysses Schmidhalter AG",
+    "email": "info@schreinerei-schmidhalter.ch",
+    "website": "https://www.schreinerei-schmidhalter.ch",
+    "notes": "Schreinerei in Brig-Glis (Weidenweg 211, 3902 Glis), gegründet 1993 von Inhaber Ulysses Schmidhalter. Team u.a. Joel Schmidhalter (eidg. dipl. Produktionsleiter) und Jérôme Schmidhalter (Techniker Holztechnik HF). Handelsregister CHE-296.655.261. Klassischer Handwerksbetrieb im Oberwallis."
+  },
+  {
+    "company": "Schweizer Skischule Saas-Fee",
+    "contact_name": "Schweizer Skischule Saas-Fee",
+    "email": "info@skischule-saas-fee.ch",
+    "website": "https://www.skischule-saas-fee.ch",
+    "notes": "Traditionsreiche Skischule in Saas-Fee (Dorfplatz 1, 3906 Saas-Fee), besteht seit 1951. Geschäftsführer Gabriel Anthamatten. Ski- und Snowboardunterricht sowie Kids Village (wird auf myswitzerland.com als offizielles Angebot beworben). Saisonaler Tourismusbetrieb mit grossem Skilehrer-Team."
+  },
+  {
+    "company": "Hotel Alpes & Rhône",
+    "contact_name": "Hotel Alpes & Rhône",
+    "email": "info@alpes-rhone.ch",
+    "website": "https://www.hotel-martigny.com",
+    "notes": "3-Sterne-Hotel in Martigny (Ave. du Gr. St-Bernard 11, 1920 Martigny), Familienbetrieb in 3. Generation unter Familie Otto und Richard Kuonen. 48 Zimmer in verschiedenen Kategorien, inkl. Familienzimmer für bis zu 5 Personen. Zentrale Lage im Unterwallis, spricht internationale Gäste (DE/EN-Website) an."
+  },
+  {
+    "company": "Atlas Automobiles Sierre SA",
+    "contact_name": "Atlas Automobiles Sierre SA",
+    "email": "sierre@atlasautomobiles.ch",
+    "website": "https://www.atlasautomobiles.ch",
+    "notes": "Garage in Sierre (Route du Simplon 75, 3960 Sierre), Opel-, Opel-Nutzfahrzeug- und Isuzu-Händler mit Verkauf, After-Sales, Occasionen und Werkstatt. Teil der Atlas Automobiles SA (Sierre-Sion). Französischsprachige Website mit Fahrzeugkatalog und Online-Terminbuchung."
+  }
+]
