@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Walker Fahrzeugtechnik AG",
+    "contact_name": "Marco Walker",
+    "email": "marco.walker@garage-walker.ch",
+    "website": "https://www.garage-walker.ch",
+    "notes": "KIA-Partner Garage in Naters (Oberwallis), Furkastrasse 140b. Inhaber & Geschäftsführer Marco Walker ist gelernter Landmaschinenmechaniker und Berufsbildner. Betrieb deckt Autos, Landmaschinen, Kleingeräte, Motorräder und Reifenservice ab. Website-Struktur hat noch eine parallele 'uumlber-uns-alt.html' Seite und mehrere getrennte statische Unterseiten — typisch für eine ältere CMS-Struktur. Mitglied im Gewerbeverein Naters."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Christian Schmid",
+    "email": "christian.schmid@netplus.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Familiengeführtes Weingut an der Tschütrigstrasse 27 in Salgesch, seit ca. 25 Jahren von den Brüdern Reinhard & Christian Schmid betrieben. Selbsteinkellerer, kleine Produktion, ausgezeichnet im Falstaff. Christian Schmid kommuniziert mit persönlicher netplus.ch-Adresse statt firmeneigener Domain. Direktvermarktung an Endkunden."
+  },
+  {
+    "company": "Felix-Sport Saas-Fee",
+    "contact_name": "Felix-Sport Saas-Fee",
+    "email": "info@felix-sport.ch",
+    "website": "https://www.felix-sport.ch",
+    "notes": "Sport- und Skigeschäft an der Gletscherstrasse 11 in Saas-Fee. Inhaber Felix Imseng (Einzelfirma, ergänzt durch Felix-Sport Imseng Elisabeth, Sole Proprietorship gegründet 2020). Bietet Ski-/Snowboard-Verkauf, -Vermietung sowie Service mit Schleifroboter. Betreibt ausserdem Ferienwohnungen Haus Felix und Haus Chateau unter derselben Domain — also kombinierter Sport/Tourismus-Betrieb."
+  },
+  {
+    "company": "Immobilien Stehlin AG",
+    "contact_name": "Immobilien Stehlin AG",
+    "email": "immobilien@stehlin.ch",
+    "website": "https://www.stehlin.ch",
+    "notes": "Immobilienbüro an der Napoleonstrasse 11a in Visp (CHE-111.789.390), gegründet 2004. Oliver Gilles Stehlin führt den Betrieb in dritter Generation und ist CAS-zertifizierter Immobilienbewerter. Tätigkeitsfelder: Verkauf, Architektur, Vermietung von Chalets und Immobilien im Wallis. Zweisprachiges DE/FR-Zielpublikum."
+  },
+  {
+    "company": "PhysioPunkt Heinzmann Kimmig GmbH",
+    "contact_name": "PhysioPunkt Heinzmann Kimmig GmbH",
+    "email": "info@physiopunkt-visp.ch",
+    "website": "https://physiopunkt-visp.ch",
+    "notes": "Physiotherapie-Praxis an der Bahnhofstrasse 4 in Visp, direkt beim Bahnhof. Geführt von den diplomierten Physiotherapeutinnen Ursula Kimmig und Patricia Heinzmann. Eigene Team- und Kontakt-Unterseiten, Mitglied bei physiopaed. Bietet Physiotherapie, Gesundheits- und Sportmassage — KMU-typische Praxis mit mehreren Mitarbeitenden."
+  }
+]
