@@ -583,7 +583,7 @@ function Contact() {
           >
             <BarChart3 size={16} /> Live-Insights ansehen <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
-          <p className="mt-4 text-sm text-white/40">Passwort: laeuft2026</p>
+          <p className="mt-4 text-sm text-white/40">Passwort: partner2026</p>
         </FadeUp>
         <FadeUp delay={1.2}>
           <div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">läuft.ch</div>
