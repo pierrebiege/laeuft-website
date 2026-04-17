@@ -215,7 +215,7 @@ type MergedStory = {
   source: 'manual' | 'api'
 }
 
-const INSIGHTS_PASSWORD = process.env.NEXT_PUBLIC_INSIGHTS_PASSWORD || 'laeuft2026'
+const INSIGHTS_PASSWORD = process.env.NEXT_PUBLIC_INSIGHTS_PASSWORD || 'partner2026'
 
 const PINK = '#E1306C'
 const PURPLE = '#5851DB'
