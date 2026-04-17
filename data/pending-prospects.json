@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cina Gilles & Joël GmbH (Cinaweine)",
+    "contact_name": "Gilles Cina",
+    "email": "gilles@cinaweine.ch",
+    "website": "https://www.cinaweine.ch",
+    "notes": "Familienweingut in Salgesch (Wallis). Geführt von Brüdern Gilles und Joël Cina. Gilles ist Geschäftsführer (BPIH Manager), Joël ist Weintechnologe. Team umfasst Nathalie Cina-Studer (Administration) und Cornelia Duc. Branche: Weingut/Weinhandel."
+  },
+  {
+    "company": "Treuhand Valesia AG",
+    "contact_name": "Georg Anthamatten",
+    "email": "georg.anthamatten@valesia.ch",
+    "website": "https://www.valesia.ch",
+    "notes": "Treuhandunternehmen mit Hauptsitz in Visp (Bahnhofstrasse 17). Georg Anthamatten ist Dipl. Treuhandexperte. Bietet Buchhaltung, Steuern, Sozialversicherungen, Rechtsberatung und Immobilienbewertungen. Standorte auch in Bern und Zürich. Branche: Treuhand/Finanzen."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallationsunternehmen in Saas-Fee, gegründet 1981 von Armin Supersaxo. Seit 2014 unter Geschäftsführer Markus Supersaxo (Sohn). Standorte in Saas-Fee und Saas-Almagell. Bietet Elektroinstallationen, Elektrokontrollen, Planung und Beratung. Branche: Elektro/Handwerk."
+  },
+  {
+    "company": "Schreinerei Zurbriggen AG",
+    "contact_name": "Schreinerei Zurbriggen AG",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Traditionsschreinerei in Visp seit 1888, aktuell in 4. Generation unter Roman Zurbriggen. Ca. 40 Mitarbeiter. Spezialisiert auf Fenster, Möbel und Innenausbau im Oberwallis. Branche: Schreinerei/Handwerk."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Grösstes Fitnessnetzwerk im Oberwallis, 2008 von Samuel Millius gegründet. Mehrere Standorte: Visp-Center, Visp-Süd, Susten, Stalden. 24/7 Zugang. Sitz in Susten (Kantonsstrasse 136). Branche: Fitness/Sport."
+  }
+]
