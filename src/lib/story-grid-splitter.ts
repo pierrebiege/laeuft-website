@@ -5,6 +5,8 @@ import sharp from 'sharp'
 export interface StoryGridResult {
   rows: number
   cols: number
+  grid_top_percent?: number
+  grid_bottom_percent?: number
   stories: Array<{
     row: number
     col: number
@@ -29,10 +31,14 @@ NUR das eine Wort, kein anderer Text.`
 
 const GRID_ANALYSIS_PROMPT = `Analysiere dieses Instagram Story-Grid Bild. Es zeigt mehrere Stories in einem Raster mit Aufrufzahlen (Views) unter jedem Thumbnail.
 
+Das Bild kann oben/unten zusätzliche UI-Elemente haben (Navigation, Header, Tabs etc.) die NICHT zum Grid gehören.
+
 Gib mir NUR ein JSON zurück:
 {
   "rows": <Anzahl Zeilen mit Stories>,
   "cols": <Anzahl Spalten (meistens 4)>,
+  "grid_top_percent": <Wo beginnt das Story-Grid? Prozent vom oberen Bildrand (0-100). z.B. 15 wenn das Grid bei ca. 15% des Bildes anfängt>,
+  "grid_bottom_percent": <Wo endet das Story-Grid? Prozent vom oberen Bildrand (0-100). z.B. 90 wenn das Grid bei ca. 90% aufhört>,
   "stories": [
     {"row": 0, "col": 0, "views": <Zahl oder null>},
     {"row": 0, "col": 1, "views": <Zahl oder null>},
@@ -42,6 +48,8 @@ Gib mir NUR ein JSON zurück:
 
 WICHTIG:
 - Zähle NUR Zeilen die tatsächlich Story-Thumbnails enthalten
+- grid_top_percent: Schätze wo das erste Story-Thumbnail beginnt (ignoriere Header/Navigation darüber)
+- grid_bottom_percent: Schätze wo die letzte View-Zahl endet (ignoriere UI-Elemente darunter)
 - "views" ist die Zahl die UNTER jedem Story-Thumbnail steht (z.B. 1800, 1900, 2500)
 - Reihenfolge: zeilenweise von links nach rechts, oben nach unten
 - Wenn eine Zelle leer ist oder keine Story enthält, lass sie weg
@@ -123,14 +131,15 @@ export async function splitStoryGrid(
   const imgWidth = metadata.width!
   const imgHeight = metadata.height!
 
-  const { rows, cols, stories } = gridResult
+  const { rows, cols, stories, grid_top_percent, grid_bottom_percent } = gridResult
 
-  // Each cell includes the story thumbnail (9:16) + view count text below
-  // We calculate cell dimensions from the full image
+  const topPx = Math.floor(imgHeight * (grid_top_percent ?? 0) / 100)
+  const bottomPx = Math.floor(imgHeight * (grid_bottom_percent ?? 100) / 100)
+  const gridHeight = bottomPx - topPx
+
   const cellWidth = Math.floor(imgWidth / cols)
-  const cellHeight = Math.floor(imgHeight / rows)
+  const cellHeight = Math.floor(gridHeight / rows)
 
-  // The story image is the top ~85% of each cell (the bottom ~15% is the view count)
   const storyHeightRatio = 0.85
 
   const results: SplitStory[] = []
@@ -138,7 +147,7 @@ export async function splitStoryGrid(
   for (let i = 0; i < stories.length; i++) {
     const story = stories[i]
     const left = story.col * cellWidth
-    const top = story.row * cellHeight
+    const top = topPx + story.row * cellHeight
     const extractHeight = Math.floor(cellHeight * storyHeightRatio)
 
     // Clamp to image bounds
