@@ -292,10 +292,10 @@ function StatTile({ value, label, image }: { value: string; label: string; image
 
 function Channels() {
   const channels = [
-    { Icon: Youtube, name: "YouTube Serie", text: "Dokumentation pro Event – mind. zweiteilig, Kinoqualität" },
-    { Icon: Camera, name: "Bilder", text: "Hochwertige Race-Shootings, professionelle Fotograf:innen vor Ort" },
-    { Icon: Instagram, name: "Reels & Kurzvideos", text: "Live-Reels alle 1–3 Stunden während des Events" },
-    { Icon: Users, name: "Community", text: "Inner Circle, Hardcore-Fans und engagierte Schweizer Lauf-Szene" },
+    { Icon: Youtube, name: "YouTube", text: "Verschiedene Formate sind geplant, unter anderem Event-Dokumentationen und vieles mehr" },
+    { Icon: Camera, name: "Bilder", text: "Hochwertige Race- und Produktbilder. Professionelle Fotograf:innen im Team und Umfeld von Pierre" },
+    { Icon: Instagram, name: "Reels & Kurzvideos", text: "Daily Reels aus dem Alltag sowie Live-Reels alle 1–3 Stunden während des Events" },
+    { Icon: Users, name: "Community", text: "Engagierte Lauf-Community in der Schweiz und darüber hinaus – Hardcore-Fans, Inner Circle und wachsende Reichweite" },
   ];
   return (
     <section className="bg-zinc-950 text-white py-40 px-6 overflow-hidden">
@@ -308,7 +308,7 @@ function Channels() {
         </h2>
         <FadeUp delay={0.3}>
           <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
-            An jedem unserer Events liefern wir eine umfassende Doku-Serie, professionelle Bilder, Live-Reels rund um die Uhr und bauen eine engagierte Community auf. Hier ist was du als Partner bekommst – auf jedem Kanal, bei jedem Race.
+            Mit jeder Zusammenarbeit liefern wir hochwertige Content-Serien, professionelle Bilder, dynamische Reels und bauen eine engagierte Community auf. Hier ist, was du als Partner bekommst – kanalübergreifend, authentisch und mit nachhaltiger Sichtbarkeit.
           </p>
         </FadeUp>
         <div className="grid md:grid-cols-2 gap-px bg-white/10 rounded-3xl overflow-hidden">
@@ -329,10 +329,10 @@ function Channels() {
 
 function RacesCompact() {
   const races = [
-    { name: "Witikon Backyard", date: "Mai 2026", location: "Zürich" },
-    { name: "99 Lap Race", date: "Juli 2026", location: "Schweiz" },
-    { name: "Last Soul Ultra", date: "August 2026", location: "International" },
-    { name: "Ultimate Run", date: "2026", location: "Schweiz" },
+    { name: "Ultimate Run", date: "24.–26. April 2026", location: "Deutschland" },
+    { name: "Witikoner Backyard", date: "14.–16. Mai 2026", location: "Zürich" },
+    { name: "99 Lap Race", date: "25.–26. Juli 2026", location: "Deutschland" },
+    { name: "Last Soul Ultra", date: "14. August 2026", location: "International" },
   ];
   return (
     <section className="bg-black text-white py-32 px-6 overflow-hidden">
@@ -476,10 +476,10 @@ function Offer() {
     "Integration in Dokumentationen und Know-How Transfer rund um Foot Health",
     "Pierre läuft immer mit Joe Nimble – Training und Race – authentische Product-Stories aus über 40 Stunden am Limit",
     "Aktionen bei Events möglich, falls gewünscht",
-    "Einbindung in Reels auf allen Plattformen",
+    "Einbindung in Reels",
     "Co-Author Posts spezifisch auf Joe Nimble abgestimmt – mehrere pro Jahr",
     "Integration mit Logo auf der Webseite und in allen Decks für Projekte",
-    "Bild und Video für Joe Nimble – Social Media, Webseite, Online/Offline Werbung möglich (in Absprache)",
+    "Material für Joe Nimble – Social Media, Webseite, Online/Offline Werbung möglich (in Absprache)",
   ];
   return (
     <section ref={ref} className="relative bg-black text-white py-40 px-6 overflow-hidden">
@@ -515,8 +515,7 @@ function Offer() {
 
 function Expectations() {
   const items = [
-    { icon: Footprints, text: "Bis zu 9 Paar Schuhe pro Jahr, die an den Events nass werden können" },
-    { icon: Footprints, text: "Danach einen Rabatt für weiteren Bezug von Schuhen" },
+    { icon: Footprints, text: "Schuhe für die Backyard-Saison – Grundausstattung ist bereits vorhanden, weitere Modelle gerne nach Absprache (z. B. neue Launches oder spezielle Testmodelle)" },
     { icon: Heart, text: "Finanzielle Unterstützung von CHF 6'000.–" },
     { icon: BarChart3, text: "Affiliate-Möglichkeit – Pierre wird bereits heute die ganze Zeit nach Schuhen gefragt" },
     { icon: Footprints, text: "Miteinbindung bei Entwicklung (Test- & Prototypenmodelle) – Pierre ist seit Kind Barfussläufer und hat ein eigenes Interesse, Joe Nimble gross zu machen" },
