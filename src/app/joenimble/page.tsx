@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight } from "lucide-react";
+import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight, Footprints, Heart } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -12,11 +12,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 const LSU = (n: number) => `/presentations/yfood/lastsoul/${String(n).padStart(2, "0")}.jpg`;
 const SOL = (n: number) => `/presentations/yfood/solstice/${String(n).padStart(2, "0")}.jpg`;
-const LOGO = {
-  wittikon: "/presentations/yfood/logos/wittikon.png",
-  laps: "/presentations/yfood/logos/99laps.png",
-  lastsoul: "/presentations/yfood/logos/lastsoul.png",
-};
 
 // ==================== MOTION PRIMITIVES ====================
 
@@ -102,10 +97,10 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          Eine Präsentation für Joe Nimble
+          Pierre Biege × Joe Nimble
         </motion.div>
         <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-bold tracking-tight leading-[0.85] mb-6">
-          <AnimatedWords text="Events 2026." delay={0.4} stagger={0.1} />
+          <AnimatedWords text="Let's write history." delay={0.4} stagger={0.1} />
         </h1>
         <motion.p
           className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-8"
@@ -113,7 +108,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.2 }}
         >
-          Pierre Biege · Ultraläufer · Content Creator
+          Ultraläufer · Content Creator · Barfussläufer seit Kind
         </motion.p>
       </motion.div>
       <motion.div
@@ -211,11 +206,48 @@ function Bio() {
   );
 }
 
+function JoeNimbleStory() {
+  return (
+    <section className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-48 px-6 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Warum Joe Nimble</div>
+        </FadeUp>
+        <ScrollRevealText
+          text="Ich komme aus dem Parkour. Als Teenager hab ich angefangen, mich durch Städte zu bewegen – Mauern, Geländer, Beton. Minimalschuhe, dünne Sohle, Fuss am Boden. Ich hab nie anders trainiert. Jahrelang. Mein Körper hat gelernt, was die meisten Laufschuhe versuchen zu simulieren – echte Stabilität, aus dem Fuss selbst."
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
+        />
+      </div>
+      <div className="max-w-4xl mx-auto mt-32">
+        <ScrollRevealText
+          text="Und dann kamen die Ultras. 100 km. Dann mehr. 200 km. In Barfussschuhen. Weil meine Füsse das erlaubt haben. Aber irgendwo zwischen stundenlangem Laufen merkt man, wo die Grenzen liegen. Nicht die des Körpers – die des Schuhs."
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
+        />
+      </div>
+      <div className="max-w-4xl mx-auto mt-32">
+        <ScrollRevealText
+          text="«Mehr Schuh» bedeutet in dieser Industrie fast immer dasselbe: enger. Die Zehenbox wird kleiner, der Fuss wird zusammengepresst. Mein Fuss ist breit. Meine Zehen brauchen Platz. Irgendwann hört man auf zu suchen und arrangiert sich."
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
+        />
+      </div>
+      <div className="max-w-4xl mx-auto mt-32">
+        <ScrollRevealText
+          text="Joe Nimble kenne ich seit über 12 Jahren. Ich bin damals, als Teenager, schon in Joe Nimble Schuhen gelaufen – ohne genau zu wissen warum es sich richtig anfühlte. Heute weiss ich warum. Wir sollten nicht einfach einen Schuh bauen und dann fragen, ob der Fuss reinpasst. Zuerst gehts darum wie ein Fuss eigentlich aussieht."
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
+        />
+        <FadeUp delay={0.3}>
+          <p className="text-center mt-16 text-lg text-white/50 italic">„But what if it works."</p>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
 function StatsLine() {
   const stats = [
     { value: "200+", label: "Kilometer pro Race", image: LSU(7) },
     { value: "700", label: "Tage Run-Streak", image: LSU(13) },
-    { value: "3", label: "Ultra Races 2026", image: LSU(8) },
+    { value: "4", label: "Ultra Races 2026", image: LSU(8) },
     { value: "18k+", label: "Community", image: LSU(10) },
   ];
   return (
@@ -295,92 +327,33 @@ function Channels() {
   );
 }
 
-function Quote() {
-  return (
-    <section className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-48 px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Nichts ist unmöglich</div>
-        </FadeUp>
-        <ScrollRevealText
-          text="Jedes Event erzählt seine eigenen Geschichten. Pierre läuft, um zu zeigen, dass es nicht nur um Sport, Leidenschaft oder Wettkampf geht – es geht um mehr. Jeder Anfang ist schwer, aber Träume sind dazu da, gelebt zu werden und andere zu begeistern."
-          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
-        />
-        <FadeUp delay={0.3}>
-          <p className="text-center mt-16 text-lg text-white/50 italic">„Heute ist ein richtig guter Tag."</p>
-        </FadeUp>
-      </div>
-    </section>
-  );
-}
-
-function RaceDivider() {
+function RacesCompact() {
+  const races = [
+    { name: "Witikon Backyard", date: "Mai 2026", location: "Zürich" },
+    { name: "99 Lap Race", date: "Juli 2026", location: "Schweiz" },
+    { name: "Last Soul Ultra", date: "August 2026", location: "International" },
+    { name: "Ultimate Run", date: "2026", location: "Schweiz" },
+  ];
   return (
     <section className="bg-black text-white py-32 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto text-center">
+      <div className="max-w-6xl mx-auto">
         <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-8">Saison 2026</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Saison 2026</div>
         </FadeUp>
-        <h2 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9] mb-20">
-          <AnimatedWords text="Drei Races." stagger={0.08} />
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16">
+          <AnimatedWords text="Vier Races." stagger={0.08} />
         </h2>
-        <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-          {[LOGO.wittikon, LOGO.laps, LOGO.lastsoul].map((logo, i) => (
-            <FadeUp key={i} delay={0.3 + i * 0.15}>
-              <div className="relative h-20">
-                <Image src={logo} alt="" fill className="object-contain" />
+        <div className="grid md:grid-cols-4 gap-4">
+          {races.map((r, i) => (
+            <FadeUp key={i} delay={0.2 + i * 0.1}>
+              <div className="bg-zinc-900 rounded-2xl p-8 hover:bg-zinc-800 transition-colors">
+                <div className="text-4xl font-bold text-white/30 mb-4">{String(i + 1).padStart(2, "0")}</div>
+                <h3 className="text-xl font-semibold mb-2">{r.name}</h3>
+                <p className="text-white/50 text-sm">{r.date} · {r.location}</p>
               </div>
             </FadeUp>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-function RaceSection({
-  number,
-  name,
-  date,
-  location,
-  description,
-  bgImage,
-  logo,
-}: {
-  number: string;
-  name: string;
-  date: string;
-  location: string;
-  description: string;
-  bgImage: string;
-  logo: string;
-}) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.15, 1.25]);
-
-  return (
-    <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden bg-black text-white">
-      <motion.div className="absolute inset-0" style={{ y: bgY, scale: bgScale }}>
-        <Image src={bgImage} alt="" fill className="object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
-      </motion.div>
-      <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-20 py-32 w-full">
-        <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-8">Race {number} · {date} · {location}</div>
-        </FadeUp>
-        <FadeUp delay={0.1}>
-          <div className="relative h-24 w-72 mb-10">
-            <Image src={logo} alt={name} fill className="object-contain object-left" />
-          </div>
-        </FadeUp>
-        <h2 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight leading-[0.85] mb-12 max-w-4xl">
-          <AnimatedWords text={name} stagger={0.06} />
-        </h2>
-        <FadeUp delay={0.5}>
-          <p className="text-lg md:text-2xl text-white/80 font-light leading-relaxed max-w-3xl">{description}</p>
-        </FadeUp>
       </div>
     </section>
   );
@@ -422,7 +395,7 @@ function GalleryGrid() {
     <section className="bg-black text-white py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto mb-20">
         <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Last Soul · Impressionen</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Impressionen</div>
         </FadeUp>
         <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9]">
           <AnimatedWords text="Was zwischen den Stunden passiert." stagger={0.05} />
@@ -494,67 +467,19 @@ function HorizontalDrift() {
   );
 }
 
-function Goal() {
-  return (
-    <section className="bg-white py-48 px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-12 text-center">Unser Ziel</div>
-        </FadeUp>
-        <ScrollRevealText
-          text="Für jedes Event erstellen wir eine individuelle Dokumentation, bestehend aus mindestens zwei Teilen. Während des Events veröffentlichen wir alle 1–3 Stunden ein Live-Reel mit exklusiven Einblicken. Ein dediziertes Team produziert den Content fast zeitgleich. Ein ausgewählter Inner Circle erlebt exklusive Momente direkt vor Ort – so schaffen wir ein intimes, authentisches Erlebnis."
-          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-zinc-900 text-center"
-        />
-      </div>
-    </section>
-  );
-}
-
-function ProductionTeam() {
-  const team = [
-    { name: "Witikon Backyard", role: "Performance Media – zweiteilige Doku", logo: LOGO.wittikon },
-    { name: "99 Lap Race", role: "Neue Agentur – min. 2 Dokus + Reels", logo: LOGO.laps },
-    { name: "Last Soul Ultra", role: "Pierre – 2 Rückblicke zu LSU 25 · Team für 26 in Suche", logo: LOGO.lastsoul },
-  ];
-  return (
-    <section className="bg-zinc-950 text-white py-40 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Production Team</div>
-        </FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-20 leading-[0.9]">
-          <AnimatedWords text="Wer das macht." stagger={0.06} />
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {team.map((m, i) => (
-            <FadeUp key={i} delay={0.2 + i * 0.15}>
-              <div className="bg-black rounded-3xl p-10 h-full">
-                <div className="aspect-video relative mb-8 flex items-center justify-center">
-                  <Image src={m.logo} alt={m.name} fill className="object-contain" />
-                </div>
-                <h3 className="text-2xl font-semibold mb-2">{m.name}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{m.role}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Offer() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
   const bullets = [
-    "Exklusiver Footwear-Partner bei allen 3 Backyard Ultra Events 2026",
-    "Dokumentationen: Exklusive 30-Sekunden-Segmente nur für Joe Nimble in jeder Event-Doku – Fokus auf Foot Health & Performance",
-    "Pierre läuft jedes Race in Joe Nimble – authentische Product-Stories aus über 40 Stunden am Limit",
-    "Event-Zelt mit Schuh-Sampling & Try-On-Station für Fans und Teilnehmer:innen vor Ort",
-    "Inner Circle Aktionen: Hardcore-Fans erleben Joe Nimble direkt am Fuss",
-    "Live-Time Reels: Einbindung in alle Reels (alle 1–3 Stunden) – Schuh im Race-Einsatz sichtbar",
-    "Auch einzelne Events als Partner möglich – wir gehen auf eure Bedürfnisse ein",
+    "Exklusiver Footwear-Partner von Pierre – über alle Kanäle und Formate hinweg",
+    "Integration in Dokumentationen und Know-How Transfer rund um Foot Health",
+    "Pierre läuft immer mit Joe Nimble – Training und Race – authentische Product-Stories aus über 40 Stunden am Limit",
+    "Aktionen bei Events möglich, falls gewünscht",
+    "Einbindung in Reels auf allen Plattformen",
+    "Co-Author Posts spezifisch auf Joe Nimble abgestimmt – mehrere pro Jahr",
+    "Integration mit Logo auf der Webseite und in allen Decks für Projekte",
+    "Bild und Video für Joe Nimble – Social Media, Webseite, Online/Offline Werbung möglich (in Absprache)",
   ];
   return (
     <section ref={ref} className="relative bg-black text-white py-40 px-6 overflow-hidden">
@@ -583,9 +508,39 @@ function Offer() {
             </FadeUp>
           ))}
         </ul>
-        <FadeUp delay={0.3}>
-          <p className="mt-12 text-white/60 text-center">Auch einzelne Events buchbar. Wir gehen auf eure Bedürfnisse ein.</p>
+      </div>
+    </section>
+  );
+}
+
+function Expectations() {
+  const items = [
+    { icon: Footprints, text: "Bis zu 9 Paar Schuhe pro Jahr, die an den Events nass werden können" },
+    { icon: Footprints, text: "Danach einen Rabatt für weiteren Bezug von Schuhen" },
+    { icon: Heart, text: "Finanzielle Unterstützung von CHF 6'000.–" },
+    { icon: BarChart3, text: "Affiliate-Möglichkeit – Pierre wird bereits heute die ganze Zeit nach Schuhen gefragt" },
+    { icon: Footprints, text: "Miteinbindung bei Entwicklung (Test- & Prototypenmodelle) – Pierre ist seit Kind Barfussläufer und hat ein eigenes Interesse, Joe Nimble gross zu machen" },
+    { icon: Users, text: "Integration auf der Joe Nimble Webseite als Athlet" },
+  ];
+  return (
+    <section className="bg-zinc-950 text-white py-40 px-6 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Was wir erwarten</div>
         </FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-20 leading-[0.9]">
+          <AnimatedWords text="Unsere Seite." stagger={0.06} />
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {items.map(({ icon: Icon, text }, i) => (
+            <FadeUp key={i} delay={0.15 + i * 0.08}>
+              <div className="bg-black rounded-2xl p-8 h-full hover:bg-zinc-900 transition-colors flex gap-6 items-start">
+                <Icon size={28} className="text-white/40 shrink-0 mt-1" strokeWidth={1.5} />
+                <p className="text-lg font-light text-white/80 leading-relaxed">{text}</p>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -599,6 +554,9 @@ function Contact() {
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
       </div>
       <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <FadeUp>
+          <p className="text-2xl md:text-4xl text-white/50 italic mb-16">„We rise together, we perform together."</p>
+        </FadeUp>
         <h2 className="text-6xl md:text-9xl lg:text-[12rem] font-bold tracking-tight mb-10 leading-[0.85]">
           <AnimatedWords text="Let's talk." stagger={0.1} />
         </h2>
@@ -641,45 +599,17 @@ export default function JoeNimblePresentationPage() {
   return (
     <div className="font-sans antialiased bg-black">
       <Hero />
-      <Marquee items={["Pierre Biege", "Ultra", "200 km", "40 h", "Backyard", "Schweiz", "2026"]} />
+      <Marquee items={["Pierre Biege", "Ultra", "200 km", "40 h", "Barfuss", "Joe Nimble", "Schweiz", "2026"]} />
       <Bio />
+      <JoeNimbleStory />
       <StatsLine />
       <Channels />
-      <Quote />
-      <RaceDivider />
-      <RaceSection
-        number="01"
-        name="Witikon Backyard."
-        date="14. Mai 2026"
-        location="Witikon, Zürich"
-        description="Der Witikon Backyard ist ein Backyard-Ultra-Lauf in der Schweiz, bei dem die Teilnehmenden jede Stunde eine festgelegte Runde absolvieren müssen – so lange, bis nur noch eine Person übrig bleibt. Er gilt als einer der bekanntesten Backyard-Events der Schweiz und zieht sowohl ambitionierte Ultraläufer als auch eine starke Community an."
-        bgImage={SOL(4)}
-        logo={LOGO.wittikon}
-      />
-      <RaceSection
-        number="02"
-        name="99 Lap Race."
-        date="25.–26. Juli 2026"
-        location="Schweiz"
-        description="Das 99 Lap Race von Dryll und ESN ist ein einzigartiges Ultra-Event, bei dem die Teilnehmenden eine 1,2 km lange Runde absolvieren. Alle 15 Minuten startet eine neue Runde – und nach jeder Runde scheidet jeweils der langsamste Athlet aus. Mit 99 Eliminationsrunden und nur einem Gewinner steigt der Druck von Runde zu Runde. Im Fokus stehen mentale Stärke, Konstanz und taktisches Rennen."
-        bgImage={SOL(6)}
-        logo={LOGO.laps}
-      />
-      <RaceSection
-        number="03"
-        name="Last Soul Ultra."
-        date="14. August 2026"
-        location="International"
-        description="Der Event, kreiert von Kim Gottwald, ist das ultimative Ultra-Event: 100 Athlet:innen starten gemeinsam, doch nur eine Person – der Last Soul – wird am Ende übrig bleibt. Jede volle Stunde beginnt eine neue Runde über 6,7 km. Keine Zeitlimits, keine Ziellinie – nur pure Ausdauer, mentale Stärke und Standhaftigkeit zählen."
-        bgImage={LSU(5)}
-        logo={LOGO.lastsoul}
-      />
+      <RacesCompact />
       <HeroMoment />
       <GalleryGrid />
       <HorizontalDrift />
-      <Goal />
-      <ProductionTeam />
       <Offer />
+      <Expectations />
       <Contact />
     </div>
   );
