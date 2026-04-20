@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Familienweingut in Salgesch, geführt von Olivier und Sandra Mounir. Online-Weinshop vorhanden mit breitem Sortiment: Rotweine, Weissweine, Roséweine, Bio-Weine, alkoholfreie Weine, prämierte Weine."
+  },
+  {
+    "company": "Advokatur und Notariat Gruber & Gattlen",
+    "contact_name": "Harald Gattlen",
+    "email": "harald.gattlen@anwalt-wallis.ch",
+    "website": "https://www.anwalt-wallis.ch",
+    "notes": "Anwaltskanzlei und Notariat in Visp. Team von 4 Anwälten: David Gruber, Harald Gattlen, Michaela Mangisch, Fabienne Borter. Spezialisierungen: Familienrecht, Arbeitsrecht, Strafrecht, Bau- und Immobilienrecht, Notariat."
+  },
+  {
+    "company": "Farbe und Gips AG",
+    "contact_name": "Willy Jossen",
+    "email": "jossen.walden@farbeundgipsag.ch",
+    "website": "https://farbeundgipsag.ch",
+    "notes": "Maler- und Gipserbetrieb in Naters. Geschäftsleitung: Willy Jossen, Christian Walden, Philippe Walker. Spezialisiert auf mineralische/natürliche Materialien, fugenlose Wand-/Bodenbeläge und Denkmalpflege. Tätig in der Region Brig, Naters, Visp, Goms."
+  },
+  {
+    "company": "Garage Transalpin SA",
+    "contact_name": "Garage Transalpin SA",
+    "email": "info@garagetransalpinsa.ch",
+    "website": "https://www.garagetransalpinsa.ch",
+    "notes": "Garage in Martigny-Croix, gegründet 1962, 12 Mitarbeiter. Konzessionär für Mercedes-Benz, Peugeot und JAC. Direktor: Frédéric Pont."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Grösstes Fitness-Netzwerk im Oberwallis, gegründet 2008 als erstes 24/7-Studio der Region. 4 Standorte: Visp-Center, Visp-Süd, Susten, CrossGYM Susten. Inhaber: Samuel Millius."
+  }
+]
