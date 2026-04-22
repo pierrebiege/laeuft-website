@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Familienweingut in Salgesch, 3. Generation (Sandra & Olivier Mounir). Online-Weinshop mit Bio-Weinen, Terroirweinen, Dessertweinen und alkoholfreien Weinen. Über 200 Auszeichnungen an internationalen Wettbewerben. Kellermeister Nicolas Gaudin. Website hat Shopify-basierten Onlineshop. Branche: Weingut/Weinhandlung, Salgesch."
+  },
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Daniel Agten",
+    "email": "daniel@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch",
+    "notes": "Immobilienagentur in Naters seit 2009, gegründet von Armin Agten. Spezialisiert auf Kauf/Verkauf von Wohnungen, Häusern, Ferienwohnungen und Bauland im Oberwallis. Team von ca. 6 Personen. 70% der Kunden kommen über Empfehlung. Website bietet Immobiliensuche und Kundenstimmen. Branche: Immobilien, Naters."
+  },
+  {
+    "company": "Valfida Treuhand AG",
+    "contact_name": "Stefan Zenhäusern",
+    "email": "stefan.zenhaeusern@valfida.ch",
+    "website": "https://valfida.ch",
+    "notes": "Treuhandbüro in Visp, Kantonsstrasse 39. Team von ca. 8 Mitarbeitenden. Bietet Steuerberatung, Unternehmensberatung, Buchhaltung, Revision und Immobilienverwaltung. Stefan Zenhäusern ist dipl. Betriebsökonom FH und zugelassener Revisionsexperte in der Geschäftsleitung. Schwesterunternehmen von Zenhäusern Treuhand AG. Branche: Treuhand/Buchhaltung, Visp."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "Mathias Bellwald AG",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch",
+    "notes": "Bauunternehmen in Brig-Glis, gegründet 1985. Rund 70 Mitarbeitende in der MB Gruppe. Geschäftsführer seit 2021: François Stefan Hurni. Bietet Neubau, Umbau, Sanierung, Transporte, Recycling und seit 2025 auch Fahrzeugtechnik. Holowistrasse 65, 3902 Brig-Glis. Branche: Bauunternehmen, Brig-Glis."
+  },
+  {
+    "company": "Restaurant Walliserstuba",
+    "contact_name": "Carmen Gratta",
+    "email": "info@walliserstuba.ch",
+    "website": "https://www.walliserstuba.ch",
+    "notes": "Restaurant im Herzen von Brig, Bahnhofstrasse 9. Inhaberin Carmen Gratta. Walliser und italienische Küche mit saisonalen Menükarten (Sommer, Wild, Fasnacht, Kinder). Geschenk-Gutscheine online, Lounge. Reservierung nur per Telefon oder E-Mail, kein Online-Reservierungssystem gefunden. Branche: Gastronomie, Brig."
+  }
+]
