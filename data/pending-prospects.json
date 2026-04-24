@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Metzgerei Nessier AG",
+    "contact_name": "Thomas Nessier",
+    "email": "thomas@metzgerei-nessier.ch",
+    "website": "https://www.metzgerei-nessier.ch",
+    "notes": "Walliser Fleischtrocknerei in Münster/Goms, Familienbetrieb seit 1923, 4. Generation. Geführt von Thomas und Marcel Nessier. IGP-zertifiziertes Trockenfleisch. Standorte in Münster und Fiesch. Website auf WordPress mit WooCommerce-Online-Shop und TWINT-Zahlung."
+  },
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Chantal Ruppen",
+    "email": "chantal.ruppen@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "Auto-Garage in Brig-Glis seit 1992. VW, Audi, SEAT, Škoda Partner (AMAG Import). 2020 von Heinz Imboden an Pascal und Chantal Ruppen übergeben. Neuwagen, Occasionen, Service und Reparaturen."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Grösstes Fitnessnetzwerk im Oberwallis, gegründet 2008 von Samuel Millius. 4 Standorte: Visp-Center, Visp-Süd, Susten, CrossGYM Susten. 24/7 offen, 365 Tage. Über 700m² Trainingsfläche. Online-Abo-Kauf via Website."
+  },
+  {
+    "company": "Imboden & Partner GmbH",
+    "contact_name": "Imboden & Partner GmbH",
+    "email": "info@imboden-raron.ch",
+    "website": "https://imboden-raron.ch",
+    "notes": "Schreinerei und Holzbau in Raron. Geführt von Jörg Imboden (Geschäftsführung), Leo Bittel und Nathan Imboden. Angebot: Küchen, Schränke, Möbel, Türen, Badmöbel, Elementhäuser, Anbauten, Fassaden. Eigener Showroom vor Ort."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "Familien-Weingut seit 1956 in Salgesch, geführt von Brüdern Manfred und Damian Cina seit 1987. 20 Hektar Rebfläche, ca. 40 verschiedene Weine. Website mit Online-Weinshop. Degustationen und Events vor Ort."
+  }
+]
