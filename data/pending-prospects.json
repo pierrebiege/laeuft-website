@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Fux Bau AG",
+    "contact_name": "Fux Bau AG",
+    "email": "fuxbauag@bluewin.ch",
+    "website": "https://www.fuxbauag.ch",
+    "notes": "Bauunternehmen in Glis/Brig-Glis, gegründet 1972. Hoch- und Tiefbau, Neubauten, Umbauten, Renovationen. VR-Präsident Hubert Fux. Firmen-E-Mail läuft über Bluewin – Hinweis auf niedrige digitale Reife. Website basiert auf älterer Technologie."
+  },
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Garage Rottu AG",
+    "email": "info@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "Garage in Brig-Glis, gegründet 1992. Inhaber Pascal Ruppen (Übernahme 2020). Neuwagen, Occasionen, Service aller Marken. stop+go- und AMAG-Partner. 4.9/5 Sterne bei 150+ Google-Bewertungen. Website nutzt HTML 4.01 Transitional und PHP – technisch veraltet."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Weinschmiede Salgesch",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Bio-zertifiziertes Familienweingut in Salgesch, gegründet 1959. Geführt von Brüdern Reinhard und Christian Schmid. Preisgekrönte Weine (Bio Suisse Preis). Eigener Online-Shop auf der Website. VITISWISS- und AOC-Valais-zertifiziert."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit Standorten in Susten, Visp-Süd, Visp-Center und Stalden. Gegründet 2008 von Samuel Millius. Erstes 24/7-Gym im Oberwallis. Bietet Personal Training und Ernährungsberatung. Wachsendes Unternehmen mit mehreren Filialen."
+  },
+  {
+    "company": "Schweizer Skischule Saas-Fee",
+    "contact_name": "Schweizer Skischule Saas-Fee",
+    "email": "info@skischule-saas-fee.ch",
+    "website": "https://www.skischule-saas-fee.ch",
+    "notes": "Skischule am Dorfplatz 1 in Saas-Fee. Schulleiter Gabriel Anthamatten. Über 100 Schneesportlehrer. Ski-, Snowboard- und Telemark-Unterricht. Grosser Tourismusbetrieb im bekannten Walliser Ferienort."
+  }
+]
