@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Anton Imstepf GmbH",
+    "contact_name": "Michael Imstepf",
+    "email": "m.imstepf@imstepf-anton.ch",
+    "website": "https://www.imstepf-anton.ch",
+    "notes": "Familienbetrieb in Naters seit 1980, ca. 10 Mitarbeiter. Sanitär, Bedachung, Fassade und Spenglerei. Michael Imstepf ist Geschäftsführer mit Einzelunterschrift. Website vorhanden mit Basis-Struktur (Dienstleistungen, Referenzen, Kontakt, Impressum)."
+  },
+  {
+    "company": "Aletsch Elektro AG",
+    "contact_name": "Norbert Rittiner",
+    "email": "norbert.rittiner@aletsch-elektro.ch",
+    "website": "https://www.aletsch-elektro.ch",
+    "notes": "Elektroplanungs- und Installationsfirma in Naters (Furkastrasse 36A), gegründet 2001 von Ruth und Norbert Rittiner. Norbert Rittiner ist Unternehmensinhaber. Bildet Lehrlinge aus. Artikel über Nachfolgeplanung auf wirtschaft-wallis.ch gefunden."
+  },
+  {
+    "company": "Garage Transalpin SA",
+    "contact_name": "Garage Transalpin SA",
+    "email": "info@garagetransalpinsa.ch",
+    "website": "https://www.garagetransalpinsa.ch",
+    "notes": "Autogarage in Martigny-Croix seit 1962, ca. 12 Mitarbeiter. Vertritt Mercedes-Benz, Peugeot und JAC. Inhaber ist Alban Bunjaku. Website vorhanden mit Kontakt-, Service- und Fahrzeugseiten (französischsprachig)."
+  },
+  {
+    "company": "Yess Fitness",
+    "contact_name": "Yess Fitness",
+    "email": "yessfitness@hotmail.com",
+    "website": "https://www.yess-fitness.ch",
+    "notes": "Fitness-Center in Sierre (Route de la Monderèche 18). Inhaber ist Jan Van Heirbeeck. Geschäfts-E-Mail läuft über Hotmail-Adresse. Mehrere Domains im Umlauf: yess-fitness.ch, yess-fitness.org, fitness-yess.com — uneinheitlicher Webauftritt."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Weinschmiede Salgesch",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Familien-Weingut in Salgesch seit 1959, 2 Hektar Rebfläche (Salgesch und Sierre). Geführt von Brüdern Reinhard und Christian Schmid. Produziert Grand Cru Salgesch Weine. Website vorhanden mit Online-Shop für Weinbestellung."
+  }
+]
