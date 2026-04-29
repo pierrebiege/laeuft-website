@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage St. Christophe AG",
+    "contact_name": "Willy Marner",
+    "email": "willy.marner@garage-christophe.ch",
+    "website": "https://www.garage-christophe.ch",
+    "notes": "Autogarage in Visp, Kantonsstrasse 73. Offizieller Ford-, Subaru- und Nissan-Händler. Gegründet 1994, über 30 Jahre Erfahrung. Bietet Neuwagen, Occasionen, Ersatzteillager, Reifencenter und Service. Willy Marner ist Geschäftsführer. Hat zusätzlich eine separate Ford-Website (ford-christophe.ch). Team-Seite und YouTube-Kanal vorhanden."
+  },
+  {
+    "company": "Ritz und Partner Treuhand AG",
+    "contact_name": "Daniel Ritz",
+    "email": "d.ritz@tbritz.ch",
+    "website": "https://tbritz.ch",
+    "notes": "Treuhandbüro in Naters, Bahnhofstrasse 19. Mitglied EXPERTsuisse, registriert als Revisionsexperte bei der eidgenössischen Revisionsaufsichtsbehörde. Bietet Treuhand, Buchhaltung, Steuerberatung und Revision. Daniel Ritz ist Präsident und Direktor. Weitere Direktoren: Elias Linus Regotz und Aurel Ritz. Nutzt AbaWeb Treuhand."
+  },
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Familienweingut in Salgesch, Flantheystrasse 1. Gegründet 1962, dritte Generation, 13 Hektar Rebfläche. Geführt von Sandra und Olivier Mounir, Kellermeister Nicolas Gaudin. Über 200 Auszeichnungen an internationalen Weinwettbewerben. Online-Shop vorhanden mit Rotwein, Weisswein, Bio-Wein und alkoholfreiem Wein. Verkaufs- und Büroteam auf der Website aufgeführt."
+  },
+  {
+    "company": "Electro Nova GRS GmbH",
+    "contact_name": "German Schnyder",
+    "email": "german.schnyder@electro-nova.ch",
+    "website": "https://www.electro-nova.ch",
+    "notes": "Elektrofachgeschäft in Leukerbad seit 1972, mit Filiale in Bratsch. Hauptsitz Untere Maressenstrasse 13, Leukerbad. Bietet Elektroinstallation, Planung, Prüfung, 24-Stunden-Service, Radio-TV-Sat, Telefonanlagen, Garagentorantriebe und Staubsaugsysteme. Verkaufsladen mit Elektronikartikeln. Geführt von Narcisse Russi und German Schnyder. Deckt den gesamten Bezirk Leuk ab."
+  },
+  {
+    "company": "Bäckerei Fuchs AG",
+    "contact_name": "Bäckerei Fuchs AG",
+    "email": "info@fuchs-zermatt.ch",
+    "website": "https://fuchs-zermatt.ch",
+    "notes": "Handwerksbäckerei in Zermatt, Familienbetrieb seit 1965, geführt von Philipp und Sandra Fuchs. 4 Standorte in Zermatt: Bahnhofstrasse 28 (Café und Shop), Bahnhofstrasse 72, Kirchstrasse 46, Getwingstrasse 24 (Hauptgeschäft mit Bistro). Bietet handgemachte Backwaren, Schweizer Schokolade und Café-Betrieb. Website mehrsprachig (DE/EN). LinkedIn-Profil vorhanden."
+  }
+]
