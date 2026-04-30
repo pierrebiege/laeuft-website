@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Pascal Ruppen",
+    "email": "pascal.ruppen@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "Garage und Autoservice in Brig-Glis, seit über 30 Jahren aktiv. Inhaber und Geschäftsführer: Pascal Ruppen. Bietet Neuwagen, Occasionen und Reparaturservice. Team-Seite mit Mitarbeitenden vorhanden. Stop+go Partner."
+  },
+  {
+    "company": "Johanniterkellerei Kuonen & Grichting AG",
+    "contact_name": "Thomas Grichting",
+    "email": "thomas.grichting@johanniterkellerei.ch",
+    "website": "https://www.johanniterkellerei.ch",
+    "notes": "Traditionsreiche Weinkellerei in Salgesch, dritte Generation. Thomas Grichting ist Verwaltungsratspräsident und Oenologe, seit über 35 Jahren als Geschäftsführer tätig. Familien-AG. Website mit Team-Seite, Chronik und Weinportfolio."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallateur mit Standorten in Saas-Fee, Visp und Saas-Almagell. Gegründet 1981, seit 2014 als AG unter Markus Supersaxo (eidg. dipl. Elektroinstallateur). Bietet Smart-Home, E-Mobilität/Ladestationen, Elektroplanung und Elektrokontrollen."
+  },
+  {
+    "company": "Zurbriggen AG",
+    "contact_name": "Zurbriggen AG",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Schreinerei in Visp seit 1888, vierte Generation unter Geschäftsinhaber Roman Zurbriggen. Rund 40 Fachkräfte. Spezialisiert auf Fenster, Möbel und Innenausbau. Website mit Team-Seite, Firmengeschichte und Referenzen."
+  },
+  {
+    "company": "Romeo Pfammatter AG",
+    "contact_name": "Romeo Pfammatter AG",
+    "email": "mail@pfammatter-maler.ch",
+    "website": "https://www.pfammatter-maler.ch",
+    "notes": "Maler- und Gipsergeschäft in Ried-Brig/Termen, gegründet 1960 von Bruno Pfammatter. Seit 1994 unter Romeo Pfammatter, dritte Generation mit Janis Pfammatter seit 2006. Website mit Über-uns und Kontakt-Seite vorhanden."
+  }
+]
