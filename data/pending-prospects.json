@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rex J&N AG",
+    "contact_name": "Nicolas Truffer",
+    "email": "nicolas.truffer@garage-rex.ch",
+    "website": "https://www.garage-rex.ch",
+    "notes": "Toyota-Partner in Visp, Oberwallis. Nicolas Truffer ist Geschäftsführer und Verkaufsleiter. Bietet Fahrzeugverkauf, Werkstatt-Service und Reparaturen. Kantonsstrasse 34, 3930 Visp."
+  },
+  {
+    "company": "Cave du Rhodan - Mounir Weine",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Weingut in Salgesch, dritte Generation der Familie Mounir (Olivier und Sandra Mounir). Direktverkauf von Walliser Weinen ab Kellerei. Flantheystrasse 1, 3970 Salgesch."
+  },
+  {
+    "company": "Garage de Monthey SA",
+    "contact_name": "Jérôme Granger",
+    "email": "info@garagemonthey.ch",
+    "website": "https://garage-de-monthey-1870.digitalone.site",
+    "notes": "Offizieller Audi-Händler und VW-Servicepunkt in Monthey, Unterwallis. Gegründet 1979. Jérôme Granger ist Patron und Geschäftsführer. Website auf digitalone.site, einer sehr einfachen Plattform. Route de Collombey 55, 1870 Monthey."
+  },
+  {
+    "company": "Physiotherapie Erpen",
+    "contact_name": "Benjamin Erpen",
+    "email": "info@physiotherapieerpen.ch",
+    "website": "https://www.physiotherapieerpen.ch",
+    "notes": "Physiotherapie-Praxis direkt beim Bahnhof Visp, Oberwallis. Benjamin Erpen ist Inhaber. Team mit mehreren Physiotherapeuten, Praxis besteht seit mindestens 2017. Brückenweg 6, 3930 Visp."
+  },
+  {
+    "company": "gipsmalWERK GmbH",
+    "contact_name": "Yves Genolet",
+    "email": "info@gipsmalwerk.ch",
+    "website": "https://www.gipsmalwerk.ch",
+    "notes": "Maler- und Gipsergeschäft in Brig-Glis, Oberwallis. Yves Genolet (Jg. 1987) ist Inhaber und Geschäftsführer seit Gründung 2021. Kapuzinerstrasse 27, 3902 Brig-Glis."
+  }
+]
