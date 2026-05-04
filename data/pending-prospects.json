@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Théler SA",
+    "contact_name": "Christian Theler",
+    "email": "christian@thelerautos.ch",
+    "website": "https://www.thelerautos.ch/",
+    "notes": "FAKTEN: Familienbetrieb in Sion (Rue des Casernes 31) seit 1962, gegründet von den Brüdern Ulrich und Walter Theler. Inhaber Christian Theler. Opel-Agent. Website auf WordPress aufgebaut. Hat Seiten für Team, Services, Occasionen und Kontakt. Branche: Auto-Garage. Persönliche E-Mail gefunden."
+  },
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Daniel Agten",
+    "email": "daniel@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch/",
+    "notes": "FAKTEN: Immobilienagentur in Naters (Weingartenstrasse 32), gegründet 2009. Vermarktet Immobilien aller Art im Oberwallis. Hat Website mit Immobilien-Listings, Team-Seite und Über-uns-Seite. Daniel Agten ist als Geschäftsinhaber und Betriebsökonom auf LinkedIn gelistet. Persönliche E-Mail und Mobilnummer (079 260 39 88) gefunden."
+  },
+  {
+    "company": "O. Chanton AG – Chanton Weine",
+    "contact_name": "Mario Chanton",
+    "email": "weine@chanton.ch",
+    "website": "https://www.chanton.ch/",
+    "notes": "FAKTEN: Traditionsweingut in Visp (Kantonsstrasse 70) seit 1944, 3. Generation. Mario Chanton führt den Betrieb seit 2008. Kultiviert weltweit einzigartige Rebsorten. Website hat Online-Shop, Team-Seite (Mario und Marlis Chanton), Infos zu Weinbau und Kontaktseite. Branche: Weingut/Kellerei."
+  },
+  {
+    "company": "Restaurant Walliserstuba",
+    "contact_name": "Carmen Gratta",
+    "email": "info@walliserstuba.ch",
+    "website": "https://www.walliserstuba.ch/",
+    "notes": "FAKTEN: Restaurant im Herzen von Brig (Bahnhofstrasse 9). Inhaberin Carmen Gratta. Walliser und italienische Küche, Spezialitäten wie Raclette à discrétion, Käseschnitte und Fondue. Auf Tripadvisor mit 4.3/5 bewertet, Rang 6 von 55 Restaurants in Brig. Website hat Speisekarte, Kontakt-Seite und Tripadvisor-Verlinkung. Branche: Gastronomie."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "info@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch/",
+    "notes": "FAKTEN: Elektroinstallationsfirma in Saas-Almagell (Talstrasse 78), gegründet 2014 von Markus Supersaxo. Zweiter Standort in Saas-Fee (Bielmattstrasse 20). Website hat Team-Seite, Standorte, Dienstleistungen (Elektroinstallation, Elektroplanung). Bildet Lehrlinge aus (eigene Lernenden-Website). Branche: Elektro/Handwerk."
+  }
+]
