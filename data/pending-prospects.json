@@ -33,5 +33,40 @@
     "email": "info@elektrosupersaxo.ch",
     "website": "https://elektrosupersaxo.ch/",
     "notes": "FAKTEN: Elektroinstallationsfirma in Saas-Almagell (Talstrasse 78), gegründet 2014 von Markus Supersaxo. Zweiter Standort in Saas-Fee (Bielmattstrasse 20). Website hat Team-Seite, Standorte, Dienstleistungen (Elektroinstallation, Elektroplanung). Bildet Lehrlinge aus (eigene Lernenden-Website). Branche: Elektro/Handwerk."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "François Stefan Hurni",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch/",
+    "notes": "FAKTEN: Bauunternehmen in Brig (Hofjistrasse 5), gegründet 1985 von Mathias Bellwald. Seit 2021 von François Stefan Hurni geführt. Ca. 70 Mitarbeiter. Spezialisiert auf Renovationen, Schadstoffsanierungen, Rückbau und Tiefbau. Website wurde von indual GmbH mit Custom CMS neu erstellt. Hat Über-uns-Seite und Kontaktseite. Branche: Bauunternehmen."
+  },
+  {
+    "company": "Ruffener Wohn- & Küchenstudio GmbH",
+    "contact_name": "Kurt Ruffener",
+    "email": "info@ruffener.ch",
+    "website": "https://www.ruffener.ch/",
+    "notes": "FAKTEN: Möbel- und Küchenstudio in Raron (Bahnhofstrasse 27), Familienunternehmen seit über 30 Jahren. Inhaber Stefanie & Kurt Ruffener. Bietet bulthaup-Küchen, Designermöbel und ergonomische Büromöbel. Website hat Team-/Kontakt-Seite. Auf Facebook und ProvenExpert präsent. Branche: Möbel/Inneneinrichtung."
+  },
+  {
+    "company": "Treuhand & Immobilien Dala GmbH",
+    "contact_name": "Gilbert Loretan",
+    "email": "immodala@bluewin.ch",
+    "website": "https://www.immodala.ch/",
+    "notes": "FAKTEN: Treuhand- und Immobilienverwaltung in Leukerbad (Kurparkstrasse 24). Geschäftsführer Gilbert Loretan. Bietet Buchhaltung, Immobilienverwaltung und -verkauf. Website mit Immobilien-Listings und Dienstleistungen. Nutzt Bluewin-E-Mail als Geschäftskontakt. Branche: Treuhand/Immobilien."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber AG",
+    "contact_name": "Alexander Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch/",
+    "notes": "FAKTEN: Traditionsbäckerei in Stalden (Gewerbestrasse 18), seit 1990 von Alexander und Renate Zuber geführt. Über 60 Mitarbeiter, mehrere Filialen im Oberwallis. 750m² Produktionsfläche seit 2011. 25-30 Brotsorten täglich. Auszeichnung Ritter des guten Brotes seit 1991. Website auf veralteter Zope-Server-Technologie. Instagram-Präsenz vorhanden. Branche: Bäckerei/Lebensmittel."
+  },
+  {
+    "company": "Schweizer Skischule Saas-Fee",
+    "contact_name": "Gabriel Anthamatten",
+    "email": "info@skischule-saas-fee.ch",
+    "website": "https://www.skischule-saas-fee.ch/",
+    "notes": "FAKTEN: Offizielle Schweizer Skischule in Saas-Fee (Dorfplatz 1). Kontaktperson Gabriel Anthamatten. Bietet Ski- und Snowboard-Kurse für Kinder und Erwachsene, Privat- und Gruppenkurse. Website hat Team-Seite und Über-uns-Seite. Telefonisch und per E-Mail erreichbar Mai bis November. Branche: Tourismus/Skischule."
   }
 ]
