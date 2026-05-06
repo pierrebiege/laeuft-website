@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "GEHRIG Steuerberatung GmbH",
+    "contact_name": "Stefan Gehrig",
+    "email": "info@gehste.ch",
+    "website": "https://gehste.ch/",
+    "notes": "Steuerberatung in Visp (Bahnhofstrasse 10). Inhaber Stefan Gehrig, eidg. dipl. Steuerexperte. Berät Privatpersonen und KMU im Oberwallis. Branche: Treuhand/Steuerberatung."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Christian Schmid",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch/",
+    "notes": "Weingut in Salgesch (Tschütrigstrasse 27), geführt von Brüdern Reinhard & Christian Schmid, gegründet 1959. Bieten Degustationen und Weinverkauf ab Keller. Familienbetrieb. Branche: Weinbau/Kellerei."
+  },
+  {
+    "company": "Bacher + Schmidt Elektro AG",
+    "contact_name": "Daniel Schmidt",
+    "email": "box@bacher-schmidt.ch",
+    "website": "https://www.bacher-schmidt.ch/",
+    "notes": "Elektroinstallationsfirma in Visp (Weingartenweg 6A) und Münster, gegründet 2000 von Daniel Schmidt und Tobias Bacher. 8 Mitarbeiter und 3 Lehrlinge. Bieten Elektroinstallationen, Smart Home, Lichtplanung. Branche: Elektro/Technik."
+  },
+  {
+    "company": "Maesano AG",
+    "contact_name": "Michel Maesano",
+    "email": "info@maesanobau.ch",
+    "website": "https://www.maesanobau.ch/",
+    "notes": "Bauunternehmen in Brig-Glis (Englischgruss-Strasse 1), Familienbetrieb mit ca. 30 Mitarbeitern. VR-Präsident Michel Maesano. Spezialisiert auf Bruchsteinmauern, Hochbau, Tiefbau, Spezialarbeiten. Branche: Baugewerbe."
+  },
+  {
+    "company": "Cristal Garage SA",
+    "contact_name": "Nicolas Rey",
+    "email": "direction@cristalgarage.ch",
+    "website": "https://www.cristalgarage.ch/",
+    "notes": "Autogarage in Martigny (Rue du Levant 108), Direktor Nicolas Rey. Konzessionär für Kia, Ford, Subaru, Mitsubishi seit 1987. Referenzgarage in der Westschweiz. Mehrere Abteilungen (Neuwagen, Occasionen, Werkstatt, Teile). Branche: Automobil/Garagist."
+  }
+]
