@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Daniel Agten",
+    "email": "daniel@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch",
+    "notes": "Immobilienagentur in Naters (Oberwallis), gegründet 2009. Daniel Agten ist Geschäftsinhaber und Immobilienbewerter CAS BFH mit Einzelunterschrift. Spezialisiert auf Kauf und Verkauf von Immobilien im Oberwallis. Team-Seite vorhanden mit individuellen Kontaktdaten der Mitarbeiter."
+  },
+  {
+    "company": "Hotel Walliserhof",
+    "contact_name": "Dominik Loretan",
+    "email": "loretan@walliserhof.ch",
+    "website": "https://walliserhof.ch",
+    "notes": "Familiengeführtes Wander- und Bikehotel in Leukerbad, geführt von Dominik und Margrit Loretan. Adresse: Rathausstrasse 38, 3954 Leukerbad. Betreibt zwei Domains (walliserhof.ch und walliserhof.eu). Im Handelsregister als Einzelfirma eingetragen."
+  },
+  {
+    "company": "Cristal Garage SA",
+    "contact_name": "Nicolas Rey",
+    "email": "direction@cristalgarage.ch",
+    "website": "https://www.cristalgarage.ch",
+    "notes": "Autogarage in Martigny mit ca. 15 Mitarbeitern. Offizieller Vertreter von Kia, Ford, Subaru und Mitsubishi. Nicolas Rey ist Administrateur unique (alleiniger Geschäftsführer) mit Einzelunterschrift. Adresse: Route du Levant 108, 1920 Martigny. Betreibt zusätzlich fordmartigny-cristalgaragesa.ch."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Reinhard & Christian Schmid",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Familiengeführtes Weingut in Salgesch (Weinregion Wallis), geführt von den Brüdern Reinhard und Christian Schmid. Adresse: Tschütrigstrasse 27, 3970 Salgesch. Team- und Kontaktseite vorhanden. Auf Falstaff und Swiss Wine gelistet."
+  },
+  {
+    "company": "ACG Treuhand AG",
+    "contact_name": "Christian Summermatter",
+    "email": "acgtreuhand@bluewin.ch",
+    "website": "https://acg-treuhand.ch",
+    "notes": "Treuhandbüro in Visp, spezialisiert auf Buchhaltung, Steuern, Finanzen und Revision. Christian Summermatter ist Verwaltungsratsmitglied. Adresse: Sägematte 6, 3930 Visp. Nutzt bluewin.ch E-Mail-Adresse statt eigener Domain-Mail."
+  }
+]
