@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch/",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit 4 Standorten (Visp-Center, Visp-Süd, Susten, Stalden). 24/7 geöffnet. Inhaber Samuel Millius ist im Handelsregister als Vertretungsberechtigter eingetragen und als Athletic & Performance Trainer tätig. Branche: Fitness. Tel: 079 742 69 28."
+  },
+  {
+    "company": "Cave St. Philippe",
+    "contact_name": "Philippe Constantin",
+    "email": "info@cave-st-philippe.ch",
+    "website": "https://www.cave-st-philippe.ch/",
+    "notes": "Weingut und Kellerei in Salgesch mit 7 Hektar eigener Rebfläche. Inhaber Philippe Constantin wird auf Falstaff als Winzer geführt. Bietet zusätzlich Bed & Breakfast an. Branche: Weingut/Tourismus. Adresse: Pachienstrasse 19, 3970 Salgesch. Tel: 027 455 72 36."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "François Stefan Hurni",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch/",
+    "notes": "Bauunternehmen in Glis/Brig, gegründet 1985. Rund 70 Mitarbeitende in der MB Gruppe. Bietet Renovationen, Sanierungen, Rückbau, Asbest-Sanierung, Hoch-/Tiefbau, Transporte & Recycling. 2021 von François Stefan Hurni übernommen und neu strukturiert. Branche: Bau. Adresse: Holowistrasse 65, 3902 Glis. Tel: 027 923 42 15."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber AG",
+    "contact_name": "Alexander Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch/",
+    "notes": "Familienbäckerei in Stalden, übernommen 1990 durch Alexander und Renate Zuber. Über 60 Voll- und Teilzeitmitarbeitende. Mehrere Filialen im Oberwallis (Stalden, Visp, Brig, Naters). Produktion an der Gewerbestrasse 18 in Stalden. Branche: Bäckerei/Gastronomie. Tel: 027 952 14 77."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "visp@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch/",
+    "notes": "Elektroinstallationsfirma in Visp, gegründet 1981 durch Armin Supersaxo in Saas-Fee. Markus Supersaxo ist Geschäftsführer seit 2014 (Umwandlung in AG). Bietet Elektroinstallationen, Elektrokontrollen und Gebäudeautomation. Niederlassungsleiter Visp: Marc Briggeler. Branche: Elektro/Gebäudetechnik. Adresse: Kantonsstrasse 73a, 3930 Visp. Tel: 027 958 16 30."
+  }
+]
