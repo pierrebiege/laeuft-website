@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Familienweingut in Salgesch, geführt von Olivier und Sandra Mounir. Biodynamischer Weinbau, über 7 Hektar Rebfläche in Salgesch, Miège und Sierre. Website mit Online-Shop und Kontaktseite vorhanden. Branche: Weingut/Weinhandel."
+  },
+  {
+    "company": "Kenzelmann Immobilien AG",
+    "contact_name": "Michael Seiler",
+    "email": "michael@kenzelmann.ch",
+    "website": "https://www.kenzelmann.ch",
+    "notes": "Immobilienagentur in Brig-Glis, seit über 50 Jahren im Geschäft, mittlerweile in der 3. Generation. Bietet Kauf, Verkauf, Bewertung und Verwaltung von Immobilien im Oberwallis. Team-Seite mit persönlichen E-Mail-Adressen vorhanden. Michael Seiler ist im Management (M.A. Law & Economics). Branche: Immobilien."
+  },
+  {
+    "company": "Gempeler Haustechnik GmbH",
+    "contact_name": "Diego Gempeler",
+    "email": "gempeler.d@hotmail.ch",
+    "website": "https://www.gempeler-haustechnik.ch",
+    "notes": "Heizungs- und Sanitärbetrieb in Visp, Inhaber Diego Gempeler. Bietet Installationen und Reparaturendienst im Oberwallis. Nutzt Hotmail-Adresse als Geschäftsmail, was auf basale digitale Infrastruktur hinweist. Branche: Haustechnik/Sanitär."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber",
+    "contact_name": "Bäckerei-Konditorei A. Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "Familienbäckerei mit Hauptsitz in Stalden und Filialen in Brig, Naters und Visp. Gegründet 1990 von Alexander und Renate Zuber, über 60 Voll- und Teilzeitmitarbeitende. Alexander Zuber ist VR-Präsident, Sohn Andreas Juniorchef. Website mit Filialen-Übersicht, Spezialitäten und Kontaktformular. Branche: Bäckerei/Gastronomie."
+  },
+  {
+    "company": "Fitness Palace",
+    "contact_name": "Fitness Palace",
+    "email": "info@fitness-palace.ch",
+    "website": "https://fitness-palace.ch",
+    "notes": "Fitnessstudio in Brig seit den 1980er-Jahren, Betreiber René Imesch. Bietet Fitness, Wellness und Saunalandschaft auf zwei Etagen. Website mit Team-Seite, Galerie, Abo-Preisen und Impressum vorhanden. Adresse: Neue Simplonstrasse 38, 3900 Brig. Branche: Fitness/Wellness."
+  }
+]
