@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Fux Bau AG",
+    "contact_name": "Fux Bau AG",
+    "email": "fuxbauag@bluewin.ch",
+    "website": "https://www.fuxbauag.ch/",
+    "notes": "Bauunternehmen in Brig-Glis (Oberwallis), spezialisiert auf Hoch- und Tiefbau, Neubau, Umbau und Renovation. Seit 2 Generationen im Familienbesitz — Hubert Fux (Präsident), Armin Fux (Vizepräsident). Website hat nur 4 Unterseiten und wirkt sehr minimal. Firmen-E-Mail läuft über bluewin.ch statt eigene Domain. Adresse: Neuweg 13, 3902 Glis."
+  },
+  {
+    "company": "Garage City AG",
+    "contact_name": "Garage City AG",
+    "email": "info@garage-city.ch",
+    "website": "https://www.garage-city.ch/",
+    "notes": "Offizieller Toyota-Händler (Toyota Center Oberwallis) in Visp. Geführt von Inhaber Charly Ruppen, Iwan Burgener ist VR-Präsident. Kantonsstrasse 53, 3930 Visp. Branche: Automobil — Verkauf, Service, Reparaturen."
+  },
+  {
+    "company": "ChrisTOP-Park Fitnesscenter",
+    "contact_name": "ChrisTOP-Park Fitnesscenter",
+    "email": "info@christoppark.ch",
+    "website": "https://christoppark.ch/",
+    "notes": "Fitnesscenter in Visp, gegründet 1995, 600m² Trainingsfläche. Geführt von Christoph Oberholzer (Schweizer Bodybuilding-Champion 1988) und Elisabeth Schmidt Oberholzer. Website basiert auf WordPress. Kantonsstrasse 6A, 3930 Visp."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch/",
+    "notes": "Familien-Weingut und Kellerei in Salgesch (Oberwallis), gegründet 1956. 20 Hektar Rebfläche, ca. 40 verschiedene Weine. Geführt von Manfred und Damian Cina (2. Generation). National und international prämiert. Bietet Degustationen und Weintourismus an. Bahnhofstrasse 27, 3970 Salgesch."
+  },
+  {
+    "company": "Hôtel Alpes & Rhône",
+    "contact_name": "Hôtel Alpes & Rhône",
+    "email": "info@alpes-rhone.ch",
+    "website": "https://www.hotel-martigny.com/",
+    "notes": "3-Sterne Familienhotel in Martigny (Unterwallis), geführt seit 3 Generationen von Familie Kuonen (Richard und Otto Kuonen). Bietet Hotelzimmer, Konferenzräume, Restaurant und Thermalbad-Pauschalen. Avenue du Grand St-Bernard 11, 1920 Martigny."
+  }
+]
