@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Johanniterkellerei Kuonen & Grichting AG",
+    "contact_name": "Thomas Grichting",
+    "email": "thomas.grichting@johanniterkellerei.ch",
+    "website": "https://www.johanniterkellerei.ch",
+    "notes": "Weingut und Kellerei in Salgesch, gegründet 1913 — älteste Kellerei in Salgesch. Familienbetrieb in 3. Generation. Thomas Grichting ist VR-Präsident, Geschäftsführer und Oenologe, leitet den Betrieb seit über 35 Jahren. Bewirtschaften Weinberge in der Region Salgesch. Website vorhanden unter johanniterkellerei.ch."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallations-Unternehmen mit Standorten in Saas-Fee und Saas-Almagell. Gegründet 1981 als Einzelfirma von Armin Supersaxo, seit 2014 als AG unter Sohn Markus Supersaxo. Bietet Elektroinstallationen, Smart Home/Automation, E-Mobilität/Ladestationen, Elektrokontrollen und IT-Dienstleistungen. Familienbetrieb in 2. Generation."
+  },
+  {
+    "company": "Schreinerei Zurbriggen AG",
+    "contact_name": "Schreinerei Zurbriggen AG",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Schreinerei in Visp, gegründet 1888, geführt in 4. Generation von Geschäftsinhaber Roman Zurbriggen. Rund 40 Fachkräfte. Spezialisiert auf Fenster, Möbel und individuellen Innenausbau. Website vorhanden unter zurbriggen.net. Keine persönliche E-Mail des Inhabers gefunden."
+  },
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Garage Rottu AG",
+    "email": "info@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "Garage in Brig-Glis, seit über 30 Jahren aktiv. Inhaber und VR-Präsident: Pascal Ruppen. Neuwagen und Occasionen aller Marken, Service und Reparaturen. Partner von stop+go und AMAG (VW, Audi, Seat, Škoda). Kleines Team: Pascal Ruppen (Inhaber), Chantal Ruppen (Administration), Marinko Tolic (KFZ-Fachmann/Werkstattleiter). Ca. 30 Occasionen am Standort."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "Mathias Bellwald AG",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch",
+    "notes": "Bauunternehmen in Brig-Glis, gegründet 1985. 2021 von François Stefan Hurni übernommen und neu strukturiert. Rund 70 Mitarbeiter in der MB-Gruppe. Bietet Neubau, Renovationen, Sanierungen und Generalunternehmung im Wallis. Website vorhanden unter mb-bau.ch."
+  }
+]
