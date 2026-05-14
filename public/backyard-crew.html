@@ -176,7 +176,7 @@
     { id: "p4", name: "Honig (EL)", category: "other", kcal: 46, carbs: 12, sodium: 1, potassium: 8, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F36F}" },
     { id: "p5", name: "Gel", category: "gel", kcal: 100, carbs: 25, sodium: 50, potassium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "\u26A1" },
     { id: "p6", name: "Koffein-Gel", category: "gel", kcal: 100, carbs: 25, sodium: 50, potassium: 0, protein: 0, fluid: 0, caffeine: 75, emoji: "\u2615\u26A1" },
-    { id: "p17", name: "Caffeine Cap", category: "salt", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 50, emoji: "\u{1F48A}" },
+    { id: "p17", name: "Caffeine Cap 25mg", category: "salt", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 25, emoji: "\u{1F48A}" },
     { id: "p19", name: "Activator 200", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 25, caffeine: 200, emoji: "\u26A1" },
     { id: "p13", name: "Liquid Energy Pure", category: "gel", kcal: 197, carbs: 48, sodium: 250, potassium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F4A7}" },
     { id: "p14", name: "Liquid Energy Plus", category: "gel", kcal: 191, carbs: 48, sodium: 230, potassium: 100, protein: 0, fluid: 0, caffeine: 50, emoji: "\u26A1" },
@@ -688,6 +688,19 @@
     }
     .preset-tile.tapped { animation: pulse-add 0.4s ease-out; }
 
+    .preset-filter-tab {
+      border: 1px solid;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
     .tab-btn {
       background: transparent;
       border: none;
@@ -748,6 +761,169 @@
   const VitalGauge = ({ label, value, unit, target, min, max, color, status, sub, decimals = 0 }) => {
     const pct = target > 0 ? Math.min(100, value / target * 100) : 0;
     return /* @__PURE__ */ React.createElement("div", { className: `vital-gauge status-${status}` }, /* @__PURE__ */ React.createElement("div", { className: "gauge-fill", style: { background: color, height: `${pct}%` } }), /* @__PURE__ */ React.createElement("div", { className: "relative" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] uppercase tracking-wider", style: { color: "var(--text-3)" } }, label), /* @__PURE__ */ React.createElement("span", { style: { width: 6, height: 6, borderRadius: 999, background: status === "red" ? "var(--alert)" : status === "yellow" ? "var(--warn)" : "var(--ok)" } })), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold leading-none", style: { color } }, decimals ? value.toFixed(decimals) : Math.round(value), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, unit)), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] mt-1 bka-mono", style: { color: "var(--text-3)" } }, "Ziel ", min, "\u2013", max, sub ? ` \xB7 ${sub}` : "")));
+  };
+  const CREW_GUIDE = [
+    {
+      title: "Hyponatremie",
+      icon: "⚠️",
+      severity: "critical",
+      short: "Zu viel Wasser ohne Salz → lebensgef\xE4hrlich",
+      details: [
+        "Was: Natrium-Spiegel im Blut zu niedrig durch zu viel reines Wasser — Zellen schwellen an.",
+        "Symptome: Kopfschmerzen, \xDCbelkeit, Verwirrtheit, Krampfanf\xE4lle. Im Extremfall Hirn\xF6dem.",
+        "Verhindern: bei jedem Liter Wasser mindestens 400mg Natrium dazu (1 Salt Cap = 200mg, Br\xFChe-Tasse = 500mg).",
+        "Aktion: STOPP reines Wasser. Br\xFChe + Salzkapseln sofort. Bei Verwirrtheit: Abbruch + Arzt."
+      ]
+    },
+    {
+      title: "Geschwollene Finger",
+      icon: "\u{1F4A7}",
+      severity: "warn",
+      short: "Meist zu wenig Salz, selten zu viel",
+      details: [
+        "Wenn Ringe eng werden / Finger dick wirken → Wasser sammelt sich extrazellul\xE4r.",
+        "H\xE4ufigste Ursache: zu wenig Salz im Verh\xE4ltnis zur getrunkenen Fl\xFCssigkeit.",
+        "Aktion: mehr Salz, weniger reines Wasser. Br\xFChe statt Wasser anbieten.",
+        "Selten umgekehrt: bei extremer Salz-\xDCberdosierung Druckgef\xFChl — dann Wasser pur."
+      ]
+    },
+    {
+      title: "Rhabdomyolyse",
+      icon: "\u{1F6A8}",
+      severity: "critical",
+      short: "Cola-farbener Urin = SOFORT Abbruch + Klinik",
+      details: [
+        "Was: Muskelfasern zerfallen, Myoglobin geht ins Blut und \xFCberlastet die Nieren.",
+        "Symptome: extrem dunkler (Cola-/Tee-farbener) Urin, Muskelschw\xE4che, Schmerzen die nicht weggehen.",
+        "Risiko h\xF6her bei: Dehydration, Hitze, zu wenig Carbs, NSAIDs (Ibuprofen/Voltaren).",
+        "Verhindern: konstant trinken + Salz, Carbs nicht abfallen lassen, KEINE Ibuprofen-Schmerzmittel.",
+        "WICHTIG: Cola-Urin = SOFORTIGER Abbruch und ins Krankenhaus. Kein Diskutieren."
+      ]
+    },
+    {
+      title: "Muskelschmerzen",
+      icon: "\u{1F4AA}",
+      severity: "info",
+      short: "Foam Roller / Massagepistole zwischen den Runden",
+      details: [
+        "Triggerpunkte: Teigroller / Foam Roller, 60–90 Sek pro Muskelgruppe.",
+        "Massagepistole: nur auf Muskelb\xE4uche, NIE direkt auf Knochen oder Gelenk.",
+        "Bei akuter Entz\xFCndung (hei\xDF, geschwollen) → kein Roller, k\xFChlen statt reiben.",
+        "Tape: K-Tape pr\xE4ventiv f\xFCr empfindliche Stellen. Vor dem Schmerz anlegen, nicht erst danach."
+      ]
+    },
+    {
+      title: "Gelenkschmerzen",
+      icon: "\u{1F9B5}",
+      severity: "warn",
+      short: "Tape JA, Ibuprofen NEIN",
+      details: [
+        "Knie / Kn\xF6chel: KEIN Foam Roller direkt aufs Gelenk — nur umliegende Muskeln.",
+        "K-Tape: stabilisiert Knie, Achillessehne, ITB. Vorbeugend anlegen.",
+        "Schmerzmittel: NUR Paracetamol erlaubt.",
+        "KEIN Ibuprofen / Voltaren / Aspirin — erh\xF6ht Rhabdo-Risiko und Nierenbelastung massiv.",
+        "Bei einseitig stechendem Schmerz → abkl\xE4ren, kein 'durchbei\xDFen'."
+      ]
+    },
+    {
+      title: "Koffein-Strategie",
+      icon: "☕",
+      severity: "strategy",
+      short: "Erst Nacht 2–3, klein dosieren",
+      details: [
+        "Erst-Einsatz: Nacht 2 oder Nacht 3 — vorher kein Koffein wenn irgendwie m\xF6glich (Toleranz aufbauen).",
+        "Standard-Dosis: Caffeine Cap 25mg alle 2 Stunden in den m\xFCden Stunden (3–7 Uhr typisch).",
+        "Notfall-Boost: Activator 200 (200mg) NUR wenn klar ist, dass wir in <4 Runden ausscheiden — sonst Crash.",
+        "Halbwertszeit 5h — wenn Nacht 2 noch kommt: tags\xFCber nichts nach 14 Uhr.",
+        "Tracker im Detail-Bereich: 'Koffein aktiv' zeigt aktuellen Spiegel mit Decay."
+      ]
+    },
+    {
+      title: "Ablauf · Pierre im Zelt",
+      icon: "⛺",
+      severity: "workflow",
+      short: "Reihenfolge zwischen den Runden",
+      details: [
+        "1. Inbox-Sachen ablegen, ggf. chargen.",
+        "2. Ausziehen.",
+        "3. Barfu\xDF aufs Handtuch (Trockenzone).",
+        "4. Vor W\xE4rmestrahler · massieren · Nutrition.",
+        "5. Trocken anziehen, fix-fertig (au\xDFer Schuhe wenn nass).",
+        "6. Schlafsack / Liegestuhl — schlafen.",
+        "7. 3 Min vor Wecker nochmal essen / trinken.",
+        "8. Schuhe anziehen · massieren.",
+        "9. Inbox mitgeben.",
+        "10. 1 Min vor Start an die Linie.",
+        "Alle 12 Std bei Wohlbefinden Z\xE4hne putzen (morgens / abends)."
+      ]
+    },
+    {
+      title: "Ablauf · Pierre auf der Runde",
+      icon: "\u{1F3C3}",
+      severity: "workflow",
+      short: "Was die Crew macht w\xE4hrend Pierre l\xE4uft",
+      details: [
+        "1. Nasse Sachen aufh\xE4ngen.",
+        "2. Aufr\xE4umen.",
+        "3. Pause bis Halbzeit der Runde.",
+        "4. Ggf. Restock: Wasser, Strom, Essen.",
+        "5. Essen / Tee f\xFCr R\xFCckkehr vorbereiten.",
+        "6. In Empfang nehmen wenn gew\xFCnscht, sonst im Zelt warten."
+      ]
+    },
+    {
+      title: "Wetter & Backup",
+      icon: "\u{1F327}",
+      severity: "info",
+      short: "Brigerbad · Regen & K\xE4lte erwartet",
+      details: [
+        "Wetter: Regen und K\xE4lte erwartet (3–14°C).",
+        "Fu\xDFb\xE4der testen (warmes Wasser, Salz).",
+        "Kleiderst\xE4nder f\xFCr nasse Sachen — schnell aufh\xE4ngen lassen.",
+        "Handt\xFCcher f\xFCr Zelt-Reinigung bereithalten.",
+        "Backup: Wohnung 200m von der Startlinie als R\xFCckzugsort."
+      ]
+    }
+  ];
+  const SEVERITY_STYLE = {
+    critical: { bg: "rgba(248,113,113,0.08)", border: "var(--alert)", color: "var(--alert)" },
+    warn: { bg: "rgba(251,191,36,0.08)", border: "var(--warn)", color: "var(--warn)" },
+    info: { bg: "rgba(125,211,252,0.06)", border: "var(--border)", color: "var(--text-2)" },
+    strategy: { bg: "rgba(192,132,252,0.08)", border: "var(--caffeine)", color: "var(--caffeine)" },
+    workflow: { bg: "rgba(255,142,60,0.08)", border: "var(--accent)", color: "var(--accent)" }
+  };
+  const CrewGuideModal = ({ onClose }) => {
+    const [openIdx, setOpenIdx] = useState(0);
+    return /* @__PURE__ */ React.createElement("div", { className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4", style: { background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }, onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "bka-card", style: { maxWidth: 600, width: "100%", maxHeight: "90vh", overflowY: "auto", padding: 0 }, onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-4 py-3 sticky top-0", style: { background: "var(--bg-1)", borderBottom: "1px solid var(--border)", zIndex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-lg font-bold" }, "Crew Guide"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-1", onClick: onClose }, /* @__PURE__ */ React.createElement(X, { size: 20 }))), /* @__PURE__ */ React.createElement("div", { className: "p-3 space-y-2" }, CREW_GUIDE.map((item, i) => {
+      const s = SEVERITY_STYLE[item.severity];
+      const open = openIdx === i;
+      return /* @__PURE__ */ React.createElement("div", { key: i, style: { background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement("button", { onClick: () => setOpenIdx(open ? -1 : i), style: { width: "100%", textAlign: "left", padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, background: "transparent", border: "none", color: "var(--text)" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 22 } }, item.icon), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0 } }, /* @__PURE__ */ React.createElement("div", { className: "bka-display font-bold text-sm", style: { color: s.color } }, item.title), /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-70 mt-0.5" }, item.short)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-50" }, open ? "−" : "+")), open && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 12px 44px" } }, /* @__PURE__ */ React.createElement("ul", { className: "space-y-1.5 text-xs", style: { listStyle: "none", padding: 0, lineHeight: 1.5 } }, item.details.map((d, j) => /* @__PURE__ */ React.createElement("li", { key: j, style: { paddingLeft: 12, position: "relative" } }, /* @__PURE__ */ React.createElement("span", { style: { position: "absolute", left: 0, color: s.color } }, "•"), d)))));
+    })), /* @__PURE__ */ React.createElement("div", { className: "px-4 py-3", style: { borderTop: "1px solid var(--border)", background: "var(--bg-1)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 text-center italic" }, "Im Zweifel: anhalten, Crew fragen, Klinik. Backyard ist ein Spiel, kein Suizidauftrag."))));
+  };
+  const DonutGauge = ({ value, min, max, color, label, displayValue }) => {
+    const pct = max > 0 ? value / max * 100 : 0;
+    const clamped = Math.min(100, pct);
+    const r = 20;
+    const C = 2 * Math.PI * r;
+    const offset = C * (1 - clamped / 100);
+    const status = value > max ? "over" : value >= min ? "ok" : "under";
+    const ringColor = status === "over" ? "var(--alert)" : status === "under" ? color : color;
+    const opacity = status === "under" && pct < 30 ? 0.4 : 1;
+    return /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center justify-center" }, /* @__PURE__ */ React.createElement("div", { style: { position: "relative", width: 56, height: 56 } }, /* @__PURE__ */ React.createElement("svg", { width: 56, height: 56, viewBox: "0 0 56 56" }, /* @__PURE__ */ React.createElement("circle", { cx: 28, cy: 28, r, fill: "none", stroke: "var(--bg-3)", strokeWidth: 5 }), /* @__PURE__ */ React.createElement("circle", { cx: 28, cy: 28, r, fill: "none", stroke: ringColor, strokeOpacity: opacity, strokeWidth: 5, strokeDasharray: C, strokeDashoffset: offset, strokeLinecap: "round", transform: "rotate(-90 28 28)", style: { transition: "stroke-dashoffset 0.4s ease" } })), /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" } }, /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-bold", style: { fontSize: 12, color: "var(--text)", lineHeight: 1 } }, Math.round(pct), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 8, opacity: 0.6 } }, "%")))), /* @__PURE__ */ React.createElement("div", { className: "text-[9px] uppercase tracking-wider mt-1", style: { color: ringColor, opacity: 0.85 } }, label), /* @__PURE__ */ React.createElement("div", { className: "bka-mono text-[10px] opacity-60 leading-none mt-0.5" }, displayValue));
+  };
+  const StickyHeader = ({ consumed, targets, roundNumber, raceName, lastCrew, onInfoClick }) => {
+    const totals = useMemo(() => {
+      const t = { carbs: 0, sodium: 0, fluid: 0, protein: 0 };
+      for (const c of consumed || []) {
+        const q = c.quantity || 1;
+        t.carbs += (c.carbs || 0) * q;
+        t.sodium += (c.sodium || 0) * q;
+        t.fluid += (c.fluid || 0) * q;
+        t.protein += (c.protein || 0) * q;
+      }
+      return t;
+    }, [consumed]);
+    return /* @__PURE__ */ React.createElement("div", { className: "sticky z-30", style: { top: 0, margin: "0 -16px", padding: "10px 16px 12px", background: "var(--bg)", borderBottom: "1px solid var(--border)", boxShadow: "0 4px 12px -8px rgba(0,0,0,0.5)" } }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-2" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-xl font-bold leading-none" }, "R", roundNumber), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 uppercase tracking-wider" }, raceName)), /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, lastCrew, /* @__PURE__ */ React.createElement("button", { onClick: onInfoClick, className: "bka-btn-ghost", style: { padding: "4px 10px", border: "1px solid var(--border)", borderRadius: 999, fontSize: 12, fontWeight: 600, color: "var(--text-2)" }, title: "Crew Guide" }, "? Guide"))), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-4 gap-1" }, /* @__PURE__ */ React.createElement(DonutGauge, { value: totals.carbs, min: targets.carbsMin, max: targets.carbsMax, color: COLORS.carbs, label: "Carbs", displayValue: Math.round(totals.carbs) + "g" }), /* @__PURE__ */ React.createElement(DonutGauge, { value: totals.sodium, min: targets.sodiumMin, max: targets.sodiumMax, color: COLORS.sodium, label: "Natrium", displayValue: Math.round(totals.sodium) + "mg" }), /* @__PURE__ */ React.createElement(DonutGauge, { value: totals.protein, min: targets.proteinMin, max: targets.proteinMax, color: COLORS.protein, label: "Protein", displayValue: Math.round(totals.protein) + "g" }), /* @__PURE__ */ React.createElement(DonutGauge, { value: totals.fluid, min: targets.fluidMin, max: targets.fluidMax, color: COLORS.fluid, label: "Wasser", displayValue: totals.fluid >= 1e3 ? (totals.fluid / 1e3).toFixed(1) + "L" : totals.fluid + "ml" })));
   };
   const PercentBar = ({ label, value, min, max, unit, color, delta }) => {
     const status = value > max ? "over" : value >= min ? "ok" : "under";
@@ -1058,14 +1234,25 @@
     },
     v
   ))))));
+  const PRESET_FILTERS = [
+    { key: "all", label: "Alle", color: "var(--text-2)", test: () => true },
+    { key: "carbs", label: "Carbs", color: "#ff8e3c", test: (p) => (p.carbs || 0) >= 10 },
+    { key: "sodium", label: "Salz", color: "#7dd3fc", test: (p) => (p.sodium || 0) >= 100 },
+    { key: "fluid", label: "Wasser", color: "#60a5fa", test: (p) => (p.fluid || 0) >= 50 },
+    { key: "protein", label: "Protein", color: "#86efac", test: (p) => (p.protein || 0) >= 3 },
+    { key: "caffeine", label: "Koffein", color: "#c084fc", test: (p) => (p.caffeine || 0) > 0 }
+  ];
   const PresetGrid = ({ presets, onAdd }) => {
     const [tappedId, setTappedId] = useState(null);
+    const [filter, setFilter] = useState("all");
     const handleTap = (preset) => {
       onAdd(preset);
       setTappedId(preset.id);
       setTimeout(() => setTappedId(null), 400);
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2" }, presets.map((p) => /* @__PURE__ */ React.createElement("button", { key: p.id, className: `preset-tile ${tappedId === p.id ? "tapped" : ""}`, onClick: () => handleTap(p) }, /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 22 } }, p.emoji || "\u2022"), /* @__PURE__ */ React.createElement(Plus, { size: 14, style: { color: "var(--text-3)" } })), /* @__PURE__ */ React.createElement("div", { className: "bka-display font-semibold text-sm leading-tight mb-1.5" }, p.name), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-2 gap-y-0.5" }, p.carbs > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.carbs, unit: "g C", color: COLORS.carbs }), p.sodium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.sodium, unit: "mg Na", color: COLORS.sodium }), p.potassium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.potassium, unit: "mg K", color: COLORS.potassium }), p.fluid > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.fluid, unit: "ml", color: COLORS.fluid }), p.caffeine > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.caffeine, unit: "mg", color: COLORS.caffeine })))));
+    const activeFilter = PRESET_FILTERS.find((f) => f.key === filter) || PRESET_FILTERS[0];
+    const filtered = presets.filter(activeFilter.test);
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "flex gap-1 mb-2 overflow-x-auto", style: { scrollbarWidth: "none" } }, PRESET_FILTERS.map((f) => /* @__PURE__ */ React.createElement("button", { key: f.key, className: "preset-filter-tab", onClick: () => setFilter(f.key), style: { background: filter === f.key ? f.color : "transparent", color: filter === f.key ? "#0d0c0a" : f.color, borderColor: f.color, opacity: filter === f.key ? 1 : 0.7 } }, f.label))), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2" }, filtered.map((p) => /* @__PURE__ */ React.createElement("button", { key: p.id, className: `preset-tile ${tappedId === p.id ? "tapped" : ""}`, onClick: () => handleTap(p) }, /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 22 } }, p.emoji || "\u2022"), /* @__PURE__ */ React.createElement(Plus, { size: 14, style: { color: "var(--text-3)" } })), /* @__PURE__ */ React.createElement("div", { className: "bka-display font-semibold text-sm leading-tight mb-1.5" }, p.name), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-2 gap-y-0.5" }, p.carbs > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.carbs, unit: "g C", color: COLORS.carbs }), p.sodium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.sodium, unit: "mg Na", color: COLORS.sodium }), p.protein > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.protein, unit: "g P", color: COLORS.protein }), p.fluid > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.fluid, unit: "ml", color: COLORS.fluid }), p.caffeine > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.caffeine, unit: "mg", color: COLORS.caffeine }))))), filtered.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-50 text-center py-4" }, "Keine Items in dieser Kategorie"));
   };
   const CustomItemForm = ({ onAdd, onClose }) => {
     const [item, setItem] = useState({ name: "", carbs: "", sodium: "", potassium: "", fluid: "", caffeine: "", kcal: "", protein: "" });
@@ -1159,6 +1346,7 @@
   const RaceView = ({ race, presets, team, updateRace, finishRace }) => {
     const [showCustom, setShowCustom] = useState(false);
     const [showCrewModal, setShowCrewModal] = useState(false);
+    const [showGuide, setShowGuide] = useState(false);
     const [now, setNow] = useState(Date.now());
     useEffect(() => {
       const t = setInterval(() => setNow(Date.now()), 3e4);
@@ -1203,7 +1391,7 @@
       updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), closedRound, newRound] });
       setShowCrewModal(false);
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4 pb-32" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-1 pt-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold leading-none" }, "R", currentRound.number), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] opacity-50 uppercase tracking-wider" }, race.name)), lastCrewId && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "zuletzt"), /* @__PURE__ */ React.createElement(CrewBadge, { member: team.find((m) => m.id === lastCrewId), small: true }))), /* @__PURE__ */ React.createElement(PercentDashboard, { consumed: currentRound.consumed || [], targets: race.targets }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowCustom((s) => !s) }, showCustom ? /* @__PURE__ */ React.createElement(X, { size: 14 }) : /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " ", showCustom ? "Schliessen" : "Eigenes Item") }, "Quick-Add"), /* @__PURE__ */ React.createElement(PresetGrid, { presets, onAdd: addItem })), showCustom && /* @__PURE__ */ React.createElement(CustomItemForm, { onAdd: addItem, onClose: () => setShowCustom(false) }), /* @__PURE__ */ React.createElement(ConsumedList, { items: currentRound.consumed || [], onRemove: removeItem, onChangeQty: changeQty }), /* @__PURE__ */ React.createElement(FeelingPanel, { feeling: currentRound.feeling, onChange: updateFeeling }), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Notiz"), /* @__PURE__ */ React.createElement("textarea", { className: "bka-input", rows: 2, placeholder: "Beobachtungen, Wetter, Strategie ...", value: currentRound.notes || "", onChange: (e) => updateNotes(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Schlaf diese Runde (Min)"), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap items-center gap-2" }, [0, 5, 10, 15, 20, 30, 45].map((m) => /* @__PURE__ */ React.createElement("button", { key: m, className: `bka-segment bka-mono ${(currentRound.sleep || 0) === m ? "active" : ""}`, onClick: () => updateSleep(m) }, m)), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", style: { width: 80 }, type: "number", placeholder: "Min", value: currentRound.sleep || "", onChange: (e) => updateSleep(Number(e.target.value) || 0) }))), /* @__PURE__ */ React.createElement("div", { className: "pt-4 mt-2", style: { borderTop: "1px dashed var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3" }, "Details")), /* @__PURE__ */ React.createElement(AlertStrip, { race, now }), /* @__PURE__ */ React.createElement(LiveVitals, { race, now }), /* @__PURE__ */ React.createElement(RaceTotals, { race }), /* @__PURE__ */ React.createElement(TrendPanel, { race }), /* @__PURE__ */ React.createElement("div", { className: "fixed bottom-0 left-0 right-0 px-4 pb-4 pt-3", style: { background: "linear-gradient(to top, var(--bg) 60%, transparent)", zIndex: 30 } }, /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center text-base py-3", onClick: requestNextRound }, /* @__PURE__ */ React.createElement(Bell, { size: 18 }), " Runde abschliessen \u2192 R", currentRound.number + 1), /* @__PURE__ */ React.createElement("button", { className: "bka-btn justify-center px-4", onClick: finishRace }, /* @__PURE__ */ React.createElement(Square, { size: 16 })))), showCrewModal && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4 pb-32" }, /* @__PURE__ */ React.createElement(StickyHeader, { consumed: currentRound.consumed || [], targets: race.targets, roundNumber: currentRound.number, raceName: race.name, onInfoClick: () => setShowGuide(true), lastCrew: lastCrewId && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "zuletzt"), /* @__PURE__ */ React.createElement(CrewBadge, { member: team.find((m) => m.id === lastCrewId), small: true })) }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowCustom((s) => !s) }, showCustom ? /* @__PURE__ */ React.createElement(X, { size: 14 }) : /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " ", showCustom ? "Schliessen" : "Eigenes Item") }, "Quick-Add"), /* @__PURE__ */ React.createElement(PresetGrid, { presets, onAdd: addItem })), showCustom && /* @__PURE__ */ React.createElement(CustomItemForm, { onAdd: addItem, onClose: () => setShowCustom(false) }), /* @__PURE__ */ React.createElement(ConsumedList, { items: currentRound.consumed || [], onRemove: removeItem, onChangeQty: changeQty }), /* @__PURE__ */ React.createElement(FeelingPanel, { feeling: currentRound.feeling, onChange: updateFeeling }), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Notiz"), /* @__PURE__ */ React.createElement("textarea", { className: "bka-input", rows: 2, placeholder: "Beobachtungen, Wetter, Strategie ...", value: currentRound.notes || "", onChange: (e) => updateNotes(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Schlaf diese Runde (Min)"), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap items-center gap-2" }, [0, 5, 10, 15, 20, 30, 45].map((m) => /* @__PURE__ */ React.createElement("button", { key: m, className: `bka-segment bka-mono ${(currentRound.sleep || 0) === m ? "active" : ""}`, onClick: () => updateSleep(m) }, m)), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", style: { width: 80 }, type: "number", placeholder: "Min", value: currentRound.sleep || "", onChange: (e) => updateSleep(Number(e.target.value) || 0) }))), /* @__PURE__ */ React.createElement("div", { className: "pt-4 mt-2", style: { borderTop: "1px dashed var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3" }, "Details")), /* @__PURE__ */ React.createElement(AlertStrip, { race, now }), /* @__PURE__ */ React.createElement(LiveVitals, { race, now }), /* @__PURE__ */ React.createElement(RaceTotals, { race }), /* @__PURE__ */ React.createElement(TrendPanel, { race }), /* @__PURE__ */ React.createElement("div", { className: "fixed bottom-0 left-0 right-0 px-4 pb-4 pt-3", style: { background: "linear-gradient(to top, var(--bg) 60%, transparent)", zIndex: 30 } }, /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center text-base py-3", onClick: requestNextRound }, /* @__PURE__ */ React.createElement(Bell, { size: 18 }), " Runde abschliessen \u2192 R", currentRound.number + 1), /* @__PURE__ */ React.createElement("button", { className: "bka-btn justify-center px-4", onClick: finishRace }, /* @__PURE__ */ React.createElement(Square, { size: 16 })))), showGuide && /* @__PURE__ */ React.createElement(CrewGuideModal, { onClose: () => setShowGuide(false) }), showCrewModal && /* @__PURE__ */ React.createElement(
       CrewSelectModal,
       {
         team,
