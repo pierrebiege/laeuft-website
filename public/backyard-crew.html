@@ -182,12 +182,13 @@
     { id: "p12", name: "Oat Pack Macadamia", category: "bar", kcal: 243, carbs: 34, sodium: 24, potassium: 0, protein: 4, fluid: 0, caffeine: 0, emoji: "\u{1F330}" },
     { id: "p20", name: "Pizza Viertel", category: "other", kcal: 475, carbs: 50, sodium: 1e3, potassium: 250, protein: 19, fluid: 0, caffeine: 0, emoji: "\u{1F355}" },
     { id: "p21", name: "Nudeln Portion", category: "other", kcal: 175, carbs: 30, sodium: 200, potassium: 50, protein: 5, fluid: 0, caffeine: 0, emoji: "\u{1F35D}" },
-    { id: "p22", name: "Reis Portion", category: "other", kcal: 195, carbs: 40, sodium: 200, potassium: 50, protein: 4, fluid: 0, caffeine: 0, emoji: "\u{1F35A}" },
     { id: "p23", name: "Kartoffelp\xFCree", category: "other", kcal: 180, carbs: 25, sodium: 350, potassium: 350, protein: 3, fluid: 0, caffeine: 0, emoji: "\u{1F954}" },
     { id: "p24", name: "Br\xF6tchen", category: "other", kcal: 150, carbs: 30, sodium: 350, potassium: 70, protein: 5, fluid: 0, caffeine: 0, emoji: "\u{1F35E}" },
     { id: "p25", name: "Porridge", category: "other", kcal: 220, carbs: 35, sodium: 100, potassium: 200, protein: 8, fluid: 0, caffeine: 0, emoji: "\u{1F963}" },
     { id: "p8", name: "Br\xFChe Tasse", category: "liquid", kcal: 15, carbs: 1, sodium: 500, potassium: 150, protein: 1, fluid: 250, caffeine: 0, emoji: "\u{1F372}" },
-    { id: "p11", name: "Wasser", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 500, caffeine: 0, emoji: "\u{1F4A7}" }
+    { id: "p26", name: "Wasser 1dl", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 100, caffeine: 0, emoji: "\u{1F4A7}" },
+    { id: "p27", name: "Wasser Tasse", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 250, caffeine: 0, emoji: "\u{1F964}" },
+    { id: "p11", name: "Wasser 0.5L", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 500, caffeine: 0, emoji: "\u{1F4A7}" }
   ];
   const FEELING_METRICS = [
     { key: "energy", label: "Energie", low: "leer", high: "voll", icon: "\u26A1" },
@@ -949,22 +950,36 @@
       }
     )))));
   };
+  const CumulativeChart = ({ data, dataKey, label, color, totalText }) => {
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: color } }), /* @__PURE__ */ React.createElement("span", { className: "text-xs font-semibold" }, label)), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-base font-bold", style: { color } }, totalText), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "gesamt"))), /* @__PURE__ */ React.createElement("div", { style: { height: 90 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(AreaChart, { data, margin: { top: 4, right: 4, left: 0, bottom: 0 } }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "2 4", stroke: "var(--border)", vertical: false }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 9 }, tickLine: false, axisLine: false }), /* @__PURE__ */ React.createElement(YAxis, { stroke: "var(--text-3)", style: { fontSize: 9 }, width: 32, tickLine: false, axisLine: false }), /* @__PURE__ */ React.createElement(Tooltip, { contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 11, padding: "6px 8px" }, labelStyle: { color: "var(--text-3)", fontSize: 10 } }), /* @__PURE__ */ React.createElement(Area, { type: "monotone", dataKey, stroke: color, fill: color, fillOpacity: 0.2, strokeWidth: 2 })))));
+  };
   const TrendPanel = ({ race }) => {
     const targets = race.targets;
     const data = useMemo(
-      () => race.rounds.map((r) => {
-        const t = roundTotals(r);
-        return {
-          round: r.number,
-          carbs: Math.round(t.carbs),
-          sodium: Math.round(t.sodium),
-          potassium: Math.round(t.potassium),
-          fluid: Math.round(t.fluid)
-        };
-      }),
+      () => {
+        let cumFluid = 0;
+        let cumSleep = 0;
+        return race.rounds.map((r) => {
+          const t = roundTotals(r);
+          cumFluid += t.fluid;
+          cumSleep += r.sleep || 0;
+          return {
+            round: r.number,
+            carbs: Math.round(t.carbs),
+            sodium: Math.round(t.sodium),
+            potassium: Math.round(t.potassium),
+            fluid: Math.round(t.fluid),
+            fluidCum: Math.round(cumFluid),
+            sleep: r.sleep || 0,
+            sleepCum: cumSleep
+          };
+        });
+      },
       [race.rounds]
     );
     if (data.length < 1) return null;
+    const totalFluid = data[data.length - 1]?.fluidCum || 0;
+    const totalSleep = data[data.length - 1]?.sleepCum || 0;
     return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Trend \xB7 alle Runden (", data.length, ")"), /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ React.createElement(
       MiniTrendChart,
       {
@@ -1012,6 +1027,24 @@
         max: targets.fluidMax,
         color: COLORS.fluid,
         unit: "ml"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      CumulativeChart,
+      {
+        data,
+        dataKey: "fluidCum",
+        label: "Wasser gesamt (kumulativ)",
+        color: COLORS.fluid,
+        totalText: (totalFluid / 1e3).toFixed(2) + " L"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      CumulativeChart,
+      {
+        data,
+        dataKey: "sleepCum",
+        label: "Schlaf gesamt (kumulativ)",
+        color: COLORS.kcal,
+        totalText: Math.floor(totalSleep / 60) + "h " + (totalSleep % 60) + "m"
       }
     )));
   };
@@ -1165,14 +1198,18 @@
       const newRound = { ...currentRound, notes };
       updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
     };
+    const updateSleep = (sleep) => {
+      const newRound = { ...currentRound, sleep };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
     const requestNextRound = () => setShowCrewModal(true);
     const confirmRound = (crewId) => {
       const closedRound = { ...currentRound, endTime: Date.now(), crewedBy: crewId };
-      const newRound = { number: race.rounds.length + 1, startTime: Date.now(), consumed: [], feeling: {}, notes: "" };
+      const newRound = { number: race.rounds.length + 1, startTime: Date.now(), consumed: [], feeling: {}, notes: "", sleep: 0 };
       updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), closedRound, newRound] });
       setShowCrewModal(false);
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4 pb-32" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-1 pt-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold leading-none" }, "R", currentRound.number), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] opacity-50 uppercase tracking-wider" }, race.name)), lastCrewId && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "zuletzt"), /* @__PURE__ */ React.createElement(CrewBadge, { member: team.find((m) => m.id === lastCrewId), small: true }))), /* @__PURE__ */ React.createElement(PercentDashboard, { consumed: currentRound.consumed || [], targets: race.targets }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowCustom((s) => !s) }, showCustom ? /* @__PURE__ */ React.createElement(X, { size: 14 }) : /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " ", showCustom ? "Schliessen" : "Eigenes Item") }, "Quick-Add"), /* @__PURE__ */ React.createElement(PresetGrid, { presets, onAdd: addItem })), showCustom && /* @__PURE__ */ React.createElement(CustomItemForm, { onAdd: addItem, onClose: () => setShowCustom(false) }), /* @__PURE__ */ React.createElement(ConsumedList, { items: currentRound.consumed || [], onRemove: removeItem, onChangeQty: changeQty }), /* @__PURE__ */ React.createElement(FeelingPanel, { feeling: currentRound.feeling, onChange: updateFeeling }), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Notiz"), /* @__PURE__ */ React.createElement("textarea", { className: "bka-input", rows: 2, placeholder: "Beobachtungen, Wetter, Strategie ...", value: currentRound.notes || "", onChange: (e) => updateNotes(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "pt-4 mt-2", style: { borderTop: "1px dashed var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3" }, "Details")), /* @__PURE__ */ React.createElement(AlertStrip, { race, now }), /* @__PURE__ */ React.createElement(LiveVitals, { race, now }), /* @__PURE__ */ React.createElement(RaceTotals, { race }), /* @__PURE__ */ React.createElement(TrendPanel, { race }), /* @__PURE__ */ React.createElement("div", { className: "fixed bottom-0 left-0 right-0 px-4 pb-4 pt-3", style: { background: "linear-gradient(to top, var(--bg) 60%, transparent)", zIndex: 30 } }, /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center text-base py-3", onClick: requestNextRound }, /* @__PURE__ */ React.createElement(Bell, { size: 18 }), " Runde abschliessen \u2192 R", currentRound.number + 1), /* @__PURE__ */ React.createElement("button", { className: "bka-btn justify-center px-4", onClick: finishRace }, /* @__PURE__ */ React.createElement(Square, { size: 16 })))), showCrewModal && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4 pb-32" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-1 pt-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold leading-none" }, "R", currentRound.number), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] opacity-50 uppercase tracking-wider" }, race.name)), lastCrewId && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "zuletzt"), /* @__PURE__ */ React.createElement(CrewBadge, { member: team.find((m) => m.id === lastCrewId), small: true }))), /* @__PURE__ */ React.createElement(PercentDashboard, { consumed: currentRound.consumed || [], targets: race.targets }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowCustom((s) => !s) }, showCustom ? /* @__PURE__ */ React.createElement(X, { size: 14 }) : /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " ", showCustom ? "Schliessen" : "Eigenes Item") }, "Quick-Add"), /* @__PURE__ */ React.createElement(PresetGrid, { presets, onAdd: addItem })), showCustom && /* @__PURE__ */ React.createElement(CustomItemForm, { onAdd: addItem, onClose: () => setShowCustom(false) }), /* @__PURE__ */ React.createElement(ConsumedList, { items: currentRound.consumed || [], onRemove: removeItem, onChangeQty: changeQty }), /* @__PURE__ */ React.createElement(FeelingPanel, { feeling: currentRound.feeling, onChange: updateFeeling }), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Notiz"), /* @__PURE__ */ React.createElement("textarea", { className: "bka-input", rows: 2, placeholder: "Beobachtungen, Wetter, Strategie ...", value: currentRound.notes || "", onChange: (e) => updateNotes(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Schlaf diese Runde (Min)"), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap items-center gap-2" }, [0, 5, 10, 15, 20, 30, 45].map((m) => /* @__PURE__ */ React.createElement("button", { key: m, className: `bka-segment bka-mono ${(currentRound.sleep || 0) === m ? "active" : ""}`, onClick: () => updateSleep(m) }, m)), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", style: { width: 80 }, type: "number", placeholder: "Min", value: currentRound.sleep || "", onChange: (e) => updateSleep(Number(e.target.value) || 0) }))), /* @__PURE__ */ React.createElement("div", { className: "pt-4 mt-2", style: { borderTop: "1px dashed var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3" }, "Details")), /* @__PURE__ */ React.createElement(AlertStrip, { race, now }), /* @__PURE__ */ React.createElement(LiveVitals, { race, now }), /* @__PURE__ */ React.createElement(RaceTotals, { race }), /* @__PURE__ */ React.createElement(TrendPanel, { race }), /* @__PURE__ */ React.createElement("div", { className: "fixed bottom-0 left-0 right-0 px-4 pb-4 pt-3", style: { background: "linear-gradient(to top, var(--bg) 60%, transparent)", zIndex: 30 } }, /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center text-base py-3", onClick: requestNextRound }, /* @__PURE__ */ React.createElement(Bell, { size: 18 }), " Runde abschliessen \u2192 R", currentRound.number + 1), /* @__PURE__ */ React.createElement("button", { className: "bka-btn justify-center px-4", onClick: finishRace }, /* @__PURE__ */ React.createElement(Square, { size: 16 })))), showCrewModal && /* @__PURE__ */ React.createElement(
       CrewSelectModal,
       {
         team,
@@ -1269,7 +1306,7 @@
         createdAt: Date.now(),
         targets: { ...state.targets },
         team: [...state.team],
-        rounds: [{ number: 1, startTime: startTs, consumed: [], feeling: {}, notes: "" }]
+        rounds: [{ number: 1, startTime: startTs, consumed: [], feeling: {}, notes: "", sleep: 0 }]
       });
     };
     return /* @__PURE__ */ React.createElement("div", { className: "space-y-6" }, !activeRace && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-5" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Neues Rennen"), /* @__PURE__ */ React.createElement("div", { className: "space-y-3 mt-2" }, /* @__PURE__ */ React.createElement("input", { className: "bka-input", placeholder: "Name", value: raceForm.name, onChange: (e) => setRaceForm({ ...raceForm, name: e.target.value }) }), /* @__PURE__ */ React.createElement("input", { className: "bka-input", placeholder: "Ort", value: raceForm.location, onChange: (e) => setRaceForm({ ...raceForm, location: e.target.value }) }), /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary w-full justify-center py-3", onClick: launch }, /* @__PURE__ */ React.createElement(Play, { size: 16 }), " Rennen starten \xB7 Runde 1"), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 text-center" }, "Targets & Team werden mit dem Rennen verkn\xFCpft (Snapshot). Keine Bell-Logik \u2014 du klickst durch."))), activeRace && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4", style: { borderColor: "var(--accent)" } }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Aktives Rennen"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-xl font-bold mt-1" }, activeRace.name), /* @__PURE__ */ React.createElement("div", { className: "text-sm opacity-60 mt-0.5" }, activeRace.location, " \u2022 Runde ", activeRace.rounds.length, " l\xE4uft")), /* @__PURE__ */ React.createElement(TeamManager, { team: state.team, setTeam }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Backup"), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-2" }, /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-60 mb-1" }, "Alle Daten als JSON herunterladen oder von Datei laden. W\xE4hrend Race alle paar Runden sichern."), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn flex-1 justify-center", onClick: () => {
