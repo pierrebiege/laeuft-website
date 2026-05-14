@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BKA Crew">
+<meta name="theme-color" content="#0d0c0a">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0c0a'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='%23ff8e3c' font-family='sans-serif' font-size='40' font-weight='800'%3EBKA%3C/text%3E%3C/svg%3E">
+<title>BKA Crew</title>
+
+<!-- Pre-load fonts to avoid FOUC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind via Play CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- React 18 UMD -->
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+
+<!-- PropTypes (peer dep for Recharts) -->
+<script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+
+<!-- Recharts UMD -->
+<script crossorigin src="https://unpkg.com/recharts@2.13.3/umd/Recharts.js"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { background: #0d0c0a; color: #f5f1ea; font-family: 'Manrope', system-ui, sans-serif; }
+  #root { min-height: 100vh; }
+  #loading { display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Bricolage Grotesque', sans-serif; color: #ff8e3c; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+</style>
+
+</head>
+<body>
+
+<div id="root">
+  <div id="loading">heute ist ein richtig guter tag.</div>
+</div>
+
+<script>
+(() => {
+  if (!window.storage) {
+    window.storage = {
+      get: async (key) => {
+        try {
+          const v = localStorage.getItem(key);
+          return v !== null ? { key, value: v, shared: false } : null;
+        } catch (e) {
+          return null;
+        }
+      },
+      set: async (key, value) => {
+        try {
+          localStorage.setItem(key, value);
+          return { key, value, shared: false };
+        } catch (e) {
+          return null;
+        }
+      },
+      delete: async (key) => {
+        try {
+          localStorage.removeItem(key);
+          return { key, deleted: true, shared: false };
+        } catch (e) {
+          return null;
+        }
+      },
+      list: async (prefix) => {
+        try {
+          const keys = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (!prefix || k.startsWith(prefix)) keys.push(k);
+          }
+          return { keys, prefix, shared: false };
+        } catch (e) {
+          return { keys: [], prefix, shared: false };
+        }
+      }
+    };
+  }
+  const { useState, useEffect, useRef, useMemo, useCallback } = React;
+  const {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    CartesianGrid,
+    Legend,
+    ReferenceArea,
+    AreaChart,
+    Area
+  } = Recharts;
+  const _LucideIcon = ({ size = 16, strokeWidth = 2, children, ...props }) => React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    ...props
+  }, children);
+  const _path = (d) => React.createElement("path", { d });
+  const _line = (x1, y1, x2, y2) => React.createElement("line", { x1, y1, x2, y2 });
+  const _circle = (cx, cy, r) => React.createElement("circle", { cx, cy, r });
+  const _rect = (x, y, w, h, rx) => React.createElement("rect", { x, y, width: w, height: h, rx, ry: rx });
+  const _poly = (pts) => React.createElement("polyline", { points: pts });
+  const _polygon = (pts) => React.createElement("polygon", { points: pts });
+  const Plus = (p) => React.createElement(_LucideIcon, p, _line(12, 5, 12, 19), _line(5, 12, 19, 12));
+  const Minus = (p) => React.createElement(_LucideIcon, p, _line(5, 12, 19, 12));
+  const X = (p) => React.createElement(_LucideIcon, p, _line(18, 6, 6, 18), _line(6, 6, 18, 18));
+  const Check = (p) => React.createElement(_LucideIcon, p, _poly("20 6 9 17 4 12"));
+  const Bell = (p) => React.createElement(_LucideIcon, p, _path("M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"), _path("M10.3 21a1.94 1.94 0 0 0 3.4 0"));
+  const ChevronRight = (p) => React.createElement(_LucideIcon, p, _poly("9 18 15 12 9 6"));
+  const ArrowLeft = (p) => React.createElement(_LucideIcon, p, _line(19, 12, 5, 12), _poly("12 19 5 12 12 5"));
+  const Download = (p) => React.createElement(_LucideIcon, p, _path("M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"), _poly("7 10 12 15 17 10"), _line(12, 15, 12, 3));
+  const Play = (p) => React.createElement(_LucideIcon, p, _polygon("6 3 20 12 6 21 6 3"));
+  const Square = (p) => React.createElement(_LucideIcon, p, _rect(3, 3, 18, 18, 2));
+  const Trash2 = (p) => React.createElement(_LucideIcon, p, _poly("3 6 5 6 21 6"), _path("M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"), _line(10, 11, 10, 17), _line(14, 11, 14, 17));
+  const Edit2 = (p) => React.createElement(_LucideIcon, p, _path("M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"));
+  const Settings = (p) => React.createElement(_LucideIcon, p, _path("M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"), _circle(12, 12, 3));
+  const History = (p) => React.createElement(_LucideIcon, p, _path("M3 12a9 9 0 1 0 9-9 9.74 9.74 0 0 0-6.74 2.74L3 8"), _path("M3 3v5h5"), _path("M12 7v5l4 2"));
+  const Activity = (p) => React.createElement(_LucideIcon, p, _poly("22 12 18 12 15 21 9 3 6 12 2 12"));
+  const Target = (p) => React.createElement(_LucideIcon, p, _circle(12, 12, 10), _circle(12, 12, 6), _circle(12, 12, 2));
+  const STORAGE_KEY = "backyard-crew-state-v5";
+  const LEGACY_KEYS = ["backyard-crew-state-v4", "backyard-crew-state-v3", "backyard-crew-state-v2", "backyard-crew-state-v1"];
+  const CAFFEINE_HALF_LIFE_MIN = 300;
+  const DEFAULT_TARGETS = {
+    bodyWeight: 75,
+    // kg, editable
+    carbsPerHour: 115,
+    // g/h — midpoint of 80-150 range
+    carbsMin: 80,
+    carbsMax: 150,
+    sodiumPerHour: 500,
+    // mg/h — ACSM 300-600
+    sodiumMin: 350,
+    sodiumMax: 800,
+    potassiumPerHour: 150,
+    // mg/h — ACSM 80-200 für Ausdauer
+    potassiumMin: 50,
+    potassiumMax: 400,
+    fluidPerHour: 500,
+    // ml/h — drink to thirst, but trackable
+    fluidMin: 350,
+    fluidMax: 800,
+    sodiumPerLiterMin: 400,
+    // ratio Na:fluid below this = hypo risk
+    caffeineCurrentMax: 350,
+    // mg active in system
+    caffeineDailyMax: 400,
+    // mg per 24h
+    proteinPerHourMin: 3
+    // g/h — light, just to not drop too low
+  };
+  const DEFAULT_PRESETS = [
+    // name, category, kcal, carbs(g), sodium(mg), potassium(mg), protein(g), fluid(ml), caffeine(mg), emoji
+    { id: "p1", name: "S\xE4ckchen Mix", category: "bag", kcal: 212, carbs: 48, sodium: 350, potassium: 0, protein: 5, fluid: 0, caffeine: 0, emoji: "\u{1F961}" },
+    { id: "p2", name: "Carbo Fuel Bottle", category: "liquid", kcal: 320, carbs: 80, sodium: 250, potassium: 0, protein: 0, fluid: 500, caffeine: 0, emoji: "\u{1F964}" },
+    { id: "p16", name: "Carbo Fuel L\xF6ffel", category: "powder", kcal: 64, carbs: 16, sodium: 50, potassium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F944}" },
+    { id: "p3", name: "Salt Cap", category: "salt", kcal: 0, carbs: 0, sodium: 200, potassium: 50, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F9C2}" },
+    { id: "p4", name: "Honig (EL)", category: "other", kcal: 46, carbs: 12, sodium: 1, potassium: 8, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F36F}" },
+    { id: "p5", name: "Gel", category: "gel", kcal: 100, carbs: 25, sodium: 50, potassium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "\u26A1" },
+    { id: "p6", name: "Koffein-Gel", category: "gel", kcal: 100, carbs: 25, sodium: 50, potassium: 0, protein: 0, fluid: 0, caffeine: 75, emoji: "\u2615\u26A1" },
+    { id: "p17", name: "Caffeine Cap", category: "salt", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 50, emoji: "\u{1F48A}" },
+    { id: "p19", name: "Activator 200", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 25, caffeine: 200, emoji: "\u26A1" },
+    { id: "p13", name: "Liquid Energy Pure", category: "gel", kcal: 197, carbs: 48, sodium: 250, potassium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F4A7}" },
+    { id: "p14", name: "Liquid Energy Plus", category: "gel", kcal: 191, carbs: 48, sodium: 230, potassium: 100, protein: 0, fluid: 0, caffeine: 50, emoji: "\u26A1" },
+    { id: "p15", name: "Liquid Energy BCAA", category: "gel", kcal: 193, carbs: 48, sodium: 250, potassium: 110, protein: 0, fluid: 0, caffeine: 0, emoji: "\u{1F4AA}" },
+    { id: "p7", name: "Banane", category: "other", kcal: 105, carbs: 27, sodium: 1, potassium: 400, protein: 1, fluid: 0, caffeine: 0, emoji: "\u{1F34C}" },
+    { id: "p12", name: "Oat Pack Macadamia", category: "bar", kcal: 243, carbs: 34, sodium: 24, potassium: 0, protein: 4, fluid: 0, caffeine: 0, emoji: "\u{1F330}" },
+    { id: "p20", name: "Pizza Viertel", category: "other", kcal: 475, carbs: 50, sodium: 1e3, potassium: 250, protein: 19, fluid: 0, caffeine: 0, emoji: "\u{1F355}" },
+    { id: "p21", name: "Nudeln Portion", category: "other", kcal: 175, carbs: 30, sodium: 200, potassium: 50, protein: 5, fluid: 0, caffeine: 0, emoji: "\u{1F35D}" },
+    { id: "p22", name: "Reis Portion", category: "other", kcal: 195, carbs: 40, sodium: 200, potassium: 50, protein: 4, fluid: 0, caffeine: 0, emoji: "\u{1F35A}" },
+    { id: "p23", name: "Kartoffelp\xFCree", category: "other", kcal: 180, carbs: 25, sodium: 350, potassium: 350, protein: 3, fluid: 0, caffeine: 0, emoji: "\u{1F954}" },
+    { id: "p24", name: "Br\xF6tchen", category: "other", kcal: 150, carbs: 30, sodium: 350, potassium: 70, protein: 5, fluid: 0, caffeine: 0, emoji: "\u{1F35E}" },
+    { id: "p25", name: "Porridge", category: "other", kcal: 220, carbs: 35, sodium: 100, potassium: 200, protein: 8, fluid: 0, caffeine: 0, emoji: "\u{1F963}" },
+    { id: "p8", name: "Br\xFChe Tasse", category: "liquid", kcal: 15, carbs: 1, sodium: 500, potassium: 150, protein: 1, fluid: 250, caffeine: 0, emoji: "\u{1F372}" },
+    { id: "p11", name: "Wasser", category: "liquid", kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 500, caffeine: 0, emoji: "\u{1F4A7}" }
+  ];
+  const FEELING_METRICS = [
+    { key: "energy", label: "Energie", low: "leer", high: "voll", icon: "\u26A1" },
+    { key: "stomach", label: "Magen", low: "schlecht", high: "top", icon: "\u{1FAC3}" },
+    { key: "clarity", label: "Klarheit", low: "matt", high: "klar", icon: "\u{1F9E0}" },
+    { key: "pain", label: "Schmerz", low: "stark", high: "kein", icon: "\u{1F9B4}" },
+    { key: "mood", label: "Stimmung", low: "down", high: "top", icon: "\u{1F642}" },
+    { key: "hydration", label: "Hydration", low: "trocken", high: "voll", icon: "\u{1F4A7}" }
+  ];
+  const DEFAULT_TEAM = [
+    { id: "lea", name: "Lea", initials: "L", color: "#ff8e3c" },
+    { id: "daniel", name: "Daniel", initials: "D", color: "#7dd3fc" },
+    { id: "anes", name: "Anes", initials: "A", color: "#86efac" },
+    { id: "pierre", name: "Pierre", initials: "P", color: "#c084fc" }
+  ];
+  const COLORS = {
+    carbs: "#ff8e3c",
+    kcal: "#fbbf24",
+    sodium: "#7dd3fc",
+    potassium: "#fde047",
+    protein: "#86efac",
+    fluid: "#60a5fa",
+    caffeine: "#c084fc",
+    ok: "#86efac",
+    warn: "#fbbf24",
+    alert: "#f87171"
+  };
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const fmtDate = (ts) => {
+    if (!ts) return "";
+    return new Date(ts).toLocaleDateString("de-CH", { day: "2-digit", month: "short", year: "numeric" });
+  };
+  const safeStorage = {
+    async get(key) {
+      if (typeof window === "undefined" || !window.storage) return null;
+      try {
+        return await window.storage.get(key);
+      } catch {
+        return null;
+      }
+    },
+    async set(key, value) {
+      if (typeof window === "undefined" || !window.storage) return null;
+      try {
+        return await window.storage.set(key, value);
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    }
+  };
+  const DEFAULT_PRESETS_BY_NAME = new Map(
+    DEFAULT_PRESETS.map((p) => [p.name.toLowerCase(), p])
+  );
+  const migrate = (raw) => {
+    if (!raw) return null;
+    const s = { ...raw };
+    s.presets = (s.presets || []).map((p) => {
+      if ((p.name || "").toLowerCase() === "carbo fuel") {
+        const bottleDef = DEFAULT_PRESETS.find((d) => d.name === "Carbo Fuel Bottle");
+        if (bottleDef) return { ...bottleDef };
+      }
+      if ((p.name || "").toLowerCase() === "honig (tl)") {
+        const honigDef = DEFAULT_PRESETS.find((d) => d.name === "Honig (EL)");
+        if (honigDef) return { ...honigDef };
+      }
+      return p;
+    });
+    const DEPRECATED_PRESET_NAMES = ["tee+honig", "cola tasse"];
+    s.presets = s.presets.filter((p) => !DEPRECATED_PRESET_NAMES.includes((p.name || "").toLowerCase()));
+    s.presets = (s.presets || []).map((p) => {
+      const def = DEFAULT_PRESETS_BY_NAME.get((p.name || "").toLowerCase());
+      if (def) {
+        const result = { ...def, id: p.id || def.id, emoji: p.emoji || def.emoji };
+        for (const field of ["kcal", "carbs", "sodium", "potassium", "protein", "fluid", "caffeine"]) {
+          if (typeof p[field] === "number" && p[field] > 0) {
+            result[field] = p[field];
+          }
+        }
+        return result;
+      }
+      return {
+        carbs: 0,
+        fluid: 0,
+        caffeine: 0,
+        kcal: 0,
+        sodium: 0,
+        potassium: 0,
+        protein: 0,
+        ...p
+      };
+    });
+    const presentNames = new Set(s.presets.map((p) => (p.name || "").toLowerCase()));
+    for (const def of DEFAULT_PRESETS) {
+      if (!presentNames.has(def.name.toLowerCase())) {
+        s.presets.push({ ...def });
+      }
+    }
+    s.targets = { ...DEFAULT_TARGETS, ...s.targets || {} };
+    s.team = s.team && s.team.length ? s.team : DEFAULT_TEAM;
+    s.races = (s.races || []).map((r) => ({
+      ...r,
+      targets: { ...DEFAULT_TARGETS, ...r.targets || s.targets || {} },
+      rounds: (r.rounds || []).map((rd) => ({
+        ...rd,
+        consumed: (rd.consumed || []).map((c) => ({
+          carbs: 0,
+          fluid: 0,
+          caffeine: 0,
+          kcal: 0,
+          sodium: 0,
+          potassium: 0,
+          protein: 0,
+          ...c
+        }))
+      }))
+    }));
+    return s;
+  };
+  const defaultState = () => ({
+    presets: DEFAULT_PRESETS,
+    targets: DEFAULT_TARGETS,
+    team: DEFAULT_TEAM,
+    races: [],
+    currentRaceId: null
+  });
+  const roundTotals = (round) => {
+    const t = { kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 0 };
+    for (const c of round.consumed || []) {
+      const q = c.quantity || 1;
+      t.kcal += (c.kcal || 0) * q;
+      t.carbs += (c.carbs || 0) * q;
+      t.sodium += (c.sodium || 0) * q;
+      t.potassium += (c.potassium || 0) * q;
+      t.protein += (c.protein || 0) * q;
+      t.fluid += (c.fluid || 0) * q;
+      t.caffeine += (c.caffeine || 0) * q;
+    }
+    return t;
+  };
+  const raceTotals = (race) => {
+    const t = { kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 0 };
+    for (const r of race.rounds || []) {
+      const rt = roundTotals(r);
+      for (const k of Object.keys(t)) t[k] += rt[k];
+    }
+    return t;
+  };
+  const rollingIntake = (race, windowMin, now = Date.now()) => {
+    const cutoff = now - windowMin * 6e4;
+    const t = { kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 0 };
+    for (const r of race.rounds || []) {
+      for (const c of r.consumed || []) {
+        if ((c.addedAt || 0) >= cutoff) {
+          const q = c.quantity || 1;
+          t.kcal += (c.kcal || 0) * q;
+          t.carbs += (c.carbs || 0) * q;
+          t.sodium += (c.sodium || 0) * q;
+          t.potassium += (c.potassium || 0) * q;
+          t.protein += (c.protein || 0) * q;
+          t.fluid += (c.fluid || 0) * q;
+          t.caffeine += (c.caffeine || 0) * q;
+        }
+      }
+    }
+    return t;
+  };
+  const currentCaffeine = (race, now = Date.now()) => {
+    let total = 0;
+    for (const r of race.rounds || []) {
+      for (const c of r.consumed || []) {
+        const dose = (c.caffeine || 0) * (c.quantity || 1);
+        if (!dose) continue;
+        const minSince = (now - (c.addedAt || now)) / 6e4;
+        if (minSince < 0) continue;
+        total += dose * Math.pow(0.5, minSince / CAFFEINE_HALF_LIFE_MIN);
+      }
+    }
+    return total;
+  };
+  const roundsSinceLast = (race, key) => {
+    const rounds = race.rounds || [];
+    for (let i = rounds.length - 1; i >= 0; i--) {
+      const has = (rounds[i].consumed || []).some((c) => (c[key] || 0) * (c.quantity || 1) > 0);
+      if (has) return rounds.length - 1 - i;
+    }
+    return rounds.length;
+  };
+  const computeAlerts = (race, now = Date.now()) => {
+    const alerts = [];
+    const targets = race.targets || DEFAULT_TARGETS;
+    const last60 = rollingIntake(race, 60, now);
+    const totals = raceTotals(race);
+    const caff = currentCaffeine(race, now);
+    const roundsCount = race.rounds.length;
+    if (roundsCount >= 1) {
+      const ratio = last60.carbs / targets.carbsPerHour;
+      if (ratio < 0.4) {
+        alerts.push({
+          level: "red",
+          icon: "\u26A1",
+          title: "Energiedefizit",
+          msg: `Nur ${Math.round(last60.carbs)}g Carbs in 60min (Ziel ${targets.carbsPerHour}g)`,
+          action: `Jetzt ${Math.round(targets.carbsPerHour - last60.carbs)}g+ nachschieben`
+        });
+      } else if (ratio < 0.7) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u26A1",
+          title: "Carbs unter Ziel",
+          msg: `${Math.round(last60.carbs)}g/h, Ziel ${targets.carbsPerHour}g/h`,
+          action: "Carbs nachschieben (S\xE4ckchen, Gel oder Cola)"
+        });
+      } else if (ratio > 1.6) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1FAC3}",
+          title: "Sehr hohe Carb-Last",
+          msg: `${Math.round(last60.carbs)}g in 60min \u2014 Magen aufpassen`,
+          action: "N\xE4chste Runde leichter halten"
+        });
+      }
+    }
+    const carbGap = roundsSinceLast(race, "carbs");
+    if (carbGap >= 3) {
+      alerts.push({
+        level: "red",
+        icon: "\u{1F4C9}",
+        title: `Seit ${carbGap} Runden keine Carbs`,
+        msg: "Auch wenn er sich gut f\xFChlt \u2013 Glykogen leert sich linear.",
+        action: "Jetzt etwas anbieten, vor dem Bonk"
+      });
+    } else if (carbGap === 2) {
+      alerts.push({
+        level: "yellow",
+        icon: "\u{1F4C9}",
+        title: "2 Runden ohne Carbs",
+        msg: "Trend Richtung Defizit",
+        action: "Was Kleines anbieten"
+      });
+    }
+    if (roundsCount >= 1) {
+      const ratio = last60.sodium / targets.sodiumPerHour;
+      const overMax = last60.sodium / targets.sodiumMax;
+      if (ratio < 0.4) {
+        alerts.push({
+          level: "red",
+          icon: "\u{1F9C2}",
+          title: "Salzdefizit",
+          msg: `Nur ${Math.round(last60.sodium)}mg in 60min (Ziel ${targets.sodiumPerHour})`,
+          action: "Salzkapsel + Br\xFChe"
+        });
+      } else if (ratio < 0.7) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1F9C2}",
+          title: "Natrium niedrig",
+          msg: `${Math.round(last60.sodium)}mg/h`,
+          action: "Eine Salzkapsel oder Br\xFChe"
+        });
+      } else if (overMax > 2) {
+        alerts.push({
+          level: "red",
+          icon: "\u{1F9C2}",
+          title: "Salz massiv \xFCberdosiert",
+          msg: `${Math.round(last60.sodium)}mg/h \u2014 \xFCber 2\xD7 dem Maximum (${targets.sodiumMax})`,
+          action: "Salz STOPP. Wasser nachschieben, n\xE4chste 1-2 Runden kein Salz."
+        });
+      } else if (overMax > 1.5) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1F9C2}",
+          title: "Natrium-Last hoch",
+          msg: `${Math.round(last60.sodium)}mg/h (Max ${targets.sodiumMax})`,
+          action: "Pause mit Salzkapseln, mehr Wasser anbieten"
+        });
+      }
+    }
+    if (roundsCount >= 1) {
+      const ratio = last60.potassium / targets.potassiumPerHour;
+      const overMax = last60.potassium / targets.potassiumMax;
+      if (ratio < 0.3 && last60.sodium > targets.sodiumMin * 0.5) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1F34C}",
+          title: "Kalium niedrig",
+          msg: `Nur ${Math.round(last60.potassium)}mg/h (Ziel ${targets.potassiumPerHour})`,
+          action: "Banane, Br\xFChe oder Salt Cap (50mg K)"
+        });
+      } else if (overMax > 1.8) {
+        alerts.push({
+          level: "red",
+          icon: "\u{1F34C}",
+          title: "Kalium-\xDCberschuss",
+          msg: `${Math.round(last60.potassium)}mg/h \u2014 Hyperkali\xE4mie-Risiko`,
+          action: "Kalium-Quellen pausieren (Banane, Salt Caps)"
+        });
+      }
+    }
+    if (totals.fluid >= 1e3) {
+      const ratio = totals.sodium / (totals.fluid / 1e3);
+      if (ratio < 250) {
+        alerts.push({
+          level: "red",
+          icon: "\u26A0\uFE0F",
+          title: "Hyponatremie-Risiko",
+          msg: `Nur ${Math.round(ratio)}mg Na/L Fl\xFCssigkeit \u2014 gef\xE4hrlich`,
+          action: "STOPP Wasser. Salz + Br\xFChe sofort."
+        });
+      } else if (ratio < targets.sodiumPerLiterMin) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u26A0\uFE0F",
+          title: "Salz:Wasser kippt",
+          msg: `${Math.round(ratio)}mg/L (Ziel >${targets.sodiumPerLiterMin})`,
+          action: "Mehr Salz vor mehr Wasser"
+        });
+      } else if (ratio > 2e3) {
+        alerts.push({
+          level: "red",
+          icon: "\u26A0\uFE0F",
+          title: "Salz:Wasser extrem hoch",
+          msg: `${Math.round(ratio)}mg Na/L \u2014 viel zu salzig`,
+          action: "Wasser pur trinken, kein Salz nachschieben"
+        });
+      } else if (ratio > 1500) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u26A0\uFE0F",
+          title: "Verh\xE4ltnis salzlastig",
+          msg: `${Math.round(ratio)}mg/L (komfortabel: 400-1500)`,
+          action: "Mehr Fl\xFCssigkeit, weniger Salz"
+        });
+      }
+    }
+    if (caff > targets.caffeineCurrentMax) {
+      alerts.push({
+        level: "red",
+        icon: "\u2615",
+        title: "Koffein-Level hoch",
+        msg: `${Math.round(caff)}mg aktiv im System (max ${targets.caffeineCurrentMax})`,
+        action: "Pause \u2014 kein Koffein in n\xE4chsten 1-2 Runden"
+      });
+    } else if (caff > targets.caffeineCurrentMax * 0.75) {
+      alerts.push({
+        level: "yellow",
+        icon: "\u2615",
+        title: "Koffein-Spiegel steigt",
+        msg: `${Math.round(caff)}mg aktiv`,
+        action: "Top-ups dosieren"
+      });
+    }
+    if (roundsCount >= 1) {
+      if (last60.fluid < targets.fluidMin * 0.4) {
+        alerts.push({
+          level: "red",
+          icon: "\u{1F4A7}",
+          title: "Zu wenig getrunken",
+          msg: `Nur ${Math.round(last60.fluid)}ml/h (Min ${targets.fluidMin})`,
+          action: "Jetzt Wasser oder Br\xFChe anbieten (nicht zwingen, aber sichtbar hinstellen)"
+        });
+      } else if (last60.fluid < targets.fluidMin) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1F4A7}",
+          title: "Trinkmenge niedrig",
+          msg: `${Math.round(last60.fluid)}ml/h (Min ${targets.fluidMin}, Ziel ${targets.fluidPerHour})`,
+          action: "Schluck anbieten, Durst checken"
+        });
+      } else if (last60.fluid > targets.fluidMax * 1.8) {
+        alerts.push({
+          level: "yellow",
+          icon: "\u{1F4A7}",
+          title: "Sehr viel getrunken",
+          msg: `${Math.round(last60.fluid)}ml/h \u2014 passt aufs Salz aufpassen`,
+          action: "Salz dazugeben, nicht weiter Wasser pur"
+        });
+      }
+    }
+    return alerts.slice(0, 4);
+  };
+  const vitalStatus = (value, target, min, max) => {
+    if (value < min * 0.6) return "red";
+    if (value < min) return "yellow";
+    if (value > max * 1.3) return "yellow";
+    return "green";
+  };
+  const ThemeStyles = () => /* @__PURE__ */ React.createElement("style", null, `
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg: #0d0c0a;
+      --bg-1: #15130f;
+      --bg-2: #1c1916;
+      --bg-3: #24201c;
+      --border: #2e2924;
+      --border-2: #3a342d;
+      --text: #f5f1ea;
+      --text-2: #b6ad9d;
+      --text-3: #7a7164;
+      --accent: #ff8e3c;
+      --accent-dim: #c9712f;
+      --carbs: #ff8e3c;
+      --kcal: #fbbf24;
+      --sodium: #7dd3fc;
+      --potassium: #fde047;
+      --protein: #86efac;
+      --fluid: #60a5fa;
+      --caffeine: #c084fc;
+      --ok: #86efac;
+      --warn: #fbbf24;
+      --alert: #f87171;
+    }
+
+    .bka-root {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', system-ui, sans-serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 20% 0%, rgba(255,142,60,0.06), transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(125,211,252,0.04), transparent 40%);
+    }
+
+    .bka-display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; }
+    .bka-mono { font-family: 'JetBrains Mono', monospace; }
+
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea, select { font-family: inherit; }
+
+    .bka-input {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 8px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    .bka-input:focus { border-color: var(--accent); }
+
+    .bka-btn {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.12s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bka-btn:hover { border-color: var(--border-2); background: var(--bg-3); }
+    .bka-btn-primary { background: var(--accent); color: #1a0e02; border-color: var(--accent); }
+    .bka-btn-primary:hover { background: var(--accent-dim); border-color: var(--accent-dim); }
+    .bka-btn-ghost { background: transparent; border: 1px solid transparent; color: var(--text-2); }
+    .bka-btn-ghost:hover { color: var(--text); background: var(--bg-2); }
+    .bka-btn-danger:hover { color: var(--alert); border-color: var(--alert); }
+
+    .bka-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .bka-segment {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      padding: 10px 0;
+      flex: 1;
+      transition: all 0.1s;
+      font-weight: 600;
+    }
+    .bka-segment:first-child { border-radius: 8px 0 0 8px; }
+    .bka-segment:last-child { border-radius: 0 8px 8px 0; }
+    .bka-segment:not(:first-child) { border-left: none; }
+    .bka-segment.active {
+      background: var(--accent);
+      color: #1a0e02;
+      border-color: var(--accent);
+    }
+    .bka-segment:hover:not(.active) { background: var(--bg-2); color: var(--text); }
+
+    .preset-tile {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: left;
+      transition: all 0.12s;
+      position: relative;
+      overflow: hidden;
+    }
+    .preset-tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .preset-tile:active { transform: translateY(0); }
+
+    @keyframes pulse-add {
+      0% { background: var(--accent); }
+      100% { background: var(--bg-1); }
+    }
+    .preset-tile.tapped { animation: pulse-add 0.4s ease-out; }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-3);
+      padding: 12px 0;
+      flex: 1;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      position: relative;
+    }
+    .tab-btn.active { color: var(--text); }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 25%;
+      right: 25%;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .vital-gauge {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .vital-gauge.status-red { border-color: rgba(248,113,113,0.6); }
+    .vital-gauge.status-yellow { border-color: rgba(251,191,36,0.5); }
+    .vital-gauge.status-green { border-color: var(--border); }
+
+    .gauge-fill {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.08;
+    }
+
+    .alert-strip {
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .alert-red { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); }
+    .alert-yellow { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+  `);
+  const SectionLabel = ({ children, right }) => /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-2 px-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-[11px] uppercase tracking-[0.15em]", style: { color: "var(--text-3)" } }, children), right);
+  const MacroChip = ({ value, unit, color }) => /* @__PURE__ */ React.createElement("span", { className: "flex items-center gap-1" }, /* @__PURE__ */ React.createElement("span", { style: { width: 5, height: 5, borderRadius: 999, background: color, display: "inline-block" } }), /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]" }, value, /* @__PURE__ */ React.createElement("span", { className: "opacity-60 ml-0.5" }, unit)));
+  const VitalGauge = ({ label, value, unit, target, min, max, color, status, sub, decimals = 0 }) => {
+    const pct = target > 0 ? Math.min(100, value / target * 100) : 0;
+    return /* @__PURE__ */ React.createElement("div", { className: `vital-gauge status-${status}` }, /* @__PURE__ */ React.createElement("div", { className: "gauge-fill", style: { background: color, height: `${pct}%` } }), /* @__PURE__ */ React.createElement("div", { className: "relative" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] uppercase tracking-wider", style: { color: "var(--text-3)" } }, label), /* @__PURE__ */ React.createElement("span", { style: { width: 6, height: 6, borderRadius: 999, background: status === "red" ? "var(--alert)" : status === "yellow" ? "var(--warn)" : "var(--ok)" } })), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold leading-none", style: { color } }, decimals ? value.toFixed(decimals) : Math.round(value), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, unit)), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] mt-1 bka-mono", style: { color: "var(--text-3)" } }, "Ziel ", min, "\u2013", max, sub ? ` \xB7 ${sub}` : "")));
+  };
+  const PercentBar = ({ label, value, min, max, unit, color, delta }) => {
+    const status = value > max ? "over" : value >= min ? "ok" : "under";
+    const fillPercent = Math.min(130, max > 0 ? value / max * 100 : 0);
+    const minMarkerPercent = max > 0 ? min / max * 100 : 0;
+    const statusColor = status === "ok" ? COLORS.ok : status === "under" ? COLORS.warn : COLORS.alert;
+    const barColor = status === "ok" ? color : statusColor;
+    const displayValue = unit === "ml" && value >= 1e3 ? `${(value / 1e3).toFixed(2)}L` : `${Math.round(value)}${unit}`;
+    const rangeDisplay = unit === "ml" && max >= 1e3 ? `${min}\u2013${(max / 1e3).toFixed(1)}k${unit.replace("ml", "ml")}` : `${min}\u2013${max}${unit}`;
+    let statusText;
+    if (status === "ok") statusText = "\u2713 in Range";
+    else if (status === "under") statusText = `${Math.round(min - value)}${unit} bis Min`;
+    else statusText = `+${Math.round(value - max)}${unit} \xFCber Max`;
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs uppercase tracking-wider opacity-60" }, label), delta !== 0 && delta !== void 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.ok, opacity: 0.7 } }, "+", Math.round(delta), unit)), /* @__PURE__ */ React.createElement("div", { className: "bka-display flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-2xl font-bold tabular-nums", style: { color: barColor } }, displayValue), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50 bka-mono" }, "/ ", rangeDisplay))), /* @__PURE__ */ React.createElement("div", { className: "relative h-2.5 rounded-full overflow-hidden", style: { background: "var(--bg-3)" } }, /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "absolute top-0 bottom-0",
+        style: {
+          left: `${minMarkerPercent}%`,
+          right: 0,
+          background: COLORS.ok,
+          opacity: 0.12
+        }
+      }
+    ), /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "absolute top-0 bottom-0 rounded-full transition-all duration-300",
+        style: {
+          width: `${fillPercent}%`,
+          background: barColor,
+          maxWidth: "100%"
+        }
+      }
+    ), minMarkerPercent > 2 && minMarkerPercent < 98 && /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "absolute top-0 bottom-0 w-px",
+        style: { left: `${minMarkerPercent}%`, background: "rgba(255,255,255,0.3)" }
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline justify-between mt-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px]", style: { color: statusColor, opacity: 0.85 } }, statusText), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-40 bka-mono" }, Math.round(fillPercent), "% v. Max")));
+  };
+  const PercentDashboard = ({ consumed, targets, prevTotals }) => {
+    const totals = useMemo(() => {
+      const t = { carbs: 0, sodium: 0, potassium: 0, fluid: 0, caffeine: 0, kcal: 0, protein: 0 };
+      for (const c of consumed || []) {
+        const q = c.quantity || 1;
+        t.carbs += (c.carbs || 0) * q;
+        t.sodium += (c.sodium || 0) * q;
+        t.potassium += (c.potassium || 0) * q;
+        t.fluid += (c.fluid || 0) * q;
+        t.caffeine += (c.caffeine || 0) * q;
+        t.kcal += (c.kcal || 0) * q;
+        t.protein += (c.protein || 0) * q;
+      }
+      return t;
+    }, [consumed]);
+    const deltaCarbs = prevTotals ? totals.carbs - prevTotals.carbs : 0;
+    const deltaSodium = prevTotals ? totals.sodium - prevTotals.sodium : 0;
+    const deltaPotassium = prevTotals ? totals.potassium - prevTotals.potassium : 0;
+    const deltaFluid = prevTotals ? totals.fluid - prevTotals.fluid : 0;
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ React.createElement(
+      PercentBar,
+      {
+        label: "Carbs",
+        value: totals.carbs,
+        min: targets.carbsMin,
+        max: targets.carbsMax,
+        unit: "g",
+        color: COLORS.carbs,
+        delta: deltaCarbs
+      }
+    ), /* @__PURE__ */ React.createElement(
+      PercentBar,
+      {
+        label: "Natrium",
+        value: totals.sodium,
+        min: targets.sodiumMin,
+        max: targets.sodiumMax,
+        unit: "mg",
+        color: COLORS.sodium,
+        delta: deltaSodium
+      }
+    ), /* @__PURE__ */ React.createElement(
+      PercentBar,
+      {
+        label: "Kalium",
+        value: totals.potassium,
+        min: targets.potassiumMin,
+        max: targets.potassiumMax,
+        unit: "mg",
+        color: COLORS.potassium,
+        delta: deltaPotassium
+      }
+    ), /* @__PURE__ */ React.createElement(
+      PercentBar,
+      {
+        label: "Fl\xFCssigkeit",
+        value: totals.fluid,
+        min: targets.fluidMin,
+        max: targets.fluidMax,
+        unit: "ml",
+        color: COLORS.fluid,
+        delta: deltaFluid
+      }
+    ));
+  };
+  const LiveVitals = ({ race, now }) => {
+    const targets = race.targets;
+    const last60 = useMemo(() => rollingIntake(race, 60, now), [race, now]);
+    const caff = useMemo(() => currentCaffeine(race, now), [race, now]);
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Live \xB7 letzte 60 Min"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-2" }, /* @__PURE__ */ React.createElement(
+      VitalGauge,
+      {
+        label: "Carbs",
+        value: last60.carbs,
+        unit: "g/h",
+        target: targets.carbsPerHour,
+        min: targets.carbsMin,
+        max: targets.carbsMax,
+        color: COLORS.carbs,
+        status: vitalStatus(last60.carbs, targets.carbsPerHour, targets.carbsMin, targets.carbsMax)
+      }
+    ), /* @__PURE__ */ React.createElement(
+      VitalGauge,
+      {
+        label: "Natrium",
+        value: last60.sodium,
+        unit: "mg/h",
+        target: targets.sodiumPerHour,
+        min: targets.sodiumMin,
+        max: targets.sodiumMax,
+        color: COLORS.sodium,
+        status: vitalStatus(last60.sodium, targets.sodiumPerHour, targets.sodiumMin, targets.sodiumMax)
+      }
+    ), /* @__PURE__ */ React.createElement(
+      VitalGauge,
+      {
+        label: "Kalium",
+        value: last60.potassium,
+        unit: "mg/h",
+        target: targets.potassiumPerHour,
+        min: targets.potassiumMin,
+        max: targets.potassiumMax,
+        color: COLORS.potassium,
+        status: vitalStatus(last60.potassium, targets.potassiumPerHour, targets.potassiumMin, targets.potassiumMax)
+      }
+    ), /* @__PURE__ */ React.createElement(
+      VitalGauge,
+      {
+        label: "Fl\xFCssigkeit",
+        value: last60.fluid,
+        unit: "ml/h",
+        target: targets.fluidPerHour,
+        min: targets.fluidMin,
+        max: targets.fluidMax,
+        color: COLORS.fluid,
+        status: vitalStatus(last60.fluid, targets.fluidPerHour, targets.fluidMin, targets.fluidMax)
+      }
+    ), /* @__PURE__ */ React.createElement(
+      VitalGauge,
+      {
+        label: "Koffein aktiv",
+        value: caff,
+        unit: "mg",
+        target: targets.caffeineCurrentMax,
+        min: 0,
+        max: targets.caffeineCurrentMax,
+        color: COLORS.caffeine,
+        status: caff > targets.caffeineCurrentMax ? "red" : caff > targets.caffeineCurrentMax * 0.75 ? "yellow" : "green",
+        sub: `HW 5h`
+      }
+    )));
+  };
+  const MiniTrendChart = ({ data, dataKey, label, target, min, max, color, unit }) => {
+    const current = data[data.length - 1]?.[dataKey];
+    const status = current == null ? "green" : current < min * 0.6 ? "red" : current < min ? "yellow" : current > max * 1.3 ? "yellow" : "green";
+    const statusColor = status === "red" ? "var(--alert)" : status === "yellow" ? "var(--warn)" : "var(--ok)";
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: color } }), /* @__PURE__ */ React.createElement("span", { className: "text-xs font-semibold" }, label)), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-base font-bold", style: { color } }, current ?? "\u2013"), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "jetzt"), /* @__PURE__ */ React.createElement("span", { style: { width: 6, height: 6, borderRadius: 99, background: statusColor } }))), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono mb-1" }, "Baseline ", min, "\u2013", max, " ", unit), /* @__PURE__ */ React.createElement("div", { style: { height: 90 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(LineChart, { data, margin: { top: 4, right: 4, left: 0, bottom: 0 } }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "2 4", stroke: "var(--border)", vertical: false }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 9 }, tickLine: false, axisLine: false }), /* @__PURE__ */ React.createElement(YAxis, { stroke: "var(--text-3)", style: { fontSize: 9 }, width: 28, tickLine: false, axisLine: false }), /* @__PURE__ */ React.createElement(
+      Tooltip,
+      {
+        contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 11, padding: "6px 8px" },
+        labelStyle: { color: "var(--text-3)", fontSize: 10 }
+      }
+    ), /* @__PURE__ */ React.createElement(ReferenceArea, { y1: min, y2: max, fill: color, fillOpacity: 0.1, stroke: "none" }), /* @__PURE__ */ React.createElement(
+      Line,
+      {
+        type: "monotone",
+        dataKey,
+        stroke: color,
+        strokeWidth: 2,
+        dot: { r: 2.5, fill: color, strokeWidth: 0 },
+        activeDot: { r: 5, fill: color, stroke: "var(--bg)", strokeWidth: 2 }
+      }
+    )))));
+  };
+  const TrendPanel = ({ race }) => {
+    const targets = race.targets;
+    const data = useMemo(
+      () => race.rounds.map((r) => {
+        const t = roundTotals(r);
+        return {
+          round: r.number,
+          carbs: Math.round(t.carbs),
+          sodium: Math.round(t.sodium),
+          potassium: Math.round(t.potassium),
+          fluid: Math.round(t.fluid)
+        };
+      }),
+      [race.rounds]
+    );
+    if (data.length < 1) return null;
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Trend \xB7 alle Runden (", data.length, ")"), /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ React.createElement(
+      MiniTrendChart,
+      {
+        data,
+        dataKey: "carbs",
+        label: "Carbs pro Runde",
+        target: targets.carbsPerHour,
+        min: targets.carbsMin,
+        max: targets.carbsMax,
+        color: COLORS.carbs,
+        unit: "g"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      MiniTrendChart,
+      {
+        data,
+        dataKey: "sodium",
+        label: "Natrium pro Runde",
+        target: targets.sodiumPerHour,
+        min: targets.sodiumMin,
+        max: targets.sodiumMax,
+        color: COLORS.sodium,
+        unit: "mg"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      MiniTrendChart,
+      {
+        data,
+        dataKey: "potassium",
+        label: "Kalium pro Runde",
+        target: targets.potassiumPerHour,
+        min: targets.potassiumMin,
+        max: targets.potassiumMax,
+        color: COLORS.potassium,
+        unit: "mg"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      MiniTrendChart,
+      {
+        data,
+        dataKey: "fluid",
+        label: "Fl\xFCssigkeit pro Runde",
+        target: targets.fluidPerHour,
+        min: targets.fluidMin,
+        max: targets.fluidMax,
+        color: COLORS.fluid,
+        unit: "ml"
+      }
+    )));
+  };
+  const AlertStrip = ({ race, now }) => {
+    const alerts = useMemo(() => computeAlerts(race, now), [race, now]);
+    if (!alerts.length) {
+      return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-3 flex items-center gap-2 text-xs", style: { color: "var(--ok)" } }, /* @__PURE__ */ React.createElement(Check, { size: 14 }), " Alles im gr\xFCnen Bereich");
+    }
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, alerts.map((a, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: `alert-strip alert-${a.level}` }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 20 } }, a.icon), /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ React.createElement("div", { className: "font-bold text-sm", style: { color: a.level === "red" ? "var(--alert)" : "var(--warn)" } }, a.title), /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-80 mt-0.5" }, a.msg), /* @__PURE__ */ React.createElement("div", { className: "text-xs mt-1 font-semibold", style: { color: "var(--text)" } }, "\u2192 ", a.action)))));
+  };
+  const FeelingPanel = ({ feeling, onChange }) => /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-3" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Wie geht's"), FEELING_METRICS.map((m) => /* @__PURE__ */ React.createElement("div", { key: m.key }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between mb-1.5 px-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-sm font-semibold flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", null, m.icon), /* @__PURE__ */ React.createElement("span", null, m.label)), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] uppercase tracking-wider opacity-60" }, m.low, " \u2192 ", m.high)), /* @__PURE__ */ React.createElement("div", { className: "flex" }, [1, 2, 3, 4, 5].map((v) => /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      key: v,
+      className: `bka-segment bka-mono ${feeling?.[m.key] === v ? "active" : ""}`,
+      onClick: () => onChange(m.key, feeling?.[m.key] === v ? null : v)
+    },
+    v
+  ))))));
+  const PresetGrid = ({ presets, onAdd }) => {
+    const [tappedId, setTappedId] = useState(null);
+    const handleTap = (preset) => {
+      onAdd(preset);
+      setTappedId(preset.id);
+      setTimeout(() => setTappedId(null), 400);
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2" }, presets.map((p) => /* @__PURE__ */ React.createElement("button", { key: p.id, className: `preset-tile ${tappedId === p.id ? "tapped" : ""}`, onClick: () => handleTap(p) }, /* @__PURE__ */ React.createElement("div", { className: "flex items-start justify-between mb-1.5" }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 22 } }, p.emoji || "\u2022"), /* @__PURE__ */ React.createElement(Plus, { size: 14, style: { color: "var(--text-3)" } })), /* @__PURE__ */ React.createElement("div", { className: "bka-display font-semibold text-sm leading-tight mb-1.5" }, p.name), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-2 gap-y-0.5" }, p.carbs > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.carbs, unit: "g C", color: COLORS.carbs }), p.sodium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.sodium, unit: "mg Na", color: COLORS.sodium }), p.potassium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.potassium, unit: "mg K", color: COLORS.potassium }), p.fluid > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.fluid, unit: "ml", color: COLORS.fluid }), p.caffeine > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: p.caffeine, unit: "mg", color: COLORS.caffeine })))));
+  };
+  const CustomItemForm = ({ onAdd, onClose }) => {
+    const [item, setItem] = useState({ name: "", carbs: "", sodium: "", potassium: "", fluid: "", caffeine: "", kcal: "", protein: "" });
+    const [showExtras, setShowExtras] = useState(false);
+    const submit = () => {
+      if (!item.name.trim()) return;
+      onAdd({
+        id: uid(),
+        name: item.name.trim(),
+        kcal: Number(item.kcal) || 0,
+        carbs: Number(item.carbs) || 0,
+        sodium: Number(item.sodium) || 0,
+        potassium: Number(item.potassium) || 0,
+        protein: Number(item.protein) || 0,
+        fluid: Number(item.fluid) || 0,
+        caffeine: Number(item.caffeine) || 0,
+        custom: true
+      });
+      setItem({ name: "", carbs: "", sodium: "", potassium: "", fluid: "", caffeine: "", kcal: "", protein: "" });
+      onClose?.();
+    };
+    const setField = (k, v) => setItem((s) => ({ ...s, [k]: v }));
+    const num = (k, label) => /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60" }, label), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: item[k], onChange: (e) => setField(k, e.target.value), placeholder: "0" }));
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Ad-hoc Eingabe"), onClose && /* @__PURE__ */ React.createElement("button", { onClick: onClose, className: "bka-btn-ghost p-1 rounded" }, /* @__PURE__ */ React.createElement(X, { size: 16 }))), /* @__PURE__ */ React.createElement("input", { className: "bka-input", placeholder: "Was hat er gegessen/getrunken?", value: item.name, onChange: (e) => setField("name", e.target.value) }), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-2" }, num("carbs", "Carbs g"), num("sodium", "Natrium mg"), num("potassium", "Kalium mg"), num("fluid", "Fl\xFCssigkeit ml"), num("caffeine", "Koffein mg")), !showExtras && /* @__PURE__ */ React.createElement("button", { className: "text-xs opacity-60", onClick: () => setShowExtras(true) }, "+ kcal & Protein angeben"), showExtras && /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-2" }, num("kcal", "kcal"), num("protein", "Protein g")), /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary w-full justify-center", onClick: submit }, /* @__PURE__ */ React.createElement(Plus, { size: 16 }), " Hinzuf\xFCgen"));
+  };
+  const ConsumedList = ({ items, onRemove, onChangeQty }) => {
+    if (!items?.length) {
+      return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-6 text-center", style: { color: "var(--text-3)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-sm" }, "Noch nichts erfasst diese Runde"));
+    }
+    const total = items.reduce((acc, c) => {
+      const q = c.quantity || 1;
+      acc.carbs += (c.carbs || 0) * q;
+      acc.sodium += (c.sodium || 0) * q;
+      acc.potassium += (c.potassium || 0) * q;
+      acc.fluid += (c.fluid || 0) * q;
+      acc.caffeine += (c.caffeine || 0) * q;
+      acc.kcal += (c.kcal || 0) * q;
+      return acc;
+    }, { carbs: 0, sodium: 0, potassium: 0, fluid: 0, caffeine: 0, kcal: 0 });
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card divide-y", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "p-3", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Diese Runde"), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-4 gap-y-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "bka-display text-2xl font-bold", style: { color: COLORS.carbs } }, Math.round(total.carbs)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-60" }, "g Carbs")), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "bka-display text-2xl font-bold", style: { color: COLORS.sodium } }, Math.round(total.sodium)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-60" }, "mg Na")), total.potassium > 0 && /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "bka-display text-2xl font-bold", style: { color: COLORS.potassium } }, Math.round(total.potassium)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-60" }, "mg K")), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "bka-display text-2xl font-bold", style: { color: COLORS.fluid } }, Math.round(total.fluid)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-60" }, "ml")), total.caffeine > 0 && /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "bka-display text-2xl font-bold", style: { color: COLORS.caffeine } }, Math.round(total.caffeine)), /* @__PURE__ */ React.createElement("span", { className: "text-xs opacity-60" }, "mg Koff.")), /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-1 opacity-60" }, /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-sm" }, Math.round(total.kcal)), /* @__PURE__ */ React.createElement("span", { className: "text-[10px]" }, "kcal")))), items.map((c) => /* @__PURE__ */ React.createElement("div", { key: c._uid, className: "flex items-center gap-2 p-3", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 20 } }, c.emoji || "\u2022"), /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold truncate" }, c.name), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-2 gap-y-0.5 mt-0.5" }, c.carbs > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: Math.round(c.carbs * (c.quantity || 1)), unit: "g C", color: COLORS.carbs }), c.sodium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: Math.round(c.sodium * (c.quantity || 1)), unit: "mg Na", color: COLORS.sodium }), c.potassium > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: Math.round(c.potassium * (c.quantity || 1)), unit: "mg K", color: COLORS.potassium }), c.fluid > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: Math.round(c.fluid * (c.quantity || 1)), unit: "ml", color: COLORS.fluid }), c.caffeine > 0 && /* @__PURE__ */ React.createElement(MacroChip, { value: Math.round(c.caffeine * (c.quantity || 1)), unit: "mg", color: COLORS.caffeine }))), /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-1 rounded", onClick: () => onChangeQty(c._uid, Math.max(0.5, (c.quantity || 1) - 0.5)) }, /* @__PURE__ */ React.createElement(Minus, { size: 14 })), /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-sm w-8 text-center" }, c.quantity || 1, "\xD7"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-1 rounded", onClick: () => onChangeQty(c._uid, (c.quantity || 1) + 0.5) }, /* @__PURE__ */ React.createElement(Plus, { size: 14 })), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost bka-btn-danger p-1 rounded ml-1", onClick: () => onRemove(c._uid) }, /* @__PURE__ */ React.createElement(Trash2, { size: 14 }))))));
+  };
+  const CrewBadge = ({ member, small, ring }) => {
+    if (!member) {
+      return /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1 opacity-60" }, /* @__PURE__ */ React.createElement("span", { className: `inline-flex items-center justify-center rounded-full bg-neutral-700 text-neutral-300 ${small ? "w-4 h-4 text-[8px]" : "w-6 h-6 text-xs"}` }, "?"));
+    }
+    return /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        className: `inline-flex items-center justify-center rounded-full font-bold ${small ? "w-4 h-4 text-[9px]" : "w-6 h-6 text-xs"}`,
+        style: { background: member.color, color: "#1a0e02", boxShadow: ring ? `0 0 0 2px var(--accent)` : "none" }
+      },
+      member.initials
+    ), !small && /* @__PURE__ */ React.createElement("span", { className: "text-xs" }, member.name));
+  };
+  const CrewSelectModal = ({ team, lastCrewId, roundNumber, onSelect, onCancel }) => /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4",
+      style: { background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" },
+      onClick: onCancel
+    },
+    /* @__PURE__ */ React.createElement("div", { className: "bka-card w-full max-w-md p-5 sm:p-6", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "text-center mb-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-[11px] uppercase tracking-[0.2em] opacity-60" }, "Runde ", roundNumber, " abschliessen"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-xl font-bold mt-1" }, "Wer hat gecrewt?")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 text-center mb-4" }, lastCrewId ? "Letzter Crew markiert. Tippe auf den aktuellen." : "Tippe auf den Crew der grad da war."), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-3" }, team.map((member) => {
+      const isLast = member.id === lastCrewId;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          key: member.id,
+          onClick: () => onSelect(member.id),
+          className: "bka-card p-4 flex flex-col items-center gap-2 transition hover:border-orange-500",
+          style: { borderColor: isLast ? "var(--accent)" : "var(--border)", borderWidth: isLast ? 2 : 1 }
+        },
+        /* @__PURE__ */ React.createElement(
+          "span",
+          {
+            className: "inline-flex items-center justify-center rounded-full font-bold text-xl",
+            style: { width: 48, height: 48, background: member.color, color: "#1a0e02" }
+          },
+          member.initials
+        ),
+        /* @__PURE__ */ React.createElement("span", { className: "font-semibold text-sm" }, member.name),
+        isLast && /* @__PURE__ */ React.createElement("span", { className: "text-[9px] uppercase tracking-wider opacity-60" }, "zuletzt")
+      );
+    })), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost w-full justify-center mt-4 text-xs py-2", onClick: onCancel }, "Abbrechen"))
+  );
+  const RaceTotals = ({ race }) => {
+    const totals = useMemo(() => raceTotals(race), [race]);
+    const rounds = race.rounds.length;
+    const div = rounds || 1;
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Gesamt seit Start \xB7 ", rounds, " ", rounds === 1 ? "Runde" : "Runden"), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 grid grid-cols-2 sm:grid-cols-5 gap-3" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Carbs"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold", style: { color: COLORS.carbs } }, Math.round(totals.carbs), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, "g")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, "\u2300 ", Math.round(totals.carbs / div), "/R")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Natrium"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold", style: { color: COLORS.sodium } }, Math.round(totals.sodium), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, "mg")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, "\u2300 ", Math.round(totals.sodium / div), "/R")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Kalium"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold", style: { color: COLORS.potassium } }, Math.round(totals.potassium), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, "mg")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, "\u2300 ", Math.round(totals.potassium / div), "/R")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Fl\xFCssigkeit"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold", style: { color: COLORS.fluid } }, (totals.fluid / 1e3).toFixed(2), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, "L")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, "\u2300 ", Math.round(totals.fluid / div), "ml/R")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Koffein total"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold", style: { color: COLORS.caffeine } }, Math.round(totals.caffeine), /* @__PURE__ */ React.createElement("span", { className: "text-xs ml-1 opacity-60" }, "mg")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, Math.round(totals.kcal), " kcal \xB7 ", totals.protein.toFixed(0), "g P"))));
+  };
+  const RaceView = ({ race, presets, team, updateRace, finishRace }) => {
+    const [showCustom, setShowCustom] = useState(false);
+    const [showCrewModal, setShowCrewModal] = useState(false);
+    const [now, setNow] = useState(Date.now());
+    useEffect(() => {
+      const t = setInterval(() => setNow(Date.now()), 3e4);
+      return () => clearInterval(t);
+    }, []);
+    const currentRound = race.rounds[race.rounds.length - 1];
+    const lastCrewId = useMemo(() => {
+      for (let i = race.rounds.length - 2; i >= 0; i--) {
+        if (race.rounds[i].crewedBy) return race.rounds[i].crewedBy;
+      }
+      return null;
+    }, [race.rounds]);
+    const addItem = (preset) => {
+      const consumed = { ...preset, _uid: uid(), quantity: 1, addedAt: Date.now() };
+      const newRound = { ...currentRound, consumed: [...currentRound.consumed || [], consumed] };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
+    const removeItem = (itemUid) => {
+      const newRound = { ...currentRound, consumed: currentRound.consumed.filter((c) => c._uid !== itemUid) };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
+    const changeQty = (itemUid, qty) => {
+      const newRound = { ...currentRound, consumed: currentRound.consumed.map((c) => c._uid === itemUid ? { ...c, quantity: qty } : c) };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
+    const updateFeeling = (key, value) => {
+      const newRound = { ...currentRound, feeling: { ...currentRound.feeling || {}, [key]: value } };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
+    const updateNotes = (notes) => {
+      const newRound = { ...currentRound, notes };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), newRound] });
+    };
+    const requestNextRound = () => setShowCrewModal(true);
+    const confirmRound = (crewId) => {
+      const closedRound = { ...currentRound, endTime: Date.now(), crewedBy: crewId };
+      const newRound = { number: race.rounds.length + 1, startTime: Date.now(), consumed: [], feeling: {}, notes: "" };
+      updateRace({ ...race, rounds: [...race.rounds.slice(0, -1), closedRound, newRound] });
+      setShowCrewModal(false);
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4 pb-32" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-1 pt-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold leading-none" }, "R", currentRound.number), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] opacity-50 uppercase tracking-wider" }, race.name)), lastCrewId && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "zuletzt"), /* @__PURE__ */ React.createElement(CrewBadge, { member: team.find((m) => m.id === lastCrewId), small: true }))), /* @__PURE__ */ React.createElement(PercentDashboard, { consumed: currentRound.consumed || [], targets: race.targets }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowCustom((s) => !s) }, showCustom ? /* @__PURE__ */ React.createElement(X, { size: 14 }) : /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " ", showCustom ? "Schliessen" : "Eigenes Item") }, "Quick-Add"), /* @__PURE__ */ React.createElement(PresetGrid, { presets, onAdd: addItem })), showCustom && /* @__PURE__ */ React.createElement(CustomItemForm, { onAdd: addItem, onClose: () => setShowCustom(false) }), /* @__PURE__ */ React.createElement(ConsumedList, { items: currentRound.consumed || [], onRemove: removeItem, onChangeQty: changeQty }), /* @__PURE__ */ React.createElement(FeelingPanel, { feeling: currentRound.feeling, onChange: updateFeeling }), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Notiz"), /* @__PURE__ */ React.createElement("textarea", { className: "bka-input", rows: 2, placeholder: "Beobachtungen, Wetter, Strategie ...", value: currentRound.notes || "", onChange: (e) => updateNotes(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "pt-4 mt-2", style: { borderTop: "1px dashed var(--border)" } }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3" }, "Details")), /* @__PURE__ */ React.createElement(AlertStrip, { race, now }), /* @__PURE__ */ React.createElement(LiveVitals, { race, now }), /* @__PURE__ */ React.createElement(RaceTotals, { race }), /* @__PURE__ */ React.createElement(TrendPanel, { race }), /* @__PURE__ */ React.createElement("div", { className: "fixed bottom-0 left-0 right-0 px-4 pb-4 pt-3", style: { background: "linear-gradient(to top, var(--bg) 60%, transparent)", zIndex: 30 } }, /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center text-base py-3", onClick: requestNextRound }, /* @__PURE__ */ React.createElement(Bell, { size: 18 }), " Runde abschliessen \u2192 R", currentRound.number + 1), /* @__PURE__ */ React.createElement("button", { className: "bka-btn justify-center px-4", onClick: finishRace }, /* @__PURE__ */ React.createElement(Square, { size: 16 })))), showCrewModal && /* @__PURE__ */ React.createElement(
+      CrewSelectModal,
+      {
+        team,
+        lastCrewId,
+        roundNumber: currentRound.number,
+        onSelect: confirmRound,
+        onCancel: () => setShowCrewModal(false)
+      }
+    ));
+  };
+  const PresetEditor = ({ preset, onSave, onCancel }) => {
+    const [p, setP] = useState({ kcal: 0, carbs: 0, sodium: 0, potassium: 0, protein: 0, fluid: 0, caffeine: 0, ...preset });
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-3", style: { borderColor: "var(--accent)" } }, /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("input", { className: "bka-input w-16 text-center", value: p.emoji || "", onChange: (e) => setP({ ...p, emoji: e.target.value }), placeholder: "\u{1F961}" }), /* @__PURE__ */ React.createElement("input", { className: "bka-input flex-1", value: p.name, onChange: (e) => setP({ ...p, name: e.target.value }), placeholder: "Name" })), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.carbs } }, "Carbs g"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.carbs, onChange: (e) => setP({ ...p, carbs: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.sodium } }, "Natrium mg"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.sodium, onChange: (e) => setP({ ...p, sodium: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.potassium } }, "Kalium mg"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.potassium, onChange: (e) => setP({ ...p, potassium: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.fluid } }, "Fl\xFCssigk. ml"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.fluid, onChange: (e) => setP({ ...p, fluid: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.caffeine } }, "Koffein mg"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.caffeine, onChange: (e) => setP({ ...p, caffeine: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60" }, "kcal"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.kcal, onChange: (e) => setP({ ...p, kcal: Number(e.target.value) || 0 }) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider mb-1 opacity-60", style: { color: COLORS.protein } }, "Prot. g"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", inputMode: "numeric", value: p.protein, onChange: (e) => setP({ ...p, protein: Number(e.target.value) || 0 }) }))), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary flex-1 justify-center", onClick: () => onSave(p) }, /* @__PURE__ */ React.createElement(Check, { size: 14 }), " Speichern"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn flex-1 justify-center", onClick: onCancel }, "Abbruch")));
+  };
+  const TargetSettings = ({ targets, setTargets }) => {
+    const set = (k, v) => setTargets({ ...targets, [k]: Number(v) || 0 });
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Targets \xB7 ultra-spezifisch f\xFCr dich"), /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-60 -mt-2" }, "Quelle: ACSM, Precision Hydration, ISSN Position Stand 2019. Editiere alles wie es zu deinem K\xF6rper passt."), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2 flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: COLORS.carbs } }), " Carbs (g/h)"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Min"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.carbsMin, onChange: (e) => set("carbsMin", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Ziel"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.carbsPerHour, onChange: (e) => set("carbsPerHour", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.carbsMax, onChange: (e) => set("carbsMax", e.target.value) })))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2 flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: COLORS.sodium } }), " Natrium (mg/h)"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Min"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.sodiumMin, onChange: (e) => set("sodiumMin", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Ziel"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.sodiumPerHour, onChange: (e) => set("sodiumPerHour", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.sodiumMax, onChange: (e) => set("sodiumMax", e.target.value) })))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2 flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: COLORS.potassium } }), " Kalium (mg/h)"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Min"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.potassiumMin, onChange: (e) => set("potassiumMin", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Ziel"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.potassiumPerHour, onChange: (e) => set("potassiumPerHour", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.potassiumMax, onChange: (e) => set("potassiumMax", e.target.value) }))), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 mt-1" }, "ACSM: 80-200 mg/h. Bei viel Schwitzen oder Kr\xE4mpfen Richtung Max.")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2 flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: COLORS.fluid } }), " Fl\xFCssigkeit (ml/h)"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-3 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Min"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.fluidMin, onChange: (e) => set("fluidMin", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Ziel"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.fluidPerHour, onChange: (e) => set("fluidPerHour", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.fluidMax, onChange: (e) => set("fluidMax", e.target.value) })))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2 flex items-center gap-2" }, /* @__PURE__ */ React.createElement("span", { style: { width: 8, height: 8, borderRadius: 99, background: COLORS.caffeine } }), " Koffein"), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 gap-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max aktiv im System (mg)"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.caffeineCurrentMax, onChange: (e) => set("caffeineCurrentMax", e.target.value) })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Max pro 24h (mg)"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.caffeineDailyMax, onChange: (e) => set("caffeineDailyMax", e.target.value) }))), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 mt-1" }, "Phil Gore: erst ab Tag 3 starten. Halbwertszeit 5h, mit Decay berechnet.")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2" }, "Hyponatremie-Watch"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-60" }, "Min Natrium pro Liter Fl\xFCssigkeit (mg/L)"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono", type: "number", value: targets.sodiumPerLiterMin, onChange: (e) => set("sodiumPerLiterMin", e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 mt-1" }, "Wenn du viel Wasser pur trinkst und das Verh\xE4ltnis kippt \u2192 Alarm.")), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold mb-2" }, "K\xF6rpergewicht (kg)"), /* @__PURE__ */ React.createElement("input", { className: "bka-input bka-mono w-32", type: "number", value: targets.bodyWeight, onChange: (e) => set("bodyWeight", e.target.value) }), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 mt-1" }, "F\xFCr individuelle Koffein-Berechnungen (mg/kg).")));
+  };
+  const TEAM_COLORS = ["#ff8e3c", "#7dd3fc", "#86efac", "#c084fc", "#fbbf24", "#f87171", "#a78bfa", "#fb7185"];
+  const TeamManager = ({ team, setTeam }) => {
+    const [editingId, setEditingId] = useState(null);
+    const updateMember = (id, patch) => setTeam(team.map((m) => m.id === id ? { ...m, ...patch } : m));
+    const addMember = () => {
+      const newId = `m_${uid()}`;
+      const color = TEAM_COLORS[team.length % TEAM_COLORS.length];
+      setTeam([...team, { id: newId, name: "Neu", initials: "N", color }]);
+      setEditingId(newId);
+    };
+    const removeMember = (id) => {
+      if (!confirm("Crew-Member entfernen? Fr\xFChere Runden behalten den Eintrag.")) return;
+      setTeam(team.filter((m) => m.id !== id));
+    };
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: addMember }, /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " Crew-Member") }, "Team"), /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, team.map((m) => /* @__PURE__ */ React.createElement("div", { key: m.id, className: "bka-card p-3 flex items-center gap-3" }, /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        className: "inline-flex items-center justify-center rounded-full font-bold text-base",
+        style: { width: 40, height: 40, background: m.color, color: "#1a0e02", flexShrink: 0 }
+      },
+      m.initials
+    ), editingId === m.id ? /* @__PURE__ */ React.createElement("div", { className: "flex-1 flex gap-2 items-center" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "bka-input flex-1",
+        value: m.name,
+        onChange: (e) => updateMember(m.id, { name: e.target.value, initials: (e.target.value[0] || "?").toUpperCase() })
+      }
+    ), /* @__PURE__ */ React.createElement("div", { className: "flex gap-1 flex-wrap", style: { maxWidth: 140 } }, TEAM_COLORS.map((c) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: c,
+        onClick: () => updateMember(m.id, { color: c }),
+        style: {
+          width: 18,
+          height: 18,
+          borderRadius: 99,
+          background: c,
+          border: m.color === c ? "2px solid var(--text)" : "2px solid transparent"
+        }
+      }
+    ))), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-2 rounded", onClick: () => setEditingId(null) }, /* @__PURE__ */ React.createElement(Check, { size: 14 }))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "font-semibold text-sm" }, m.name), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, m.initials)), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-2 rounded", onClick: () => setEditingId(m.id) }, /* @__PURE__ */ React.createElement(Edit2, { size: 14 })), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost bka-btn-danger p-2 rounded", onClick: () => removeMember(m.id) }, /* @__PURE__ */ React.createElement(Trash2, { size: 14 })))))), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 mt-2 px-1" }, "Bilder kannst du sp\xE4ter hinzuf\xFCgen \u2014 vorerst Initialen + Farbe."));
+  };
+  const SetupView = ({ state, setState, startRace }) => {
+    const [editingId, setEditingId] = useState(null);
+    const [addingNew, setAddingNew] = useState(false);
+    const [showTargets, setShowTargets] = useState(false);
+    const activeRace = state.races.find((r) => r.id === state.currentRaceId && r.status === "active");
+    const [raceForm, setRaceForm] = useState({
+      name: "Witiker Backyard Ultra",
+      location: "Witikon, Z\xFCrich"
+    });
+    const savePreset = (preset) => {
+      if (preset.id) {
+        setState((s) => ({ ...s, presets: s.presets.map((p) => p.id === preset.id ? preset : p) }));
+      } else {
+        setState((s) => ({ ...s, presets: [...s.presets, { ...preset, id: uid() }] }));
+      }
+      setEditingId(null);
+      setAddingNew(false);
+    };
+    const deletePreset = (id) => {
+      if (!confirm("Preset l\xF6schen?")) return;
+      setState((s) => ({ ...s, presets: s.presets.filter((p) => p.id !== id) }));
+    };
+    const setTargets = (t) => setState((s) => ({ ...s, targets: t }));
+    const setTeam = (newTeam) => setState((s) => ({ ...s, team: newTeam }));
+    const launch = () => {
+      const startTs = Date.now();
+      startRace({
+        id: uid(),
+        name: raceForm.name,
+        location: raceForm.location,
+        startTime: startTs,
+        status: "active",
+        createdAt: Date.now(),
+        targets: { ...state.targets },
+        team: [...state.team],
+        rounds: [{ number: 1, startTime: startTs, consumed: [], feeling: {}, notes: "" }]
+      });
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-6" }, !activeRace && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-5" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Neues Rennen"), /* @__PURE__ */ React.createElement("div", { className: "space-y-3 mt-2" }, /* @__PURE__ */ React.createElement("input", { className: "bka-input", placeholder: "Name", value: raceForm.name, onChange: (e) => setRaceForm({ ...raceForm, name: e.target.value }) }), /* @__PURE__ */ React.createElement("input", { className: "bka-input", placeholder: "Ort", value: raceForm.location, onChange: (e) => setRaceForm({ ...raceForm, location: e.target.value }) }), /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary w-full justify-center py-3", onClick: launch }, /* @__PURE__ */ React.createElement(Play, { size: 16 }), " Rennen starten \xB7 Runde 1"), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 text-center" }, "Targets & Team werden mit dem Rennen verkn\xFCpft (Snapshot). Keine Bell-Logik \u2014 du klickst durch."))), activeRace && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4", style: { borderColor: "var(--accent)" } }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Aktives Rennen"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-xl font-bold mt-1" }, activeRace.name), /* @__PURE__ */ React.createElement("div", { className: "text-sm opacity-60 mt-0.5" }, activeRace.location, " \u2022 Runde ", activeRace.rounds.length, " l\xE4uft")), /* @__PURE__ */ React.createElement(TeamManager, { team: state.team, setTeam }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, null, "Backup"), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4 space-y-2" }, /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-60 mb-1" }, "Alle Daten als JSON herunterladen oder von Datei laden. W\xE4hrend Race alle paar Runden sichern."), /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn flex-1 justify-center", onClick: () => {
+      const data = JSON.stringify(state, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const date = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-").slice(0, 19);
+      a.href = url;
+      a.download = `backyard-crew-backup-${date}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } }, /* @__PURE__ */ React.createElement(Download, { size: 14 }), " JSON-Backup"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn flex-1 justify-center", onClick: () => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json,application/json";
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          if (!data.presets || !data.targets) {
+            alert("Ung\xFCltige Backup-Datei.");
+            return;
+          }
+          if (!confirm("Backup laden? Aktueller State wird \xFCberschrieben.")) return;
+          setState(data);
+          alert("Backup geladen.");
+        } catch (err) {
+          alert("Fehler beim Laden: " + err.message);
+        }
+      };
+      input.click();
+    } }, /* @__PURE__ */ React.createElement(Play, { size: 14, className: "rotate-180" }), " JSON laden")))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => setShowTargets((s) => !s) }, showTargets ? "Schliessen" : "Anzeigen") }, "Targets ", /* @__PURE__ */ React.createElement(Target, { size: 11, className: "inline opacity-50" })), !showTargets && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-3 grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "opacity-50 text-[10px]" }, "Carbs/h"), /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-semibold", style: { color: COLORS.carbs } }, state.targets.carbsMin, "\u2013", state.targets.carbsMax)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "opacity-50 text-[10px]" }, "Na/h"), /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-semibold", style: { color: COLORS.sodium } }, state.targets.sodiumMin, "\u2013", state.targets.sodiumMax)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "opacity-50 text-[10px]" }, "K/h"), /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-semibold", style: { color: COLORS.potassium } }, state.targets.potassiumMin, "\u2013", state.targets.potassiumMax)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "opacity-50 text-[10px]" }, "Fluid/h"), /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-semibold", style: { color: COLORS.fluid } }, state.targets.fluidMin, "\u2013", state.targets.fluidMax)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "opacity-50 text-[10px]" }, "Koff. max"), /* @__PURE__ */ React.createElement("div", { className: "bka-mono font-semibold", style: { color: COLORS.caffeine } }, state.targets.caffeineCurrentMax))), showTargets && /* @__PURE__ */ React.createElement(TargetSettings, { targets: state.targets, setTargets })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(SectionLabel, { right: /* @__PURE__ */ React.createElement("div", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => {
+      if (confirm("Alle Presets auf V2-Defaults zur\xFCcksetzen? Custom Presets bleiben erhalten, bekannte werden \xFCberschrieben.")) {
+        setState((s) => {
+          const customs = s.presets.filter((p) => !DEFAULT_PRESETS_BY_NAME.has((p.name || "").toLowerCase()));
+          return { ...s, presets: [...DEFAULT_PRESETS, ...customs] };
+        });
+      }
+    } }, "\u21BB Defaults"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost text-xs", onClick: () => {
+      setAddingNew(true);
+      setEditingId(null);
+    } }, /* @__PURE__ */ React.createElement(Plus, { size: 14 }), " Neues Preset")) }, "Preset-Bibliothek"), addingNew && /* @__PURE__ */ React.createElement("div", { className: "mb-2" }, /* @__PURE__ */ React.createElement(PresetEditor, { preset: { name: "", kcal: 0, carbs: 0, sodium: 0, protein: 0, fluid: 0, caffeine: 0, emoji: "" }, onSave: savePreset, onCancel: () => setAddingNew(false) })), /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, state.presets.map((p) => editingId === p.id ? /* @__PURE__ */ React.createElement(PresetEditor, { key: p.id, preset: p, onSave: savePreset, onCancel: () => setEditingId(null) }) : /* @__PURE__ */ React.createElement("div", { key: p.id, className: "bka-card p-3 flex items-center gap-3" }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 22 } }, p.emoji || "\u2022"), /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ React.createElement("div", { className: "font-semibold text-sm" }, p.name), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5" }, p.carbs > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.carbs } }, p.carbs, "g C"), p.sodium > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.sodium } }, p.sodium, "mg Na"), p.potassium > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.potassium } }, p.potassium, "mg K"), p.fluid > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.fluid } }, p.fluid, "ml"), p.caffeine > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px]", style: { color: COLORS.caffeine } }, p.caffeine, "mg Koff."), p.kcal > 0 && /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-[10px] opacity-60" }, p.kcal, "kcal"))), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-2 rounded", onClick: () => setEditingId(p.id) }, /* @__PURE__ */ React.createElement(Edit2, { size: 14 })), /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost bka-btn-danger p-2 rounded", onClick: () => deletePreset(p.id) }, /* @__PURE__ */ React.createElement(Trash2, { size: 14 })))))));
+  };
+  const RaceDetail = ({ race, team, onBack, onDelete }) => {
+    const totals = raceTotals(race);
+    const teamLookup = useMemo(() => new Map((team || []).map((m) => [m.id, m])), [team]);
+    const crewStats = useMemo(() => {
+      const map = /* @__PURE__ */ new Map();
+      for (const r of race.rounds) {
+        if (r.crewedBy) map.set(r.crewedBy, (map.get(r.crewedBy) || 0) + 1);
+      }
+      return Array.from(map.entries()).map(([id, count]) => ({ member: teamLookup.get(id), count, id })).sort((a, b) => b.count - a.count);
+    }, [race.rounds, teamLookup]);
+    const chartData = race.rounds.map((r) => {
+      const t2 = roundTotals(r);
+      const tsEnd = r.endTime || Date.now();
+      const caff = currentCaffeine(race, tsEnd);
+      return {
+        round: `R${r.number}`,
+        carbs: Math.round(t2.carbs),
+        sodium: Math.round(t2.sodium),
+        potassium: Math.round(t2.potassium),
+        fluid: Math.round(t2.fluid),
+        kcal: Math.round(t2.kcal),
+        caffeineActive: Math.round(caff),
+        naPerL: t2.fluid > 0 ? Math.round(t2.sodium / (t2.fluid / 1e3)) : 0
+      };
+    });
+    const feelingData = race.rounds.map((r) => ({
+      round: `R${r.number}`,
+      ...Object.fromEntries(FEELING_METRICS.map((m) => [m.key, r.feeling?.[m.key] || null]))
+    }));
+    const exportCSV = () => {
+      const headers = ["Runde", "Crew", "Carbs_g", "Na_mg", "K_mg", "Fluid_ml", "Caffeine_mg", "kcal", "Protein_g", ...FEELING_METRICS.map((m) => m.label), "Items", "Notiz"];
+      const rows = race.rounds.map((r) => {
+        const t2 = roundTotals(r);
+        const items = (r.consumed || []).map((c) => `${c.quantity || 1}\xD7${c.name}`).join("; ");
+        const crewName = r.crewedBy ? teamLookup.get(r.crewedBy)?.name || r.crewedBy : "";
+        return [
+          r.number,
+          crewName,
+          Math.round(t2.carbs),
+          Math.round(t2.sodium),
+          Math.round(t2.potassium),
+          Math.round(t2.fluid),
+          Math.round(t2.caffeine),
+          Math.round(t2.kcal),
+          t2.protein.toFixed(1),
+          ...FEELING_METRICS.map((m) => r.feeling?.[m.key] || ""),
+          items,
+          (r.notes || "").replace(/[\r\n,]/g, " ")
+        ].join(",");
+      });
+      const csv = [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${race.name.replace(/\s+/g, "_")}_${fmtDate(race.startTime)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    const t = race.targets || DEFAULT_TARGETS;
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ React.createElement("button", { className: "bka-btn-ghost p-2 rounded", onClick: onBack }, /* @__PURE__ */ React.createElement(ArrowLeft, { size: 18 })), /* @__PURE__ */ React.createElement("div", { className: "flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold leading-tight" }, race.name), /* @__PURE__ */ React.createElement("div", { className: "text-sm opacity-60" }, race.location, " \u2022 ", fmtDate(race.startTime))), /* @__PURE__ */ React.createElement("button", { className: "bka-btn", onClick: exportCSV }, /* @__PURE__ */ React.createElement(Download, { size: 14 }), " CSV")), /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-5 gap-2" }, /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Runden"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold mt-1" }, race.rounds.length)), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Carbs"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold mt-1", style: { color: COLORS.carbs } }, Math.round(totals.carbs), /* @__PURE__ */ React.createElement("span", { className: "text-sm ml-1 opacity-60" }, "g")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, race.rounds.length ? Math.round(totals.carbs / race.rounds.length) : 0, "/R")), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Natrium"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold mt-1", style: { color: COLORS.sodium } }, Math.round(totals.sodium), /* @__PURE__ */ React.createElement("span", { className: "text-sm ml-1 opacity-60" }, "mg")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, race.rounds.length ? Math.round(totals.sodium / race.rounds.length) : 0, "/R")), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Kalium"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold mt-1", style: { color: COLORS.potassium } }, Math.round(totals.potassium), /* @__PURE__ */ React.createElement("span", { className: "text-sm ml-1 opacity-60" }, "mg")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, race.rounds.length ? Math.round(totals.potassium / race.rounds.length) : 0, "/R")), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-60" }, "Fl\xFCssigkeit"), /* @__PURE__ */ React.createElement("div", { className: "bka-display text-3xl font-bold mt-1", style: { color: COLORS.fluid } }, (totals.fluid / 1e3).toFixed(1), /* @__PURE__ */ React.createElement("span", { className: "text-sm ml-1 opacity-60" }, "L")), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] opacity-50 bka-mono" }, race.rounds.length ? Math.round(totals.fluid / race.rounds.length) : 0, "ml/R"))), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Carbs pro Runde (Zielzone: ", t.carbsMin, "\u2013", t.carbsMax, " g)"), /* @__PURE__ */ React.createElement("div", { style: { height: 200 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(BarChart, { data: chartData }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border)" }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(YAxis, { stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(Tooltip, { contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8 } }), /* @__PURE__ */ React.createElement(ReferenceArea, { y1: t.carbsMin, y2: t.carbsMax, fill: COLORS.carbs, fillOpacity: 0.08 }), /* @__PURE__ */ React.createElement(Bar, { dataKey: "carbs", fill: COLORS.carbs }))))), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Natrium & Fl\xFCssigkeit pro Runde"), /* @__PURE__ */ React.createElement("div", { style: { height: 200 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(BarChart, { data: chartData }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border)" }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(YAxis, { stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(Tooltip, { contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8 } }), /* @__PURE__ */ React.createElement(Bar, { dataKey: "sodium", fill: COLORS.sodium, name: "Na (mg)" }), /* @__PURE__ */ React.createElement(Bar, { dataKey: "fluid", fill: COLORS.fluid, name: "Fluid (ml)" }))))), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Koffein aktiv im System (mg, mit Halbwertszeit-Decay)"), /* @__PURE__ */ React.createElement("div", { style: { height: 180 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(AreaChart, { data: chartData }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border)" }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(YAxis, { stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(Tooltip, { contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8 } }), /* @__PURE__ */ React.createElement(ReferenceArea, { y1: t.caffeineCurrentMax, y2: 9999, fill: "var(--alert)", fillOpacity: 0.06 }), /* @__PURE__ */ React.createElement(Area, { type: "monotone", dataKey: "caffeineActive", stroke: COLORS.caffeine, fill: COLORS.caffeine, fillOpacity: 0.3 }))))), /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Befindlichkeit \xFCber die Runden"), /* @__PURE__ */ React.createElement("div", { style: { height: 220 } }, /* @__PURE__ */ React.createElement(ResponsiveContainer, null, /* @__PURE__ */ React.createElement(LineChart, { data: feelingData }, /* @__PURE__ */ React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border)" }), /* @__PURE__ */ React.createElement(XAxis, { dataKey: "round", stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(YAxis, { domain: [0, 5], stroke: "var(--text-3)", style: { fontSize: 11 } }), /* @__PURE__ */ React.createElement(Tooltip, { contentStyle: { background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8 } }), /* @__PURE__ */ React.createElement(Legend, { wrapperStyle: { fontSize: 11 } }), FEELING_METRICS.map((m, i) => /* @__PURE__ */ React.createElement(
+      Line,
+      {
+        key: m.key,
+        type: "monotone",
+        dataKey: m.key,
+        name: m.label,
+        stroke: ["#ff8e3c", "#7dd3fc", "#86efac", "#f87171", "#fbbf24", "#a78bfa"][i],
+        strokeWidth: 2,
+        dot: { r: 3 },
+        connectNulls: true
+      }
+    )))))), crewStats.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-4" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Crew \xB7 wer wie viele Runden"), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-3 mt-2" }, crewStats.map(({ member, count, id }) => /* @__PURE__ */ React.createElement("div", { key: id, className: "flex items-center gap-2" }, /* @__PURE__ */ React.createElement(CrewBadge, { member }), /* @__PURE__ */ React.createElement("span", { className: "bka-mono text-sm font-bold" }, count), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] opacity-50" }, "R"))))), /* @__PURE__ */ React.createElement("div", { className: "bka-card overflow-hidden" }, /* @__PURE__ */ React.createElement("div", { className: "p-3 border-b", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Runden-Detail")), /* @__PURE__ */ React.createElement("div", { className: "overflow-x-auto" }, /* @__PURE__ */ React.createElement("table", { className: "w-full text-sm" }, /* @__PURE__ */ React.createElement("thead", { style: { background: "var(--bg-2)" } }, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", { className: "text-left p-3 text-[10px] uppercase tracking-wider opacity-60" }, "R"), /* @__PURE__ */ React.createElement("th", { className: "text-left p-3 text-[10px] uppercase tracking-wider opacity-60" }, "Crew"), /* @__PURE__ */ React.createElement("th", { className: "text-right p-3 text-[10px] uppercase tracking-wider opacity-60" }, "Carbs"), /* @__PURE__ */ React.createElement("th", { className: "text-right p-3 text-[10px] uppercase tracking-wider opacity-60" }, "Na"), /* @__PURE__ */ React.createElement("th", { className: "text-right p-3 text-[10px] uppercase tracking-wider opacity-60" }, "K"), /* @__PURE__ */ React.createElement("th", { className: "text-right p-3 text-[10px] uppercase tracking-wider opacity-60" }, "ml"), /* @__PURE__ */ React.createElement("th", { className: "text-right p-3 text-[10px] uppercase tracking-wider opacity-60" }, "Koff."), /* @__PURE__ */ React.createElement("th", { className: "text-left p-3 text-[10px] uppercase tracking-wider opacity-60" }, "Items"))), /* @__PURE__ */ React.createElement("tbody", null, race.rounds.map((r) => {
+      const rt = roundTotals(r);
+      const crew = r.crewedBy ? teamLookup.get(r.crewedBy) : null;
+      return /* @__PURE__ */ React.createElement("tr", { key: r.number, className: "border-t", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono font-bold" }, r.number), /* @__PURE__ */ React.createElement("td", { className: "p-3" }, /* @__PURE__ */ React.createElement(CrewBadge, { member: crew, small: true })), /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono text-right", style: { color: COLORS.carbs } }, Math.round(rt.carbs)), /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono text-right", style: { color: COLORS.sodium } }, Math.round(rt.sodium)), /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono text-right", style: { color: COLORS.potassium } }, Math.round(rt.potassium)), /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono text-right", style: { color: COLORS.fluid } }, Math.round(rt.fluid)), /* @__PURE__ */ React.createElement("td", { className: "p-3 bka-mono text-right", style: { color: COLORS.caffeine } }, Math.round(rt.caffeine)), /* @__PURE__ */ React.createElement("td", { className: "p-3 text-xs opacity-80 max-w-xs truncate" }, (r.consumed || []).map((c) => `${c.quantity || 1}\xD7${c.name}`).join(", ") || "\u2013"));
+    }))))), /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-danger w-full justify-center", onClick: () => {
+      if (confirm("Dieses Rennen wirklich l\xF6schen?")) onDelete(race.id);
+    } }, /* @__PURE__ */ React.createElement(Trash2, { size: 14 }), " Rennen l\xF6schen"));
+  };
+  const HistoryView = ({ state, setState, globalTeam }) => {
+    const [selectedId, setSelectedId] = useState(null);
+    const selected = state.races.find((r) => r.id === selectedId);
+    if (selected) {
+      return /* @__PURE__ */ React.createElement(
+        RaceDetail,
+        {
+          race: selected,
+          team: selected.team || globalTeam,
+          onBack: () => setSelectedId(null),
+          onDelete: (id) => {
+            setState((s) => ({
+              ...s,
+              races: s.races.filter((r) => r.id !== id),
+              currentRaceId: s.currentRaceId === id ? null : s.currentRaceId
+            }));
+            setSelectedId(null);
+          }
+        }
+      );
+    }
+    if (!state.races.length) {
+      return /* @__PURE__ */ React.createElement("div", { className: "bka-card p-8 text-center", style: { color: "var(--text-3)" } }, /* @__PURE__ */ React.createElement(Activity, { size: 32, className: "mx-auto mb-3 opacity-50" }), /* @__PURE__ */ React.createElement("div", { className: "text-sm" }, "Noch keine Rennen."), /* @__PURE__ */ React.createElement("div", { className: "text-xs mt-1" }, "Starte eines im Setup-Tab."));
+    }
+    const sorted = [...state.races].sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+    return /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ React.createElement(SectionLabel, null, "Alle Rennen (", state.races.length, ")"), sorted.map((race) => {
+      const totals = raceTotals(race);
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          key: race.id,
+          className: "bka-card p-4 w-full text-left transition",
+          onClick: () => setSelectedId(race.id),
+          style: { borderColor: race.status === "active" ? "var(--accent)" : "var(--border)" }
+        },
+        /* @__PURE__ */ React.createElement("div", { className: "flex items-start gap-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 mb-1" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display font-bold truncate" }, race.name), race.status === "active" && /* @__PURE__ */ React.createElement("span", { className: "text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded", style: { background: "var(--accent)", color: "#1a0e02" } }, "Live")), /* @__PURE__ */ React.createElement("div", { className: "text-xs opacity-60" }, race.location, " \u2022 ", fmtDate(race.startTime)), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap gap-x-3 gap-y-0.5 mt-2 bka-mono text-[11px]" }, /* @__PURE__ */ React.createElement("span", null, race.rounds.length, " Runden"), /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.carbs } }, Math.round(totals.carbs), "g C"), /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.sodium } }, Math.round(totals.sodium), "mg Na"), /* @__PURE__ */ React.createElement("span", { style: { color: COLORS.fluid } }, (totals.fluid / 1e3).toFixed(1), "L"))), /* @__PURE__ */ React.createElement(ChevronRight, { size: 16, style: { color: "var(--text-3)" } }))
+      );
+    }));
+  };
+  function App() {
+    const [state, setState] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [view, setView] = useState("race");
+    const saveTimer = useRef(null);
+    useEffect(() => {
+      (async () => {
+        let loaded = null;
+        let res = await safeStorage.get(STORAGE_KEY);
+        if (res && res.value) {
+          try {
+            loaded = JSON.parse(res.value);
+          } catch {
+          }
+        }
+        if (!loaded) {
+          for (const key of LEGACY_KEYS) {
+            const legacy = await safeStorage.get(key);
+            if (legacy && legacy.value) {
+              try {
+                loaded = JSON.parse(legacy.value);
+                break;
+              } catch {
+              }
+            }
+          }
+        }
+        const migrated = migrate(loaded) || defaultState();
+        setState(migrated);
+        setLoading(false);
+      })();
+    }, []);
+    useEffect(() => {
+      if (!state || loading) return;
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => {
+        safeStorage.set(STORAGE_KEY, JSON.stringify(state));
+      }, 400);
+    }, [state, loading]);
+    const activeRace = state?.races.find((r) => r.id === state.currentRaceId && r.status === "active");
+    useEffect(() => {
+      if (!loading && !activeRace && view === "race") setView("setup");
+    }, [loading, activeRace?.id]);
+    const updateRace = useCallback((updated) => {
+      setState((s) => ({ ...s, races: s.races.map((r) => r.id === updated.id ? updated : r) }));
+    }, []);
+    const startRace = (race) => {
+      setState((s) => ({
+        ...s,
+        races: [...s.races.map((r) => r.status === "active" ? { ...r, status: "finished" } : r), race],
+        currentRaceId: race.id
+      }));
+      setView("race");
+    };
+    const finishRace = () => {
+      if (!activeRace) return;
+      if (!confirm("Rennen beenden? Du kannst es danach in der History auswerten.")) return;
+      setState((s) => ({
+        ...s,
+        races: s.races.map((r) => r.id === activeRace.id ? { ...r, status: "finished", endedAt: Date.now() } : r),
+        currentRaceId: null
+      }));
+      setView("history");
+    };
+    if (loading || !state) {
+      return /* @__PURE__ */ React.createElement("div", { className: "bka-root" }, /* @__PURE__ */ React.createElement(ThemeStyles, null), /* @__PURE__ */ React.createElement("div", { className: "min-h-screen flex items-center justify-center" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-xl opacity-50" }, "\u2026l\xE4dt")));
+    }
+    return /* @__PURE__ */ React.createElement("div", { className: "bka-root" }, /* @__PURE__ */ React.createElement(ThemeStyles, null), /* @__PURE__ */ React.createElement("div", { className: "max-w-2xl mx-auto px-4 pt-5 pb-4" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-baseline justify-between mb-2" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "bka-display text-2xl font-bold tracking-tight" }, "backyard.crew"), /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-[0.2em] opacity-50" }, "Pierre \xB7 Carbs \xB7 Salt \xB7 Fluid \xB7 Caffeine")), activeRace && /* @__PURE__ */ React.createElement("div", { className: "text-right" }, /* @__PURE__ */ React.createElement("div", { className: "text-[10px] uppercase tracking-wider opacity-50" }, "Aktiv"), /* @__PURE__ */ React.createElement("div", { className: "text-xs font-semibold" }, activeRace.name))), /* @__PURE__ */ React.createElement("div", { className: "flex border-b mb-5", style: { borderColor: "var(--border)" } }, /* @__PURE__ */ React.createElement("button", { className: `tab-btn ${view === "race" ? "active" : ""}`, onClick: () => setView("race"), disabled: !activeRace }, /* @__PURE__ */ React.createElement(Activity, { size: 14, className: "inline mr-1 -mt-0.5" }), " Race"), /* @__PURE__ */ React.createElement("button", { className: `tab-btn ${view === "setup" ? "active" : ""}`, onClick: () => setView("setup") }, /* @__PURE__ */ React.createElement(Settings, { size: 14, className: "inline mr-1 -mt-0.5" }), " Setup"), /* @__PURE__ */ React.createElement("button", { className: `tab-btn ${view === "history" ? "active" : ""}`, onClick: () => setView("history") }, /* @__PURE__ */ React.createElement(History, { size: 14, className: "inline mr-1 -mt-0.5" }), " History")), view === "race" && activeRace && /* @__PURE__ */ React.createElement(RaceView, { race: activeRace, presets: state.presets, team: activeRace.team || state.team, updateRace, finishRace }), view === "race" && !activeRace && /* @__PURE__ */ React.createElement("div", { className: "bka-card p-8 text-center", style: { color: "var(--text-3)" } }, /* @__PURE__ */ React.createElement(Bell, { size: 32, className: "mx-auto mb-3 opacity-50" }), /* @__PURE__ */ React.createElement("div", { className: "text-sm mb-3" }, "Kein aktives Rennen"), /* @__PURE__ */ React.createElement("button", { className: "bka-btn bka-btn-primary", onClick: () => setView("setup") }, /* @__PURE__ */ React.createElement(Play, { size: 14 }), " Rennen starten")), view === "setup" && /* @__PURE__ */ React.createElement(SetupView, { state, setState, startRace }), view === "history" && /* @__PURE__ */ React.createElement(HistoryView, { state, setState, globalTeam: state.team }), /* @__PURE__ */ React.createElement("div", { className: "mt-12 mb-4 text-center" }, /* @__PURE__ */ React.createElement("div", { className: "bka-display italic opacity-30 text-sm" }, "heute ist ein richtig guter tag."))));
+  }
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(React.createElement(App));
+})();
+
+</script>
+
+</body>
+</html>
