@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Weingut und Kellerei in Salgesch, Wallis. Geführt von Olivier und Sandra Mounir mit professionellem Team. Verkauf von Walliser Weinen direkt vom Winzer mit Online-Shop. Adresse: Flantheystrasse 1, 3970 Salgesch. Branche: Weinbau/Weinhandel."
+  },
+  {
+    "company": "Treuhand Valesia AG",
+    "contact_name": "Georg Anthamatten",
+    "email": "georg.anthamatten@valesia.ch",
+    "website": "https://www.valesia.ch",
+    "notes": "Treuhandunternehmen mit Standort in Visp (Bahnhofstrasse 17). Georg Anthamatten ist dipl. Treuhandexperte. Dienstleistungen: Buchhaltung, Steuern, Sozialversicherungen, Recht. Unabhängige Beratung für KMU. Teil der Valesia Group."
+  },
+  {
+    "company": "PROVIVA Immobilien AG",
+    "contact_name": "Francisco Heldner",
+    "email": "francisco.heldner@oberwallis.ch",
+    "website": "https://www.proviva.ch",
+    "notes": "Immobilienmakler mit Sitz in Visp (Torweg 6), gegründet 2023. Francisco Heldner ist alleiniger Geschäftsführer und Inhaber mit Einzelzeichnungsberechtigung. Tätig in den Regionen Visp, Brig, Naters und Sion. Junges Unternehmen im Aufbau."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallationsbetrieb mit Standorten in Saas-Fee, Saas-Almagell und Visp. Markus Supersaxo ist eidg. dipl. Elektroinstallateur und Geschäftsinhaber. Bietet Elektroinstallationen, Elektroplanung, Automation/Smart-Home und Elektrokontrollen an."
+  },
+  {
+    "company": "Atlas Automobiles Sierre SA",
+    "contact_name": "Didier Mariéthoz",
+    "email": "dmariethoz@atlasautomobiles.ch",
+    "website": "https://www.atlasautomobiles.ch",
+    "notes": "Autogarage in Sierre (Route du Simplon 75). Didier Mariéthoz ist alleiniger Verwalter (administrateur unique). Offizielle Vertretung für Opel und Isuzu. Familienunternehmen seit über 35 Jahren. Verkauf, Werkstatt und Occasionen."
+  }
+]
