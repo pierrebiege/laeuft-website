@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cristal Garage SA",
+    "contact_name": "Nicolas Rey",
+    "email": "direction@cristalgarage.ch",
+    "website": "https://www.cristalgarage.ch/",
+    "notes": "Autohaus in Martigny, Konzessionshalter für Kia, Ford, Subaru und Mitsubishi. Ca. 15 Mitarbeiter. Nicolas Rey ist alleiniger Verwalter (administrateur unique) laut Handelsregister. Website auf Französisch. Bietet auch 24/7-Tankstelle, Waschanlage und Werkstatt. Adresse: Route du Levant 108, 1920 Martigny. E-Mail direction@ ist die Management-Adresse."
+  },
+  {
+    "company": "gipsmalWERK GmbH",
+    "contact_name": "gipsmalWERK GmbH",
+    "email": "info@gipsmalwerk.ch",
+    "website": "https://www.gipsmalwerk.ch/",
+    "notes": "Maler- und Gipsergeschäft in Gamsen bei Brig. Gegründet 2021 von Yves Mario Genolet (Inhaber und Geschäftsführer). Junges KMU in der Handwerksbranche, Region Brig/Oberwallis. Adresse: Fabrikstrasse 64, 3900 Gamsen. Mobil: 079 701 23 92."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Elektro Supersaxo AG",
+    "email": "info@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch/",
+    "notes": "Elektro-Installationsfirma seit 1981 mit Standorten in Visp (Kantonsstrasse 73A) und Saas-Almagell/Saas-Fee. Gegründet von Armin Supersaxo, 2014 als AG von Sohn Markus Supersaxo übernommen (Geschäftsführer). Bietet Elektroinstallationen, Automation und Smart-Home-Lösungen. Team mit mehreren eidg. dipl. Elektroinstallateuren."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch/de",
+    "notes": "Weingut und Kellerei in Salgesch (Wallis). Familienunternehmen, die Brüder Manfred und Damian Cina übernahmen den Betrieb 1987. Über 30 Jahre im Weinbau. Website auf Deutsch und Französisch. Bietet Weinverkostungen und Kellereibesichtigungen. Adresse: Bahnhofstrasse 27, 3970 Salgesch."
+  },
+  {
+    "company": "Schreinerei Perren AG",
+    "contact_name": "Schreinerei Perren AG",
+    "email": "info@perrenag.ch",
+    "website": "https://perrenag.ch/",
+    "notes": "Schreinerei in Bellwald/Fürgangen, seit fast 70 Jahren in zweiter Generation. Inhaber: Raphaela und Reinhard Perren. Spezialisiert auf Renovationen, Umbauten und Innenausbau im Oberwallis. Adresse: Bellwalderstrasse 16, 3997 Fürgangen. Tel: 027 971 12 74."
+  }
+]
