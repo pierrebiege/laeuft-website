@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "FAKTEN: Grösstes 24/7-Fitness-Netzwerk im Oberwallis, gegründet 2008 von Samuel Millius. Mehrere Standorte: Susten, Stalden, Visp-Süd, Visp-Center, Leuk. ALL-IN-ONE Mitgliedschaft über alle Studios. Bietet Personal Training, Ernährungsberatung, CrossGYM. Samuel Millius ist Inhaber und Athletic & Performance Coach. Branche: Fitness/Sport."
+  },
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Pascal Ruppen",
+    "email": "info@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "FAKTEN: Garage in Brig-Glis seit 1992. Offizieller Partner für VW, Audi, SEAT und Škoda (AMAG-Partner). stop+go Partnerbetrieb. Bietet Neuwagen, Occasionen, Service und Reparaturen aller Marken. Pascal Ruppen ist in der Geschäftsleitung (via LinkedIn verifiziert). Branche: Garagist/Autohandel."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Valérie Cina-Suhner",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "FAKTEN: Weingut und Kellerei in Salgesch (Wallis), gegründet 1956. 20 Hektar eigene Rebfläche, rund 40 verschiedene Weine mit nationalen und internationalen Auszeichnungen. Website mit Online-Shop und wechselnden Intro-Videos (erstellt von indual GmbH). Valérie Cina-Suhner und Robin Heinzmann sind Ansprechpersonen. Zweite E-Mail: administration@fernand-cina.ch. Branche: Weingut/Kellerei."
+  },
+  {
+    "company": "Bauunternehmung Andereggen AG",
+    "contact_name": "Jannik Andereggen",
+    "email": "info@andereggen-ag.ch",
+    "website": "https://www.andereggen-ag.ch",
+    "notes": "FAKTEN: Bauunternehmung in Brig, gegründet 1992. Hoch- und Tiefbau sowie Transporte. Familienbetrieb: Geschäftsleitung besteht aus Jannik und Nico Andereggen (beide mit Einzelunterschrift), Rinaldo Andereggen im Verwaltungsrat. Mitglied des Walliser Baumeisterverbands (AVE-WBV). Branche: Bauunternehmen."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber GmbH",
+    "contact_name": "Alexander Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "FAKTEN: Bäckerei-Konditorei in Stalden, seit 1990 von Alexander und Renate Zuber geführt. 4 Filialen im Oberwallis: Stalden (Hauptsitz/Produktion), Visp, Brig und Naters. Handwerkliche Qualität als Claim. Juniorchef Andreas Zuber als VR-Vizepräsident. Familienbetrieb mit Generationenwechsel. Branche: Bäckerei/Gastronomie."
+  }
+]
