@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Daniel Agten",
+    "email": "daniel@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch",
+    "notes": "Immobilienagentur in Naters (Oberwallis), seit 2009 aktiv. Team: Daniel Agten (Geschäftsinhaber, Betriebsökonom) und Marco Williner. Spezialisiert auf Kauf und Verkauf von Immobilien im Oberwallis. Website agtenimmobilien.ch vorhanden."
+  },
+  {
+    "company": "Zenhäusern Treuhand AG",
+    "contact_name": "Karl Zenhäusern",
+    "email": "karl.zenhaeusern@ztag.ch",
+    "website": "https://ztag.ch",
+    "notes": "Treuhandbüro in Visp (Oberwallis). Familienbetrieb mit Karl, Stefan, Daniel und Marc Zenhäusern in der Geschäftsleitung. Dienstleistungen: Steuerberatung, Wirtschaftsprüfung, Unternehmensberatung, Immobilienverwaltung. Website ztag.ch vorhanden."
+  },
+  {
+    "company": "Maesano AG",
+    "contact_name": "Maesano AG",
+    "email": "info@maesanobau.ch",
+    "website": "https://www.maesanobau.ch",
+    "notes": "Bauunternehmen in Brig-Glis (Oberwallis), gegründet 2010. Ca. 30 langjährige Mitarbeiter. Michel Maesano (VR-Präsident), Susanne Maesano-Hurni und Antonino Maesano im Verwaltungsrat. Spezialisiert auf Bruchsteinmauern, Hochbau, Tiefbau, Spezialarbeiten. Website maesanobau.ch vorhanden."
+  },
+  {
+    "company": "Bacher + Schmidt Elektro AG",
+    "contact_name": "Bacher + Schmidt Elektro AG",
+    "email": "box@bacher-schmidt.ch",
+    "website": "https://www.bacher-schmidt.ch",
+    "notes": "Elektro-Installateur in Visp (Oberwallis), gegründet 2000 von Tobias Bacher und Daniel Schmidt (eidg. Elektroinstallateure und Lichtplaner). 8 Mitarbeiter und 3 Lehrlinge. Standorte in Visp, Münster und Stalden. Bieten u.a. Smart Home Lösungen an. Website bacher-schmidt.ch vorhanden."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber AG",
+    "contact_name": "Bäckerei-Konditorei A. Zuber AG",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "Bäckerei und Konditorei mit Produktion in Stalden und Filialen in Visp, Naters, Brig und Grächen. Alexander Zuber (VR-Präsident), Andreas Zuber (Vizepräsident). Backen 365 Tage im Jahr, betreiben auch Cafés und Restaurants. Aktiv auf Instagram. Website baeckerei-zuber.ch vorhanden."
+  }
+]
