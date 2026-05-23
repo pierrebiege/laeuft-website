@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "ACG Treuhand AG",
+    "contact_name": "Christian Summermatter",
+    "email": "acgtreuhand@bluewin.ch",
+    "website": "https://acg-treuhand.ch",
+    "notes": "Treuhandbüro in Visp, gegründet 1989. Bietet Treuhand, Steuerberatung, Finanzen und Revision. Christian Summermatter ist im Verwaltungsrat. Website war beim Test nicht erreichbar (Connection Refused). Nur 2 Seiten im Google-Index (Home + Kontakt). Nutzt bluewin.ch-E-Mail statt eigene Domain-Adresse — deutet auf geringes digitales Bewusstsein hin."
+  },
+  {
+    "company": "Warehouse Gym",
+    "contact_name": "Sven Zuber",
+    "email": "info@warehousegym.ch",
+    "website": "https://warehousegym.ch",
+    "notes": "Grösstes 24h-Fitnessstudio in Visp/Eyholz, über 700m2. Sven Zuber ist Gesellschafter und Geschäftsführer. Betreibt zwei verschiedene Domains (warehousegym.ch und whousegym.com) — verwirrend für Kunden und schlecht für SEO. Bietet Abos, Coaching, Supplement-Verkauf."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Christian Schmid",
+    "email": "christian.schmid@netplus.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Familien-Weingut in Salgesch, gegründet 1959, geführt von Brüdern Reinhard und Christian Schmid. Website vorhanden mit Team/Kontakt und Geschichte-Seiten. Persönliche E-Mail von Christian Schmid gefunden. Auch erreichbar unter info@weinschmiede.ch und 079 329 21 65."
+  },
+  {
+    "company": "Anton Imstepf GmbH",
+    "contact_name": "Michael Imstepf",
+    "email": "m.imstepf@imstepf-anton.ch",
+    "website": "https://www.imstepf-anton.ch",
+    "notes": "Familienbetrieb in Naters, gegründet 1980, 10 Mitarbeiter. Bietet Sanitär, Bedachung, Fassadenbau und Spenglerei. Michael Imstepf ist Geschäftsführer. Website hat ca. 9 Seiten (Über uns, Dienstleistungen, Referenzen nach Kategorie, Kontakt, Impressum). Persönliche E-Mail gefunden."
+  },
+  {
+    "company": "Garage Calabrais Sàrl",
+    "contact_name": "Riccardo D'Alessandro",
+    "email": "garagecalabrais@etik.com",
+    "website": "https://www.garage-calabrais.ch",
+    "notes": "Garage in Miège bei Sierre (Unterwallis), gegründet 1990, geführt von Riccardo D'Alessandro. Bietet Reifen-Service, Klimaanlagen, Diagnostik, Fahrzeugverkauf, Waschanlage und Karosseriearbeiten. Nutzt etik.com-E-Mail statt eigene Domain — Potenzial für professionelleren Webauftritt. Carxpert-Partner."
+  }
+]
