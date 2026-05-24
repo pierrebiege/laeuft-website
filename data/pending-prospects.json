@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallateur mit 7 Standorten im Wallis (Visp, Saas-Fee, Saas-Grund, Saas-Almagell, Saas-Balen, Stalden, Gampel). Gegründet 1981 von Armin Supersaxo, 2014 von Sohn Markus übernommen. Bietet Elektroinstallationen, E-Mobilität/Ladestationen, Smart-Home-Automation und Elektroplanung an. Persönliche E-Mail des Geschäftsinhabers gefunden."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit Standorten in Susten (Hauptsitz), Stalden, Visp-Süd und CrossGYM Susten. 24/7 geöffnet, 365 Tage. Nutzt GYMi-System für Zugang und Online-Shop für Abonnements. Feiert 10-jähriges Bestehen. Bietet 1:1 Coaching, Ernährungsberatung und Personal Training. Samuel Millius ist Unternehmensinhaber und Athletic & Performance Trainer."
+  },
+  {
+    "company": "Metzgerei Nessier AG",
+    "contact_name": "Thomas Nessier",
+    "email": "info@metzgerei-nessier.ch",
+    "website": "https://www.metzgerei-nessier.ch",
+    "notes": "Walliser Fleischtrocknerei in Münster (Goms), 4. Familiengeneration. Hersteller von IGP-zertifiziertem Walliser Trockenfleisch. Filialen in Münster und Fiesch. Hat Online-Shop (shop auf Website). Produktion vor Ort von Schlachtung bis Verkauf. Thomas Nessier ist Geschäftsführer und Fleischfachmann."
+  },
+  {
+    "company": "Treuhand & Immobilien Dala GmbH",
+    "contact_name": "Gilbert Loretan",
+    "email": "immodala@bluewin.ch",
+    "website": "https://www.immodala.ch",
+    "notes": "Treuhand- und Immobilienverwaltung in Leukerbad. Bietet Buchhaltung, Steuerberatung, Liegenschaftsverwaltung und Immobilienvermittlung. Nutzt bluewin.ch-E-Mail statt eigene Domain-E-Mail — klares Zeichen für Digitalisierungspotenzial. Gilbert Loretan ist Inhaber und Geschäftsführer."
+  },
+  {
+    "company": "Schreinerei Zurbriggen AG",
+    "contact_name": "Roman Zurbriggen",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Traditionelle Schreinerei in Visp, gegründet 1888. Rund 40 Fachkräfte. Spezialisiert auf Fenster, Möbel und Innenausbau. 4. Generation unter Roman Zurbriggen (Geschäftsinhaber). Website von indual GmbH erstellt."
+  }
+]
