@@ -33,5 +33,40 @@
     "email": "info@zurbriggen.net",
     "website": "https://www.zurbriggen.net",
     "notes": "Traditionelle Schreinerei in Visp, gegründet 1888. Rund 40 Fachkräfte. Spezialisiert auf Fenster, Möbel und Innenausbau. 4. Generation unter Roman Zurbriggen (Geschäftsinhaber). Website von indual GmbH erstellt."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Domenico Jelo",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "Familiäre Autogarage in Naters (Weingartenstrasse 70), gegründet 1982 von Giuseppe Jelo. 2015 von den Söhnen Domenico (Verkauf) und Marco Jelo (Werkstatt) übernommen. Offizieller Fiat-Händler im Oberwallis. Bietet Neuwagen, Occasionen, Service und Reparaturen. Team spricht Deutsch, Französisch, Italienisch und Englisch."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Reinhard & Christian Schmid",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Selbstkelterer-Kleinbetrieb im Weindorf Salgesch, seit über 25 Jahren von den Brüdern Reinhard und Christian Schmid geführt. Tschütrigstrasse 27, 3970 Salgesch. Auf Falstaff und Swiss Wine gelistet. Hat Team- und Kontaktseite auf der Website."
+  },
+  {
+    "company": "Simplon-Optik GmbH",
+    "contact_name": "Alexander Vogel",
+    "email": "optik@simplon-optik.ch",
+    "website": "https://www.simplon-optik.ch",
+    "notes": "Optiker an der Balfrinstrasse 5 in Visp, gegründet 2010. Alexander Vogel ist alleiniger Geschäftsführer und Inhaber. Spezialisiert auf Brillen, Kontaktlinsen, Magnetbrillen und Sportbrillen. Setzt auf Umweltschutz und Nachhaltigkeit (spendet aufbereitete Brillen an 'Brillen ohne Grenzen'). Website hat teilweise noch unfertige Seiten ('Sample Page' sichtbar)."
+  },
+  {
+    "company": "Gypsa Exploitation SA",
+    "contact_name": "Gilles Granges",
+    "email": "info@gypsa.ch",
+    "website": "https://www.gypsa.ch",
+    "notes": "Maler- und Gipserbetrieb in Martigny (Rue des Finettes 65), aktiv seit 1977. Rund 40 Mitarbeiter. Familienbetrieb, Verwaltungsrat Gilles Granges und Robin Granges. Bedient Kunden von Sierre bis Montreux. Spezialisiert auf Malerarbeiten, Gipserarbeiten, Decken, Isolierung und Brandschutz. Einziger Prospect im Unterwallis."
+  },
+  {
+    "company": "Lambrigger Blumenwelt",
+    "contact_name": "Ruth Werlen-Lambrigger",
+    "email": "info@lambrigger-blumenwelt.ch",
+    "website": "https://lambrigger-blumenwelt.ch",
+    "notes": "Familiärer Blumenladen an der Viktoriastrasse 25 in Brig. Inhaberin Ruth Werlen-Lambrigger mit kleinem Team (Melanie und Eveline). Bietet Blumen für jeden Anlass, Trauerfloristik und Eventfloristik. Mitglied im Gewerbeverein Naters."
   }
 ]
