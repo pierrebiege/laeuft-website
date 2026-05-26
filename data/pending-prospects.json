@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Maesano AG",
+    "contact_name": "Maesano AG",
+    "email": "info@maesanobau.ch",
+    "website": "https://www.maesanobau.ch",
+    "notes": "Bauunternehmen in Brig-Glis, rund 30 Mitarbeitende. Spezialisiert auf Hochbau, Tiefbau, Umbau und Bruchsteinmauern. Michel Maesano ist Verwaltungsratspräsident. Website mit ca. 7 indexierten Seiten (Team, Standort, Downloads, Referenzen). Familienbetrieb, gegründet 2010."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "Weingut und Kellerei in Salgesch (Wallis). Gegründet 1956, geführt von den Brüdern Manfred und Damian Cina seit über 30 Jahren. 20 Hektar Rebfläche, ca. 40 verschiedene Weine mit nationalen und internationalen Auszeichnungen (u.a. EXPOVINA Gold). Website mit Online-Shop, Events und Degustationsangebot."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber",
+    "contact_name": "Bäckerei-Konditorei A. Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "Bäckerei-Konditorei mit Hauptsitz in Stalden und Filialen in Visp, Brig und Naters. Über 60 Voll- und Teilzeitmitarbeitende. Alexander Zuber ist VR-Präsident. Täglich 25-30 Brotsorten, eigenkreiertes Bierbrot als Spezialität. Familienbetrieb seit 1990, gewachsen vom Einmannbetrieb zum regionalen Player."
+  },
+  {
+    "company": "Eyer Immobilien AG",
+    "contact_name": "Eyer Immobilien AG",
+    "email": "info@eyer-immobilien.ch",
+    "website": "https://eyer-immobilien.ch",
+    "notes": "Immobilienverwaltung in Brig-Glis, spezialisiert auf Liegenschaftsverwaltung und Vermietung im Oberwallis. Silvan Matthew Eyer ist Vorsitzender der Geschäftsleitung. Sehr minimale Web-Präsenz: nur 3 indexierte Seiten. Bietet Mietverwaltung, Stockwerkeigentümer-Verwaltung und Hauswartdienste."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Garage Arena AG",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "Garagist und offizieller Fiat-Händler in Naters. Seit 2015 geführt von Domenico Jelo (Verkauf) und Marco Jelo (Werkstatt), Söhne der Gründerfamilie. Adresse: Weingartenstrasse 70, 3904 Naters. Neuwagenverkauf, Werkstatt und Occasionen. Auch über verkauf@garage-arena.ch erreichbar."
+  }
+]
