@@ -33,5 +33,40 @@
     "email": "info@garage-arena.ch",
     "website": "https://www.garage-arena.ch",
     "notes": "Garagist und offizieller Fiat-Händler in Naters. Seit 2015 geführt von Domenico Jelo (Verkauf) und Marco Jelo (Werkstatt), Söhne der Gründerfamilie. Adresse: Weingartenstrasse 70, 3904 Naters. Neuwagenverkauf, Werkstatt und Occasionen. Auch über verkauf@garage-arena.ch erreichbar."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "24/7-Fitnessstudio-Kette im Oberwallis, gegründet 2008 von Samuel Millius (Inhaber, Athletic & Performance Trainer, Ernährungsberater). Studios in Visp-Center, Visp-Süd, Stalden und Susten inkl. CrossGym. Grösstes Fitness-Netzwerk im Oberwallis. Bietet Personal Training, Ernährungsberatung, Krafttraining und Fitness-Produkte."
+  },
+  {
+    "company": "Hotel Au Terminus",
+    "contact_name": "Hotel Au Terminus",
+    "email": "info@hotel-terminus.ch",
+    "website": "https://hotel-terminus.ch",
+    "notes": "3-Sterne-Superior-Hotel in Sierre (Rue du Bourg 1), erbaut in den 1860er Jahren. 19 Zimmer und Suiten. Restaurant Le Bistro du Terminus mit Gault&Millau 13/20 (Chef Enrico Ferrari). Konferenzraum für 10-50 Personen, Bankettsaal. Eigentum der Familie Rouvinez seit 2005, Direktor Sébastien Bonvin."
+  },
+  {
+    "company": "Bacher + Schmidt Elektro AG",
+    "contact_name": "Bacher + Schmidt Elektro AG",
+    "email": "box@bacher-schmidt.ch",
+    "website": "https://www.bacher-schmidt.ch",
+    "notes": "Elektroinstallationsfirma in Visp (Weingartenweg 6a), über 25 Jahre Tradition. VR-Präsident Daniel Schmidt, Sekretär Tobias Bacher. Junges, dynamisches Team mit Fokus auf Lehrlingsausbildung. Dienstleistungen in Elektroinstallationen, Gebäudetechnik und Innovation."
+  },
+  {
+    "company": "Schweizer Skischule Saas-Fee",
+    "contact_name": "Schweizer Skischule Saas-Fee",
+    "email": "info@skischule-saas-fee.ch",
+    "website": "https://www.skischule-saas-fee.ch",
+    "notes": "Traditionsreiche Schweizer Skischule in Saas-Fee, gegründet 1951. Rund 90 Skilehrer in der Hochsaison. Schulleiter Gabriel Anthamatten. Gruppen- und Privatunterricht für Ski, Snowboard und Telemark. Adresse: Dorfplatz 1, 3906 Saas-Fee."
+  },
+  {
+    "company": "Zahnarzt Visp GmbH",
+    "contact_name": "Zahnarzt Visp GmbH",
+    "email": "info@zahnarzt-visp.ch",
+    "website": "https://www.zahnarzt-visp.ch",
+    "notes": "Zahnarztpraxis in Visp (Kantonsstrasse 12). Geschäftsführer Dr. med. dent. Martin Schmidhalter, Patrizia Schmidhalter mit Einzelprokura. Schwerpunkt u.a. Kinderzahnmedizin. 3 Personen in der Geschäftsleitung."
   }
 ]
