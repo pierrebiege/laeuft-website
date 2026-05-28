@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Aletsch Elektro AG",
+    "contact_name": "Norbert Rittiner",
+    "email": "norbert.rittiner@aletsch-elektro.ch",
+    "website": "https://www.aletsch-elektro.ch",
+    "notes": "Elektroinstallations- und Planungsbetrieb in Naters, gegründet 2001 von Ruth und Norbert Rittiner. 20 Fachspezialisten. Standort: Furkastrasse 36A, 3904 Naters. Persönliche E-Mail des Inhabers verifiziert über WIR-Netzwerk und Gewerbeverein Naters."
+  },
+  {
+    "company": "Treuhand & Immobilien Dala GmbH",
+    "contact_name": "Gilbert Loretan",
+    "email": "immodala@bluewin.ch",
+    "website": "https://www.immodala.ch",
+    "notes": "Treuhand- und Immobilienfirma in Leukerbad, gegründet 2009. Inhaber und Geschäftsführer Gilbert Loretan. Dienstleistungen: Treuhand, Steuerberatung, Immobilienvermittlung, Verwaltung, Revisionen. Nutzt eine bluewin.ch-Email statt eigener Firmendomain für Kontakt. Standort: Kurparkstrasse 24, 3954 Leukerbad."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "François Stefan Hurni",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch",
+    "notes": "Bauunternehmen in Brig, gegründet 1985 von Mathias und Jacqueline Bellwald. Ca. 70 Mitarbeiter. 2021 von François Stefan Hurni (VR-Präsident) übernommen. Spezialisiert auf Renovationen und Sanierungen, Suva-zertifiziert für Asbest-Sanierung. Standort: Holowistrasse 65, 3902 Brig-Glis."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "Weingut und Kellerei in Salgesch, gegründet 1956. 20 Hektar Rebfläche, ca. 40 verschiedene Weine. Geführt von Valérie Cina-Suhner und Robin Heinzmann. Weintourismus-Angebot vorhanden. Zweite E-Mail: administration@fernand-cina.ch. Standort: Bahnhofstrasse 27, 3970 Salgesch."
+  },
+  {
+    "company": "Fitnesscenter ChrisTOP-Park",
+    "contact_name": "Christoph Oberholzer",
+    "email": "info@christoppark.ch",
+    "website": "https://christoppark.ch",
+    "notes": "Fitnessstudio in Visp, seit 1995. 600m² auf drei Stockwerken. Inhaber Christoph Oberholzer (Schweizer Bodybuilding-Meister 1988) und Elisabeth Schmidt Oberholzer, beide eidg. diplomiert. Qualitop-zertifiziert. Angebote: Kraft- und Ausdauertraining, Gruppenklassen, Solarium, Cafeteria. Standort: Kantonsstrasse 6A, 3930 Visp."
+  }
+]
