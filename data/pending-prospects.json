@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan / Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Weingut in Salgesch (3. Generation, Sandra & Olivier Mounir). Biodynamischer Anbau, über 200 internationale Auszeichnungen, Swiss Winery of the Year 2022. Website mit Online-Shop, Events, Tavolata-Erlebnisse und Degustationen. Ca. 7 Hektar Rebfläche."
+  },
+  {
+    "company": "Gempeler Haustechnik GmbH",
+    "contact_name": "Diego Gempeler",
+    "email": "gempeler.ht@bluewin.ch",
+    "website": "https://www.gempeler-haustechnik.ch",
+    "notes": "Heizung, Sanitär und Reparaturdienst in Visp, gegründet 2001. Geschäftsführer Diego Gempeler. Website sehr minimal (nur 1 Seite im Google-Index). Nutzt Bluewin-E-Mail statt professionelle Domain-Adresse."
+  },
+  {
+    "company": "Treuhand & Immobilien Dala GmbH",
+    "contact_name": "Gilbert Loretan",
+    "email": "immodala@bluewin.ch",
+    "website": "https://www.immodala.ch",
+    "notes": "Treuhand, Steuern und Immobilienverwaltung in Leukerbad. Inhaber und Geschäftsführer Gilbert Loretan. Website läuft über immomigsa-Plattform. Nutzt Bluewin-E-Mail statt professionelle Domain-Adresse."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "François Stefan Hurni",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch",
+    "notes": "Bauunternehmen in Brig, gegründet 1985, ca. 70 Mitarbeiter. Generalunternehmen für Renovationen, Sanierungen, Abbruch, Tiefbau und Umweltarbeiten. Seit 2021 unter Leitung von François Stefan Hurni. SUVA-zertifiziert für Asbestsanierung."
+  },
+  {
+    "company": "Fitnesscenter ChrisTOP-Park",
+    "contact_name": "Christoph Oberholzer",
+    "email": "info@christoppark.ch",
+    "website": "https://christoppark.ch",
+    "notes": "Fitnesscenter in Visp seit 1995, 600m² Trainingsfläche. Inhaber Christoph Oberholzer (Schweizer Bodybuilding-Champion 1988). Angebot: Krafttraining, Gruppenkurse, FitSafe-Zugangssystem mit Keycard. Website funktional aber nicht modern gestaltet."
+  }
+]
