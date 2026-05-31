@@ -33,5 +33,40 @@
     "email": "info@christoppark.ch",
     "website": "https://christoppark.ch",
     "notes": "Fitnesscenter in Visp seit 1995, 600m² Trainingsfläche. Inhaber Christoph Oberholzer (Schweizer Bodybuilding-Champion 1988). Angebot: Krafttraining, Gruppenkurse, FitSafe-Zugangssystem mit Keycard. Website funktional aber nicht modern gestaltet."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "markus@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "Elektroinstallateur in Saas-Fee, gegründet 1981, seit 2014 von Markus Supersaxo (2. Generation) geführt. Standorte in Saas-Fee, Saas-Almagell, Stalden, Visp und Gampel. Leistungen: Elektroplanung, Installation, IT, Medientechnik. Eidg. dipl. Elektroinstallateur."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Garage Arena AG",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "FIAT-Vertragshändler in Naters, gegründet 1982 von Giuseppe Jelo. Geschäftsführerin und Alleininhaberin: Andrea Jelo-Amstutz. Autoverkauf und Werkstatt an der Weingartenstrasse 70. Zweite Werkstatt-E-Mail: werkstatt@garage-arena.ch."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber AG",
+    "contact_name": "Alexander Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "Traditionelle Bäckerei in Stalden (Produktion 750m²) mit Filiale und Café in Naters. Alexander Zuber (VR-Präsident) übernahm den Betrieb 1990, Umwandlung zur AG 2018. Auszeichnung 'Ritter des guten Brotes' seit 1991. Backt 365 Tage im Jahr."
+  },
+  {
+    "company": "Animal Kleintierpraxis",
+    "contact_name": "Animal Kleintierpraxis",
+    "email": "info@animal-kleintierpraxis.ch",
+    "website": "https://animal-kleintierpraxis.ch",
+    "notes": "Tierarztpraxis für Kleintiere in Visp, Kantonsstrasse 41C. Team: Dres. med. vet. Urs Geissbühler (Dipl. ECVDI), Daniela Geissbühler und Susanne Spagnoli. Angebot: Vorsorge, Diagnostik mit Hauslabor, Chirurgie, Zahnmedizin, Dermatologie."
+  },
+  {
+    "company": "DIRREN Maler und Gipser GmbH",
+    "contact_name": "Romeo Dirren",
+    "email": "info@malerei-dirren.ch",
+    "website": "https://www.malerei-dirren.ch",
+    "notes": "Maler- und Gipserbetrieb in Visp, entstanden aus der Fusion dreier renommierter Betriebe. Geschäftsführer und Inhaber: Romeo Jr. Dirren (eidg. dipl. Malermeister) und Ricardo Dirren. Leistungen: Malerei, Gipserei, Trockenbau/Leichtbau, Strahlerei."
   }
 ]
