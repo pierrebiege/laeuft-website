@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Pascal Ruppen",
+    "email": "info@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "Autogarage in Brig-Glis, seit über 30 Jahren bestehend. 2020 Übernahme durch Pascal & Chantal Ruppen (neue Generation). Stop+go- und AMAG-Partnerbetrieb. Ca. 40 Occasions-Fahrzeuge im Angebot. Pascal Ruppen ist VR-Präsident mit Einzelunterschrift. Branche: Automobil/Garage."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Reinhard & Christian Schmid",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Familien-Weingut der Brüder Reinhard und Christian Schmid in Salgesch, gegründet 1959, seit 1991 von den Brüdern geführt. 2 Hektar Rebfläche in Salgesch und Sierre. Bio-Suisse-Knospe-zertifiziert. Website hat einen Online-Shop. Branche: Weingut/Weinhandel."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Fitnessstudio-Netzwerk im Oberwallis mit mehreren Standorten: Visp-Center, Visp-Süd, Susten und CrossGYM Susten. 24/7 geöffnet. Inhaber Samuel Millius. Nutzt GYMi-System für Zugangskontrolle. Coaches: Samuel Millius und Tatjana. Branche: Fitness/Sport."
+  },
+  {
+    "company": "Schmid Bautech AG",
+    "contact_name": "Manfred Schmid",
+    "email": "info@schmidbautech.ch",
+    "website": "https://www.schmidbautech.ch",
+    "notes": "Bauunternehmen in Brig-Glis, gegründet 2003 von den Brüdern Manfred und Amadeus Schmid als Nachfolge des väterlichen Betriebs. Ca. 20 Mitarbeiter. Standorte in Brig-Glis (Gamsen), Ausserberg und Visp. Spezialisiert auf Bautenschutz und Werterhaltung. Manfred Schmid ist Direktor und Präsident. Branche: Bauunternehmen."
+  },
+  {
+    "company": "Schreinerei Zurbriggen AG",
+    "contact_name": "Roman Zurbriggen",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Traditionsschreinerei in Visp seit 1888, vierte Generation unter Geschäftsinhaber Roman Zurbriggen. Ca. 40 Fachkräfte. Spezialisiert auf Fenster, Möbel und Innenausbau. Website wurde von Agentur indual GmbH erstellt. Direktnummer Roman Zurbriggen: 027 948 10 13. Branche: Schreinerei/Handwerk."
+  }
+]
