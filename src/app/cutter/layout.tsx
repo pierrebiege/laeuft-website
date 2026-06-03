@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cutter & Storyteller gesucht – Pierre Biege',
     description:
-      'Freelance Cutter & Storyteller, der Viralität versteht und mit mir Content baut, der bewegt. Shorts, Reels, Vlogs, Podcast-Clips. 18k+ Community, 1M+ Aufrufe/Monat.',
+      'Freelance Cutter & Storyteller, der Viralität versteht und mit mir Content baut, der bewegt. Shorts, Reels, Vlogs, Podcast-Clips. 26k auf Instagram, 3M+ Aufrufe/Monat.',
     images: ['/presentations/yfood/lastsoul/05.jpg'],
     locale: 'de_CH',
     type: 'website',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Cutter & Storyteller gesucht – Pierre Biege',
-    description: 'Freelance Cutter & Storyteller für Pierre Biege. 18k+ Community, 1M+ Aufrufe/Monat.',
+    description: 'Freelance Cutter & Storyteller für Pierre Biege. 26k auf Instagram, 3M+ Aufrufe/Monat.',
     images: ['/presentations/yfood/lastsoul/05.jpg'],
   },
 }

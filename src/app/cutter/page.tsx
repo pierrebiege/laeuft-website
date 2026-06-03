@@ -120,7 +120,7 @@ function Hero() {
         >
           Cut · Social Media · Videograf
         </motion.div>
-        <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight leading-[0.85] mb-6">
+        <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-bold tracking-tight leading-[0.88] mb-6">
           <AnimatedWords text="Ich suche meinen Cutter. Und mehr." delay={0.4} stagger={0.08} />
         </h1>
         <motion.p
@@ -201,10 +201,10 @@ function Intro() {
 
 function Reach() {
   const stats = [
-    { value: "18k+", label: "Community, die jeden Tag zuschaut" },
-    { value: "1M+", label: "Aufrufe pro Monat" },
-    { value: "Daily", label: "Postings auf Instagram & TikTok" },
-    { value: "4", label: "Ultra-Events 2026 – Wallis & DACH" },
+    { value: "26k", label: "Follower auf Instagram" },
+    { value: "5k", label: "Abonnenten auf YouTube" },
+    { value: "3M+", label: "Aufrufe pro Monat" },
+    { value: "Daily", label: "Neue Reels & Shorts" },
   ];
   return (
     <section className="bg-black text-white py-32 px-6 overflow-hidden border-t border-white/10">
@@ -386,7 +386,7 @@ function WhyYou() {
     { icon: Sparkles, text: "Kreative Freiheit. Deine Ideen zählen. Du gestaltest mit, statt nur abzuarbeiten." },
     { icon: Flame, text: "Mittendrin statt nur dabei: Races, Events, Backstage – da, wo es passiert." },
     { icon: Zap, text: "Flexibel und freelance, auf Abruf. Fair und transparent – das Modell finden wir gemeinsam." },
-    { icon: Eye, text: "Sichtbarkeit für deine Arbeit – dein Schnitt läuft vor einer Community von über 18'000 Menschen." },
+    { icon: Eye, text: "Sichtbarkeit für deine Arbeit – dein Schnitt läuft vor über 26'000 Menschen allein auf Instagram." },
     { icon: Clapperboard, text: "Was hier entsteht, ist erst der Anfang. Wer jetzt mitbaut, wächst mit." },
   ];
   return (
@@ -468,7 +468,7 @@ function ParallaxImage({ src, alt = "", className = "" }: { src: string; alt?: s
 function Setup() {
   const facts = [
     { Icon: Scissors, label: "Cut", value: "Remote möglich – du schneidest, wo du willst." },
-    { Icon: Calendar, label: "Events", value: "Präsenz bei ausgewählten Events in der Schweiz & DACH." },
+    { Icon: Calendar, label: "Events", value: "Live mittendrin bei ausgewählten Events – dieses Jahr u.a. 99 Laps, Last Soul & Berlin Marathon." },
     { Icon: Zap, label: "Modell", value: "Freelance, auf Mandatsbasis – der Umfang wächst mit." },
     { Icon: Send, label: "Start", value: "So bald wie möglich." },
     { Icon: Film, label: "Tools", value: "Womit du schneidest, ist mir egal – Hauptsache das Ergebnis stimmt." },
