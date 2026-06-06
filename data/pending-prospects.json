@@ -25,7 +25,7 @@
     "contact_name": "Valfida Treuhand AG",
     "email": "info@valfida.ch",
     "website": "https://valfida.ch",
-    "notes": "FAKTEN: Treuhandbüro in Visp, Oberwallis. Geschäftsleitung besteht aus Marc Zenhäusern (eidg. dipl. Treuhandexperte, zugelassener Revisionsexperte), Daniel, Stephan und Karl Zenhäusern sowie Adrian René Amacker. Bietet Steuerberatung, Buchhaltung, Revision und Immobilienverwaltung. Website mit Team- und Geschäftsleitungs-Seite. Standort: Kantonsstrasse 39, 3930 Visp."
+    "notes": "FAKTEN: Treuhundbüro in Visp, Oberwallis. Geschäftsleitung besteht aus Marc Zenhäusern (eidg. dipl. Treuhandexperte, zugelassener Revisionsexperte), Daniel, Stephan und Karl Zenhäusern sowie Adrian René Amacker. Bietet Steuerberatung, Buchhaltung, Revision und Immobilienverwaltung. Website mit Team- und Geschäftsleitungs-Seite. Standort: Kantonsstrasse 39, 3930 Visp."
   },
   {
     "company": "Aletsch Elektro AG",
@@ -33,5 +33,40 @@
     "email": "info@aletsch-elektro.ch",
     "website": "https://www.aletsch-elektro.ch",
     "notes": "FAKTEN: Elektroplanungs- und Installationsunternehmen in Fiesch, Oberwallis. Gegründet 2001 von Ruth und Norbert Rittiner. Team von 20 Spezialisten. Geschäftsleitung: Norbert Rittiner (VR-Mitglied), Ruth Rittiner, Romeo Schmid, Alessandro Walker (alle Direktoren). Bietet Elektroplanung und -installation für Neu-/Umbauten, Kleininstallationen und Unterhalt. Standort: Schulhausstrasse 1, 3984 Fiesch."
+  },
+  {
+    "company": "Eyer Immobilien AG",
+    "contact_name": "Eyer Immobilien AG",
+    "email": "info@eyer-immobilien.ch",
+    "website": "https://eyer-immobilien.ch",
+    "notes": "FAKTEN: Immobilienverwaltung und -vermietung in Brig-Glis, Oberwallis. Verwaltungsrat: Silvan Matthew Eyer (Präsident), Dr. Martin Eyer und Desirée Eyer (Mitglieder). Lokales Familienunternehmen spezialisiert auf Verwaltung und Vermietung von Liegenschaften im Oberwallis. Standort: Gliserallee 108, 3900 Brig-Glis."
+  },
+  {
+    "company": "Flückiger Optik GmbH",
+    "contact_name": "Flückiger Optik GmbH",
+    "email": "info@flueckigeroptik.ch",
+    "website": "https://www.flueckigeroptik.ch",
+    "notes": "FAKTEN: Optikgeschäft in der Visper Altstadt, Oberwallis. Geschäftsführerin ist Lara Flückiger, Gründertochter, die Trend und Tradition vereint. Mitglied im Dynoptic-Netzwerk. Bietet Brillen, Kontaktlinsen und Augenoptik. Standort: Kaufplatz 1, 3930 Visp."
+  },
+  {
+    "company": "Metzgerei Bammatter",
+    "contact_name": "Metzgerei Bammatter",
+    "email": "info@bammatter-naters.ch",
+    "website": "https://www.bammatter-naters.ch",
+    "notes": "FAKTEN: Metzgerei und Fleisch-Atelier in Naters, Oberwallis. Gegründet 1983 von Reinhard Bammatter, seit 2016 geführt von Tochter Belinda Bammatter als Geschäftsführerin. Verarbeitet Eringer-Rinder und Schwarznasenschafe. Bietet Wurstproduktion, Trockenfleisch und Partyservice. Standort: Belalpstrasse 7, 3904 Naters."
+  },
+  {
+    "company": "Gemmet Handels AG",
+    "contact_name": "Gemmet Handels AG",
+    "email": "info@gemmethandelsag.ch",
+    "website": "https://www.gemmethandelsag.ch",
+    "notes": "FAKTEN: Gastro-Küchenbau und Geschirrspülmaschinen-Service in Brig-Glis, Oberwallis. Gegründet 1986 von Fidel Gemmet, seit 2011 in 2. Generation geführt von Gilbert Gemmet (Geschäftsführer) und Marceline Gemmet (Geschäftsführerin). Über 20 Mitarbeiter. Bedient Kunden in den Kantonen Wallis und Waadt. Standort: Klosmattenstrasse 90, 3902 Brig-Glis."
+  },
+  {
+    "company": "Passeraub Werbe AG",
+    "contact_name": "Passeraub Werbe AG",
+    "email": "info@p-werbe.ch",
+    "website": "https://www.p-werbe.ch",
+    "notes": "FAKTEN: Werbetechnik-Unternehmen in Gampel, Wallis. Gegründet 1990, Geschäftsführer ist Edwin Passeraub. Bietet Beschriftungen, Digitaldruck, Offsetdruck, Siebdruck, Werbeartikel und Stickerei. Standort: Niedergampelstrasse 79, 3945 Gampel."
   }
 ]
