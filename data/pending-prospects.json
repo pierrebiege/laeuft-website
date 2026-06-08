@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Anton Imstepf GmbH",
+    "contact_name": "Michael Imstepf",
+    "email": "m.imstepf@imstepf-anton.ch",
+    "website": "https://www.imstepf-anton.ch/",
+    "notes": "Sanitär-, Bedachungs- und Spenglereifirma in Naters (Sportplatzweg 2, 3904 Naters). Familienbetrieb gegründet 1980 von Anton Imstepf, heute geführt von Sohn Michael Imstepf als Geschäftsführer. 10 Mitarbeiter. Dienstleistungen: Sanitärinstallation, Bedachungen, Fassadenverkleidungen, Spenglerarbeiten. Website vorhanden mit Dienstleistungen, Referenzen und Kontaktseite."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch/",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit Studios in Susten (Kantonsstrasse 136, 3952 Susten), Stalden, Visp-Süd und CrossGYM Susten. Inhaber: Samuel Millius. Alle Studios 24/7 geöffnet. Angebote: Personal Training, Ernährungsberatung, Mentaltraining. Nutzt WhatsApp-Chat und SportsNow-Buchungssystem. Susten-Studio über 500m² Fläche, eröffnet 2016."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber",
+    "contact_name": "Bäckerei-Konditorei A. Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch/",
+    "notes": "Traditionsreiche Bäckerei-Konditorei im Oberwallis. Über 60 Mitarbeiter (Voll- und Teilzeit). 4 Filialen: Stalden (Hauptsitz, Gewerbestrasse 18), Grächen, Visp, Naters. Seit 1990 geführt von Alexander und Renate Zuber (Geschäftsführer). Produktion auf 750m² in modernem Neubau (2011) in Ackersand/Stalden. 25-30 Brotsorten täglich. Auszeichnung Ritter des guten Brotes seit 1991."
+  },
+  {
+    "company": "Garage City AG",
+    "contact_name": "Garage City AG",
+    "email": "info@garage-city.ch",
+    "website": "https://www.garage-city.ch/",
+    "notes": "Toyota Center Oberwallis und Mitsubishi A-Händler in Visp (Kantonsstrasse 53, 3930 Visp). Inhaber: Charly Ruppen. Geschäftsführung: Iwan Burgener. AG gegründet 2024. Angebot: Neuwagen, Occasionen, Zubehör, Reifen, Reparaturen. Bewertung 4.2/5 auf local.ch. Team-Seite auf Website vorhanden."
+  },
+  {
+    "company": "Maler- & Gipsergeschäft Romeo Pfammatter AG",
+    "contact_name": "Maler- & Gipsergeschäft Romeo Pfammatter AG",
+    "email": "mail@pfammatter-maler.ch",
+    "website": "https://www.pfammatter-maler.ch/",
+    "notes": "Maler- und Gipsergeschäft in Ried-Brig/Termen (Gewerbestrasse 20, 3911 Ried-Brig). Familienbetrieb gegründet 1960 von Bruno Pfammatter. Seit 1994 in 2. Generation unter Romeo Pfammatter (Inhaber). Sohn Janis Pfammatter als 3. Generation im Betrieb. AG seit 2005. Eigenes Werkstattgebäude seit 2003. Dienstleistungen: Maler- und Gipserarbeiten innen/aussen."
+  }
+]
