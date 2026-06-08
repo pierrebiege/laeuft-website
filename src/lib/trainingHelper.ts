@@ -40,3 +40,41 @@ export function getTodaysSessions(
   )
   return { week, sessions, dayOfWeek }
 }
+
+interface CurrentWeekResult {
+  week: TrainingWeek | null
+  weekIndex: number
+  weekMonday: Date | null
+}
+
+// Returns the plan week that contains today (or null if the plan hasn't started
+// yet / has already ended), plus the Monday date of that week.
+export function getCurrentWeek(
+  plan: TrainingPlan,
+  weeks: TrainingWeek[]
+): CurrentWeekResult {
+  const today = new Date()
+  const startDate = new Date(plan.start_date)
+
+  const day = startDate.getDay()
+  const mondayOffset = day === 0 ? 1 : day === 1 ? 0 : 8 - day
+  const startMonday = new Date(startDate)
+  startMonday.setDate(startMonday.getDate() + mondayOffset)
+
+  today.setHours(0, 0, 0, 0)
+  startMonday.setHours(0, 0, 0, 0)
+
+  const diffDays = Math.floor(
+    (today.getTime() - startMonday.getTime()) / (1000 * 60 * 60 * 24)
+  )
+  if (diffDays < 0) return { week: null, weekIndex: -1, weekMonday: null }
+
+  const weekIndex = Math.floor(diffDays / 7)
+  const week =
+    weeks.find((w) => w.sort_order === weekIndex) || weeks[weekIndex] || null
+  if (!week) return { week: null, weekIndex, weekMonday: null }
+
+  const weekMonday = new Date(startMonday)
+  weekMonday.setDate(startMonday.getDate() + weekIndex * 7)
+  return { week, weekIndex, weekMonday }
+}

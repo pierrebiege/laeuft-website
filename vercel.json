@@ -17,6 +17,10 @@
       "schedule": "0 20 * * *"
     },
     {
+      "path": "/api/cron/training-weekly",
+      "schedule": "0 5 * * 1"
+    },
+    {
       "path": "/api/cron/youtube-reminder",
       "schedule": "0 6 * * 1"
     },
