@@ -9,12 +9,11 @@ import {
   TrainingSession,
   TrainingCompletion,
   SessionExercise,
-  Exercise,
   SessionType,
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
-import { ChevronLeft, ChevronRight, Check, Footprints, Dumbbell, Wind, Moon, Clock } from 'lucide-react'
+import { Check, Footprints, Dumbbell, Wind, Moon, Clock, ChevronDown, CalendarCheck } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
   client: { id: string; name: string; company: string | null }
@@ -29,6 +28,8 @@ const TYPE_ICONS: Record<SessionType, React.ElementType> = {
   mobility: Wind,
   ruhe: Moon,
 }
+
+const DAY_NAMES = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 
 function getVideoEmbedUrl(url: string): string | null {
   const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/)
@@ -47,7 +48,6 @@ function ExerciseCard({ exercise, sets, notes }: {
 
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-3 space-y-2">
-      {/* Header: name + badges */}
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-sm font-semibold text-zinc-900 dark:text-white">{exercise.name}</span>
         {sets && (
@@ -58,7 +58,6 @@ function ExerciseCard({ exercise, sets, notes }: {
         )}
       </div>
 
-      {/* Video embed */}
       {embedUrl && (
         <div className="aspect-video rounded-lg overflow-hidden">
           <iframe
@@ -70,21 +69,15 @@ function ExerciseCard({ exercise, sets, notes }: {
         </div>
       )}
 
-      {/* Image fallback (only if no video) */}
       {!embedUrl && exercise.image_url && (
-        <img
-          src={exercise.image_url}
-          alt={exercise.name}
-          className="w-full max-h-48 object-cover rounded-lg"
-        />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={exercise.image_url} alt={exercise.name} className="w-full max-h-48 object-cover rounded-lg" />
       )}
 
-      {/* Instructions */}
       {exercise.instructions && (
         <p className="text-xs text-zinc-600 dark:text-zinc-400 whitespace-pre-line">{exercise.instructions}</p>
       )}
 
-      {/* Session-specific notes */}
       {notes && (
         <p className="text-xs text-zinc-500 italic">{notes}</p>
       )}
@@ -101,10 +94,12 @@ export default function TrainingPlanPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0)
+  const [realWeekIndex, setRealWeekIndex] = useState(0)
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set())
   const [togglingSession, setTogglingSession] = useState<string | null>(null)
   const [feedbackValues, setFeedbackValues] = useState<Record<string, string>>({})
   const feedbackTimeouts = useRef<Record<string, NodeJS.Timeout>>({})
+  const todayRef = useRef<HTMLDivElement | null>(null)
 
   // PIN protection state
   const [pinRequired, setPinRequired] = useState(false)
@@ -129,7 +124,6 @@ export default function TrainingPlanPage() {
       fullPlan.weeks.forEach((w) => w.sessions?.sort((a, b) => a.sort_order - b.sort_order))
       setPlan(fullPlan)
 
-      // PIN protection check
       if (fullPlan.access_pin) {
         const storedPin = sessionStorage.getItem(`training_pin_${token}`)
         if (storedPin === fullPlan.access_pin) {
@@ -167,26 +161,37 @@ export default function TrainingPlanPage() {
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
       const weekIdx = Math.max(0, Math.min(Math.floor(diffDays / 7), fullPlan.weeks.length - 1))
       setCurrentWeekIndex(weekIdx)
+      setRealWeekIndex(weekIdx)
     } catch { setError('Verbindungsfehler') }
     setLoading(false)
   }
 
+  // A session counts as "done" only when it has a completion timestamp.
+  // Note-only rows (feedback without checking off) have completed_at = null.
+  const isDone = useCallback((sessionId: string) => !!completions[sessionId]?.completed_at, [completions])
+
   const toggleSession = useCallback(async (sessionId: string) => {
     setTogglingSession(sessionId)
-    const isCompleted = !!completions[sessionId]
+    const wasDone = !!completions[sessionId]?.completed_at
     try {
       const res = await fetch('/api/training/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId, plan_token: token, completed: !isCompleted }),
+        body: JSON.stringify({ session_id: sessionId, plan_token: token, completed: !wasDone }),
       })
       if (res.ok) {
-        if (isCompleted) {
-          setCompletions((prev) => { const next = { ...prev }; delete next[sessionId]; return next })
-        } else {
-          const data = await res.json()
-          setCompletions((prev) => ({ ...prev, [sessionId]: data }))
-        }
+        const data = await res.json()
+        setCompletions((prev) => {
+          const next = { ...prev }
+          if (wasDone) {
+            // Un-completed: keep a note-only row if the API returned one, else drop it
+            if (data && data.id) next[sessionId] = data
+            else delete next[sessionId]
+          } else {
+            if (data && data.id) next[sessionId] = data
+          }
+          return next
+        })
       }
     } catch { console.error('Toggle error') }
     setTogglingSession(null)
@@ -196,11 +201,22 @@ export default function TrainingPlanPage() {
     if (feedbackTimeouts.current[sessionId]) clearTimeout(feedbackTimeouts.current[sessionId])
     setFeedbackValues((prev) => ({ ...prev, [sessionId]: feedback }))
     feedbackTimeouts.current[sessionId] = setTimeout(async () => {
-      await fetch('/api/training/complete', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId, plan_token: token, feedback }),
-      })
+      try {
+        const res = await fetch('/api/training/complete', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, plan_token: token, feedback }),
+        })
+        if (res.ok) {
+          const data = await res.json()
+          // Reflect note-only completion rows so state stays consistent
+          if (data && data.id) {
+            setCompletions((prev) => ({ ...prev, [sessionId]: data }))
+          } else if (data && data.deleted) {
+            setCompletions((prev) => { const next = { ...prev }; delete next[sessionId]; return next })
+          }
+        }
+      } catch { console.error('Feedback error') }
     }, 800)
   }, [token])
 
@@ -211,6 +227,11 @@ export default function TrainingPlanPage() {
       return next
     })
   }, [])
+
+  function jumpToToday() {
+    setCurrentWeekIndex(realWeekIndex)
+    setTimeout(() => todayRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60)
+  }
 
   function handlePinSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -238,7 +259,7 @@ export default function TrainingPlanPage() {
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="text-2xl font-bold mb-1 text-zinc-900 dark:text-white">
-            Lauft<span className="text-zinc-400">.</span>
+            läuft<span className="text-zinc-400">.</span>
           </div>
           <p className="text-sm text-zinc-500 mb-8">Trainingsplan</p>
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
@@ -275,7 +296,7 @@ export default function TrainingPlanPage() {
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Plan nicht gefunden</h1>
-          <p className="text-zinc-500 text-sm">Dieser Trainingsplan existiert nicht oder ist nicht mehr verfugbar.</p>
+          <p className="text-zinc-500 text-sm">Dieser Trainingsplan existiert nicht oder ist nicht mehr verfügbar.</p>
         </div>
       </div>
     )
@@ -285,30 +306,29 @@ export default function TrainingPlanPage() {
   const currentWeek = weeks[currentWeekIndex]
   if (!currentWeek) return null
 
-  // --- Stats ---
+  function weekStats(week: TrainingWeek) {
+    const sessions = (week.sessions || []).filter(s => s.session_type !== 'ruhe')
+    const done = sessions.filter(s => isDone(s.id)).length
+    return { done, total: sessions.length }
+  }
+
+  // --- Overall stats ---
   const allSessions = weeks.flatMap(w => w.sessions || [])
   const totalAllSessions = allSessions.filter(s => s.session_type !== 'ruhe').length
-  const completedAll = allSessions.filter(s => s.session_type !== 'ruhe' && completions[s.id]).length
+  const completedAll = allSessions.filter(s => s.session_type !== 'ruhe' && isDone(s.id)).length
   const totalMinutes = allSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-  const completedMinutes = allSessions.filter(s => completions[s.id]).reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
 
   const typeCounts: Record<string, number> = {}
   allSessions.forEach(s => {
     if (s.session_type !== 'ruhe') typeCounts[s.session_type] = (typeCounts[s.session_type] || 0) + 1
   })
 
-  // Week stats
-  const weekSessions = currentWeek.sessions.filter(s => s.session_type !== 'ruhe')
-  const weekCompleted = weekSessions.filter(s => completions[s.id]).length
+  // --- Week stats ---
+  const { done: weekCompleted, total: weekTotal } = weekStats(currentWeek)
   const weekMinutes = currentWeek.sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-  const weekTypeCounts: Record<string, number> = {}
-  currentWeek.sessions.forEach(s => {
-    if (s.session_type !== 'ruhe') weekTypeCounts[s.session_type] = (weekTypeCounts[s.session_type] || 0) + 1
-  })
+  const progressPercent = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0
 
-  const progressPercent = weekSessions.length > 0 ? (weekCompleted / weekSessions.length) * 100 : 0
-
-  // Day sessions
+  // --- Day sessions ---
   const sessionsByDay: Record<number, TrainingSession[]> = {}
   for (let d = 0; d < 7; d++) {
     const typeOrder: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
@@ -325,54 +345,49 @@ export default function TrainingPlanPage() {
     return d
   }
 
-  function getDayDate(dayOfWeek: number): string {
+  function dayDateObj(dayOfWeek: number): Date {
     const monday = getMonday(new Date(plan!.start_date + 'T00:00:00'))
     const dayDate = new Date(monday)
     dayDate.setDate(monday.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
-    return dayDate.toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' })
+    return dayDate
   }
 
   function isToday(dayOfWeek: number): boolean {
-    const monday = getMonday(new Date(plan!.start_date + 'T00:00:00'))
-    const dayDate = new Date(monday)
-    dayDate.setDate(monday.getDate() + (currentWeek.week_number - 1) * 7 + dayOfWeek)
-    const today = new Date()
-    return dayDate.toDateString() === today.toDateString()
+    return dayDateObj(dayOfWeek).toDateString() === new Date().toDateString()
   }
+
+  const weekRange = `${dayDateObj(0).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' })} – ${dayDateObj(6).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' })}`
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <div className="max-w-lg mx-auto px-4 py-6 pb-16">
+      <div className="max-w-lg mx-auto px-4 py-6 pb-20">
 
-        {/* ===== HERO HEADER ===== */}
-        <header className="mb-8">
+        {/* ===== HEADER ===== */}
+        <header className="mb-6">
           <div className="text-xl font-bold mb-4">
-            Lauft<span className="text-zinc-400">.</span>
+            läuft<span className="text-zinc-400">.</span>
           </div>
 
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-            <p className="text-sm text-zinc-500 mb-1">Trainingsplan fur</p>
+            <p className="text-sm text-zinc-500 mb-1">Trainingsplan für</p>
             <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-1">{plan.client?.name}</h1>
             <h2 className="text-base text-zinc-600 dark:text-zinc-400 mb-4">{plan.title}</h2>
 
-            {/* Intro text from coach */}
             {plan.intro_text && (
               <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-3 mb-4 border-l-2 border-zinc-900 dark:border-white">
                 <p className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-line italic">
                   {plan.intro_text}
                 </p>
-                <p className="text-xs text-zinc-400 mt-2">-- Pierre</p>
+                <p className="text-xs text-zinc-400 mt-2">— Pierre</p>
               </div>
             )}
 
-            {/* Compact stats row */}
             <div className="flex items-center gap-4 text-xs text-zinc-500 mb-3">
               <span>{weeks.length} Wochen</span>
               <span>{totalAllSessions} Sessions</span>
               <span>{Math.round(totalMinutes / 60)}h gesamt</span>
             </div>
 
-            {/* Overall progress */}
             <div className="mb-3">
               <div className="flex justify-between text-[10px] text-zinc-500 mb-1">
                 <span>Gesamtfortschritt</span>
@@ -383,7 +398,6 @@ export default function TrainingPlanPage() {
               </div>
             </div>
 
-            {/* Type breakdown */}
             <div className="flex flex-wrap gap-2">
               {(Object.entries(typeCounts) as [SessionType, number][]).map(([type, count]) => {
                 const colors = SESSION_TYPE_COLORS[type]
@@ -391,7 +405,7 @@ export default function TrainingPlanPage() {
                 return (
                   <div key={type} className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-full ${colors.bg} ${colors.text}`}>
                     <Icon size={12} />
-                    <span className="font-medium">{count}x {SESSION_TYPE_LABELS[type]}</span>
+                    <span className="font-medium">{count}× {SESSION_TYPE_LABELS[type]}</span>
                   </div>
                 )
               })}
@@ -399,48 +413,75 @@ export default function TrainingPlanPage() {
           </div>
         </header>
 
-        {/* ===== WEEK NAVIGATOR ===== */}
-        <div className="flex items-center justify-between mb-3">
-          <button onClick={() => setCurrentWeekIndex(i => Math.max(0, i - 1))} disabled={currentWeekIndex === 0}
-            className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 disabled:opacity-30 transition-colors">
-            <ChevronLeft size={20} className="text-zinc-700 dark:text-zinc-300" />
-          </button>
-          <div className="text-center">
+        {/* ===== WEEK SELECTOR (pills) ===== */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold text-zinc-900 dark:text-white">
-              Woche {currentWeek.week_number} von {weeks.length}
+              {currentWeek.label || `Woche ${currentWeek.week_number}`}
+              <span className="text-zinc-400 font-normal"> · {weekRange}</span>
             </span>
-            {currentWeek.label && <span className="block text-xs text-zinc-500">{currentWeek.label}</span>}
+            {currentWeekIndex !== realWeekIndex && (
+              <button onClick={jumpToToday} className="flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400 hover:underline">
+                <CalendarCheck size={13} /> Zu heute
+              </button>
+            )}
           </div>
-          <button onClick={() => setCurrentWeekIndex(i => Math.min(weeks.length - 1, i + 1))} disabled={currentWeekIndex === weeks.length - 1}
-            className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 disabled:opacity-30 transition-colors">
-            <ChevronRight size={20} className="text-zinc-700 dark:text-zinc-300" />
-          </button>
+          <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+            {weeks.map((w, i) => {
+              const { done, total } = weekStats(w)
+              const complete = total > 0 && done === total
+              const active = i === currentWeekIndex
+              return (
+                <button
+                  key={w.id}
+                  onClick={() => setCurrentWeekIndex(i)}
+                  className={`flex-shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-xl border-2 transition-colors ${
+                    active
+                      ? 'border-zinc-900 dark:border-white bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
+                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
+                  }`}
+                >
+                  <span className="text-[10px] uppercase tracking-wide opacity-70 leading-none mb-0.5">Wo</span>
+                  <span className="text-base font-bold leading-none">{w.week_number}</span>
+                  <span className={`mt-1 flex items-center gap-0.5 text-[10px] leading-none ${active ? '' : complete ? 'text-green-600 dark:text-green-400' : ''}`}>
+                    {complete ? <Check size={10} strokeWidth={3} /> : null}
+                    {total > 0 ? `${done}/${total}` : '–'}
+                  </span>
+                  {i === realWeekIndex && (
+                    <span className={`mt-1 w-1.5 h-1.5 rounded-full ${active ? 'bg-white dark:bg-zinc-900' : 'bg-green-500'}`} />
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
-        {/* ===== WEEK SUMMARY + STATS ===== */}
+        {/* ===== WEEK SUMMARY + PROGRESS ===== */}
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 mb-4">
-          {/* Week summary text */}
           {currentWeek.summary && (
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 italic">
               {currentWeek.summary}
             </p>
           )}
 
-          {/* Week progress */}
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-zinc-500">{weekCompleted}/{weekSessions.length} erledigt</span>
-            {weekCompleted === weekSessions.length && weekSessions.length > 0 && (
-              <span className="text-xs text-green-600 font-medium flex items-center gap-1"><Check size={12} />Alles geschafft!</span>
+            <span className="text-xs text-zinc-500">{weekCompleted}/{weekTotal} erledigt</span>
+            {weekCompleted === weekTotal && weekTotal > 0 && (
+              <span className="text-xs text-green-600 font-medium flex items-center gap-1"><Check size={12} />Alles geschafft! 🎉</span>
             )}
           </div>
           <div className="h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-3">
             <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
           </div>
 
-          {/* Week mini stats */}
           <div className="flex items-center gap-4 text-xs text-zinc-500">
             <span className="flex items-center gap-1"><Clock size={12} />{weekMinutes} min</span>
-            {(Object.entries(weekTypeCounts) as [SessionType, number][]).map(([type, count]) => {
+            {(Object.entries(
+              currentWeek.sessions.reduce((acc, s) => {
+                if (s.session_type !== 'ruhe') acc[s.session_type] = (acc[s.session_type] || 0) + 1
+                return acc
+              }, {} as Record<string, number>)
+            ) as [SessionType, number][]).map(([type, count]) => {
               const Icon = TYPE_ICONS[type]
               const colors = SESSION_TYPE_COLORS[type]
               return <span key={type} className={`flex items-center gap-1 ${colors.text}`}><Icon size={12} />{count}</span>
@@ -453,80 +494,100 @@ export default function TrainingPlanPage() {
           {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => {
             const daySessions = sessionsByDay[dayIndex] || []
             const today = isToday(dayIndex)
+            const dObj = dayDateObj(dayIndex)
+            const dayHeading = `${DAY_NAMES[dayIndex]}, ${dObj.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })}`
 
-            // Skip empty non-today days to keep it clean
+            // Rest day (no sessions, not today) → compact line
             if (daySessions.length === 0 && !today) {
               return (
-                <div key={dayIndex} className="px-4 py-2">
-                  <span className="text-xs text-zinc-300 dark:text-zinc-700 capitalize">{getDayDate(dayIndex)} -- Ruhetag</span>
+                <div key={dayIndex} className="flex items-center gap-2 px-4 py-1.5">
+                  <Moon size={12} className="text-zinc-300 dark:text-zinc-700 shrink-0" />
+                  <span className="text-xs text-zinc-400 dark:text-zinc-600">{dayHeading} · Ruhetag</span>
                 </div>
               )
             }
 
             return (
-              <div key={dayIndex} className={`rounded-xl border transition-colors ${
-                today ? 'border-zinc-400 dark:border-zinc-500 bg-white dark:bg-zinc-900 shadow-sm'
-                  : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50'
-              }`}>
-                <div className={`px-4 py-2.5 border-b ${today ? 'border-zinc-300 dark:border-zinc-600' : 'border-zinc-100 dark:border-zinc-800'}`}>
+              <div
+                key={dayIndex}
+                ref={today ? todayRef : undefined}
+                className={`rounded-xl border transition-colors ${
+                  today ? 'border-green-400 dark:border-green-600 bg-white dark:bg-zinc-900 shadow-sm'
+                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50'
+                }`}
+              >
+                <div className={`px-4 py-2.5 border-b ${today ? 'border-green-100 dark:border-green-900/40' : 'border-zinc-100 dark:border-zinc-800'}`}>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-medium capitalize ${today ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-300'}`}>
-                      {getDayDate(dayIndex)}
+                    <span className={`text-sm font-semibold ${today ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                      {dayHeading}
                     </span>
                     {today && (
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded">Heute</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-1.5 py-0.5 rounded">Heute</span>
                     )}
                   </div>
                 </div>
 
-                <div className="px-4 py-2">
+                <div className="px-3 py-1.5">
                   {daySessions.length === 0 ? (
-                    <p className="text-sm text-zinc-400 py-2 italic">Ruhetag</p>
+                    <p className="text-sm text-zinc-400 py-2 px-1 italic">Ruhetag — geniess die Erholung.</p>
                   ) : (
-                    <div className="space-y-1">
+                    <div className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
                       {daySessions.map((session) => {
-                        const isCompleted = !!completions[session.id]
+                        const completed = isDone(session.id)
                         const isExpanded = expandedSessions.has(session.id)
                         const isToggling = togglingSession === session.id
                         const colors = SESSION_TYPE_COLORS[session.session_type as SessionType]
                         const typeLabel = SESSION_TYPE_LABELS[session.session_type as SessionType]
+                        const Icon = TYPE_ICONS[session.session_type as SessionType]
+                        const hasDetails = !!(session.description || (session.exercises && session.exercises.length > 0) || session.intensity)
 
                         return (
                           <div key={session.id} className="py-1.5">
                             <div className="flex items-center gap-3">
-                              <button onClick={(e) => { e.stopPropagation(); toggleSession(session.id) }}
-                                disabled={isToggling}
-                                className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
-                                  isCompleted ? 'bg-green-500 border-green-500 text-white' : 'border-zinc-300 dark:border-zinc-600 hover:border-green-400'
-                                } ${isToggling ? 'opacity-50' : ''}`}>
-                                {isCompleted && <Check size={14} strokeWidth={3} />}
+                              {/* Big tap-to-complete checkbox */}
+                              <button
+                                onClick={(e) => { e.stopPropagation(); toggleSession(session.id) }}
+                                disabled={isToggling || session.session_type === 'ruhe'}
+                                aria-label={completed ? 'Als nicht erledigt markieren' : 'Als erledigt markieren'}
+                                className={`flex-shrink-0 w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                  completed ? 'bg-green-500 border-green-500 text-white' : 'border-zinc-300 dark:border-zinc-600 hover:border-green-400 active:scale-95'
+                                } ${isToggling ? 'opacity-50' : ''} ${session.session_type === 'ruhe' ? 'opacity-0 pointer-events-none' : ''}`}
+                              >
+                                {completed && <Check size={18} strokeWidth={3} />}
                               </button>
 
-                              <button onClick={() => toggleExpand(session.id)} className="flex-1 flex items-center gap-2 min-w-0 text-left">
-                                <span className={`flex-shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>{typeLabel}</span>
-                                <span className={`text-sm truncate ${isCompleted ? 'text-zinc-400 line-through' : 'text-zinc-900 dark:text-white'}`}>{session.title}</span>
-                                {session.duration_minutes && (
-                                  <span className="flex-shrink-0 text-[11px] text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{session.duration_minutes}min</span>
+                              {/* Tap row to expand */}
+                              <button onClick={() => toggleExpand(session.id)} className="flex-1 flex items-center gap-2 min-w-0 text-left py-1">
+                                <span className={`flex-shrink-0 inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>
+                                  <Icon size={11} />{typeLabel}
+                                </span>
+                                <span className={`text-sm font-medium truncate ${completed ? 'text-zinc-400 line-through' : 'text-zinc-900 dark:text-white'}`}>{session.title}</span>
+                                {session.duration_minutes ? (
+                                  <span className="flex-shrink-0 text-[11px] text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{session.duration_minutes}′</span>
+                                ) : null}
+                                {hasDetails && (
+                                  <ChevronDown size={15} className={`flex-shrink-0 ml-auto text-zinc-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                                 )}
                               </button>
                             </div>
 
-                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                              <div className="ml-9 pl-3 border-l-2 border-zinc-100 dark:border-zinc-800 space-y-2 pb-1">
-                                {session.session_subtype && <p className="text-xs text-zinc-500">{session.session_subtype}</p>}
-                                {session.description && <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-line">{session.description}</p>}
-                                {session.intensity && (
-                                  <div className="flex items-center gap-1 mt-1">
-                                    <span className="text-xs text-zinc-500 mr-1">Intensitat:</span>
-                                    <span className="text-xs tracking-wider">
-                                      <span className="text-zinc-900 dark:text-white">{'●'.repeat(Math.min(session.intensity, 10))}</span>
-                                      <span className="text-zinc-300 dark:text-zinc-700">{'○'.repeat(10 - Math.min(session.intensity, 10))}</span>
-                                    </span>
+                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[3000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                              <div className="ml-11 pr-1 space-y-3 pb-2">
+                                {session.description && <p className="text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed">{session.description}</p>}
+
+                                {session.intensity ? (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-zinc-500">Intensität</span>
+                                    <div className="flex gap-0.5" aria-label={`Intensität ${session.intensity} von 10`}>
+                                      {Array.from({ length: 10 }, (_, i) => (
+                                        <span key={i} className={`w-2 h-2 rounded-full ${i < session.intensity! ? 'bg-zinc-800 dark:bg-zinc-200' : 'bg-zinc-200 dark:bg-zinc-700'}`} />
+                                      ))}
+                                    </div>
                                   </div>
-                                )}
-                                {/* Exercises */}
+                                ) : null}
+
                                 {session.exercises && session.exercises.length > 0 && (
-                                  <div className="space-y-3 mt-3">
+                                  <div className="space-y-2">
                                     <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Übungen</h4>
                                     {session.exercises
                                       .sort((a: SessionExercise, b: SessionExercise) => a.sort_order - b.sort_order)
@@ -535,10 +596,19 @@ export default function TrainingPlanPage() {
                                       ))}
                                   </div>
                                 )}
-                                {isCompleted && (
-                                  <textarea placeholder="Wie war das Training? (optional)" value={feedbackValues[session.id] || ''}
-                                    onChange={(e) => saveFeedback(session.id, e.target.value)} rows={2}
-                                    className="w-full text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2 text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-green-400 resize-none mt-1" />
+
+                                {/* Feedback — always available, no need to check off first */}
+                                {session.session_type !== 'ruhe' && (
+                                  <div>
+                                    <label className="block text-[11px] text-zinc-500 mb-1">Notiz an Pierre <span className="text-zinc-400">(optional)</span></label>
+                                    <textarea
+                                      placeholder="Wie war's? Wie hast du dich gefühlt?"
+                                      value={feedbackValues[session.id] || ''}
+                                      onChange={(e) => saveFeedback(session.id, e.target.value)}
+                                      rows={2}
+                                      className="w-full text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2 text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-green-400 resize-none"
+                                    />
+                                  </div>
                                 )}
                               </div>
                             </div>
@@ -554,7 +624,7 @@ export default function TrainingPlanPage() {
         </div>
 
         <footer className="mt-10 text-center">
-          <p className="text-[10px] text-zinc-400">Powered by <span className="text-zinc-500">lauft.</span></p>
+          <p className="text-[10px] text-zinc-400">Powered by <span className="text-zinc-500">läuft.</span></p>
         </footer>
       </div>
     </div>

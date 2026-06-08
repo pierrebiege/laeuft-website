@@ -576,7 +576,7 @@ export interface TrainingCompletion {
   id: string
   session_id: string
   plan_token: string
-  completed_at: string
+  completed_at: string | null
   feedback: string | null
 }
 

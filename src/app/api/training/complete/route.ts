@@ -42,7 +42,26 @@ export async function POST(request: NextRequest) {
   }
 
   if (completed === false) {
-    // Remove completion
+    // Un-complete: if a note/feedback exists, keep the row but clear the
+    // completion timestamp (so the athlete's note survives). Otherwise delete.
+    const { data: existing } = await supabaseAdmin
+      .from('training_completions')
+      .select('id, feedback')
+      .eq('session_id', session_id)
+      .eq('plan_token', plan_token)
+      .maybeSingle()
+
+    if (existing && existing.feedback) {
+      const { data, error } = await supabaseAdmin
+        .from('training_completions')
+        .update({ completed_at: null })
+        .eq('id', existing.id)
+        .select()
+        .single()
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json(data)
+    }
+
     await supabaseAdmin
       .from('training_completions')
       .delete()
@@ -90,18 +109,27 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: validation.error }, { status: 403 })
   }
 
-  // Update feedback on existing completion, or create with feedback
+  // Update feedback on existing completion, or create a note-only row.
+  // Feedback does NOT mark a session as done — note-only rows have
+  // completed_at = null, so athletes can leave a note without checking off.
   const { data: existing } = await supabaseAdmin
     .from('training_completions')
-    .select('id')
+    .select('id, completed_at')
     .eq('session_id', session_id)
     .eq('plan_token', plan_token)
-    .single()
+    .maybeSingle()
+
+  const hasFeedback = !!(feedback && feedback.trim())
 
   if (existing) {
+    // Clearing the note on a row that was never completed → remove the row.
+    if (!hasFeedback && existing.completed_at === null) {
+      await supabaseAdmin.from('training_completions').delete().eq('id', existing.id)
+      return NextResponse.json({ deleted: true })
+    }
     const { data, error } = await supabaseAdmin
       .from('training_completions')
-      .update({ feedback })
+      .update({ feedback: hasFeedback ? feedback : null })
       .eq('id', existing.id)
       .select()
       .single()
@@ -113,13 +141,18 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(data)
   }
 
-  // No existing completion - create one with feedback
+  // Nothing to save (no row, empty feedback)
+  if (!hasFeedback) {
+    return NextResponse.json({ noop: true })
+  }
+
+  // No existing completion - create a note-only row (not marked done)
   const { data, error } = await supabaseAdmin
     .from('training_completions')
     .insert({
       session_id,
       plan_token,
-      completed_at: new Date().toISOString(),
+      completed_at: null,
       feedback,
     })
     .select()

@@ -69,7 +69,7 @@ interface SessionFormData {
   session_subtype: string;
   title: string;
   duration_minutes: number;
-  intensity: number;
+  intensity: number | null;
   description: string;
 }
 
@@ -78,9 +78,33 @@ const defaultSessionForm: SessionFormData = {
   session_subtype: "Zone 1-2",
   title: "Zone 1-2",
   duration_minutes: 60,
-  intensity: 5,
+  intensity: null,
   description: "",
 };
+
+// Pull a duration out of free text ("60min", "1h", "1.5h", "90 min", "60'")
+// and return the minutes plus the text with the duration token removed, so
+// typing "Longrun 90min" yields title "Longrun" + duration 90. Distances like
+// "8x400m" are intentionally NOT matched.
+function parseDurationFromText(text: string): { minutes: number | null; cleanTitle: string } {
+  let minutes = 0;
+  let found = false;
+  let clean = text;
+  const hourMatch = clean.match(/(\d+(?:[.,]\d+)?)\s*(?:h\b|std\b|stunden?\b)/i);
+  if (hourMatch) {
+    minutes += Math.round(parseFloat(hourMatch[1].replace(",", ".")) * 60);
+    found = true;
+    clean = clean.replace(hourMatch[0], " ");
+  }
+  const minMatch = clean.match(/(\d+)\s*(?:min\b|minuten?\b|')/i);
+  if (minMatch) {
+    minutes += parseInt(minMatch[1]);
+    found = true;
+    clean = clean.replace(minMatch[0], " ");
+  }
+  clean = clean.replace(/\s{2,}/g, " ").trim();
+  return { minutes: found ? minutes : null, cleanTitle: clean };
+}
 
 export default function TrainingPlanEditorPage() {
   const params = useParams();
@@ -108,6 +132,7 @@ export default function TrainingPlanEditorPage() {
   const [showExercisePicker, setShowExercisePicker] = useState(false);
   const [exerciseSearch, setExerciseSearch] = useState("");
   const [pinValue, setPinValue] = useState("");
+  const [showMore, setShowMore] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [otherPlans, setOtherPlans] = useState<{ id: string; title: string; client_name: string; weeks: { id: string; label: string | null; week_number: number }[] }[]>([]);
   const [importLoading, setImportLoading] = useState(false);
@@ -342,7 +367,13 @@ export default function TrainingPlanEditorPage() {
     setSessionExercises([]);
     setShowExercisePicker(false);
     setExerciseSearch("");
+    setShowMore(false);
     setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    loadPlan();
   }
 
   function openEditSession(session: TrainingSession, weekId: string) {
@@ -354,12 +385,13 @@ export default function TrainingPlanEditorPage() {
       session_subtype: session.session_subtype,
       title: session.title,
       duration_minutes: session.duration_minutes || 60,
-      intensity: session.intensity || 5,
+      intensity: session.intensity,
       description: session.description || "",
     });
     setSessionExercises([]);
     setShowExercisePicker(false);
     setExerciseSearch("");
+    setShowMore(!!session.intensity);
     loadSessionExercises(session.id);
     setShowModal(true);
   }
@@ -369,14 +401,36 @@ export default function TrainingPlanEditorPage() {
     setSessionForm(prev => ({ ...prev, session_type: type, session_subtype: subtypes[0] || "", title: subtypes[0] || "" }));
   }
 
-  function handleSubtypeChange(subtype: string) {
-    setSessionForm(prev => ({ ...prev, session_subtype: subtype, title: prev.title === prev.session_subtype ? subtype : prev.title }));
+  // Apply free-text duration parsing to the title (e.g. "Longrun 90min" → title
+  // "Longrun" + 90 min). Called on title blur.
+  function applyTitleParse() {
+    setSessionForm(prev => {
+      const { minutes, cleanTitle } = parseDurationFromText(prev.title);
+      if (minutes == null) return prev;
+      return { ...prev, title: cleanTitle || prev.title, duration_minutes: minutes };
+    });
+  }
+
+  // Ensure the session exists in the DB (create on first need) so exercises can
+  // be attached without the old "save first, then add exercises" two-step.
+  async function ensureSessionSaved(): Promise<TrainingSession | null> {
+    if (editingSession) return editingSession;
+    if (!modalWeekId || !sessionForm.title.trim()) return null;
+    const res = await fetch(`/api/training/${planId}/sessions`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...sessionForm, session_subtype: sessionForm.title, week_id: modalWeekId, day_of_week: modalDayOfWeek }),
+    });
+    if (!res.ok) return null;
+    const created: TrainingSession = await res.json();
+    setEditingSession(created);
+    return created;
   }
 
   async function saveSession() {
     if (!modalWeekId) return;
     setSaving(true);
-    const payload = { ...sessionForm, week_id: modalWeekId, day_of_week: modalDayOfWeek };
+    // Keep subtype in sync with the (now merged) title for backward compatibility.
+    const payload = { ...sessionForm, session_subtype: sessionForm.title, week_id: modalWeekId, day_of_week: modalDayOfWeek };
     if (editingSession) {
       await fetch(`/api/training/${planId}/sessions`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
@@ -803,14 +857,14 @@ export default function TrainingPlanEditorPage() {
       {/* Session Modal (Slide-in from right) */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setShowModal(false)} />
+          <div className="absolute inset-0 bg-black/30" onClick={closeModal} />
           <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-xl flex flex-col h-full overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
                 {editingSession ? "Session bearbeiten" : "Neue Session"}
               </h2>
-              <button onClick={() => setShowModal(false)} className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+              <button onClick={closeModal} className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -837,20 +891,35 @@ export default function TrainingPlanEditorPage() {
                 </div>
               </div>
 
-              {/* Subtype */}
+              {/* Quick presets (fill the title) */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Untertyp</label>
-                <select value={sessionForm.session_subtype} onChange={e => handleSubtypeChange(e.target.value)}
-                  className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white">
-                  {SESSION_SUBTYPES[sessionForm.session_type].map(sub => <option key={sub} value={sub}>{sub}</option>)}
-                </select>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Vorlagen (tippen füllt den Titel)</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {SESSION_SUBTYPES[sessionForm.session_type].map(sub => {
+                    const active = sessionForm.title.trim() === sub;
+                    return (
+                      <button key={sub} type="button"
+                        onClick={() => setSessionForm(prev => ({ ...prev, title: sub, session_subtype: sub }))}
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+                          active ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-zinc-900 dark:border-white"
+                          : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500"
+                        }`}>
+                        {sub}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Title */}
+              {/* Title (with free-text duration parsing) */}
               <div>
                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Titel</label>
-                <input type="text" value={sessionForm.title} onChange={e => setSessionForm(prev => ({ ...prev, title: e.target.value }))}
+                <input type="text" value={sessionForm.title}
+                  onChange={e => setSessionForm(prev => ({ ...prev, title: e.target.value }))}
+                  onBlur={applyTitleParse}
+                  placeholder="z.B. Longrun 90min  ·  Intervall 8x400m"
                   className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white" />
+                <p className="text-[10px] text-zinc-400 mt-1">Tipp: schreib die Dauer einfach mit rein (z.B. 60min oder 1h) – wird automatisch übernommen.</p>
               </div>
 
               {/* Duration */}
@@ -860,17 +929,29 @@ export default function TrainingPlanEditorPage() {
                   min={0} className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white" />
               </div>
 
-              {/* Intensity */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Intensitat ({sessionForm.intensity}/10)</label>
-                <input type="range" min={1} max={10} value={sessionForm.intensity} onChange={e => setSessionForm(prev => ({ ...prev, intensity: parseInt(e.target.value) }))}
-                  className="w-full accent-zinc-900 dark:accent-white" />
-                <div className="flex justify-between mt-1">
-                  {Array.from({ length: 10 }, (_, i) => (
-                    <div key={i} className={`w-6 h-2 rounded-full ${i < sessionForm.intensity ? INTENSITY_COLORS[i] : "bg-zinc-200 dark:bg-zinc-700"}`} />
-                  ))}
+              {/* Intensity (optional, hidden by default) */}
+              {!showMore ? (
+                <button type="button"
+                  onClick={() => { setShowMore(true); setSessionForm(prev => ({ ...prev, intensity: prev.intensity ?? 5 })); }}
+                  className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200">
+                  <Plus size={14} />Intensität festlegen <span className="text-xs text-zinc-400">(optional)</span>
+                </button>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Intensität ({sessionForm.intensity ?? 5}/10)</label>
+                    <button type="button" onClick={() => { setShowMore(false); setSessionForm(prev => ({ ...prev, intensity: null })); }}
+                      className="text-xs text-zinc-400 hover:text-red-500">entfernen</button>
+                  </div>
+                  <input type="range" min={1} max={10} value={sessionForm.intensity ?? 5} onChange={e => setSessionForm(prev => ({ ...prev, intensity: parseInt(e.target.value) }))}
+                    className="w-full accent-zinc-900 dark:accent-white" />
+                  <div className="flex justify-between mt-1">
+                    {Array.from({ length: 10 }, (_, i) => (
+                      <div key={i} className={`w-6 h-2 rounded-full ${i < (sessionForm.intensity ?? 5) ? INTENSITY_COLORS[i] : "bg-zinc-200 dark:bg-zinc-700"}`} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Description */}
               <div>
@@ -886,11 +967,7 @@ export default function TrainingPlanEditorPage() {
                   <Dumbbell size={14} />Übungen
                 </label>
 
-                {!editingSession ? (
-                  <p className="text-xs text-zinc-400 italic">
-                    Speichere die Session, dann kannst du Übungen verknüpfen.
-                  </p>
-                ) : (
+                {(
                   <>
                     {/* Linked exercises list */}
                     {sessionExercises.length > 0 && (
@@ -979,7 +1056,12 @@ export default function TrainingPlanEditorPage() {
                       </div>
                     ) : (
                       <button
-                        onClick={() => { setShowExercisePicker(true); loadAvailableExercises(sessionForm.session_type); }}
+                        onClick={async () => {
+                          const s = await ensureSessionSaved();
+                          if (!s) { alert("Bitte zuerst einen Titel eingeben."); return; }
+                          setShowExercisePicker(true);
+                          loadAvailableExercises(sessionForm.session_type);
+                        }}
                         className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 transition-colors w-full justify-center"
                       >
                         <Plus size={14} />Übung hinzufügen
