@@ -93,6 +93,7 @@ export default function TrainingPlanPage() {
   const [feedbackValues, setFeedbackValues] = useState<Record<string, string>>({})
   const feedbackTimeouts = useRef<Record<string, NodeJS.Timeout>>({})
   const todayRef = useRef<HTMLDivElement | null>(null)
+  const realPillRef = useRef<HTMLButtonElement | null>(null)
 
   // PIN protection state
   const [pinRequired, setPinRequired] = useState(false)
@@ -101,6 +102,13 @@ export default function TrainingPlanPage() {
   const [pinError, setPinError] = useState(false)
 
   useEffect(() => { loadPlan() }, [token])
+
+  // Put the current week first in the pill strip on load (still scrollable both ways)
+  useEffect(() => {
+    if (!loading && plan) {
+      realPillRef.current?.scrollIntoView({ inline: 'start', block: 'nearest' })
+    }
+  }, [loading, plan, realWeekIndex])
 
   async function loadPlan() {
     try {
@@ -220,7 +228,10 @@ export default function TrainingPlanPage() {
 
   function jumpToToday() {
     setCurrentWeekIndex(realWeekIndex)
-    setTimeout(() => todayRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60)
+    setTimeout(() => {
+      realPillRef.current?.scrollIntoView({ inline: 'start', block: 'nearest' })
+      todayRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 60)
   }
 
   function handlePinSubmit(e: React.FormEvent) {
@@ -370,6 +381,7 @@ export default function TrainingPlanPage() {
               return (
                 <button
                   key={w.id}
+                  ref={i === realWeekIndex ? realPillRef : undefined}
                   onClick={() => setCurrentWeekIndex(i)}
                   className={`flex-shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-xl border-2 transition-colors ${
                     active
