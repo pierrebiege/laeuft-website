@@ -400,6 +400,8 @@ export default function TrainingPlanPage() {
                 </button>
               )
             })}
+            {/* trailing spacer so even the last weeks can scroll to the front */}
+            <div className="shrink-0 w-[85%]" aria-hidden="true" />
           </div>
         </div>
 
