@@ -25,8 +25,8 @@ const transporter = nodemailer.createTransport({
 })
 
 const DAY_NAMES = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
-const TYPE_EMOJI: Record<SessionType, string> = { lauf: '🏃', kraft: '💪', mobility: '🧘', ruhe: '🌙' }
 const TYPE_ORDER: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
+const TYPE_COLOR: Record<SessionType, string> = { lauf: '#2563eb', kraft: '#ea580c', mobility: '#16a34a', ruhe: '#71717a' }
 
 function fmtDate(d: Date) {
   return d.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })
@@ -37,8 +37,7 @@ function buildWeekHtml(
   weekLabel: string,
   weekMonday: Date,
   sessions: TrainingSession[],
-  planUrl: string,
-  summary: string | null
+  planUrl: string
 ) {
   const sunday = new Date(weekMonday)
   sunday.setDate(weekMonday.getDate() + 6)
@@ -59,40 +58,36 @@ function buildWeekHtml(
     }
     const items = daySessions
       .map((s) => {
-        const emoji = TYPE_EMOJI[s.session_type as SessionType] || ''
+        const type = SESSION_TYPE_LABELS[s.session_type as SessionType] || ''
+        const color = TYPE_COLOR[s.session_type as SessionType] || '#888'
         const dur = s.duration_minutes ? ` <span style="color:#999;">· ${s.duration_minutes} min</span>` : ''
-        return `<div style="margin-top:4px;color:#333;font-size:15px;">${emoji} ${s.title}${dur}</div>`
+        return `<div style="margin-top:5px;font-size:15px;"><span style="color:${color};font-weight:600;">${type}</span> <span style="color:#333;">${s.title}</span>${dur}</div>`
       })
       .join('')
     daysHtml += `<tr><td style="padding:10px 0;border-bottom:1px solid #f0f0f0;"><strong style="color:#1a1a1a;">${label}</strong>${items}</td></tr>`
   }
 
-  const summaryHtml = summary
-    ? `<div style="background:#f6f6f6;border-left:3px solid #1a1a1a;padding:12px 16px;border-radius:8px;margin:0 0 20px;color:#444;font-style:italic;">${summary}</div>`
-    : ''
-
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
   <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;color:#1a1a1a;max-width:600px;margin:0 auto;padding:20px;">
-    <div style="margin-bottom:24px;"><h1 style="font-size:24px;font-weight:bold;margin:0;">Läuft<span style="color:#999;">.</span></h1></div>
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px;font-weight:bold;margin:0;">läuft<span style="color:#999;">.</span></h1></div>
     <p>Hallo ${clientName},</p>
-    <p>deine neue Trainingswoche steht bereit – <strong>${weekLabel}</strong> (${range}). 🏃</p>
-    ${summaryHtml}
+    <p>deine Trainingswoche – <strong>${weekLabel}</strong> (${range}):</p>
     <table style="width:100%;border-collapse:collapse;margin:8px 0 24px;">${daysHtml}</table>
-    <a href="${planUrl}" style="display:inline-block;background:#1a1a1a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:500;">Zur ganzen Woche →</a>
-    <p style="color:#666;font-size:14px;margin-top:28px;">Einheiten kannst du direkt abhaken und mir eine Notiz dalassen.<br><br>Hab eine starke Woche!<br>Pierre</p>
+    <a href="${planUrl}" style="display:inline-block;background:#1a1a1a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:500;">Zur ganzen Woche</a>
+    <p style="color:#666;font-size:14px;margin-top:28px;">Einheiten kannst du direkt abhaken und mir eine Notiz dalassen.<br><br>Beste Grüsse<br>Pierre</p>
     <div style="border-top:1px solid #eee;margin-top:28px;padding-top:16px;font-size:12px;color:#999;"><p>Pierre Biege · pierre@laeuft.ch</p></div>
   </body></html>`
 }
 
 function buildWeekText(clientName: string, weekLabel: string, sessions: TrainingSession[], planUrl: string) {
-  let body = `Hallo ${clientName},\n\ndeine neue Trainingswoche steht bereit – ${weekLabel}.\n\n`
+  let body = `Hallo ${clientName},\n\ndeine Trainingswoche – ${weekLabel}:\n\n`
   for (let d = 0; d < 7; d++) {
     const ds = sessions.filter((s) => s.day_of_week === d).sort((a, b) => (TYPE_ORDER[a.session_type] ?? 9) - (TYPE_ORDER[b.session_type] ?? 9))
     body += `${DAY_NAMES[d]}: `
     body += ds.length === 0 ? 'Ruhetag' : ds.map((s) => `${SESSION_TYPE_LABELS[s.session_type as SessionType]} ${s.title}${s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}`).join(', ')
     body += '\n'
   }
-  body += `\nZur ganzen Woche: ${planUrl}\n\nHab eine starke Woche!\nPierre`
+  body += `\nZur ganzen Woche: ${planUrl}\n\nBeste Grüsse\nPierre`
   return body
 }
 
@@ -158,7 +153,7 @@ async function handler(request: NextRequest) {
 
     const weekLabel = week.label || `Woche ${week.week_number ?? weekIndex + 1}`
     const planUrl = `${siteUrl}/training/${plan.unique_token}`
-    const html = buildWeekHtml(client.name, weekLabel, weekMonday, sessions, planUrl, week.summary)
+    const html = buildWeekHtml(client.name, weekLabel, weekMonday, sessions, planUrl)
     const text = buildWeekText(client.name, weekLabel, sessions, planUrl)
 
     if (dryRun) {

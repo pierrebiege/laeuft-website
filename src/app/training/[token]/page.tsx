@@ -13,7 +13,7 @@ import {
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
-import { Check, Footprints, Dumbbell, Wind, Moon, Clock, ChevronDown, CalendarCheck } from 'lucide-react'
+import { Check, ChevronDown, CalendarCheck } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
   client: { id: string; name: string; company: string | null }
@@ -21,13 +21,6 @@ type FullPlan = TrainingPlan & {
 }
 
 type CompletionMap = Record<string, TrainingCompletion>
-
-const TYPE_ICONS: Record<SessionType, React.ElementType> = {
-  lauf: Footprints,
-  kraft: Dumbbell,
-  mobility: Wind,
-  ruhe: Moon,
-}
 
 const DAY_NAMES = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 
@@ -154,7 +147,6 @@ export default function TrainingPlanPage() {
       setCompletions(map)
       setFeedbackValues(fbValues)
 
-      // Auto-detect current week
       const startDate = new Date(fullPlan.start_date)
       const today = new Date()
       const diffMs = today.getTime() - startDate.getTime()
@@ -166,8 +158,8 @@ export default function TrainingPlanPage() {
     setLoading(false)
   }
 
-  // A session counts as "done" only when it has a completion timestamp.
-  // Note-only rows (feedback without checking off) have completed_at = null.
+  // Done only when there is a completion timestamp; note-only rows (feedback
+  // without checking off) have completed_at = null.
   const isDone = useCallback((sessionId: string) => !!completions[sessionId]?.completed_at, [completions])
 
   const toggleSession = useCallback(async (sessionId: string) => {
@@ -184,7 +176,6 @@ export default function TrainingPlanPage() {
         setCompletions((prev) => {
           const next = { ...prev }
           if (wasDone) {
-            // Un-completed: keep a note-only row if the API returned one, else drop it
             if (data && data.id) next[sessionId] = data
             else delete next[sessionId]
           } else {
@@ -209,7 +200,6 @@ export default function TrainingPlanPage() {
         })
         if (res.ok) {
           const data = await res.json()
-          // Reflect note-only completion rows so state stays consistent
           if (data && data.id) {
             setCompletions((prev) => ({ ...prev, [sessionId]: data }))
           } else if (data && data.deleted) {
@@ -312,23 +302,9 @@ export default function TrainingPlanPage() {
     return { done, total: sessions.length }
   }
 
-  // --- Overall stats ---
-  const allSessions = weeks.flatMap(w => w.sessions || [])
-  const totalAllSessions = allSessions.filter(s => s.session_type !== 'ruhe').length
-  const completedAll = allSessions.filter(s => s.session_type !== 'ruhe' && isDone(s.id)).length
-  const totalMinutes = allSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-
-  const typeCounts: Record<string, number> = {}
-  allSessions.forEach(s => {
-    if (s.session_type !== 'ruhe') typeCounts[s.session_type] = (typeCounts[s.session_type] || 0) + 1
-  })
-
-  // --- Week stats ---
   const { done: weekCompleted, total: weekTotal } = weekStats(currentWeek)
-  const weekMinutes = currentWeek.sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
   const progressPercent = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0
 
-  // --- Day sessions ---
   const sessionsByDay: Record<number, TrainingSession[]> = {}
   for (let d = 0; d < 7; d++) {
     const typeOrder: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
@@ -362,55 +338,15 @@ export default function TrainingPlanPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-lg mx-auto px-4 py-6 pb-20">
 
-        {/* ===== HEADER ===== */}
-        <header className="mb-6">
-          <div className="text-xl font-bold mb-4">
-            läuft<span className="text-zinc-400">.</span>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-            <p className="text-sm text-zinc-500 mb-1">Trainingsplan für</p>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-1">{plan.client?.name}</h1>
-            <h2 className="text-base text-zinc-600 dark:text-zinc-400 mb-4">{plan.title}</h2>
-
-            {plan.intro_text && (
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-3 mb-4 border-l-2 border-zinc-900 dark:border-white">
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-line italic">
-                  {plan.intro_text}
-                </p>
-                <p className="text-xs text-zinc-400 mt-2">— Pierre</p>
-              </div>
-            )}
-
-            <div className="flex items-center gap-4 text-xs text-zinc-500 mb-3">
-              <span>{weeks.length} Wochen</span>
-              <span>{totalAllSessions} Sessions</span>
-              <span>{Math.round(totalMinutes / 60)}h gesamt</span>
-            </div>
-
-            <div className="mb-3">
-              <div className="flex justify-between text-[10px] text-zinc-500 mb-1">
-                <span>Gesamtfortschritt</span>
-                <span>{completedAll}/{totalAllSessions} ({totalAllSessions > 0 ? Math.round(completedAll / totalAllSessions * 100) : 0}%)</span>
-              </div>
-              <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                <div className="h-full bg-zinc-900 dark:bg-white rounded-full transition-all duration-500" style={{ width: `${totalAllSessions > 0 ? completedAll / totalAllSessions * 100 : 0}%` }} />
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {(Object.entries(typeCounts) as [SessionType, number][]).map(([type, count]) => {
-                const colors = SESSION_TYPE_COLORS[type]
-                const Icon = TYPE_ICONS[type]
-                return (
-                  <div key={type} className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-full ${colors.bg} ${colors.text}`}>
-                    <Icon size={12} />
-                    <span className="font-medium">{count}× {SESSION_TYPE_LABELS[type]}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+        {/* ===== SLIM HEADER ===== */}
+        <header className="mb-5">
+          <div className="text-xl font-bold">läuft<span className="text-zinc-400">.</span></div>
+          <p className="text-sm text-zinc-500 mt-1">{plan.client?.name} · {plan.title}</p>
+          {plan.intro_text && (
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-line italic mt-3 border-l-2 border-zinc-300 dark:border-zinc-700 pl-3">
+              {plan.intro_text}
+            </p>
+          )}
         </header>
 
         {/* ===== WEEK SELECTOR (pills) ===== */}
@@ -443,8 +379,7 @@ export default function TrainingPlanPage() {
                 >
                   <span className="text-[10px] uppercase tracking-wide opacity-70 leading-none mb-0.5">Wo</span>
                   <span className="text-base font-bold leading-none">{w.week_number}</span>
-                  <span className={`mt-1 flex items-center gap-0.5 text-[10px] leading-none ${active ? '' : complete ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    {complete ? <Check size={10} strokeWidth={3} /> : null}
+                  <span className={`mt-1 text-[10px] leading-none ${active ? '' : complete ? 'text-green-600 dark:text-green-400' : ''}`}>
                     {total > 0 ? `${done}/${total}` : '–'}
                   </span>
                   {i === realWeekIndex && (
@@ -456,38 +391,20 @@ export default function TrainingPlanPage() {
           </div>
         </div>
 
-        {/* ===== WEEK SUMMARY + PROGRESS ===== */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 mb-4">
-          {currentWeek.summary && (
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 italic">
-              {currentWeek.summary}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-zinc-500">{weekCompleted}/{weekTotal} erledigt</span>
-            {weekCompleted === weekTotal && weekTotal > 0 && (
-              <span className="text-xs text-green-600 font-medium flex items-center gap-1"><Check size={12} />Alles geschafft! 🎉</span>
-            )}
+        {/* ===== SLIM WEEK PROGRESS ===== */}
+        {weekTotal > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-zinc-500">{weekCompleted}/{weekTotal} erledigt</span>
+              {weekCompleted === weekTotal && (
+                <span className="text-xs text-green-600 font-medium">Alles geschafft!</span>
+              )}
+            </div>
+            <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
+            </div>
           </div>
-          <div className="h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-3">
-            <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
-          </div>
-
-          <div className="flex items-center gap-4 text-xs text-zinc-500">
-            <span className="flex items-center gap-1"><Clock size={12} />{weekMinutes} min</span>
-            {(Object.entries(
-              currentWeek.sessions.reduce((acc, s) => {
-                if (s.session_type !== 'ruhe') acc[s.session_type] = (acc[s.session_type] || 0) + 1
-                return acc
-              }, {} as Record<string, number>)
-            ) as [SessionType, number][]).map(([type, count]) => {
-              const Icon = TYPE_ICONS[type]
-              const colors = SESSION_TYPE_COLORS[type]
-              return <span key={type} className={`flex items-center gap-1 ${colors.text}`}><Icon size={12} />{count}</span>
-            })}
-          </div>
-        </div>
+        )}
 
         {/* ===== DAY CARDS ===== */}
         <div className="space-y-3">
@@ -497,11 +414,9 @@ export default function TrainingPlanPage() {
             const dObj = dayDateObj(dayIndex)
             const dayHeading = `${DAY_NAMES[dayIndex]}, ${dObj.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })}`
 
-            // Rest day (no sessions, not today) → compact line
             if (daySessions.length === 0 && !today) {
               return (
-                <div key={dayIndex} className="flex items-center gap-2 px-4 py-1.5">
-                  <Moon size={12} className="text-zinc-300 dark:text-zinc-700 shrink-0" />
+                <div key={dayIndex} className="px-4 py-1.5">
                   <span className="text-xs text-zinc-400 dark:text-zinc-600">{dayHeading} · Ruhetag</span>
                 </div>
               )
@@ -538,13 +453,11 @@ export default function TrainingPlanPage() {
                         const isToggling = togglingSession === session.id
                         const colors = SESSION_TYPE_COLORS[session.session_type as SessionType]
                         const typeLabel = SESSION_TYPE_LABELS[session.session_type as SessionType]
-                        const Icon = TYPE_ICONS[session.session_type as SessionType]
                         const hasDetails = !!(session.description || (session.exercises && session.exercises.length > 0) || session.intensity)
 
                         return (
                           <div key={session.id} className="py-1.5">
                             <div className="flex items-center gap-3">
-                              {/* Big tap-to-complete checkbox */}
                               <button
                                 onClick={(e) => { e.stopPropagation(); toggleSession(session.id) }}
                                 disabled={isToggling || session.session_type === 'ruhe'}
@@ -556,14 +469,11 @@ export default function TrainingPlanPage() {
                                 {completed && <Check size={18} strokeWidth={3} />}
                               </button>
 
-                              {/* Tap row to expand */}
                               <button onClick={() => toggleExpand(session.id)} className="flex-1 flex items-center gap-2 min-w-0 text-left py-1">
-                                <span className={`flex-shrink-0 inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>
-                                  <Icon size={11} />{typeLabel}
-                                </span>
+                                <span className={`flex-shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>{typeLabel}</span>
                                 <span className={`text-sm font-medium truncate ${completed ? 'text-zinc-400 line-through' : 'text-zinc-900 dark:text-white'}`}>{session.title}</span>
                                 {session.duration_minutes ? (
-                                  <span className="flex-shrink-0 text-[11px] text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{session.duration_minutes}′</span>
+                                  <span className="flex-shrink-0 text-[11px] text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{session.duration_minutes} min</span>
                                 ) : null}
                                 {hasDetails && (
                                   <ChevronDown size={15} className={`flex-shrink-0 ml-auto text-zinc-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -578,7 +488,7 @@ export default function TrainingPlanPage() {
                                 {session.intensity ? (
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs text-zinc-500">Intensität</span>
-                                    <div className="flex gap-0.5" aria-label={`Intensität ${session.intensity} von 10`}>
+                                    <div className="flex gap-0.5">
                                       {Array.from({ length: 10 }, (_, i) => (
                                         <span key={i} className={`w-2 h-2 rounded-full ${i < session.intensity! ? 'bg-zinc-800 dark:bg-zinc-200' : 'bg-zinc-200 dark:bg-zinc-700'}`} />
                                       ))}
@@ -597,7 +507,6 @@ export default function TrainingPlanPage() {
                                   </div>
                                 )}
 
-                                {/* Feedback — always available, no need to check off first */}
                                 {session.session_type !== 'ruhe' && (
                                   <div>
                                     <label className="block text-[11px] text-zinc-500 mb-1">Notiz an Pierre <span className="text-zinc-400">(optional)</span></label>
