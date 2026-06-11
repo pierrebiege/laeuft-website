@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Zenhäusern Treuhand AG",
+    "contact_name": "Karl Zenhäusern",
+    "email": "karl.zenhaeusern@ztag.ch",
+    "website": "https://ztag.ch",
+    "notes": "Treuhandbüro in Visp (Oberwallis). Dienstleistungen: Steuerberatung, Revision, Unternehmensberatung, Immobilien. Geschäftsleitung: Karl Zenhäusern (lic. oec. HSG, dipl. Steuerexperte), Stefan Zenhäusern (dipl. Betriebsökonom FH) und Daniel Zenhäusern (dipl. Wirtschaftsprüfer). Team-Seite mit persönlichen E-Mails auf ztag.ch vorhanden. Schwesterunternehmen Valfida Treuhand AG am gleichen Standort."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Domenico Jelo",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "Garage in Naters (Oberwallis). Familienbetrieb seit 1982, gegründet von Giuseppe Jelo. Seit 2015 von Domenico und Marco Jelo geführt. Offizielle Vertretung für Fiat, Hyundai und Alfa Romeo. Neubau mit grossem Showroom seit 1995. Verkauf und Werkstatt, mehrsprachiger Service (DE/FR/IT/EN). Zusätzliche E-Mail: verkauf@garage-arena.ch."
+  },
+  {
+    "company": "GreenFit",
+    "contact_name": "Michel Florey",
+    "email": "info@green-fit.ch",
+    "website": "https://green-fit.ch",
+    "notes": "Fitnesscenter in Salgesch/Sierre (Unterwallis). Laut eigener Angabe grösstes Fitnesscenter im Wallis mit über 1700m² Fläche. Angebot: Fitness und Golf. Geöffnet 7 Tage die Woche, 6-22 Uhr. Inhaber: Michel Armand Florey (Einzelfirma laut Handelsregister). Standort: Industriestrasse 16, 3960 Sierre/Salgesch."
+  },
+  {
+    "company": "Zurbriggen AG",
+    "contact_name": "Roman Zurbriggen",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Schreinerei in Visp (Oberwallis). Traditionsunternehmen seit 1888, vierte Generation unter Roman Zurbriggen (Geschäftsführer). Ca. 40 Fachspezialisten. Spezialisierung auf Fenster, Möbel und Innenausbau. Team-Seite auf zurbriggen.net vorhanden. Standort: Kleegärtenstrasse 52, CH-3930 Visp."
+  },
+  {
+    "company": "Boulangerie Moreillon",
+    "contact_name": "Werner Moreillon",
+    "email": "info@boulangerie-moreillon.ch",
+    "website": "https://www.boulangerie-moreillon.ch",
+    "notes": "Bäckerei-Konditorei-Confiserie in Sierre (Unterwallis) mit Filialen in Chippis und Turtmann. Inhaber: Werner Moreillon-Locher. Chocorama-Konzept (Bar à Chocolat / Café / Gélateria). Standort: Route du Simplon 21, 3960 Sierre. Alternative E-Mail: confiserie-moreillon@netplus.ch."
+  }
+]
