@@ -71,7 +71,7 @@ function buildWeekHtml(
   <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;color:#1a1a1a;max-width:600px;margin:0 auto;padding:20px;">
     <div style="margin-bottom:24px;"><h1 style="font-size:24px;font-weight:bold;margin:0;">läuft<span style="color:#999;">.</span></h1></div>
     <p>Hallo ${clientName},</p>
-    <p>deine Trainingswoche – <strong>${weekLabel}</strong> (${range}):</p>
+    <p>deine Trainingswoche für die kommende Woche – <strong>${weekLabel}</strong> (${range}):</p>
     <table style="width:100%;border-collapse:collapse;margin:8px 0 24px;">${daysHtml}</table>
     <a href="${planUrl}" style="display:inline-block;background:#1a1a1a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:500;">Zur ganzen Woche</a>
     <p style="color:#666;font-size:14px;margin-top:28px;">Einheiten kannst du direkt abhaken und mir eine Notiz dalassen.<br><br>Beste Grüsse<br>Pierre</p>
@@ -80,7 +80,7 @@ function buildWeekHtml(
 }
 
 function buildWeekText(clientName: string, weekLabel: string, sessions: TrainingSession[], planUrl: string) {
-  let body = `Hallo ${clientName},\n\ndeine Trainingswoche – ${weekLabel}:\n\n`
+  let body = `Hallo ${clientName},\n\ndeine Trainingswoche für die kommende Woche – ${weekLabel}:\n\n`
   for (let d = 0; d < 7; d++) {
     const ds = sessions.filter((s) => s.day_of_week === d).sort((a, b) => (TYPE_ORDER[a.session_type] ?? 9) - (TYPE_ORDER[b.session_type] ?? 9))
     body += `${DAY_NAMES[d]}: `
@@ -128,6 +128,12 @@ async function handler(request: NextRequest) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://laeuft.ch'
   const results: { client: string; status: string; sessions?: number }[] = []
 
+  // Sent Sunday evening → send the week that starts the next day. Looking one
+  // day ahead means a Sunday run picks the upcoming (Mon–Sun) week, not the one
+  // that is just ending.
+  const refDate = new Date()
+  refDate.setDate(refDate.getDate() + 1)
+
   for (const plan of plans || []) {
     const client = plan.client
     if (!client?.email) {
@@ -137,7 +143,8 @@ async function handler(request: NextRequest) {
 
     const { week, weekIndex, weekMonday } = getCurrentWeek(
       plan as TrainingPlan,
-      (plan.weeks || []) as TrainingWeek[]
+      (plan.weeks || []) as TrainingWeek[],
+      refDate
     )
 
     if (!week || !weekMonday) {

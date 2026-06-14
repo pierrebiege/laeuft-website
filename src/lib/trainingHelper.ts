@@ -47,13 +47,16 @@ interface CurrentWeekResult {
   weekMonday: Date | null
 }
 
-// Returns the plan week that contains today (or null if the plan hasn't started
-// yet / has already ended), plus the Monday date of that week.
+// Returns the plan week that contains the reference date (today by default),
+// or null if the plan hasn't started yet / has already ended, plus the Monday
+// date of that week. Pass a future refDate to look ahead (e.g. the Sunday-evening
+// mail sends the week that starts the next day).
 export function getCurrentWeek(
   plan: TrainingPlan,
-  weeks: TrainingWeek[]
+  weeks: TrainingWeek[],
+  refDate: Date = new Date()
 ): CurrentWeekResult {
-  const today = new Date()
+  const today = new Date(refDate)
   const startDate = new Date(plan.start_date)
 
   const day = startDate.getDay()

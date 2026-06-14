@@ -18,7 +18,7 @@
     },
     {
       "path": "/api/cron/training-weekly",
-      "schedule": "0 5 * * 1"
+      "schedule": "0 16 * * 0"
     },
     {
       "path": "/api/cron/youtube-reminder",
