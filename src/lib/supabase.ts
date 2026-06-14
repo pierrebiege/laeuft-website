@@ -568,6 +568,12 @@ export interface TrainingSession {
   intensity: number | null
   sort_order: number
   created_at: string
+  // Strukturierte Lauf-Zielwerte (Basis für den Strava-Soll-Ist-Abgleich).
+  // Null bei Alt-Daten / nicht-Lauf-Einheiten → UI fällt auf Freitext zurück.
+  target_distance_m?: number | null
+  target_duration_s?: number | null
+  target_pace_min_s?: number | null
+  target_pace_max_s?: number | null
   completion?: TrainingCompletion | null
   exercises?: SessionExercise[]
 }

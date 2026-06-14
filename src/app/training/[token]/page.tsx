@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import {
-  supabase,
   TrainingPlan,
   TrainingWeek,
   TrainingSession,
@@ -112,13 +111,11 @@ export default function TrainingPlanPage() {
 
   async function loadPlan() {
     try {
-      const { data: planData, error: planError } = await supabase
-        .from('training_plans')
-        .select(`*, client:clients(id, name, company), weeks:training_weeks(*, sessions:training_sessions(*, exercises:session_exercises(*, exercise:exercises(*))))`)
-        .eq('unique_token', token)
-        .single()
+      const res = await fetch(`/api/training/by-token?token=${encodeURIComponent(token)}`)
+      if (!res.ok) { setError('Plan nicht gefunden'); setLoading(false); return }
+      const { plan: planData, completions: compData } = await res.json()
 
-      if (planError || !planData) { setError('Plan nicht gefunden'); setLoading(false); return }
+      if (!planData) { setError('Plan nicht gefunden'); setLoading(false); return }
 
       const fullPlan = planData as FullPlan
       fullPlan.weeks.sort((a, b) => a.sort_order - b.sort_order)
@@ -140,11 +137,6 @@ export default function TrainingPlanPage() {
         setPinUnlocked(true)
         setPinRequired(false)
       }
-
-      const { data: compData } = await supabase
-        .from('training_completions')
-        .select('*')
-        .eq('plan_token', token)
 
       const map: CompletionMap = {}
       const fbValues: Record<string, string> = {}
