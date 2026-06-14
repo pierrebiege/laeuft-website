@@ -96,24 +96,28 @@ export async function matchAthlete(athleteId: string): Promise<number> {
   for (const [date, sessions] of sessionsByDate) {
     const freeSessions = sessions.filter((s) => !matchedSessions.has(s.id))
     const freeRuns = (runsByDate.get(date) || []).filter((r) => !matchedActivities.has(r.id))
-    if (freeSessions.length !== 1 || freeRuns.length !== 1) continue
+    // Genau eine offene Lauf-Einheit am Tag + mind. ein Lauf → ALLE Läufe des
+    // Tages zusammenzählen und die Einheit als erledigt markieren.
+    if (freeSessions.length !== 1 || freeRuns.length < 1) continue
 
     const s = freeSessions[0]
-    const r = freeRuns[0]
-    const { paceInRange, distanceDeltaM } = evaluate(s, r.distance_m, r.average_pace_s)
+    const totalDistance = freeRuns.reduce((a, r) => a + (r.distance_m || 0), 0)
+    const totalTime = freeRuns.reduce((a, r) => a + (r.moving_time_s || 0), 0)
+    const totalPace = totalDistance > 0 && totalTime ? Math.round(totalTime / (totalDistance / 1000)) : null
+    const { paceInRange, distanceDeltaM } = evaluate(s, totalDistance, totalPace)
 
     const { error } = await supabaseAdmin.from('session_activity_matches').upsert(
       {
         session_id: s.id,
-        activity_id: r.id,
-        activity_ids: [r.id],
+        activity_id: freeRuns[0].id,
+        activity_ids: freeRuns.map((r) => r.id),
         athlete_id: athleteId,
         source: 'auto',
-        confidence: 'hoch',
-        total_distance_m: r.distance_m,
-        total_moving_time_s: r.moving_time_s,
-        total_pace_s: r.average_pace_s,
-        activity_count: 1,
+        confidence: freeRuns.length > 1 ? 'mittel' : 'hoch',
+        total_distance_m: totalDistance,
+        total_moving_time_s: totalTime,
+        total_pace_s: totalPace,
+        activity_count: freeRuns.length,
         distance_delta_m: distanceDeltaM,
         pace_in_range: paceInRange,
       },
@@ -126,7 +130,7 @@ export async function matchAthlete(athleteId: string): Promise<number> {
       { onConflict: 'session_id,plan_token' }
     )
     matchedSessions.add(s.id)
-    matchedActivities.add(r.id)
+    freeRuns.forEach((r) => matchedActivities.add(r.id))
     count++
   }
 

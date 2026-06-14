@@ -539,6 +539,7 @@ export interface TrainingPlan {
   intro_text: string | null
   access_pin: string | null
   sent_at: string | null
+  race_date: string | null
   created_at: string
   updated_at: string
   client?: Client

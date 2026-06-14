@@ -13,6 +13,7 @@ import {
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
 import { targetLine, fmtPace, fmtDistance } from '@/lib/trainingFormat'
+import { computeMetrics } from '@/lib/coaching'
 import { Check, ChevronDown, CalendarCheck } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
@@ -70,12 +71,27 @@ function fmtMoving(sec: number): string {
   const s = sec % 60
   return h ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`
 }
+function fmtKm(km: number): string {
+  return (Math.round(km * 10) / 10).toString().replace('.', ',')
+}
+
+function Stat({ label, value, dot }: { label: string; value: string; dot?: 'gruen' | 'gelb' | 'rot' | null }) {
+  const dotColor = dot === 'rot' ? 'bg-red-500' : dot === 'gelb' ? 'bg-amber-500' : dot === 'gruen' ? 'bg-green-500' : ''
+  return (
+    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 px-3 py-2.5">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">{label}</p>
+      <p className="text-base font-semibold text-zinc-900 dark:text-white mt-0.5 flex items-center gap-1.5">
+        {dot && <span className={`w-2 h-2 rounded-full ${dotColor}`} />}{value}
+      </p>
+    </div>
+  )
+}
 
 function paceSentence(session: TrainingSession, match: MatchInfo): string {
   const p = match.total_pace_s
   if (session.target_pace_min_s && session.target_pace_max_s && p != null) {
     if (p < session.target_pace_min_s - 15) return 'Etwas schneller als geplant.'
-    if (p > session.target_pace_max_s + 15) return 'Etwas ruhiger als geplant — alles gut.'
+    if (p > session.target_pace_max_s + 15) return 'Etwas ruhiger als geplant.'
     return 'Pace im Zielbereich.'
   }
   if (match.pace_in_range === true) return 'Pace im Zielbereich.'
@@ -240,6 +256,7 @@ export default function AthleteApp({
     }
     return m
   }, [activities])
+  const metrics = useMemo(() => (plan ? computeMetrics(plan, completions) : null), [plan, completions])
 
   const candidatesFor = useCallback((iso: string, current?: MatchInfo): ActivityLite[] => {
     const runs = (activitiesByDate[iso] || []).filter((a) => RUN_TYPES.has(a.sport_type || ''))
@@ -453,6 +470,30 @@ export default function AthleteApp({
           )}
         </div>
       </section>
+
+      {/* ===== FORTSCHRITT ===== */}
+      {metrics && (metrics.raceInDays != null || metrics.thisWeek || metrics.consistency.planned > 0 || metrics.acwr.value != null) && (
+        <section className="mb-6">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Fortschritt</h2>
+          <div className="grid grid-cols-2 gap-2">
+            {metrics.raceInDays != null && metrics.raceInDays >= 0 && (
+              <Stat label="Wettkampf" value={metrics.raceInDays === 0 ? 'heute' : `noch ${metrics.raceInDays} Tage`} />
+            )}
+            {metrics.thisWeek && (
+              <Stat
+                label="Diese Woche"
+                value={metrics.hasKmTargets ? `${fmtKm(metrics.thisWeek.doneKm)} / ${fmtKm(metrics.thisWeek.plannedKm)} km` : `${metrics.thisWeek.doneCount} / ${metrics.thisWeek.plannedCount} erledigt`}
+              />
+            )}
+            {metrics.consistency.planned > 0 && (
+              <Stat label="Konstanz · 4 Wochen" value={`${metrics.consistency.done} / ${metrics.consistency.planned} Läufe`} />
+            )}
+            {metrics.acwr.value != null && (
+              <Stat label="Belastung" value={metrics.acwr.value.toFixed(2).replace('.', ',')} dot={metrics.acwr.level} />
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ===== WOCHEN-AUSWAHL ===== */}
       <div className="mb-3">
