@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Treuhand Valesia AG",
+    "contact_name": "Georg Anthamatten",
+    "email": "georg.anthamatten@valesia.ch",
+    "website": "https://www.valesia.ch",
+    "notes": "Treuhand- und Immobilienverwaltung mit Hauptsitz in Visp (Bahnhofstrasse 17). Teil der Valesia Group mit Niederlassungen in Wallis, Bern und Zürich. Georg Anthamatten ist Dipl. Treuhandexperte und Zugelassener Revisionsexperte RAB. Website vorhanden auf valesia.ch."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Fitnessstudio-Kette im Oberwallis, gegründet 2008 von Samuel Millius. Standorte in Visp-Süd (ca. 500m²) und CrossGYM Susten (über 700m²). 24/7 geöffnet. Jahresabo ab CHF 399. Website auf fitnessstudio-oberwallis.ch. Inhaber Samuel Millius (SAMS GYM GmbH, Kantonsstrasse 136, 3952 Susten)."
+  },
+  {
+    "company": "Garage Carrosserie Wyssen AG",
+    "contact_name": "Fränzi Wyssen-Walker",
+    "email": "info@garagewyssen.ch",
+    "website": "https://www.garagewyssen.ch",
+    "notes": "Familienbetrieb und offizieller Suzuki-Partner im Oberwallis. Zwei Standorte: Mörel-Filet (Furkastrasse 48) und Naters (Furkastrasse 13). Bietet Werkstatt, Showroom, Waschanlage und Reifenhotel. Geschäftsführerin Fränzi Wyssen-Walker, Söhne Michael und Dominic im Betrieb tätig."
+  },
+  {
+    "company": "Mathias Bellwald AG",
+    "contact_name": "François Stefan Hurni",
+    "email": "info@mb-bau.ch",
+    "website": "https://www.mb-bau.ch",
+    "notes": "Bauunternehmen in Brig (Hofjstrasse 5), gegründet 1985. Ca. 70 Mitarbeiter. Seit 2021 unter Leitung von Geschäftsführer François Stefan Hurni. Generalunternehmen für Renovationen und Sanierungen im Wallis."
+  },
+  {
+    "company": "Zurbriggen AG",
+    "contact_name": "Roman Zurbriggen",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Schreinerei in Visp (Kleegärtenstrasse 52), gegründet 1888. Ca. 40 Fachkräfte. Spezialisiert auf Fensterbau, Möbel und Innenausbau. Geführt in der 4. Generation von Geschäftsführer Roman Zurbriggen."
+  }
+]
