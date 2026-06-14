@@ -6,9 +6,26 @@ export type FullAthletePlan = TrainingPlan & {
   weeks: (TrainingWeek & { sessions: TrainingSession[] })[]
 }
 
+export interface SessionMatch {
+  session_id: string
+  pace_in_range: boolean | null
+  distance_delta_m: number | null
+  activity: {
+    distance_m: number | null
+    average_pace_s: number | null
+    moving_time_s: number | null
+    start_date_local: string | null
+    average_heartrate: number | null
+    total_elevation_gain: number | null
+  } | null
+}
+
 export interface AthletePlanResult {
   plan: FullAthletePlan
   completions: TrainingCompletion[]
+  matches: SessionMatch[]
+  stravaConnected: boolean
+  lastSync: string | null
 }
 
 /**
@@ -44,5 +61,24 @@ export async function getAthletePlan(athleteId: string): Promise<AthletePlanResu
     .select('*')
     .eq('plan_token', plan.unique_token)
 
-  return { plan, completions: (comps || []) as TrainingCompletion[] }
+  const { data: matchRows } = await supabaseAdmin
+    .from('session_activity_matches')
+    .select(
+      'session_id, pace_in_range, distance_delta_m, activity:strava_activities(distance_m, average_pace_s, moving_time_s, start_date_local, average_heartrate, total_elevation_gain)'
+    )
+    .eq('athlete_id', athleteId)
+
+  const { data: conn } = await supabaseAdmin
+    .from('strava_connections')
+    .select('last_sync_at')
+    .eq('athlete_id', athleteId)
+    .maybeSingle()
+
+  return {
+    plan,
+    completions: (comps || []) as TrainingCompletion[],
+    matches: (matchRows || []) as unknown as SessionMatch[],
+    stravaConnected: !!conn,
+    lastSync: conn?.last_sync_at ?? null,
+  }
 }

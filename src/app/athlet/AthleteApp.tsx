@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   TrainingPlan,
@@ -12,13 +12,27 @@ import {
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
-import { targetLine } from '@/lib/trainingFormat'
+import { targetLine, fmtPace, fmtDistance } from '@/lib/trainingFormat'
 import { Check, ChevronDown, CalendarCheck } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
   weeks: (TrainingWeek & { sessions: TrainingSession[] })[]
 }
 type CompletionMap = Record<string, TrainingCompletion>
+
+type MatchInfo = {
+  session_id: string
+  pace_in_range: boolean | null
+  distance_delta_m: number | null
+  activity: {
+    distance_m: number | null
+    average_pace_s: number | null
+    moving_time_s: number | null
+    start_date_local: string | null
+    average_heartrate: number | null
+    total_elevation_gain: number | null
+  } | null
+}
 
 const DAY_NAMES = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 const TYPE_ORDER: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
@@ -38,6 +52,43 @@ function mondayOf(date: Date): Date {
   d.setDate(d.getDate() + diff)
   d.setHours(0, 0, 0, 0)
   return d
+}
+
+function fmtMoving(sec: number): string {
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  const s = sec % 60
+  return h ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`
+}
+
+function paceSentence(session: TrainingSession, match: MatchInfo): string {
+  const p = match.activity?.average_pace_s
+  if (session.target_pace_min_s && session.target_pace_max_s && p != null) {
+    if (p < session.target_pace_min_s - 15) return 'Etwas schneller als geplant.'
+    if (p > session.target_pace_max_s + 15) return 'Etwas ruhiger als geplant — alles gut.'
+    return 'Pace im Zielbereich.'
+  }
+  if (match.pace_in_range === true) return 'Pace im Zielbereich.'
+  return ''
+}
+
+function GelaufenBlock({ session, match }: { session: TrainingSession; match: MatchInfo }) {
+  const a = match.activity
+  if (!a) return null
+  const parts = [
+    a.distance_m != null ? fmtDistance(a.distance_m) : null,
+    a.average_pace_s != null ? `${fmtPace(a.average_pace_s)} min/km` : null,
+    a.moving_time_s != null ? fmtMoving(a.moving_time_s) : null,
+  ].filter(Boolean)
+  const sentence = paceSentence(session, match)
+  return (
+    <div className="mt-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 px-3 py-2">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-0.5">Gelaufen</p>
+      <p className="text-sm text-zinc-700 dark:text-zinc-200">{parts.join(' · ')}</p>
+      {sentence && <p className="text-xs text-zinc-500 mt-0.5">{sentence}</p>}
+      <p className="text-[11px] text-zinc-400 mt-1">Automatisch abgeglichen · Strava</p>
+    </div>
+  )
 }
 
 function ExerciseCard({ exercise, sets, notes }: {
@@ -72,10 +123,18 @@ export default function AthleteApp({
   athleteName,
   plan,
   initialCompletions,
+  matches,
+  stravaConnected,
+  lastSync,
+  stravaStatus,
 }: {
   athleteName: string | null
   plan: FullPlan | null
   initialCompletions: TrainingCompletion[]
+  matches: MatchInfo[]
+  stravaConnected: boolean
+  lastSync: string | null
+  stravaStatus: string | null
 }) {
   const router = useRouter()
 
@@ -97,9 +156,14 @@ export default function AthleteApp({
   const realPillRef = useRef<HTMLButtonElement | null>(null)
   const todayRef = useRef<HTMLDivElement | null>(null)
 
+  const matchMap = useMemo(() => {
+    const m: Record<string, MatchInfo> = {}
+    for (const x of matches) m[x.session_id] = x
+    return m
+  }, [matches])
+
   const weeks = plan?.weeks ?? []
 
-  // Aktuelle Woche bestimmen (auf Basis Plan-Start, Montag-Raster)
   useEffect(() => {
     if (!plan || weeks.length === 0) return
     const startMonday = mondayOf(new Date(plan.start_date + 'T00:00:00'))
@@ -170,14 +234,25 @@ export default function AthleteApp({
     router.push('/athlet/login')
   }
 
-  // ---------- Empty States ----------
+  async function disconnectStrava() {
+    try { await fetch('/api/strava/disconnect', { method: 'POST' }) } catch { /* ignore */ }
+    router.refresh()
+  }
+
+  const stravaUi = (
+    <StravaSection connected={stravaConnected} lastSync={lastSync} onDisconnect={disconnectStrava} />
+  )
+
+  // ---------- Empty State ----------
   if (!plan) {
     return (
-      <Shell athleteName={athleteName} onLogout={logout}>
-        <div className="mt-10 text-center">
+      <Shell athleteName={athleteName} onLogout={logout} connected={stravaConnected}>
+        <StravaBanner status={stravaStatus} />
+        <div className="mt-8 text-center">
           <p className="text-sm text-zinc-600 dark:text-zinc-300">Hier ist noch kein aktiver Plan hinterlegt.</p>
           <p className="text-sm text-zinc-500 mt-1">Sobald Pierre deinen Plan freigibt, erscheint er hier.</p>
         </div>
+        <div className="mt-8">{stravaUi}</div>
       </Shell>
     )
   }
@@ -199,7 +274,6 @@ export default function AthleteApp({
 
   const currentWeek = weeks[currentWeekIndex]
 
-  // ---------- Heute-Hero-Daten ----------
   const today = new Date(); today.setHours(0, 0, 0, 0)
   const diffDays = Math.floor((today.getTime() - startMonday.getTime()) / 86400000)
   const beforeStart = diffDays < 0
@@ -219,7 +293,9 @@ export default function AthleteApp({
   }
 
   return (
-    <Shell athleteName={athleteName} planTitle={plan.title} onLogout={logout}>
+    <Shell athleteName={athleteName} planTitle={plan.title} onLogout={logout} connected={stravaConnected}>
+      <StravaBanner status={stravaStatus} />
+
       {plan.intro_text && (
         <p className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-line italic mb-5 border-l-2 border-zinc-300 dark:border-zinc-700 pl-3">
           {plan.intro_text}
@@ -227,7 +303,7 @@ export default function AthleteApp({
       )}
 
       {/* ===== HEUTE ===== */}
-      <section className="mb-7">
+      <section className="mb-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Heute</h2>
         <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
           <p className="text-sm text-zinc-500 mb-3">
@@ -242,11 +318,12 @@ export default function AthleteApp({
           ) : todaySessions.length === 0 ? (
             <p className="text-sm text-zinc-600 dark:text-zinc-300">Heute Ruhetag — Erholung ist Teil des Plans.</p>
           ) : (
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {todaySessions.map((s) => {
                 const done = isDone(s.id)
                 const colors = SESSION_TYPE_COLORS[s.session_type as SessionType]
                 const line = targetLine(s)
+                const match = matchMap[s.id]
                 return (
                   <div key={s.id} className="flex items-start gap-3">
                     <button
@@ -265,7 +342,7 @@ export default function AthleteApp({
                         <span className={`text-base font-semibold ${done ? 'text-zinc-400 line-through' : 'text-zinc-900 dark:text-white'}`}>{s.title}</span>
                       </div>
                       {line && <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-0.5">{line}</p>}
-                      <p className="text-xs text-zinc-400 mt-0.5">{done ? 'Erledigt' : 'Heute offen'}</p>
+                      {match ? <GelaufenBlock session={s} match={match} /> : <p className="text-xs text-zinc-400 mt-0.5">{done ? 'Erledigt' : 'Heute offen'}</p>}
                     </div>
                   </div>
                 )
@@ -324,10 +401,10 @@ export default function AthleteApp({
               .filter((s) => s.day_of_week === dayIndex)
               .sort((a, b) => (TYPE_ORDER[a.session_type] ?? 9) - (TYPE_ORDER[b.session_type] ?? 9))
             const dObj = dateOf(currentWeek.week_number, dayIndex)
-            const today = isTodayDate(dObj)
+            const dayIsToday = isTodayDate(dObj)
             const heading = `${DAY_NAMES[dayIndex]}, ${dObj.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })}`
 
-            if (daySessions.length === 0 && !today) {
+            if (daySessions.length === 0 && !dayIsToday) {
               return (
                 <div key={dayIndex} className="px-4 py-1.5">
                   <span className="text-xs text-zinc-400 dark:text-zinc-600">{heading} · Ruhetag</span>
@@ -338,13 +415,13 @@ export default function AthleteApp({
             return (
               <div
                 key={dayIndex}
-                ref={today ? todayRef : undefined}
-                className={`rounded-xl border transition-colors ${today ? 'border-green-400 dark:border-green-600 bg-white dark:bg-zinc-900 shadow-sm' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50'}`}
+                ref={dayIsToday ? todayRef : undefined}
+                className={`rounded-xl border transition-colors ${dayIsToday ? 'border-green-400 dark:border-green-600 bg-white dark:bg-zinc-900 shadow-sm' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50'}`}
               >
-                <div className={`px-4 py-2.5 border-b ${today ? 'border-green-100 dark:border-green-900/40' : 'border-zinc-100 dark:border-zinc-800'}`}>
+                <div className={`px-4 py-2.5 border-b ${dayIsToday ? 'border-green-100 dark:border-green-900/40' : 'border-zinc-100 dark:border-zinc-800'}`}>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold ${today ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-300'}`}>{heading}</span>
-                    {today && <span className="text-[10px] font-semibold uppercase tracking-wider text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-1.5 py-0.5 rounded">Heute</span>}
+                    <span className={`text-sm font-semibold ${dayIsToday ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-300'}`}>{heading}</span>
+                    {dayIsToday && <span className="text-[10px] font-semibold uppercase tracking-wider text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-1.5 py-0.5 rounded">Heute</span>}
                   </div>
                 </div>
                 <div className="px-3 py-1.5">
@@ -358,6 +435,7 @@ export default function AthleteApp({
                         const isToggling = togglingSession === session.id
                         const colors = SESSION_TYPE_COLORS[session.session_type as SessionType]
                         const line = targetLine(session)
+                        const match = matchMap[session.id]
                         const hasDetails = !!(session.description || (session.exercises && session.exercises.length > 0) || session.intensity)
                         return (
                           <div key={session.id} className="py-1.5">
@@ -379,6 +457,7 @@ export default function AthleteApp({
                               </button>
                             </div>
                             {line && <p className="ml-11 text-xs text-zinc-500 dark:text-zinc-400 -mt-0.5">{line}</p>}
+                            {match && <div className="ml-11 mt-1"><GelaufenBlock session={session} match={match} /></div>}
 
                             <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[3000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
                               <div className="ml-11 pr-1 space-y-3 pb-2">
@@ -429,14 +508,65 @@ export default function AthleteApp({
           })}
         </div>
       )}
+
+      <div className="mt-8">{stravaUi}</div>
     </Shell>
   )
 }
 
-function Shell({ athleteName, planTitle, onLogout, children }: {
+function StravaBanner({ status }: { status: string | null }) {
+  if (!status) return null
+  const map: Record<string, { text: string; tone: 'ok' | 'err' }> = {
+    connected: { text: 'Strava verbunden — deine Läufe werden ab jetzt automatisch abgeglichen.', tone: 'ok' },
+    denied: { text: 'Strava-Verbindung abgebrochen.', tone: 'err' },
+    error: { text: 'Bei der Strava-Verbindung ging etwas schief. Bitte nochmal versuchen.', tone: 'err' },
+    invalid: { text: 'Strava-Verbindung ungültig (abgelaufen). Bitte nochmal starten.', tone: 'err' },
+    notconfigured: { text: 'Strava ist noch nicht eingerichtet.', tone: 'err' },
+  }
+  const m = map[status]
+  if (!m) return null
+  return (
+    <div className={`mb-4 rounded-xl px-3 py-2 text-sm ${m.tone === 'ok' ? 'bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-900' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900'}`}>
+      {m.text}
+    </div>
+  )
+}
+
+function StravaSection({ connected, lastSync, onDisconnect }: { connected: boolean; lastSync: string | null; onDisconnect: () => void }) {
+  if (connected) {
+    return (
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 px-4 py-3 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Strava verbunden</p>
+          <p className="text-xs text-zinc-500">
+            {lastSync ? `Zuletzt abgeglichen: ${new Date(lastSync).toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })}` : 'Erster Abgleich folgt heute Abend.'}
+          </p>
+        </div>
+        <button onClick={onDisconnect} className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">Trennen</button>
+      </div>
+    )
+  }
+  return (
+    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 px-4 py-4">
+      <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Strava verbinden</p>
+      <p className="text-xs text-zinc-500 mt-1 mb-3">
+        Verbinde dein Strava-Konto — dann hakt sich jeder Lauf von selbst ab und du siehst geplant gegen gelaufen. Du kannst die Verbindung jederzeit trennen.
+      </p>
+      <a
+        href="/api/strava/connect"
+        className="inline-flex items-center gap-2 rounded-lg bg-[#FC4C02] text-white text-sm font-semibold px-4 py-2 hover:bg-[#e34402] transition-colors"
+      >
+        Mit Strava verbinden
+      </a>
+    </div>
+  )
+}
+
+function Shell({ athleteName, planTitle, onLogout, connected, children }: {
   athleteName: string | null
   planTitle?: string
   onLogout: () => void
+  connected: boolean
   children: React.ReactNode
 }) {
   return (
@@ -452,7 +582,8 @@ function Shell({ athleteName, planTitle, onLogout, children }: {
           <button onClick={onLogout} className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 mt-1">Abmelden</button>
         </header>
         {children}
-        <footer className="mt-10 text-center">
+        <footer className="mt-10 text-center space-y-1">
+          {connected && <p className="text-[10px] text-zinc-400">Aktivitätsdaten powered by Strava</p>}
           <p className="text-[10px] text-zinc-400">Powered by <span className="text-zinc-500">läuft.</span></p>
         </footer>
       </div>
