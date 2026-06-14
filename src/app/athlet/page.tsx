@@ -22,6 +22,7 @@ export default async function AthletHome({
       plan={result?.plan ?? null}
       initialCompletions={result?.completions ?? []}
       matches={result?.matches ?? []}
+      activities={result?.activities ?? []}
       stravaConnected={result?.stravaConnected ?? false}
       lastSync={result?.lastSync ?? null}
       stravaStatus={sp.strava ?? null}

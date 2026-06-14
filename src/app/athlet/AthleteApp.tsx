@@ -22,20 +22,28 @@ type CompletionMap = Record<string, TrainingCompletion>
 
 type MatchInfo = {
   session_id: string
+  source: string | null
   pace_in_range: boolean | null
   distance_delta_m: number | null
-  activity: {
-    distance_m: number | null
-    average_pace_s: number | null
-    moving_time_s: number | null
-    start_date_local: string | null
-    average_heartrate: number | null
-    total_elevation_gain: number | null
-  } | null
+  total_distance_m: number | null
+  total_moving_time_s: number | null
+  total_pace_s: number | null
+  activity_count: number | null
+  activity_ids: string[] | null
+}
+type ActivityLite = {
+  id: string
+  local_date: string | null
+  sport_type: string | null
+  name: string | null
+  distance_m: number | null
+  average_pace_s: number | null
+  moving_time_s: number | null
 }
 
 const DAY_NAMES = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 const TYPE_ORDER: Record<string, number> = { lauf: 0, kraft: 1, mobility: 2, ruhe: 3 }
+const RUN_TYPES = new Set(['Run', 'TrailRun', 'VirtualRun'])
 
 function getVideoEmbedUrl(url: string): string | null {
   const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/)
@@ -53,7 +61,9 @@ function mondayOf(date: Date): Date {
   d.setHours(0, 0, 0, 0)
   return d
 }
-
+function isoLocal(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 function fmtMoving(sec: number): string {
   const h = Math.floor(sec / 3600)
   const m = Math.floor((sec % 3600) / 60)
@@ -62,7 +72,7 @@ function fmtMoving(sec: number): string {
 }
 
 function paceSentence(session: TrainingSession, match: MatchInfo): string {
-  const p = match.activity?.average_pace_s
+  const p = match.total_pace_s
   if (session.target_pace_min_s && session.target_pace_max_s && p != null) {
     if (p < session.target_pace_min_s - 15) return 'Etwas schneller als geplant.'
     if (p > session.target_pace_max_s + 15) return 'Etwas ruhiger als geplant — alles gut.'
@@ -73,20 +83,71 @@ function paceSentence(session: TrainingSession, match: MatchInfo): string {
 }
 
 function GelaufenBlock({ session, match }: { session: TrainingSession; match: MatchInfo }) {
-  const a = match.activity
-  if (!a) return null
   const parts = [
-    a.distance_m != null ? fmtDistance(a.distance_m) : null,
-    a.average_pace_s != null ? `${fmtPace(a.average_pace_s)} min/km` : null,
-    a.moving_time_s != null ? fmtMoving(a.moving_time_s) : null,
+    match.total_distance_m != null ? fmtDistance(match.total_distance_m) : null,
+    match.total_pace_s != null ? `${fmtPace(match.total_pace_s)} min/km` : null,
+    match.total_moving_time_s != null ? fmtMoving(match.total_moving_time_s) : null,
   ].filter(Boolean)
   const sentence = paceSentence(session, match)
+  const combined = (match.activity_count || 1) > 1
   return (
     <div className="mt-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 px-3 py-2">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-0.5">Gelaufen</p>
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-0.5">
+        Gelaufen{combined ? ` · ${match.activity_count} Läufe zusammengezählt` : ''}
+      </p>
       <p className="text-sm text-zinc-700 dark:text-zinc-200">{parts.join(' · ')}</p>
       {sentence && <p className="text-xs text-zinc-500 mt-0.5">{sentence}</p>}
-      <p className="text-[11px] text-zinc-400 mt-1">Automatisch abgeglichen · Strava</p>
+      <p className="text-[11px] text-zinc-400 mt-1">
+        {match.source === 'athlete' ? 'Manuell zugeordnet' : 'Automatisch abgeglichen'} · Strava
+      </p>
+    </div>
+  )
+}
+
+function RunPicker({ candidates, selected, onToggle, onSave, onCancel, onUnassign, saving, canUnassign }: {
+  candidates: ActivityLite[]
+  selected: Set<string>
+  onToggle: (id: string) => void
+  onSave: () => void
+  onCancel: () => void
+  onUnassign: () => void
+  saving: boolean
+  canUnassign: boolean
+}) {
+  return (
+    <div className="mt-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3 space-y-2">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+        Lauf zuordnen{candidates.length > 1 ? ' — mehrere wählen = zusammenzählen' : ''}
+      </p>
+      {candidates.length === 0 ? (
+        <p className="text-xs text-zinc-500">Keine Strava-Läufe an diesem Tag gefunden.</p>
+      ) : (
+        candidates.map((a) => {
+          const checked = selected.has(a.id)
+          return (
+            <button key={a.id} onClick={() => onToggle(a.id)} className="w-full flex items-center gap-2 text-left py-0.5">
+              <span className={`flex-shrink-0 w-5 h-5 rounded border flex items-center justify-center ${checked ? 'bg-green-500 border-green-500 text-white' : 'border-zinc-300 dark:border-zinc-600'}`}>
+                {checked && <Check size={13} strokeWidth={3} />}
+              </span>
+              <span className="text-sm text-zinc-700 dark:text-zinc-200 flex-1 min-w-0 truncate">
+                {a.distance_m != null ? fmtDistance(a.distance_m) : '—'}
+                {a.average_pace_s != null ? ` · ${fmtPace(a.average_pace_s)}/km` : ''}
+                {a.moving_time_s != null ? ` · ${fmtMoving(a.moving_time_s)}` : ''}
+                {a.name ? <span className="text-zinc-400"> · {a.name}</span> : null}
+              </span>
+            </button>
+          )
+        })
+      )}
+      <div className="flex items-center gap-3 pt-1">
+        <button onClick={onSave} disabled={saving || selected.size === 0} className="text-xs font-semibold text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 rounded-lg px-3 py-1.5 disabled:opacity-50">
+          {saving ? '…' : selected.size > 1 ? `${selected.size} zuordnen` : 'Zuordnen'}
+        </button>
+        {canUnassign && (
+          <button onClick={onUnassign} disabled={saving} className="text-xs text-zinc-500 hover:underline">Zuordnung aufheben</button>
+        )}
+        <button onClick={onCancel} className="text-xs text-zinc-400 hover:underline ml-auto">Abbrechen</button>
+      </div>
     </div>
   )
 }
@@ -124,6 +185,7 @@ export default function AthleteApp({
   plan,
   initialCompletions,
   matches,
+  activities,
   stravaConnected,
   lastSync,
   stravaStatus,
@@ -132,6 +194,7 @@ export default function AthleteApp({
   plan: FullPlan | null
   initialCompletions: TrainingCompletion[]
   matches: MatchInfo[]
+  activities: ActivityLite[]
   stravaConnected: boolean
   lastSync: string | null
   stravaStatus: string | null
@@ -152,6 +215,9 @@ export default function AthleteApp({
   const [realWeekIndex, setRealWeekIndex] = useState(0)
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set())
   const [togglingSession, setTogglingSession] = useState<string | null>(null)
+  const [pickerSession, setPickerSession] = useState<string | null>(null)
+  const [pickerSel, setPickerSel] = useState<Set<string>>(new Set())
+  const [savingMatch, setSavingMatch] = useState(false)
   const feedbackTimeouts = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
   const realPillRef = useRef<HTMLButtonElement | null>(null)
   const todayRef = useRef<HTMLDivElement | null>(null)
@@ -161,6 +227,25 @@ export default function AthleteApp({
     for (const x of matches) m[x.session_id] = x
     return m
   }, [matches])
+  const usedActivityIds = useMemo(() => {
+    const s = new Set<string>()
+    for (const x of matches) for (const id of x.activity_ids || []) s.add(id)
+    return s
+  }, [matches])
+  const activitiesByDate = useMemo(() => {
+    const m: Record<string, ActivityLite[]> = {}
+    for (const a of activities) {
+      if (!a.local_date) continue
+      ;(m[a.local_date] = m[a.local_date] || []).push(a)
+    }
+    return m
+  }, [activities])
+
+  const candidatesFor = useCallback((iso: string, current?: MatchInfo): ActivityLite[] => {
+    const runs = (activitiesByDate[iso] || []).filter((a) => RUN_TYPES.has(a.sport_type || ''))
+    const currentIds = current?.activity_ids || []
+    return runs.filter((a) => !usedActivityIds.has(a.id) || currentIds.includes(a.id))
+  }, [activitiesByDate, usedActivityIds])
 
   const weeks = plan?.weeks ?? []
 
@@ -229,19 +314,37 @@ export default function AthleteApp({
     setExpandedSessions((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }, [])
 
+  function openPicker(sessionId: string, current?: MatchInfo) {
+    setPickerSel(new Set(current?.activity_ids || []))
+    setPickerSession(sessionId)
+  }
+  function togglePickerSel(id: string) {
+    setPickerSel((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }
+  async function saveMatch(sessionId: string, ids: string[]) {
+    setSavingMatch(true)
+    try {
+      await fetch('/api/athlete/match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, activity_ids: ids }),
+      })
+      setPickerSession(null)
+      router.refresh()
+    } catch { /* ignore */ }
+    setSavingMatch(false)
+  }
+
   async function logout() {
     try { await fetch('/api/athlete/auth', { method: 'DELETE' }) } catch { /* ignore */ }
     router.push('/athlet/login')
   }
-
   async function disconnectStrava() {
     try { await fetch('/api/strava/disconnect', { method: 'POST' }) } catch { /* ignore */ }
     router.refresh()
   }
 
-  const stravaUi = (
-    <StravaSection connected={stravaConnected} lastSync={lastSync} onDisconnect={disconnectStrava} />
-  )
+  const stravaUi = <StravaSection connected={stravaConnected} lastSync={lastSync} onDisconnect={disconnectStrava} />
 
   // ---------- Empty State ----------
   if (!plan) {
@@ -266,7 +369,6 @@ export default function AthleteApp({
   function isTodayDate(d: Date): boolean {
     return d.toDateString() === new Date().toDateString()
   }
-
   function weekStats(week: TrainingWeek) {
     const sessions = (week.sessions || []).filter((s) => s.session_type !== 'ruhe')
     return { done: sessions.filter((s) => isDone(s.id)).length, total: sessions.length }
@@ -401,6 +503,7 @@ export default function AthleteApp({
               .filter((s) => s.day_of_week === dayIndex)
               .sort((a, b) => (TYPE_ORDER[a.session_type] ?? 9) - (TYPE_ORDER[b.session_type] ?? 9))
             const dObj = dateOf(currentWeek.week_number, dayIndex)
+            const dayIso = isoLocal(dObj)
             const dayIsToday = isTodayDate(dObj)
             const heading = `${DAY_NAMES[dayIndex]}, ${dObj.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })}`
 
@@ -437,6 +540,9 @@ export default function AthleteApp({
                         const line = targetLine(session)
                         const match = matchMap[session.id]
                         const hasDetails = !!(session.description || (session.exercises && session.exercises.length > 0) || session.intensity)
+                        const isRun = session.session_type === 'lauf'
+                        const cands = isRun ? candidatesFor(dayIso, match) : []
+                        const pickerOpen = pickerSession === session.id
                         return (
                           <div key={session.id} className="py-1.5">
                             <div className="flex items-center gap-3">
@@ -458,6 +564,33 @@ export default function AthleteApp({
                             </div>
                             {line && <p className="ml-11 text-xs text-zinc-500 dark:text-zinc-400 -mt-0.5">{line}</p>}
                             {match && <div className="ml-11 mt-1"><GelaufenBlock session={session} match={match} /></div>}
+
+                            {/* Strava-Zuordnung (nur Lauf) */}
+                            {isRun && (match || cands.length > 0) && (
+                              <div className="ml-11 mt-1">
+                                {match ? (
+                                  <button onClick={() => (pickerOpen ? setPickerSession(null) : openPicker(session.id, match))} className="text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline">
+                                    {(match.activity_count || 1) > 1 ? 'Läufe ändern' : 'Anderer Lauf?'}
+                                  </button>
+                                ) : (
+                                  <button onClick={() => (pickerOpen ? setPickerSession(null) : openPicker(session.id))} className="text-xs font-medium text-[#FC4C02] hover:underline">
+                                    {cands.length === 1 ? '1 Strava-Lauf an diesem Tag · zuordnen' : `${cands.length} Strava-Läufe an diesem Tag · zuordnen`}
+                                  </button>
+                                )}
+                                {pickerOpen && (
+                                  <RunPicker
+                                    candidates={cands}
+                                    selected={pickerSel}
+                                    onToggle={togglePickerSel}
+                                    onSave={() => saveMatch(session.id, Array.from(pickerSel))}
+                                    onUnassign={() => saveMatch(session.id, [])}
+                                    onCancel={() => setPickerSession(null)}
+                                    saving={savingMatch}
+                                    canUnassign={!!match}
+                                  />
+                                )}
+                              </div>
+                            )}
 
                             <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[3000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
                               <div className="ml-11 pr-1 space-y-3 pb-2">
