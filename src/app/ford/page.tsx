@@ -207,8 +207,8 @@ function Bio() {
 
   return (
     <section ref={ref} id="pierre" className="relative bg-white scroll-mt-20">
-      <div className="h-[200vh]">
-        <div className="sticky top-0 h-screen flex items-center px-6">
+      <div className="md:h-[200vh]">
+        <div className="md:sticky md:top-0 md:h-screen flex items-center px-6 py-28 md:py-0">
           <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-16 items-center">
             <div>
               <FadeUp>
@@ -728,7 +728,7 @@ function Exclusivity() {
 
 function Expectations() {
   const items = [
-    { icon: Car, text: "Ford Tourneo Custom für 6–12 Monate – oder ein Ford mit Dachzelt/Aufstelldach, fast noch praktischer für unterwegs mit der 5-köpfigen Familie, Equipment und Abenteuer" },
+    { icon: Car, text: "Ford Tourneo Custom für 12 Monate – oder ein Ford mit Dachzelt/Aufstelldach, fast noch praktischer für unterwegs mit der 5-köpfigen Familie, Equipment und Abenteuer" },
     { icon: Heart, text: "Monatliche Vergütung – CHF 2'000–3'000 pro Monat" },
     { icon: BarChart3, text: "Buyout-Vereinbarung für die Verwertung des Contents (Partnerschaft + 1 Monat danach)" },
     { icon: Users, text: "Integration als Ford Runner / Athlet auf den Ford-Kanälen" },
