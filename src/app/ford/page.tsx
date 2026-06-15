@@ -440,7 +440,7 @@ function Everyday() {
           </h2>
           <FadeUp delay={0.3}>
             <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light">
-              Ein Ford bleibt nicht im Rampenlicht der Races stehen. Er ist Teil meines Lebens – beim Posten, in den Ferien, beim Einladen der drei Kids (Platz ohne Ende), auf dem Weg in die Berge.
+              Ein Ford bleibt nicht im Rampenlicht der Races stehen. Er ist Teil meines Lebens – beim Einkaufen, in den Ferien, beim Einladen der drei Kids (Platz ohne Ende), auf dem Weg in die Berge.
             </p>
           </FadeUp>
           <FadeUp delay={0.45}>
@@ -657,7 +657,8 @@ function Offer() {
     "2–4 nutzbare Content-Pieces pro Monat – Videos, Reels und Bilder, die Ford frei auf den eigenen Kanälen verwenden kann",
     "99 Lap Race als Ford Athlet – das erste Projekt, inkl. Doku-Reihe und Live-Content (inkl. Buyout)",
     "Last Soul Ultra mit Ford an der Seite – über 40 Stunden Content am absoluten Limit",
-    "Regelmässige Präsenz im Alltag – Ford beim Posten, in den Ferien, mit den Kids (viel Platz), in den Bergen",
+    "Ford-Branding auf meiner gesamten Kleidung bei allen Adventures – in jedem Bild und Video sichtbar",
+    "Regelmässige Präsenz im Alltag – Ford beim Einkaufen, in den Ferien, mit den Kids (viel Platz), in den Bergen",
     "Auto- & Adventure-Content speziell für die Ford-Kanäle – direkt verwertbar",
     "Verfügbarkeit für 2–3 Ford-Events in DE oder CH – exklusiv",
     "Ford Runner für diverse Kampagnen (im angemessenen Rahmen)",
@@ -704,7 +705,7 @@ function Offer() {
 function Exclusivity() {
   const items = [
     { Icon: Car, title: "Exklusiver Auto-Partner", text: "Ford ist die einzige Automarke an Pierres Seite – über die gesamte Partnerschaft. Andere aus der Auto-Branche haben bereits angefragt, Mini eingeschlossen." },
-    { Icon: Shirt, title: "Exklusiver Bekleidungs-Partner", text: "Ford als einziger Apparel-Partner – kein zweites Logo auf der Kleidung. Volle Sichtbarkeit, keine Verwässerung." },
+    { Icon: Shirt, title: "Exklusiver Bekleidungs-Partner", text: "Ich trage Ford auf meiner gesamten Kleidung bei allen Adventures – als einziger Marken-Partner. Kein zweites Logo, volle Sichtbarkeit in jedem Bild und Video." },
   ];
   return (
     <section className="bg-white text-zinc-900 py-40 px-6 overflow-hidden">
