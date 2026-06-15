@@ -678,7 +678,7 @@ function Offer() {
         </h2>
         <FadeUp delay={0.2}>
           <p className="text-lg md:text-xl text-white/60 font-light leading-relaxed max-w-3xl mb-16">
-            Wir schlagen Ford «Paket M» vor – das passende Format für eine Partnerschaft auf Augenhöhe. Das steckt drin:
+            Ein massgeschneiderter Vorschlag für eine Partnerschaft auf Augenhöhe – für Ford gemacht. Das steckt drin:
           </p>
         </FadeUp>
         <ul className="space-y-px bg-white/10 rounded-3xl overflow-hidden">
@@ -733,7 +733,7 @@ function Exclusivity() {
 function Expectations() {
   const items = [
     { icon: Car, text: "Ford Tourneo Custom für 6–12 Monate – ideal für Familie, Equipment und Abenteuer" },
-    { icon: Heart, text: "Vergütung im Rahmen von Paket M – CHF 2'000–3'000 pro Monat" },
+    { icon: Heart, text: "Monatliche Vergütung – CHF 2'000–3'000 pro Monat" },
     { icon: BarChart3, text: "Buyout-Vereinbarung für die Verwertung des Contents (Partnerschaft + 1 Monat danach)" },
     { icon: Users, text: "Integration als Ford Runner / Athlet auf den Ford-Kanälen" },
   ];
