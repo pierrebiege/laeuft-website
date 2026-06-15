@@ -12,7 +12,7 @@ import {
   SESSION_TYPE_LABELS,
   SESSION_TYPE_COLORS,
 } from '@/lib/supabase'
-import { Check, ChevronDown, CalendarCheck } from 'lucide-react'
+import { Check, ChevronDown, CalendarCheck, Activity, ChevronRight } from 'lucide-react'
 
 type FullPlan = TrainingPlan & {
   client: { id: string; name: string; company: string | null }
@@ -351,6 +351,21 @@ export default function TrainingPlanPage() {
             </p>
           )}
         </header>
+
+        {/* ===== STRAVA CTA → Trainings-App ===== */}
+        <a
+          href="/athlet/login"
+          className="flex items-center gap-3 mb-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: '#FC4C02' }}>
+            <Activity size={18} className="text-white" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-zinc-900 dark:text-white">Strava verbinden</span>
+            <span className="block text-xs text-zinc-500">In der Trainings-App anmelden – dann hakt sich jeder Lauf automatisch ab.</span>
+          </span>
+          <ChevronRight size={16} className="shrink-0 text-zinc-400" />
+        </a>
 
         {/* ===== WEEK SELECTOR (pills) ===== */}
         <div className="mb-3">
