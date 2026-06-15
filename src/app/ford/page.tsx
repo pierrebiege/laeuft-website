@@ -358,26 +358,26 @@ function YouTubeBuild() {
     { Icon: BarChart3, title: "Ziel: starkes Wachstum", text: "Wir bauen den Kanal im kommenden Jahr gezielt aus. Wer jetzt einsteigt, ist von der ersten Stunde an bei jeder Geschichte dabei." },
   ];
   return (
-    <section className="bg-black text-white py-40 px-6 overflow-hidden">
+    <section className="bg-black text-white py-28 px-6 overflow-hidden border-t border-white/10">
       <div className="max-w-6xl mx-auto">
         <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Plan</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-5">Ausserdem · der Plan</div>
         </FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]">
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-5 leading-[0.95]">
           <AnimatedWords text="Wir bauen YouTube auf." stagger={0.05} />
         </h2>
         <FadeUp delay={0.3}>
-          <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
-            Es geht nicht um einzelne Clips. Es geht um den gezielten Aufbau eines YouTube-Kanals – und Ford ist bei den Abenteuern mittendrin, nicht nur dabei.
+          <p className="text-base md:text-lg text-white/55 font-light leading-relaxed max-w-2xl mb-12">
+            Parallel zu allem anderen: der gezielte Aufbau eines YouTube-Kanals – und Ford ist bei den Abenteuern mittendrin, nicht nur dabei.
           </p>
         </FadeUp>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {points.map(({ Icon, title, text }, i) => (
             <FadeUp key={i} delay={0.2 + i * 0.1}>
-              <div className="bg-zinc-950 border border-white/10 rounded-2xl p-10 h-full hover:bg-zinc-900 transition-colors">
-                <Icon size={40} strokeWidth={1.5} className="mb-8" style={{ color: FORD_BLUE }} />
-                <h3 className="text-xl font-semibold mb-4">{title}</h3>
-                <p className="text-white/60 leading-relaxed font-light">{text}</p>
+              <div className="bg-zinc-950 border border-white/10 rounded-2xl p-7 h-full hover:bg-zinc-900 transition-colors">
+                <Icon size={30} strokeWidth={1.5} className="mb-5" style={{ color: FORD_BLUE }} />
+                <h3 className="text-base font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-white/55 leading-relaxed font-light">{text}</p>
               </div>
             </FadeUp>
           ))}
@@ -405,7 +405,7 @@ function Channels() {
         </h2>
         <FadeUp delay={0.3}>
           <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
-            Kanalübergreifend, authentisch und mit nachhaltiger Sichtbarkeit – und alles aus einer Hand. Hier ist, was Ford als Partner bekommt.
+            Kanalübergreifend, authentisch und alles aus einer Hand – konkret <span className="text-white font-medium">2–4 nutzbare Content-Pieces pro Monat</span> (Videos, Reels &amp; Bilder), die Ford frei auf den eigenen Kanälen einsetzen kann. Hier ist, was drinsteckt.
           </p>
         </FadeUp>
         <div className="grid md:grid-cols-2 gap-px bg-white/10 rounded-3xl overflow-hidden">
@@ -654,6 +654,7 @@ function Offer() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
   const bullets = [
+    "2–4 nutzbare Content-Pieces pro Monat – Videos, Reels und Bilder, die Ford frei auf den eigenen Kanälen verwenden kann",
     "99 Lap Race als Ford Athlet – das erste Projekt, inkl. Doku-Reihe und Live-Content (inkl. Buyout)",
     "Last Soul Ultra mit Ford an der Seite – über 40 Stunden Content am absoluten Limit",
     "Regelmässige Präsenz im Alltag – Ford beim Posten, in den Ferien, mit den Kids (viel Platz), in den Bergen",
@@ -820,8 +821,8 @@ export default function FordPresentationPage() {
       <Bio />
       <FordStory />
       <StatsLine />
-      <YouTubeBuild />
       <Channels />
+      <YouTubeBuild />
       <Interlude text="Ich bin Vater von drei Kindern, Fotograf und Content Creator. Mein Leben ist Bewegung – mit der Familie in die Ferien, mit Equipment in die Berge, mit den Kids ins Abenteuer. Ein Ford ist da nicht Werbefläche. Er ist Teil des Alltags." />
       <Everyday />
       <Races />
