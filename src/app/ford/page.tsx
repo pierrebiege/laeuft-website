@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight, Car, Mountain, Heart, Shirt, Eye, Calendar } from "lucide-react";
+import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight, Car, Mountain, Heart, Eye, Calendar } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FORD_BLUE = "#1565ff";
@@ -657,7 +657,7 @@ function Offer() {
     "2–4 nutzbare Content-Pieces pro Monat – Videos, Reels und Bilder, die Ford frei auf den eigenen Kanälen verwenden kann",
     "99 Lap Race als Ford Athlet – das erste Projekt, inkl. Doku-Reihe und Live-Content (inkl. Buyout)",
     "Last Soul Ultra mit Ford an der Seite – über 40 Stunden Content am absoluten Limit",
-    "Ford-Branding auf meiner gesamten Kleidung bei allen Adventures – in jedem Bild und Video sichtbar",
+    "Ford-Branding auf der Kleidung – Ford bestimmt, auf welchen Teilen. Getragen in den YouTube-Videos und vor allem bei den Daily Runs",
     "Regelmässige Präsenz im Alltag – Ford beim Einkaufen, in den Ferien, mit den Kids (viel Platz), in den Bergen",
     "Auto- & Adventure-Content speziell für die Ford-Kanäle – direkt verwertbar",
     "Verfügbarkeit für 2–3 Ford-Events in DE oder CH – exklusiv",
@@ -703,30 +703,24 @@ function Offer() {
 }
 
 function Exclusivity() {
-  const items = [
-    { Icon: Car, title: "Exklusiver Auto-Partner", text: "Ford ist die einzige Automarke an Pierres Seite – über die gesamte Partnerschaft. Andere aus der Auto-Branche haben bereits angefragt, Mini eingeschlossen." },
-    { Icon: Shirt, title: "Exklusiver Bekleidungs-Partner", text: "Ich trage Ford auf meiner gesamten Kleidung bei allen Adventures – als einziger Marken-Partner. Kein zweites Logo, volle Sichtbarkeit in jedem Bild und Video." },
-  ];
   return (
     <section className="bg-white text-zinc-900 py-40 px-6 overflow-hidden">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <FadeUp>
           <div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">Exklusivität</div>
         </FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-20 leading-[0.9]">
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-12 leading-[0.9]">
           <AnimatedWords text="Nur Ford." stagger={0.08} />
         </h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {items.map(({ Icon, title, text }, i) => (
-            <FadeUp key={i} delay={0.15 + i * 0.1}>
-              <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-10 h-full">
-                <Icon size={40} strokeWidth={1.5} className="mb-8" style={{ color: FORD_BLUE }} />
-                <h3 className="text-2xl md:text-3xl font-semibold mb-4">{title}</h3>
-                <p className="text-zinc-600 text-lg font-light leading-relaxed">{text}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
+        <FadeUp delay={0.2}>
+          <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-10 md:p-12">
+            <Car size={40} strokeWidth={1.5} className="mb-8" style={{ color: FORD_BLUE }} />
+            <h3 className="text-2xl md:text-3xl font-semibold mb-4">Exklusiver Auto-Partner</h3>
+            <p className="text-zinc-600 text-lg font-light leading-relaxed">
+              Ford ist die einzige Automarke an Pierres Seite – über die gesamte Partnerschaft. Andere aus der Auto-Branche haben bereits angefragt, Mini eingeschlossen.
+            </p>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );
