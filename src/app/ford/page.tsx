@@ -728,7 +728,7 @@ function Exclusivity() {
 
 function Expectations() {
   const items = [
-    { icon: Car, text: "Ford Tourneo Custom für 6–12 Monate – ideal für Familie, Equipment und Abenteuer" },
+    { icon: Car, text: "Ford Tourneo Custom für 6–12 Monate – oder ein Ford mit Dachzelt/Aufstelldach, fast noch praktischer für unterwegs mit der 5-köpfigen Familie, Equipment und Abenteuer" },
     { icon: Heart, text: "Monatliche Vergütung – CHF 2'000–3'000 pro Monat" },
     { icon: BarChart3, text: "Buyout-Vereinbarung für die Verwertung des Contents (Partnerschaft + 1 Monat danach)" },
     { icon: Users, text: "Integration als Ford Runner / Athlet auf den Ford-Kanälen" },
