@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
 import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight, Car, Mountain, Heart, Shirt, Eye, Calendar } from "lucide-react";
 
@@ -17,6 +17,7 @@ const FORD_BLUE = "#1565ff";
 // 11 Nacht Ford-Jacke · 12 Nacht Langzeit rot · 13 YOU VS YOU · 14 Nacht rot · 15 Mustang Lightpainting · 16 Camp/Rest
 
 const F = (n: number) => `/presentations/ford/${String(n).padStart(2, "0")}.jpg`;
+const LOGO = "/presentations/ford/laeuft-logo.png"; // READY SET Ford Kampagnen-Lockup (weiss)
 
 // ==================== MOTION PRIMITIVES ====================
 
@@ -81,6 +82,45 @@ function RevealWord({ children, progress, range }: { children: React.ReactNode; 
 
 // ==================== SECTIONS ====================
 
+function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.55);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  return (
+    <header className={`fixed top-0 inset-x-0 z-50 transition-colors duration-500 ${scrolled ? "bg-black/70 backdrop-blur-md border-b border-white/10" : "bg-transparent"}`}>
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Nach oben"
+          className={`relative h-11 w-20 transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        >
+          <Image src={LOGO} alt="Ready Set Ford" fill className="object-contain object-left" />
+        </button>
+        <nav className="flex items-center gap-2 md:gap-3">
+          <button
+            onClick={() => go("pierre")}
+            className="px-4 py-2 rounded-full border border-white/30 text-xs md:text-sm text-white/90 hover:bg-white hover:text-black transition-colors"
+          >
+            Über Pierre
+          </button>
+          <button
+            onClick={() => go("angebot")}
+            className="px-4 py-2 rounded-full text-xs md:text-sm font-medium text-white transition-transform hover:scale-105"
+            style={{ backgroundColor: FORD_BLUE }}
+          >
+            Das Angebot
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
 function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -104,11 +144,17 @@ function Hero() {
         >
           Pierre Biege × Ford
         </motion.div>
-        <h1 className="text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight leading-[0.85] mb-6">
-          <AnimatedWords text="Ready. Set. Ford." delay={0.4} stagger={0.08} />
-        </h1>
+        <h1 className="sr-only">Pierre Biege × Ford — Ready. Set. Ford.</h1>
+        <motion.div
+          className="relative w-[78vw] max-w-[480px] aspect-[1346/1210] mx-auto mb-4"
+          initial={{ opacity: 0, scale: 0.92, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1.3, delay: 0.4, ease: EASE }}
+        >
+          <Image src={LOGO} alt="Ready Set Ford" fill className="object-contain" priority />
+        </motion.div>
         <motion.p
-          className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-8"
+          className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.2 }}
@@ -160,7 +206,7 @@ function Bio() {
   const img3Opacity = useTransform(scrollYProgress, [0.66, 0.73, 1], [0, 1, 1]);
 
   return (
-    <section ref={ref} className="relative bg-white">
+    <section ref={ref} id="pierre" className="relative bg-white scroll-mt-20">
       <div className="h-[200vh]">
         <div className="sticky top-0 h-screen flex items-center px-6">
           <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-16 items-center">
@@ -229,20 +275,23 @@ function FordStory() {
           className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
         />
       </div>
-      <div className="max-w-4xl mx-auto mt-32">
+    </section>
+  );
+}
+
+function Interlude({ text, quote }: { text: string; quote?: string }) {
+  return (
+    <section className="bg-black text-white py-40 px-6 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
         <ScrollRevealText
-          text="Ich bin Vater von drei Kindern, Fotograf und Content Creator. Mein Leben ist Bewegung – mit der Familie in die Ferien, mit Equipment in die Berge, mit den Kids ins Abenteuer. Ein Ford ist da nicht Werbefläche. Er ist Teil des Alltags."
+          text={text}
           className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
         />
-      </div>
-      <div className="max-w-4xl mx-auto mt-32">
-        <ScrollRevealText
-          text="«Abenteuer statt Alltag» ist kein Claim, den ich spielen muss. Es ist, wie ich lebe. Und «Ready, Set, Ford» fühlt sich an, als wäre es für mich geschrieben."
-          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
-        />
-        <FadeUp delay={0.3}>
-          <p className="text-center mt-16 text-lg text-white/50 italic">„Ich will nicht irgendein Partner sein. Ich will Ford Runner sein.“</p>
-        </FadeUp>
+        {quote && (
+          <FadeUp delay={0.3}>
+            <p className="text-center mt-16 text-lg text-white/50 italic">{quote}</p>
+          </FadeUp>
+        )}
       </div>
     </section>
   );
@@ -302,9 +351,45 @@ function StatTile({ value, label, image }: { value: string; label: string; image
   );
 }
 
+function YouTubeBuild() {
+  const points = [
+    { Icon: Youtube, title: "Aufbau mit einem Profi", text: "An meiner Seite: Clemens Hovekamp – Mitorganisator des Ultimate Run und verantwortlich für den Aufbau grosser YouTube-Formate wie «7 vs. Wild». Er betreut mich und den Kanal." },
+    { Icon: Mountain, title: "Ford mittendrin", text: "Ford ist von Anfang an Teil der Adventures – kein nachträglich platziertes Logo, sondern fest in den Geschichten. Ford fährt mit, während der Kanal wächst." },
+    { Icon: BarChart3, title: "Ziel: starkes Wachstum", text: "Wir bauen den Kanal im kommenden Jahr gezielt aus. Wer jetzt einsteigt, ist von der ersten Stunde an bei jeder Geschichte dabei." },
+  ];
+  return (
+    <section className="bg-black text-white py-40 px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <FadeUp>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Plan</div>
+        </FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]">
+          <AnimatedWords text="Wir bauen YouTube auf." stagger={0.05} />
+        </h2>
+        <FadeUp delay={0.3}>
+          <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
+            Es geht nicht um einzelne Clips. Es geht um den gezielten Aufbau eines YouTube-Kanals – und Ford ist bei den Abenteuern mittendrin, nicht nur dabei.
+          </p>
+        </FadeUp>
+        <div className="grid md:grid-cols-3 gap-6">
+          {points.map(({ Icon, title, text }, i) => (
+            <FadeUp key={i} delay={0.2 + i * 0.1}>
+              <div className="bg-zinc-950 border border-white/10 rounded-2xl p-10 h-full hover:bg-zinc-900 transition-colors">
+                <Icon size={40} strokeWidth={1.5} className="mb-8" style={{ color: FORD_BLUE }} />
+                <h3 className="text-xl font-semibold mb-4">{title}</h3>
+                <p className="text-white/60 leading-relaxed font-light">{text}</p>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Channels() {
   const channels = [
-    { Icon: Youtube, name: "Doku-Reihe", text: "Mehrteilige Event-Dokumentationen, die Ford ans Herz wachsen – cineastisch, ehrlich, am Limit. Das Herzstück der Partnerschaft." },
+    { Icon: Youtube, name: "YouTube-Dokus", text: "Mehrteilige Adventure- & Event-Dokus auf dem wachsenden Kanal – cineastisch, ehrlich, am Limit. Ford mittendrin." },
     { Icon: Camera, name: "Bilder", text: "Pierre ist selbst Fotograf. Hochwertige Race- und Adventure-Bilder, direkt nutzbar für die Ford-Kanäle – ohne externes Team." },
     { Icon: Instagram, name: "Reels & Live", text: "Daily Reels aus dem Alltag sowie Live-Reels alle 1–3 Stunden während der Events – Nähe in Echtzeit." },
     { Icon: Mountain, name: "Auto- & Adventure-Content", text: "Content speziell für eure Kanäle: der Ford im echten Leben – Berge, Familie, Dreck, Abenteuer. Genau die Welt, die ihr zeigen wollt." },
@@ -531,7 +616,7 @@ function HorizontalDrift() {
 function Pipeline() {
   const items = [
     { value: "1000 km", title: "Nach 1000 Tagen", text: "Im Februar: 1000 Kilometer am Stück – nach 1000 Tagen ununterbrochenem Run-Streak. Ein Mega-Projekt mit riesiger medialer Strahlkraft." },
-    { value: "1 Mio. hm", title: "Für krebskranke Kinder", text: "1'000'000 Höhenmeter und 100'000+ Franken für krebskranke Kinder. An wechselnden Spots in der ganzen Schweiz – ein Wagen ist überall dabei und dauerpräsent." },
+    { value: "100'000 hm", title: "Für krebskranke Kinder", text: "100'000 Höhenmeter und 100'000+ Franken für krebskranke Kinder. An wechselnden Spots in der ganzen Schweiz – ein Wagen ist überall dabei und dauerpräsent." },
     { value: "48 × 4000", title: "Alle Viertausender", text: "Alle Viertausender der Schweiz – erst einzeln, dann in 7–8 Jahren alle kombiniert. Ein Langzeit-Projekt, das eine Partnerschaft über Jahre trägt." },
   ];
   return (
@@ -579,18 +664,23 @@ function Offer() {
     "Pierre ist selbst Fotograf & Creator – hochwertiges Material inklusive, kein externes Team nötig",
   ];
   return (
-    <section ref={ref} className="relative bg-black text-white py-40 px-6 overflow-hidden">
+    <section ref={ref} id="angebot" className="relative bg-black text-white py-40 px-6 overflow-hidden scroll-mt-20">
       <motion.div className="absolute inset-0" style={{ y: bgY }}>
         <Image src={F(10)} alt="" fill className="object-cover opacity-15" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
       </motion.div>
       <div className="relative z-10 max-w-5xl mx-auto">
         <FadeUp>
-          <div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-6">Das Angebot · Paket M</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-6">Das Angebot</div>
         </FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-20 leading-[0.9]">
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]">
           <AnimatedWords text="Was Ford bekommt." stagger={0.06} />
         </h2>
+        <FadeUp delay={0.2}>
+          <p className="text-lg md:text-xl text-white/60 font-light leading-relaxed max-w-3xl mb-16">
+            Wir schlagen Ford «Paket M» vor – das passende Format für eine Partnerschaft auf Augenhöhe. Das steckt drin:
+          </p>
+        </FadeUp>
         <ul className="space-y-px bg-white/10 rounded-3xl overflow-hidden">
           {bullets.map((b, i) => (
             <FadeUp key={i} delay={0.1 + i * 0.06}>
@@ -692,12 +782,12 @@ function Contact() {
         </FadeUp>
         <FadeUp delay={0.7}>
           <div className="inline-flex flex-col items-center gap-5">
-            <div className="text-2xl font-semibold">Anes</div>
-            <a href="mailto:anes@casaofsport.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group">
-              <Mail size={20} className="group-hover:scale-110 transition-transform" /> anes@casaofsport.ch
+            <div className="text-2xl font-semibold">Pierre Biege</div>
+            <a href="mailto:pierre@laeuft.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group">
+              <Mail size={20} className="group-hover:scale-110 transition-transform" /> pierre@laeuft.ch
             </a>
-            <a href="tel:+41764181028" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group">
-              <Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 76 418 10 28
+            <a href="tel:+41798533672" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group">
+              <Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 79 853 36 72
             </a>
           </div>
         </FadeUp>
@@ -724,17 +814,24 @@ function Contact() {
 export default function FordPresentationPage() {
   return (
     <div className="font-sans antialiased bg-black">
+      <Header />
       <Hero />
       <Marquee items={["Pierre Biege", "Abenteuer statt Alltag", "Ultra", "200 km", "Alpen", "You vs You", "Ford", "2026"]} />
       <Bio />
       <FordStory />
       <StatsLine />
+      <YouTubeBuild />
       <Channels />
+      <Interlude text="Ich bin Vater von drei Kindern, Fotograf und Content Creator. Mein Leben ist Bewegung – mit der Familie in die Ferien, mit Equipment in die Berge, mit den Kids ins Abenteuer. Ein Ford ist da nicht Werbefläche. Er ist Teil des Alltags." />
       <Everyday />
       <Races />
       <HeroMoment />
       <GalleryGrid />
       <HorizontalDrift />
+      <Interlude
+        text="«Abenteuer statt Alltag» ist kein Claim, den ich spielen muss. Es ist, wie ich lebe. Und «Ready, Set, Ford» fühlt sich an, als wäre es für mich geschrieben."
+        quote="„Ich will nicht irgendein Partner sein. Ich will Ford Runner sein.“"
+      />
       <Pipeline />
       <Offer />
       <Exclusivity />
