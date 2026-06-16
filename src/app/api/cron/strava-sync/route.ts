@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { syncAthlete } from '@/lib/stravaSync'
-import { freezeCompletedWeeks, purgeOldStravaActivities } from '@/lib/stravaInsights'
+import { purgeOldStravaActivities } from '@/lib/stravaInsights'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,20 +30,17 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Aufbewahrung (Strava 7-Tage-Regel): erst abgeschlossene Wochen dauerhaft
-  // einfrieren, DANN Roh-Aktivitäten >7 Tage löschen. Schlägt das Einfrieren
-  // fehl (z.B. Tabelle athlete_insights fehlt), wird der Purge übersprungen —
-  // so werden nie Rohdaten ohne vorherige Sicherung gelöscht.
-  let frozen = 0
+  // Aufbewahrung (Strava 7-Tage-Regel): Roh-Aktivitäten >7 Tage löschen.
+  // Die dauerhafte Auswertung (athlete_insights) wird NICHT aus API-Daten
+  // gespeist (Derivate aus API-Daten bleiben "Strava Data"), sondern aus
+  // Athleten-Upload (eigene Daten). Die API ist nur ephemerer ≤7-Tage-Kanal
+  // fürs Live-Matching geplant-vs-gelaufen.
   let purged = 0
   try {
-    for (const c of conns || []) {
-      frozen += await freezeCompletedWeeks(c.athlete_id)
-    }
     purged = await purgeOldStravaActivities()
   } catch (err) {
-    console.error('insights/purge übersprungen (sicher):', err)
+    console.error('purge übersprungen:', err)
   }
 
-  return NextResponse.json({ ok: true, connections: (conns || []).length, imported, matched, frozen, purged })
+  return NextResponse.json({ ok: true, connections: (conns || []).length, imported, matched, purged })
 }

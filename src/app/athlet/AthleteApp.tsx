@@ -15,6 +15,7 @@ import {
 import { targetLine, fmtPace, fmtDistance } from '@/lib/trainingFormat'
 import { computeMetrics } from '@/lib/coaching'
 import { Check, ChevronDown, CalendarCheck } from 'lucide-react'
+import InsightsUpload from './InsightsUpload'
 
 type FullPlan = TrainingPlan & {
   weeks: (TrainingWeek & { sessions: TrainingSession[] })[]
@@ -361,7 +362,12 @@ export default function AthleteApp({
     router.refresh()
   }
 
-  const stravaUi = <StravaSection connected={stravaConnected} lastSync={lastSync} onDisconnect={disconnectStrava} />
+  const stravaUi = (
+    <div className="space-y-4">
+      <StravaSection connected={stravaConnected} lastSync={lastSync} onDisconnect={disconnectStrava} />
+      <InsightsUpload onSaved={() => router.refresh()} />
+    </div>
+  )
 
   // ---------- Empty State ----------
   if (!plan) {
