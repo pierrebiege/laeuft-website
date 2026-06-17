@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Daniel Agten",
+    "email": "daniel@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch",
+    "notes": "Immobilienagentur in Naters (Weingartenstrasse 32, 3904 Naters), gegründet 2009. Spezialisiert auf Kauf und Verkauf im Oberwallis. Rund 80 Objekte auf ImmoScout24 gelistet. Team: Daniel Agten, Xenia Ritz, Armin Agten. Website auf Wix-Basis. Branche: Immobilien."
+  },
+  {
+    "company": "Valfida Treuhand AG",
+    "contact_name": "Stefan Zenhäusern",
+    "email": "stefan.zenhaeusern@valfida.ch",
+    "website": "https://valfida.ch",
+    "notes": "Treuhandbüro in Visp (Kantonsstrasse 39, 3930 Visp). Geschäftsleitung: Marc, Daniel, Stephan und Karl Zenhäusern. Bietet Treuhand- und Revisionsdienstleistungen im Oberwallis. Etabliertes Familienunternehmen. Branche: Treuhand/Buchhaltung."
+  },
+  {
+    "company": "Garage City AG",
+    "contact_name": "Charly Ruppen",
+    "email": "info@garage-city.ch",
+    "website": "https://www.garage-city.ch",
+    "notes": "Autogarage in Visp (Kantonsstrasse 53, 3930 Visp). Offizieller Toyota Center Oberwallis und Mitsubishi-Händler. Inhaber Charly Ruppen, Mitarbeiter Ivan Burgener. Website mit statischem HTML-Design und Fahrzeugangebot via AutoScout24-Einbindung. Branche: Garagist/Autohandel."
+  },
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Christian Schmid",
+    "email": "info@weinschmiede.ch",
+    "website": "https://weinschmiede.ch",
+    "notes": "Weingut in Salgesch (Tschütrigstrasse 27, 3970 Salgesch), gegründet 1959. Geführt von Brüdern Christian (Winzer) und Reinhard Schmid (Kellermeister). 2 Hektar Rebfläche, Bio-Knospe zertifiziert, mehrfach preisgekrönt (Prix Bio Suisse). Website mit WordPress-basiertem Online-Shop. Branche: Weingut/Weinhandel."
+  },
+  {
+    "company": "gipsmalWERK GmbH",
+    "contact_name": "Mario Yves Genolet",
+    "email": "info@gipsmalwerk.ch",
+    "website": "https://www.gipsmalwerk.ch",
+    "notes": "Maler- und Gipsergeschäft in Brig-Glis (Kapuzinerstrasse 27, 3902 Brig-Glis), gegründet 2021. Inhaber Mario Yves Genolet. Junges Unternehmen mit Präsenz auf Instagram (@gipsmalwerk_gmbh). Aktiv in der Region Brig, Naters, Visp, Goms. Branche: Maler/Gipser/Handwerk."
+  }
+]
