@@ -121,9 +121,9 @@ function Hero() {
         <motion.div className="inline-block mb-10 px-5 py-2 border border-white/20 rounded-full text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
           Pierre Biege × Garmin
         </motion.div>
-        <h1 className="sr-only">Pierre Biege × Garmin — Jeden Tag. Jeder Berg.</h1>
+        <h1 className="sr-only">Pierre Biege × Garmin — Aus dem Wallis. Ans Limit.</h1>
         <div className="text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight leading-[0.85] mb-6">
-          <AnimatedWords text="Jeden Tag. Jeder Berg." delay={0.4} stagger={0.07} />
+          <AnimatedWords text="Aus dem Wallis. Ans Limit." delay={0.4} stagger={0.07} />
         </div>
         <motion.p className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
           Ultraläufer · Fotograf · Abenteurer aus den Walliser Alpen
