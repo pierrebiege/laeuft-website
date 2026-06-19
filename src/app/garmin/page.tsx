@@ -161,7 +161,7 @@ function About() {
           <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Pierre Biege." stagger={0.07} /></h2>
           <FadeUp delay={0.3}>
             <p className="text-lg md:text-xl text-white/70 font-light leading-relaxed">
-              Ultraläufer, Fotograf und Content Creator aus dem Wallis. Ich laufe täglich – seit Jahren ohne Pause – und lebe für extreme Formate: regelmässig über 200 Kilometer, oft mehr als 40 Stunden am Stück.
+              Ultraläufer, Fotograf und Content Creator aus dem Wallis. Ich laufe täglich – seit über 780 Tagen ohne einen einzigen Ruhetag – und lebe für extreme Formate: regelmässig über 200 Kilometer, oft mehr als 40 Stunden am Stück.
             </p>
           </FadeUp>
           <FadeUp delay={0.45}>
@@ -202,6 +202,25 @@ function Story() {
         <ScrollRevealText text="Mein Equipment muss allem standhalten: vier Jahreszeiten in den Alpen, 40 Stunden am Stück, jeder Höhenmeter, jede Nacht. Ausdauer, Präzision, Verlässlichkeit – genau dafür ist Garmin gebaut." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
         <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Jeden Tag ein Schritt näher.“</p></FadeUp>
       </div>
+    </section>
+  );
+}
+
+// ==================== STREAK ====================
+
+function Streak() {
+  return (
+    <section className="bg-black text-white py-24 md:py-36 px-6 text-center overflow-hidden border-y border-white/10">
+      <FadeUp>
+        <div className="text-[5.5rem] sm:text-[8rem] md:text-[13rem] lg:text-[17rem] font-bold leading-[0.78] tracking-tight">
+          780<span style={{ color: GARMIN_BLUE }}>+</span>
+        </div>
+      </FadeUp>
+      <FadeUp delay={0.2}>
+        <p className="text-xl md:text-3xl text-white/70 font-light mt-6 max-w-2xl mx-auto">
+          Tage am Stück gelaufen. Ohne einen einzigen Ruhetag. Bald sind es 800.
+        </p>
+      </FadeUp>
     </section>
   );
 }
@@ -454,6 +473,7 @@ export default function GarminPresentationPage() {
       <Marquee items={["Pierre Biege", "Wallis", "Täglich laufen", "Ultra", "Swiss Alps 100", "Backyard", "Adventure", "2026"]} />
       <About />
       <Story />
+      <Streak />
       <Wallis />
       <Reach />
       <YouTubeBuild />
