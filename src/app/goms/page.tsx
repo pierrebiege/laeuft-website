@@ -7,6 +7,8 @@ import { Mail, Phone, Sunrise, Users, Waves } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const GOMS = "#2fb4c4"; // Gletscher-Türkis
+// Wallis-/Alpen-Aufnahmen (geteilt mit der Garmin-Seite) – ohne Matterhorn/Berlin.
+const W = (n: number) => `/presentations/garmin/${String(n).padStart(2, "0")}.jpg`;
 
 // ==================== PRIMITIVES ====================
 
@@ -58,6 +60,18 @@ function ScrollRevealText({ text, className = "" }: { text: string; className?: 
 function RevealWord({ children, progress, range }: { children: React.ReactNode; progress: MotionValue<number>; range: [number, number] }) {
   const opacity = useTransform(progress, range, [0.18, 1]);
   return <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">{children}</motion.span>;
+}
+
+function ParallaxImage({ src, className = "" }: { src: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1.04]);
+  return (
+    <motion.div ref={ref} className={`relative overflow-hidden bg-zinc-900 ${className}`} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1.1, ease: EASE }}>
+      <motion.div className="absolute inset-0" style={{ y, scale }}><Image src={src} alt="" fill className="object-cover" /></motion.div>
+    </motion.div>
+  );
 }
 
 // ==================== HEADER ====================
@@ -301,18 +315,25 @@ function Region() {
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Region</div></FadeUp>
         <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Das ganze Goms – erlebt, nicht abfotografiert." stagger={0.04} /></h2>
         <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Drei Ziele in einem Film: ein starkes Abenteuer für die Community, eine einzigartige Region sichtbar machen – und Aufmerksamkeit für den Gletscher. In genau dieser Reihenfolge.</p></FadeUp>
-        <div className="grid md:grid-cols-2 gap-x-12">
-          {items.map((it, i) => (
-            <FadeUp key={i} delay={0.06 * i}>
-              <div className="grid grid-cols-[auto_1fr] gap-5 py-7 border-t border-white/15 items-baseline">
-                <div className="text-sm font-bold tabular-nums" style={{ color: GOMS }}>{String(i + 1).padStart(2, "0")}</div>
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-1.5">{it.t}</h3>
-                  <p className="text-white/60 font-light leading-relaxed">{it.d}</p>
+        <div className="grid md:grid-cols-12 gap-10 md:gap-16 mt-4 items-start">
+          <div className="md:col-span-5">
+            {items.map((it, i) => (
+              <FadeUp key={i} delay={0.06 * i}>
+                <div className="grid grid-cols-[auto_1fr] gap-5 py-6 border-t border-white/15 items-baseline">
+                  <div className="text-sm font-bold tabular-nums" style={{ color: GOMS }}>{String(i + 1).padStart(2, "0")}</div>
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-1.5">{it.t}</h3>
+                    <p className="text-white/60 font-light leading-relaxed">{it.d}</p>
+                  </div>
                 </div>
-              </div>
-            </FadeUp>
-          ))}
+              </FadeUp>
+            ))}
+          </div>
+          <div className="md:col-span-7 grid grid-cols-2 gap-3 md:gap-4">
+            {[W(19), W(9), W(15), W(5)].map((src, i) => (
+              <ParallaxImage key={i} src={src} className={`aspect-[3/4] ${i % 2 === 1 ? "mt-6 md:mt-12" : ""}`} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -401,7 +422,7 @@ function Angebot() {
   return (
     <section id="angebot" className="relative bg-zinc-950 text-white py-28 md:py-40 px-6 overflow-hidden scroll-mt-16">
       <div className="absolute inset-0 opacity-20">
-        <Image src="/goms/aerial.png" alt="" fill className="object-cover" />
+        <Image src={W(7)} alt="" fill className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
       </div>
       <div className="relative z-10 max-w-5xl mx-auto">
@@ -439,7 +460,7 @@ function Contact() {
   return (
     <section ref={ref} className="relative min-h-screen flex items-center px-6 py-32 overflow-hidden bg-black text-white">
       <motion.div className="absolute inset-0" style={{ scale }}>
-        <Image src="/goms/aerial.png" alt="" fill className="object-cover opacity-30" />
+        <Image src={W(16)} alt="" fill className="object-cover opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black" />
       </motion.div>
       <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
@@ -454,6 +475,31 @@ function Contact() {
           </div>
         </FadeUp>
         <FadeUp delay={0.8}><div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">laeuft.ch · Ein richtig guter Tag</div></FadeUp>
+      </div>
+    </section>
+  );
+}
+
+// ==================== IMPRESSIONEN ====================
+
+function Gallery() {
+  return (
+    <section className="bg-black text-white py-24 md:py-32 px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto mb-14">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Impressionen</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9]"><AnimatedWords text="So sieht die Geschichte aus." stagger={0.05} /></h2>
+        <FadeUp delay={0.25}><p className="text-white/50 font-light mt-5 max-w-2xl">Aus Pierres Läufen durch die Walliser Alpen – die Bildsprache, in der auch das Goms erzählt wird.</p></FadeUp>
+      </div>
+      <div className="max-w-7xl mx-auto grid grid-cols-12 gap-3 md:gap-4">
+        <ParallaxImage src={W(18)} className="col-span-12 aspect-[21/9]" />
+        <ParallaxImage src={W(1)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(23)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(24)} className="col-span-12 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(11)} className="col-span-12 aspect-[21/9]" />
+        <ParallaxImage src={W(12)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(20)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(2)} className="col-span-12 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={W(14)} className="col-span-12 aspect-[21/9]" />
       </div>
     </section>
   );
@@ -492,6 +538,7 @@ export default function GomsPresentationPage() {
       <Eckwerte />
       <Deliverables />
       <Visuell />
+      <Gallery />
       <Botschaft />
       <Rollout />
       <Angebot />
