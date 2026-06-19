@@ -2,14 +2,13 @@
 
 import Image from "next/image";
 import { useRef, useState, useEffect, Fragment } from "react";
-import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Youtube, Instagram, Camera, Mountain, Mail, Phone, Calendar, Trophy, Heart, Infinity as InfinityIcon, Footprints, BarChart3, Medal } from "lucide-react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { Mail, Phone, Medal } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const GARMIN_BLUE = "#007CC3";
 
-// Neutrale Lauf-/Adventure-Aufnahmen. ⚠️ Platzhalter — durch Wallis-/Alpen-
-// Fotos ersetzen (gleicher Pfad public/presentations/garmin/NN.jpg).
+// Echte Wallis-/Alpen-/Adventure-Aufnahmen (kuratiert).
 const G = (n: number) => `/presentations/garmin/${String(n).padStart(2, "0")}.jpg`;
 
 // ==================== MOTION PRIMITIVES ====================
@@ -49,79 +48,64 @@ function FadeUp({ children, delay = 0, y = 40, className = "" }: { children: Rea
   );
 }
 
-function ScrollRevealText({ text, className = "" }: { text: string; className?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "start 0.2"] });
-  const words = text.split(" ");
-  return (
-    <p ref={ref} className={className}>
-      {words.map((word, i) => {
-        const start = i / words.length;
-        const end = start + 1 / words.length;
-        return <RevealWord key={i} progress={scrollYProgress} range={[start, end]}>{word}</RevealWord>;
-      })}
-    </p>
-  );
-}
-
-function RevealWord({ children, progress, range }: { children: React.ReactNode; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.18, 1]);
-  return <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">{children}</motion.span>;
-}
-
-// ==================== SECTIONS ====================
+// ==================== HEADER ====================
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.55);
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-colors duration-500 ${scrolled ? "bg-black/70 backdrop-blur-md border-b border-white/10" : "bg-transparent"}`}>
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className={`text-lg font-bold tracking-tight text-white transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-black/60 backdrop-blur-md py-4" : "py-6"}`}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className={`text-sm font-semibold uppercase tracking-[0.25em] text-white transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           Pierre Biege
         </button>
-        <nav className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => go("pierre")} className="px-4 py-2 rounded-full border border-white/30 text-xs md:text-sm text-white/90 hover:bg-white hover:text-black transition-colors">Über Pierre</button>
-          <button onClick={() => go("vision")} className="px-4 py-2 rounded-full text-xs md:text-sm font-medium text-white transition-transform hover:scale-105" style={{ backgroundColor: GARMIN_BLUE }}>Die Vision</button>
+        <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.2em] text-white/80">
+          <button onClick={() => go("pierre")} className="hover:text-white transition-colors">Über mich</button>
+          <button onClick={() => go("vision")} className="hover:text-white transition-colors">Vision</button>
+          <button onClick={() => go("kontakt")} className="hover:text-white transition-colors" style={{ color: scrolled ? "#fff" : undefined }}>
+            <span className="border-b-2 pb-1" style={{ borderColor: GARMIN_BLUE }}>Kontakt</span>
+          </button>
         </nav>
       </div>
     </header>
   );
 }
 
+// ==================== HERO ====================
+
 function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.4]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1.08, 1.3]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   return (
-    <section ref={ref} className="relative h-screen flex items-center justify-center overflow-hidden bg-black text-white">
+    <section ref={ref} className="relative h-screen flex items-end justify-start overflow-hidden bg-black text-white">
       <motion.div className="absolute inset-0" style={{ y: imageY, scale: imageScale }}>
-        <Image src={G(6)} alt="" fill className="object-cover opacity-70" priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black" />
+        <Image src={G(6)} alt="Matterhorn im Wallis" fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/40" />
       </motion.div>
-      <motion.div className="relative z-10 max-w-6xl mx-auto px-6 text-center" style={{ y: contentY, opacity: contentOpacity }}>
-        <motion.div className="inline-block mb-10 px-5 py-2 border border-white/20 rounded-full text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-          Pierre Biege × Garmin
+      <motion.div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-20 md:pb-28" style={{ y: contentY, opacity: contentOpacity }}>
+        <motion.div className="mb-6 text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
+          Pierre Biege <span style={{ color: GARMIN_BLUE }}>×</span> Garmin
         </motion.div>
         <h1 className="sr-only">Pierre Biege × Garmin — Jeden Tag. Jeder Berg.</h1>
-        <div className="text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight leading-[0.85] mb-6">
-          <AnimatedWords text="Jeden Tag. Jeder Berg." delay={0.4} stagger={0.08} />
+        <div className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight leading-[0.85] max-w-5xl">
+          <AnimatedWords text="Jeden Tag. Jeder Berg." delay={0.35} stagger={0.07} />
         </div>
-        <motion.p className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
-          Ultraläufer · Content Creator · Täglich in den Walliser Alpen
+        <motion.p className="text-lg md:text-2xl text-white/80 font-light mt-8 max-w-2xl" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.1 }}>
+          Ultraläufer, Fotograf & Abenteurer aus den Walliser Alpen.
         </motion.p>
       </motion.div>
-      <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
-        <motion.div className="w-px h-16 bg-white/40" animate={{ scaleY: [0, 1, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "top" }} />
+      <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
+        <motion.div className="w-px h-14 bg-white/40" animate={{ scaleY: [0, 1, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "top" }} />
       </motion.div>
     </section>
   );
@@ -130,11 +114,11 @@ function Hero() {
 function Marquee({ items }: { items: string[] }) {
   const repeated = [...items, ...items, ...items, ...items];
   return (
-    <div className="overflow-hidden py-8 border-y border-white/10 bg-black">
-      <motion.div className="flex gap-12 whitespace-nowrap" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 35, repeat: Infinity, ease: "linear" }}>
+    <div className="overflow-hidden py-6 bg-black border-y border-white/10">
+      <motion.div className="flex gap-10 whitespace-nowrap" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 38, repeat: Infinity, ease: "linear" }}>
         {repeated.map((item, i) => (
-          <span key={i} className="text-3xl md:text-5xl font-bold tracking-tight uppercase text-white/80">
-            {item} <span style={{ color: GARMIN_BLUE }} className="mx-4">·</span>
+          <span key={i} className="text-2xl md:text-4xl font-bold tracking-tight uppercase text-white/70">
+            {item} <span style={{ color: GARMIN_BLUE }} className="mx-3">/</span>
           </span>
         ))}
       </motion.div>
@@ -142,46 +126,108 @@ function Marquee({ items }: { items: string[] }) {
   );
 }
 
-function Bio() {
+// ==================== ABOUT ====================
+
+function About() {
+  return (
+    <section id="pierre" className="relative bg-black text-white py-28 md:py-40 px-6 scroll-mt-16 overflow-hidden">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-10 md:gap-16 items-center">
+        <div className="md:col-span-6 order-2 md:order-1">
+          <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Wer ich bin</div></FadeUp>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8">
+            <AnimatedWords text="Pierre Biege." stagger={0.07} />
+          </h2>
+          <FadeUp delay={0.3}>
+            <p className="text-lg md:text-xl text-white/70 font-light leading-relaxed">
+              Ultraläufer, Fotograf und Content Creator aus dem Wallis. Ich laufe täglich – seit Jahren ohne Pause – und lebe für extreme Formate: regelmässig über 200 Kilometer, oft mehr als 40 Stunden am Stück.
+            </p>
+          </FadeUp>
+          <FadeUp delay={0.45}>
+            <p className="text-lg md:text-xl text-white/70 font-light leading-relaxed mt-5">
+              Familienvater, immer in Bewegung. Ich denke nicht in einer Saison, sondern in einem Jahrzehnt.
+            </p>
+          </FadeUp>
+          <FadeUp delay={0.6}>
+            <div className="mt-10 pt-6 border-t border-white/15 flex items-center gap-4">
+              <Medal size={26} strokeWidth={1.5} style={{ color: GARMIN_BLUE }} className="shrink-0" />
+              <p className="text-base text-white/75 leading-snug">
+                An meiner Seite: <span className="font-semibold text-white">Tom Elmer</span>, Schweizer Meister – mein Coach, der mich aufs nächste Level bringt.
+              </p>
+            </div>
+          </FadeUp>
+        </div>
+        <div className="md:col-span-6 order-1 md:order-2">
+          <FadeUp y={60}>
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <Image src={G(12)} alt="" fill className="object-cover" />
+            </div>
+          </FadeUp>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ==================== FULL-BLEED MOMENT ====================
+
+function Moment({ src, eyebrow, text, position = "center" }: { src: string; eyebrow?: string; text: string; position?: "center" | "bottom" }) {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1.25, 1]);
+  return (
+    <section ref={ref} className={`relative h-screen flex overflow-hidden bg-black text-white ${position === "bottom" ? "items-end" : "items-center"} justify-center`}>
+      <motion.div className="absolute inset-0" style={{ scale }}>
+        <Image src={src} alt="" fill className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" />
+      </motion.div>
+      <div className={`relative z-10 max-w-5xl mx-auto px-6 text-center ${position === "bottom" ? "pb-24" : ""}`}>
+        {eyebrow && <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/60 mb-6">{eyebrow}</div></FadeUp>}
+        <h2 className="text-4xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95]">
+          <AnimatedWords text={text} stagger={0.05} />
+        </h2>
+      </div>
+    </section>
+  );
+}
+
+// ==================== WALLIS — scroll-gesteuerte Sequenz ====================
+
+function Wallis() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const img1Opacity = useTransform(scrollYProgress, [0, 0.33, 0.4], [1, 1, 0]);
-  const img2Opacity = useTransform(scrollYProgress, [0.33, 0.4, 0.66, 0.73], [0, 1, 1, 0]);
-  const img3Opacity = useTransform(scrollYProgress, [0.66, 0.73, 1], [0, 1, 1]);
+  // 4 Bilder, die beim Scrollen ineinander übergehen
+  const o1 = useTransform(scrollYProgress, [0, 0.22, 0.3], [1, 1, 0]);
+  const o2 = useTransform(scrollYProgress, [0.22, 0.3, 0.47, 0.55], [0, 1, 1, 0]);
+  const o3 = useTransform(scrollYProgress, [0.47, 0.55, 0.72, 0.8], [0, 1, 1, 0]);
+  const o4 = useTransform(scrollYProgress, [0.72, 0.8, 1], [0, 1, 1]);
+  const layers = [
+    { src: G(7), o: o1, label: "Nebelmeer über dem Tal" },
+    { src: G(16), o: o2, label: "Sonnenuntergang über den Gipfeln" },
+    { src: G(8), o: o3, label: "Sternenhimmel über dem Wallis" },
+    { src: G(20), o: o4, label: "Gefrorene Seen, stille Wälder" },
+  ];
   return (
-    <section ref={ref} id="pierre" className="relative bg-white scroll-mt-20">
-      <div className="md:h-[200vh]">
-        <div className="md:sticky md:top-0 md:h-screen flex items-center px-6 py-28 md:py-0">
-          <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">Wer ich bin</div></FadeUp>
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-zinc-900 mb-10 leading-[0.9]">
-                <AnimatedWords text="Pierre Biege." stagger={0.08} />
-              </h2>
-              <FadeUp delay={0.4}>
-                <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light">
-                  Ich bin Ultraläufer, Fotograf und Content Creator aus dem Wallis. Ich laufe täglich – seit Jahren ohne Pause – und habe mich auf extreme Formate wie Backyard-Ultras spezialisiert: regelmässig über 200 Kilometer, oft mehr als 40 Stunden am Stück.
-                </p>
-              </FadeUp>
-              <FadeUp delay={0.6}>
-                <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light mt-6">
-                  Zuhause in den Bergen, Familienvater, immer in Bewegung. Ich baue nicht auf einen einzelnen Moment hin, sondern Schritt für Schritt auf die grössten Ziele, die ich mir vorstellen kann.
-                </p>
-              </FadeUp>
-              <FadeUp delay={0.75}>
-                <div className="mt-8 flex items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4">
-                  <Medal size={22} strokeWidth={1.5} style={{ color: GARMIN_BLUE }} className="shrink-0" />
-                  <p className="text-base text-zinc-700 leading-snug">
-                    An meiner Seite: <span className="font-semibold text-zinc-900">Tom Elmer</span>, Schweizer Meister – mein Coach, der mich aufs nächste Level bringt.
-                  </p>
-                </div>
-              </FadeUp>
-            </div>
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-100">
-              <motion.div className="absolute inset-0" style={{ opacity: img1Opacity }}><Image src={G(11)} alt="" fill className="object-cover" /></motion.div>
-              <motion.div className="absolute inset-0" style={{ opacity: img2Opacity }}><Image src={G(18)} alt="" fill className="object-cover" /></motion.div>
-              <motion.div className="absolute inset-0" style={{ opacity: img3Opacity }}><Image src={G(3)} alt="" fill className="object-cover" /></motion.div>
-            </div>
+    <section ref={ref} className="relative h-[360vh] bg-black">
+      <div className="sticky top-0 h-screen overflow-hidden text-white">
+        {layers.map((l, i) => (
+          <motion.div key={i} className="absolute inset-0" style={{ opacity: l.o }}>
+            <Image src={l.src} alt="" fill className="object-cover" />
+            <div className="absolute inset-0 bg-black/30" />
+          </motion.div>
+        ))}
+        <div className="relative z-10 h-full flex flex-col justify-center px-6 max-w-7xl mx-auto">
+          <div className="text-xs uppercase tracking-[0.4em] text-white/60 mb-6">Wo ich wohne</div>
+          <h2 className="text-5xl md:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl">
+            Das Wallis ist<br />mein Trainingsplatz.
+          </h2>
+          <p className="mt-8 text-lg md:text-2xl text-white/80 font-light max-w-xl">
+            Eine der schönsten Regionen der Schweiz – Berge, Pässe, Schnee, Höhenmeter ohne Ende. Keine Kulisse. Mein Alltag.
+          </p>
+          {/* Fortschritts-Labels */}
+          <div className="absolute bottom-10 left-6 right-6 max-w-7xl mx-auto flex flex-wrap gap-x-6 gap-y-1 text-[11px] uppercase tracking-[0.25em] text-white/50">
+            {layers.map((l, i) => (
+              <motion.span key={i} style={{ opacity: l.o }}>{l.label}</motion.span>
+            ))}
           </div>
         </div>
       </div>
@@ -189,76 +235,35 @@ function Bio() {
   );
 }
 
-function Heimat() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
-  return (
-    <section ref={ref} className="relative bg-white text-zinc-900 py-40 px-6 overflow-hidden border-t border-zinc-100">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-        <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100 order-2 md:order-1">
-          <motion.div className="absolute inset-0" style={{ y: imgY, scale: 1.15 }}><Image src={G(9)} alt="" fill className="object-cover" /></motion.div>
-        </div>
-        <div className="order-1 md:order-2">
-          <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-zinc-400 mb-6">Wo ich herkomme</div></FadeUp>
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-10"><AnimatedWords text="Das Wallis." stagger={0.06} /></h2>
-          <FadeUp delay={0.3}>
-            <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light">
-              Ich lebe in einer der schönsten Regionen der Schweiz – im Wallis, mitten in den Alpen. Berge, Pässe, Schnee, Hitze, Höhenmeter ohne Ende: Das ist nicht meine Kulisse, das ist mein täglicher Trainingsplatz.
-            </p>
-          </FadeUp>
-          <FadeUp delay={0.45}>
-            <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light mt-6">
-              Genau von hier aus erzähle ich meine Geschichten – ehrlich, draussen, am Limit. Eine Bühne, wie sie kein Studio liefern kann.
-            </p>
-          </FadeUp>
-        </div>
-      </div>
-    </section>
-  );
-}
+// ==================== REICHWEITE ====================
 
-function Story() {
-  return (
-    <section className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-48 px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Warum Garmin</div></FadeUp>
-        <ScrollRevealText
-          text="Ich laufe jeden einzelnen Tag. Jeder Kilometer, jeder Höhenmeter, jede Stunde am Limit – alles wird gemessen, alles zählt. Genau das ist die Welt, in der Garmin zuhause ist."
-          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
-        />
-      </div>
-      <div className="max-w-4xl mx-auto mt-32">
-        <ScrollRevealText
-          text="Ich denke nicht in einer Saison, sondern in einem Jahrzehnt. Aus dem Wallis hinaus, Tag für Tag, Berg für Berg – auf die grössten Ziele zu, die ich mir vorstellen kann."
-          className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
-        />
-        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ich denke nicht in Tagen, sondern in Jahren.“</p></FadeUp>
-      </div>
-    </section>
-  );
-}
-
-function StatsLine() {
+function Reach() {
   const stats = [
-    { value: "12 Mio.", label: "Aufrufe · letzte 90 Tage", image: G(6) },
-    { value: "794k", label: "Konten erreicht · 90 Tage", image: G(18) },
-    { value: "2,2 Mio.", label: "Aufrufe · letzte 30 Tage", image: G(2) },
-    { value: "200+", label: "Kilometer pro Race", image: G(14) },
+    { value: "12 Mio.", label: "Aufrufe / 90 Tage" },
+    { value: "794k", label: "Konten erreicht / 90 Tage" },
+    { value: "2,2 Mio.", label: "Aufrufe / 30 Tage" },
+    { value: "200+", label: "Kilometer pro Race" },
   ];
   return (
-    <section className="bg-black text-white py-32 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto mb-16">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Reichweite in Zahlen</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl"><AnimatedWords text="Wir wachsen. Schnell." stagger={0.06} /></h2>
-      </div>
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {stats.map((s, i) => (<FadeUp key={i} delay={i * 0.1} y={50}><StatTile value={s.value} label={s.label} image={s.image} /></FadeUp>))}
-      </div>
-      <div className="max-w-6xl mx-auto mt-10">
-        <FadeUp delay={0.4}>
-          <p className="text-white/50 text-base md:text-lg font-light max-w-3xl">
-            Ich bin (noch) kein riesiger Creator – aber ich erreiche schon heute extrem viele Menschen, und die Kurve zeigt steil nach oben. Wer jetzt einsteigt, wächst mit. Genau das ist die Chance.
+    <section className="bg-black text-white py-28 md:py-40 px-6">
+      <div className="max-w-7xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Reichweite</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl mb-16">
+          <AnimatedWords text="Wir wachsen. Schnell." stagger={0.06} />
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 border-t border-white/15">
+          {stats.map((s, i) => (
+            <FadeUp key={i} delay={i * 0.08}>
+              <div className="border-b md:border-b-0 border-r border-white/15 py-10 pr-4 md:pl-6 first:md:pl-0">
+                <div className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight" style={{ color: i === 0 ? GARMIN_BLUE : "#fff" }}>{s.value}</div>
+                <div className="text-xs uppercase tracking-wider text-white/50 mt-3">{s.label}</div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+        <FadeUp delay={0.3}>
+          <p className="text-white/55 text-base md:text-lg font-light max-w-3xl mt-12">
+            Ich bin (noch) kein riesiger Creator – aber ich erreiche schon heute extrem viele Menschen, und die Kurve zeigt steil nach oben. Wer jetzt einsteigt, wächst mit.
           </p>
         </FadeUp>
       </div>
@@ -266,29 +271,66 @@ function StatsLine() {
   );
 }
 
-function YouTubeBuild() {
-  const points = [
-    { Icon: Youtube, title: "Aufbau mit einem Profi", text: "An meiner Seite: Clemens Hovekamp – Mitorganisator des Ultimate Run und verantwortlich für den Aufbau grosser YouTube-Formate wie «7 vs. Wild». Er betreut mich und den Kanal." },
-    { Icon: Mountain, title: "Garmin mittendrin", text: "Garmin ist Teil der Adventures – nicht ein nachträglich platziertes Logo, sondern fest in den Geschichten, während der Kanal wächst." },
-    { Icon: BarChart3, title: "Ziel: starkes Wachstum", text: "Wir bauen den Kanal in den nächsten Jahren gezielt aus – langfristig gedacht, nicht für einen einzelnen Moment." },
+// ==================== YOUTUBE ====================
+
+function YouTube() {
+  return (
+    <section className="relative bg-black text-white overflow-hidden">
+      <div className="grid md:grid-cols-2">
+        <div className="relative min-h-[60vh] md:min-h-[80vh]">
+          <Image src={G(24)} alt="" fill className="object-cover" />
+        </div>
+        <div className="flex items-center px-6 py-24 md:px-16">
+          <div>
+            <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Plan</div></FadeUp>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight leading-[0.95] mb-8">
+              <AnimatedWords text="Wir bauen YouTube auf." stagger={0.05} />
+            </h2>
+            <FadeUp delay={0.3}>
+              <p className="text-lg text-white/70 font-light leading-relaxed">
+                Kein einzelner Clip, sondern ein Kanal – langfristig gedacht. An meiner Seite: <span className="text-white font-medium">Clemens Hovekamp</span>, Mitorganisator des Ultimate Run und verantwortlich für den Aufbau grosser YouTube-Formate wie «7 vs. Wild».
+              </p>
+            </FadeUp>
+            <FadeUp delay={0.45}>
+              <p className="text-lg text-white/70 font-light leading-relaxed mt-5">
+                Garmin ist dabei kein nachträgliches Logo, sondern fest in den Geschichten – mittendrin, während der Kanal wächst.
+              </p>
+            </FadeUp>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ==================== VISION ====================
+
+function Vision() {
+  const items = [
+    { k: "01", title: "Swiss Alps 100", text: "Rekord-Versuch auf einer der härtesten 100-Meilen-Strecken der Alpen – daheim, im Wallis." },
+    { k: "02", title: "1000 km am Stück", text: "Nach 1000 Tagen täglichem Laufen: 1000 Kilometer ohne Halt." },
+    { k: "03", title: "100'000 Höhenmeter", text: "Für krebskranke Kinder – an wechselnden Spots in der ganzen Schweiz." },
+    { k: "04", title: "100 Laps bis 2035", text: "Backyard Ultra: konsequenter Aufbau über die nächsten Jahre. Das grosse Ziel sind 100 Runden." },
   ];
   return (
-    <section className="bg-black text-white py-28 px-6 overflow-hidden border-t border-white/10">
-      <div className="max-w-6xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-5">Der Plan</div></FadeUp>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-5 leading-[0.95]"><AnimatedWords text="Wir bauen YouTube auf." stagger={0.05} /></h2>
+    <section id="vision" className="relative bg-black text-white py-28 md:py-40 px-6 scroll-mt-16">
+      <div className="max-w-7xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der lange Weg</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] mb-6">
+          <AnimatedWords text="Die Vision bis 2035." stagger={0.05} />
+        </h2>
         <FadeUp delay={0.3}>
-          <p className="text-base md:text-lg text-white/55 font-light leading-relaxed max-w-2xl mb-12">
-            Es geht nicht um einzelne Clips, sondern um den gezielten Aufbau eines YouTube-Kanals – und Garmin ist bei den Abenteuern mittendrin.
+          <p className="text-lg md:text-xl text-white/55 font-light max-w-2xl mb-16">
+            Ich denke in einem Jahrzehnt. Wer jetzt einsteigt, ist von der ersten Stunde an bei jeder dieser Geschichten dabei.
           </p>
         </FadeUp>
-        <div className="grid md:grid-cols-3 gap-5">
-          {points.map(({ Icon, title, text }, i) => (
-            <FadeUp key={i} delay={0.2 + i * 0.1}>
-              <div className="bg-zinc-950 border border-white/10 rounded-2xl p-7 h-full hover:bg-zinc-900 transition-colors">
-                <Icon size={30} strokeWidth={1.5} className="mb-5" style={{ color: GARMIN_BLUE }} />
-                <h3 className="text-base font-semibold mb-2">{title}</h3>
-                <p className="text-sm text-white/55 leading-relaxed font-light">{text}</p>
+        <div>
+          {items.map((it, i) => (
+            <FadeUp key={i} delay={0.05 * i}>
+              <div className="group grid grid-cols-[auto_1fr] md:grid-cols-[6rem_1fr_2fr] gap-x-6 md:gap-x-10 gap-y-2 items-baseline py-8 border-t border-white/15">
+                <div className="text-2xl md:text-3xl font-bold" style={{ color: GARMIN_BLUE }}>{it.k}</div>
+                <h3 className="text-3xl md:text-5xl font-bold tracking-tight">{it.title}</h3>
+                <p className="col-start-2 md:col-start-3 text-white/60 font-light leading-relaxed md:text-lg">{it.text}</p>
               </div>
             </FadeUp>
           ))}
@@ -298,40 +340,96 @@ function YouTubeBuild() {
   );
 }
 
-function HeroMoment() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.4, 1.1, 1]);
-  const textScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 1.08]);
+// ==================== EVENTS ====================
+
+function Events() {
+  const races = [
+    { name: "Ultimate Run", date: "24.–26. April 2026", loc: "Deutschland", done: true },
+    { name: "Witikoner Backyard", date: "14.–16. Mai 2026", loc: "Zürich · 23 Runden", done: true },
+    { name: "99 Lap Race", date: "25.–26. Juli 2026", loc: "Deutschland", done: false },
+    { name: "Last Soul Ultra", date: "14. August 2026", loc: "International", done: false },
+    { name: "Berlin Marathon", date: "27. September 2026", loc: "Berlin", done: false },
+  ];
   return (
-    <section ref={ref} className="relative h-screen flex items-center justify-center overflow-hidden bg-black text-white">
-      <motion.div className="absolute inset-0" style={{ scale }}>
-        <Image src={G(1)} alt="" fill className="object-cover opacity-50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
-      </motion.div>
-      <motion.div className="relative z-10 text-center px-6" style={{ scale: textScale }}>
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-8">Jeden einzelnen Tag</div></FadeUp>
-        <h2 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9] max-w-5xl mx-auto"><AnimatedWords text="Wo andere aufhören, fängt mein Tag erst an." stagger={0.04} /></h2>
-        <FadeUp delay={0.6}><p className="text-xl md:text-2xl text-white/70 font-light mt-10 max-w-2xl mx-auto">Bei jedem Wetter. Seit Jahren ohne Pause.</p></FadeUp>
-      </motion.div>
+    <section className="relative bg-black text-white overflow-hidden">
+      <div className="absolute inset-0 opacity-25">
+        <Image src={G(11)} alt="" fill className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
+      </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-28 md:py-40">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-6">Saison 2026</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-14">
+          <AnimatedWords text="Die Events dieses Jahr." stagger={0.05} />
+        </h2>
+        <div>
+          {races.map((r, i) => (
+            <FadeUp key={i} delay={0.05 * i}>
+              <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_1fr_auto] gap-x-6 gap-y-1 items-center py-6 border-t border-white/15 last:border-b">
+                <div className="text-2xl md:text-4xl font-bold tracking-tight">{r.name}</div>
+                <div className="text-white/55 text-sm md:text-base md:text-right">{r.date}<span className="hidden md:inline"> · {r.loc}</span></div>
+                <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: r.done ? "rgba(255,255,255,0.4)" : GARMIN_BLUE }}>{r.done ? "gelaufen" : "kommt"}</div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
 
-function HorizontalDrift() {
+// ==================== GALLERY ====================
+
+function ParallaxImage({ src, className = "" }: { src: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1.05]);
+  return (
+    <motion.div ref={ref} className={`relative overflow-hidden bg-zinc-900 ${className}`} initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1.2, ease: EASE }}>
+      <motion.div className="absolute inset-0" style={{ y, scale }}><Image src={src} alt="" fill className="object-cover" /></motion.div>
+    </motion.div>
+  );
+}
+
+function Gallery() {
+  return (
+    <section className="bg-black text-white py-24 md:py-32 px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto mb-16">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Impressionen</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9]">
+          <AnimatedWords text="Draussen. Jeden Tag." stagger={0.05} />
+        </h2>
+      </div>
+      <div className="max-w-7xl mx-auto grid grid-cols-12 gap-3 md:gap-4">
+        <ParallaxImage src={G(18)} className="col-span-12 md:col-span-8 aspect-[16/9]" />
+        <ParallaxImage src={G(9)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={G(13)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={G(19)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={G(4)} className="col-span-6 md:col-span-4 aspect-[3/4]" />
+        <ParallaxImage src={G(16)} className="col-span-12 aspect-[16/7]" />
+      </div>
+    </section>
+  );
+}
+
+// ==================== DRIFT ====================
+
+function Drift() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const x = useTransform(scrollYProgress, [0, 1], ["10%", "-40%"]);
-  const images = [G(20), G(5), G(7), G(13), G(16), G(21), G(17), G(22), G(10)];
+  const x = useTransform(scrollYProgress, [0, 1], ["8%", "-42%"]);
+  const images = [G(1), G(23), G(5), G(26), G(15), G(22), G(25), G(10), G(2)];
   return (
-    <section ref={ref} className="bg-black py-32 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 mb-20">
+    <section ref={ref} className="bg-black py-24 md:py-32 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 mb-14">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Behind the Scenes</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] text-white"><AnimatedWords text="Jeder Tag zählt." stagger={0.06} /></h2>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] text-white">
+          <AnimatedWords text="Jeder Tag zählt." stagger={0.06} />
+        </h2>
       </div>
-      <motion.div className="flex gap-6 px-6 will-change-transform" style={{ x }}>
+      <motion.div className="flex gap-4 px-6 will-change-transform" style={{ x }}>
         {images.map((src, i) => (
-          <motion.div key={i} className="relative shrink-0 w-[80vw] md:w-[55vw] lg:w-[42vw] aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-900" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1, ease: EASE, delay: i * 0.05 }}>
+          <motion.div key={i} className="relative shrink-0 w-[78vw] md:w-[48vw] lg:w-[38vw] aspect-[4/5] overflow-hidden bg-zinc-900" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1, ease: EASE, delay: i * 0.05 }}>
             <Image src={src} alt="" fill className="object-cover" />
           </motion.div>
         ))}
@@ -340,181 +438,31 @@ function HorizontalDrift() {
   );
 }
 
-function StatTile({ value, label, image }: { value: string; label: string; image: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.2, 1.05]);
-  return (
-    <div ref={ref} className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-900 group">
-      <motion.div className="absolute inset-0" style={{ y, scale }}>
-        <Image src={image} alt="" fill className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-      </motion.div>
-      <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
-        <div className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none mb-3">{value}</div>
-        <div className="text-xs uppercase tracking-wider text-white/70">{label}</div>
-      </div>
-    </div>
-  );
-}
-
-function Channels() {
-  const channels = [
-    { Icon: Youtube, name: "YouTube", text: "Mehrteilige Adventure- & Event-Dokus auf einem gezielt wachsenden Kanal – cineastisch, ehrlich, am Limit." },
-    { Icon: Camera, name: "Bilder", text: "Ich bin selbst Fotograf. Hochwertige Race- und Adventure-Bilder, direkt nutzbar für die Garmin-Kanäle." },
-    { Icon: Instagram, name: "Reels & Live", text: "Daily Reels aus dem Alltag in den Bergen sowie Live-Reels alle 1–3 Stunden während der Events." },
-    { Icon: Mountain, name: "Adventure-Content", text: "Echte Geschichten aus den Walliser Alpen – Daten, Distanz, Höhenmeter, Natur. Genau die Welt, die Garmin zeigt." },
-  ];
-  return (
-    <section className="bg-zinc-950 text-white py-40 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Was ich erzähle</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]"><AnimatedWords text="Content aus der echten Welt." stagger={0.05} /></h2>
-        <div className="grid md:grid-cols-2 gap-px bg-white/10 rounded-3xl overflow-hidden mt-12">
-          {channels.map(({ Icon, name, text }, i) => (
-            <FadeUp key={i} delay={0.2 + i * 0.1}>
-              <div className="bg-zinc-950 p-12 h-full hover:bg-zinc-900 transition-colors">
-                <Icon size={44} className="text-white/80 mb-8" strokeWidth={1.5} />
-                <h3 className="text-3xl font-semibold mb-4">{name}</h3>
-                <p className="text-white/60 leading-relaxed">{text}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Interlude({ text }: { text: string }) {
-  return (
-    <section className="bg-black text-white py-40 px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <ScrollRevealText text={text} className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center" />
-      </div>
-    </section>
-  );
-}
-
-function Vision() {
-  const items = [
-    { Icon: Trophy, title: "Swiss Alps 100", text: "Rekord-Versuch auf einer der härtesten 100-Meilen-Strecken der Alpen – daheim, im Wallis." },
-    { Icon: InfinityIcon, title: "1000 km am Stück", text: "Nach 1000 Tagen täglichem Laufen: 1000 Kilometer ohne Halt. Ein Mega-Projekt." },
-    { Icon: Heart, title: "100'000 Höhenmeter", text: "100'000 Höhenmeter für krebskranke Kinder – an wechselnden Spots in der ganzen Schweiz." },
-    { Icon: Footprints, title: "100 Laps bis 2035", text: "Backyard Ultra: konsequenter Aufbau über die nächsten Jahre. Das grosse Ziel sind 100 Runden." },
-  ];
-  return (
-    <section id="vision" className="relative bg-zinc-950 text-white py-40 px-6 overflow-hidden scroll-mt-20">
-      <div className="max-w-6xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der lange Weg</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]"><AnimatedWords text="Die Vision bis 2035." stagger={0.05} /></h2>
-        <FadeUp delay={0.3}>
-          <p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-20">
-            Ich denke nicht in einer Saison, sondern in einem Jahrzehnt. Wer jetzt einsteigt, ist von der ersten Stunde an bei jeder dieser Geschichten dabei.
-          </p>
-        </FadeUp>
-        <div className="grid md:grid-cols-2 gap-6">
-          {items.map(({ Icon, title, text }, i) => (
-            <FadeUp key={i} delay={0.15 + i * 0.08}>
-              <div className="bg-black rounded-2xl p-10 h-full hover:bg-zinc-900 transition-colors flex gap-6 items-start">
-                <Icon size={32} strokeWidth={1.5} className="shrink-0 mt-1" style={{ color: GARMIN_BLUE }} />
-                <div>
-                  <h3 className="text-xl md:text-2xl font-semibold mb-2">{title}</h3>
-                  <p className="text-white/60 leading-relaxed font-light">{text}</p>
-                </div>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Events() {
-  const races = [
-    { name: "Ultimate Run", date: "24.–26. April 2026", location: "Deutschland", done: true },
-    { name: "Witikoner Backyard", date: "14.–16. Mai 2026", location: "Zürich · 23 Runden", done: true },
-    { name: "99 Lap Race", date: "25.–26. Juli 2026", location: "Deutschland", done: false },
-    { name: "Last Soul Ultra", date: "14. August 2026", location: "International", done: false },
-    { name: "Berlin Marathon", date: "27. September 2026", location: "Berlin", done: false },
-  ];
-  return (
-    <section className="bg-black text-white py-32 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Saison 2026</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16"><AnimatedWords text="Die Events dieses Jahr." stagger={0.06} /></h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {races.map((r, i) => (
-            <FadeUp key={i} delay={0.2 + i * 0.1}>
-              <div className="bg-zinc-900 rounded-2xl p-8 hover:bg-zinc-800 transition-colors h-full">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-4xl font-bold text-white/30">{String(i + 1).padStart(2, "0")}</div>
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full" style={{ color: r.done ? "rgba(255,255,255,0.5)" : "#fff", backgroundColor: r.done ? "rgba(255,255,255,0.08)" : GARMIN_BLUE }}>{r.done ? "gelaufen" : "kommt"}</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{r.name}</h3>
-                <p className="text-white/50 text-sm flex items-center gap-1.5"><Calendar size={13} /> {r.date}</p>
-                <p className="text-white/40 text-sm mt-1">{r.location}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function GalleryGrid() {
-  const images = [G(2), G(4), G(8), G(12), G(15), G(19)];
-  return (
-    <section className="bg-black text-white py-32 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto mb-20">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Impressionen</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9]"><AnimatedWords text="Draussen. Jeden Tag." stagger={0.05} /></h2>
-      </div>
-      <div className="max-w-7xl mx-auto grid grid-cols-12 gap-4 md:gap-6">
-        <ParallaxImage src={images[0]} className="col-span-12 md:col-span-7 aspect-[4/3]" />
-        <ParallaxImage src={images[1]} className="col-span-12 md:col-span-5 aspect-[4/5]" />
-        <ParallaxImage src={images[2]} className="col-span-6 md:col-span-4 aspect-square" />
-        <ParallaxImage src={images[3]} className="col-span-6 md:col-span-4 aspect-square" />
-        <ParallaxImage src={images[4]} className="col-span-12 md:col-span-4 aspect-square" />
-        <ParallaxImage src={images[5]} className="col-span-12 aspect-[16/7]" />
-      </div>
-    </section>
-  );
-}
-
-function ParallaxImage({ src, className = "" }: { src: string; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1.05]);
-  return (
-    <motion.div ref={ref} className={`relative overflow-hidden rounded-3xl bg-zinc-900 ${className}`} initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1.2, ease: EASE }}>
-      <motion.div className="absolute inset-0" style={{ y, scale }}><Image src={src} alt="" fill className="object-cover" /></motion.div>
-    </motion.div>
-  );
-}
+// ==================== CONTACT ====================
 
 function Contact() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1.2, 1]);
   return (
-    <section className="bg-black text-white px-6 py-40 overflow-hidden relative">
-      <div className="absolute inset-0">
-        <Image src={G(6)} alt="" fill className="object-cover opacity-25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
-      </div>
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <FadeUp><p className="text-2xl md:text-4xl text-white/50 italic mb-16">„Ich würde mich freuen, diesen Weg mit Garmin zu gehen.“</p></FadeUp>
-        <h2 className="text-6xl md:text-9xl lg:text-[11rem] font-bold tracking-tight mb-10 leading-[0.85]"><AnimatedWords text="Lass uns reden." stagger={0.08} /></h2>
-        <FadeUp delay={0.7}>
+    <section id="kontakt" ref={ref} className="relative min-h-screen flex items-center px-6 py-32 overflow-hidden bg-black text-white scroll-mt-16">
+      <motion.div className="absolute inset-0" style={{ scale }}>
+        <Image src={G(16)} alt="" fill className="object-cover opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black" />
+      </motion.div>
+      <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
+        <FadeUp><p className="text-xl md:text-3xl text-white/60 italic mb-12">„Ich würde mich freuen, diesen Weg mit Garmin zu gehen.“</p></FadeUp>
+        <h2 className="text-6xl md:text-9xl lg:text-[11rem] font-bold tracking-tight leading-[0.85] mb-12">
+          <AnimatedWords text="Lass uns reden." stagger={0.07} />
+        </h2>
+        <FadeUp delay={0.5}>
           <div className="inline-flex flex-col items-center gap-5">
             <div className="text-2xl font-semibold">Pierre Biege</div>
             <a href="mailto:pierre@laeuft.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Mail size={20} className="group-hover:scale-110 transition-transform" /> pierre@laeuft.ch</a>
             <a href="tel:+41798533672" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 79 853 36 72</a>
           </div>
         </FadeUp>
-        <FadeUp delay={1.2}><div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">laeuft.ch</div></FadeUp>
+        <FadeUp delay={0.8}><div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">laeuft.ch</div></FadeUp>
       </div>
     </section>
   );
@@ -527,19 +475,17 @@ export default function GarminPresentationPage() {
     <div className="font-sans antialiased bg-black">
       <Header />
       <Hero />
-      <Marquee items={["Pierre Biege", "Wallis", "Täglich laufen", "Ultra", "Swiss Alps 100", "Backyard", "Adventure", "Garmin", "2026"]} />
-      <Bio />
-      <Heimat />
-      <Story />
-      <StatsLine />
-      <YouTubeBuild />
-      <Channels />
-      <Interlude text="Berge, Schnee, Hitze, Nacht. Mein Trainingsplatz sind die Walliser Alpen – und das Abenteuer hört nie auf." />
+      <Marquee items={["Pierre Biege", "Wallis", "Täglich laufen", "Ultra", "Swiss Alps 100", "Backyard", "Adventure", "2026"]} />
+      <About />
+      <Moment src={G(3)} eyebrow="Aus dem Wallis" text="Da, wo die Geschichten passieren." position="bottom" />
+      <Wallis />
+      <Reach />
+      <YouTube />
+      <Moment src={G(24)} eyebrow="Jeden einzelnen Tag" text="Wo andere aufhören, fängt mein Tag erst an." position="bottom" />
       <Vision />
       <Events />
-      <HeroMoment />
-      <GalleryGrid />
-      <HorizontalDrift />
+      <Gallery />
+      <Drift />
       <Contact />
     </div>
   );
