@@ -107,7 +107,7 @@ function Hero() {
           <AnimatedWords text="Vom ersten Licht zum Gletscher." delay={0.35} stagger={0.06} />
         </div>
         <motion.p className="text-lg md:text-2xl text-white/80 font-light max-w-3xl mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
-          Ein Ultra durch das Goms – 60 km, 4’500 Höhenmeter, an einem einzigen Tag. Den Rotten hinauf bis zu seiner Quelle am Rhonegletscher – die gerade verschwindet.
+          Ein Läufer mit grosser Community durchquert das ganze Goms an einem Tag – Dörfer, Trails, Berge, bis zum Gletscher. Und hält die Region für immer fest: YouTube-Folge, Reel, Stories, Bilder.
         </motion.p>
       </motion.div>
       <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
@@ -172,11 +172,11 @@ function Idee() {
     <section id="idee" className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Die Idee</div></FadeUp>
-        <ScrollRevealText text="Der Aufhänger ist der Lauf: ein verrückter, schöner Ultra durch eines der eindrücklichsten Hochtäler der Schweiz – an einem Tag, allein, ohne Hilfsmittel." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Ein Läufer mit grosser Community durchquert das ganze Goms an einem Tag – aus eigener Kraft, von ganz unten bis zum Eis. Vorbei an Walserdörfern, über Trails, durch eines der eindrücklichsten und untertouristischsten Hochtäler der Schweiz." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
       </div>
       <div className="max-w-4xl mx-auto mt-28">
-        <ScrollRevealText text="Die Tiefe kommt am Ziel: Pierre läuft den ganzen Fluss hinauf bis zu seiner Quelle – und die Quelle stirbt. Kein Klima-Vortrag. Ein ehrlicher Lauf durch eine Landschaft, die es so vielleicht nicht mehr lange gibt." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
-        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ein richtig guter Tag.“ – schaut hin, bevor es anders ist.</p></FadeUp>
+        <ScrollRevealText text="Er durchlebt die Geschichte und hält alles für immer fest: in einer YouTube-Folge, einem Reel, mehreren Stories und hunderten Bildern. Das Finale am verschwindenden Rhonegletscher macht sie teilbar." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ein richtig guter Tag.“ – eine Region, die man fühlt.</p></FadeUp>
       </div>
     </section>
   );
@@ -221,16 +221,13 @@ function Eckwerte() {
 function Botschaft() {
   const facts = [
     "2025 verloren die Schweizer Gletscher rund 3 % ihres Volumens – einer der grössten Eisverluste seit Messbeginn.",
-    "Seit 2015 ist rund ein Viertel des Eisvolumens verschwunden.",
-    "Am Rhonegletscher musste 2025 die berühmte Eisgrotte endgültig aufgegeben werden – der Eisblock ist zu klein geworden.",
-    "Man deckt den Gletscher mit weissen Planen ab, um den Rückzug zu verlangsamen – ein fast surreales Bild.",
-    "In Gletsch markieren Säulen mit Jahreszahlen ab 1815 den historischen Schwund.",
-    "Hier, auf rund 2'200 m, entspringt die Rhone – im Goms der „Rotten“.",
+    "Am Rhonegletscher wird das Eis mit weissen Planen abgedeckt; die berühmte Eisgrotte musste 2025 aufgegeben werden.",
+    "Hier, auf rund 2'200 m, entspringt die Rhone – im Goms der „Rotten“. Genau hier endet der Lauf.",
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
       <div className="max-w-5xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Botschaft</div></FadeUp>
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Das Finale · der Gletscher</div></FadeUp>
         <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Gezeigt, nicht doziert." stagger={0.05} /></h2>
         <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Bilder sprechen lassen: die weissen Planen, der wachsende türkise See, die Jahreszahl-Säulen. Ein, zwei ehrliche Sätze – maximal ~15 % der Videolänge.</p></FadeUp>
         <div>
@@ -289,29 +286,73 @@ function Visuell() {
   );
 }
 
-// ==================== WAS GOMS BEKOMMT ====================
+// ==================== DIE REGION ====================
 
-function Nutzen() {
-  const bullets = [
-    "Hochwertiger Content über eine untertouristische Region – Trails, Dörfer, Berge, Aussicht, Natur.",
-    "Eingebettet in eine emotionale, teilbare Geschichte statt platter Werbung.",
-    "Sichtbarkeit an einem hochaktuellen Thema: der Gletscherschwund 2025.",
-    "YouTube-Hauptvideo + Reels/Shorts + Live-Content am Tag selbst.",
-    "Freigegebenes Material zur Weiternutzung durch die Region.",
-    "Reichweite über Pierres Community (12 Mio. Aufrufe / 90 Tage).",
+function Region() {
+  const items = [
+    { t: "Die Walserdörfer", d: "Münster, Geschinen, Ulrichen, Obergesteln, Oberwald – seit Jahrhunderten kaum verändert." },
+    { t: "Trails & Höhenweg", d: "Der Gommer Höhenweg, einsame Pfade, der junge Rotten als ständiger Begleiter." },
+    { t: "Berge & Aussichten", d: "Viertausender am Horizont, Pässe, Gipfel – gewaltige Natur zum Greifen nah." },
+    { t: "Untertouristisch", d: "Ein Hochtal, das die wenigsten kennen – genau das macht es so wertvoll." },
+  ];
+  return (
+    <section className="bg-black text-white py-28 md:py-40 px-6">
+      <div className="max-w-7xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Region</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Das ganze Goms – erlebt, nicht abfotografiert." stagger={0.04} /></h2>
+        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Drei Ziele in einem Film: ein starkes Abenteuer für die Community, eine einzigartige Region sichtbar machen – und Aufmerksamkeit für den Gletscher. In genau dieser Reihenfolge.</p></FadeUp>
+        <div className="grid md:grid-cols-2 gap-x-12">
+          {items.map((it, i) => (
+            <FadeUp key={i} delay={0.06 * i}>
+              <div className="grid grid-cols-[auto_1fr] gap-5 py-7 border-t border-white/15 items-baseline">
+                <div className="text-sm font-bold tabular-nums" style={{ color: GOMS }}>{String(i + 1).padStart(2, "0")}</div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-1.5">{it.t}</h3>
+                  <p className="text-white/60 font-light leading-relaxed">{it.d}</p>
+                </div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ==================== DAS BEKOMMT IHR ====================
+
+function Deliverables() {
+  const pieces = [
+    { n: "1", t: "YouTube-Folge", d: "Das Herzstück. Die ganze Geschichte – für immer festgehalten." },
+    { n: "1", t: "Reel", d: "Der virale Kurzclip aus den stärksten Momenten." },
+    { n: "Mehrere", t: "Stories", d: "Live vom Lauf: Sonnenaufgang, Etappen, Ziel – Reichweite am Tag selbst." },
+    { n: "100+", t: "Fotos & Footage", d: "Hochwertige Aufnahmen zur freien Nutzung durch die Region." },
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
-      <div className="max-w-5xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Was Goms Tourismus bekommt</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-14"><AnimatedWords text="Eine Region, die man fühlt." stagger={0.05} /></h2>
-        <ul className="space-y-px bg-white/10 overflow-hidden rounded-none">
-          {bullets.map((b, i) => (
-            <FadeUp key={i} delay={0.06 * i}>
-              <li className="bg-zinc-950 px-6 py-6 flex items-start gap-6"><span className="text-2xl font-bold tabular-nums shrink-0 w-10" style={{ color: GOMS }}>{String(i + 1).padStart(2, "0")}</span><span className="text-lg font-light pt-1">{b}</span></li>
+      <div className="max-w-7xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Das bekommt ihr</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16"><AnimatedWords text="Eure Region, festgehalten." stagger={0.05} /></h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 border-t border-white/15">
+          {pieces.map((p, i) => (
+            <FadeUp key={i} delay={i * 0.08}>
+              <div className="border-b md:border-b-0 border-r border-white/15 py-9 pr-4 md:pl-6 first:md:pl-0 h-full">
+                <div className="text-3xl md:text-5xl font-bold tracking-tight" style={{ color: i === 0 ? GOMS : "#fff" }}>{p.n}</div>
+                <div className="text-base font-semibold mt-3">{p.t}</div>
+                <div className="text-sm text-white/55 font-light mt-2 leading-relaxed">{p.d}</div>
+              </div>
             </FadeUp>
           ))}
-        </ul>
+        </div>
+        <FadeUp delay={0.3}>
+          <div className="mt-14 flex flex-col md:flex-row md:items-end gap-6 md:gap-16 border-t border-white/15 pt-10">
+            <div className="flex gap-10">
+              <div><div className="text-4xl md:text-6xl font-bold" style={{ color: GOMS }}>12 Mio.</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Aufrufe / 90 Tage</div></div>
+              <div><div className="text-4xl md:text-6xl font-bold">794k</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Konten erreicht</div></div>
+            </div>
+            <p className="text-white/60 font-light md:text-lg md:max-w-md">Eure Region – vor einem Publikum, das wirklich hinschaut. Plus freigegebenes Material zur Weiternutzung.</p>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );
@@ -423,10 +464,11 @@ export default function GomsPresentationPage() {
       <Hero />
       <RouteMap />
       <Idee />
+      <Region />
       <Eckwerte />
-      <Botschaft />
+      <Deliverables />
       <Visuell />
-      <Nutzen />
+      <Botschaft />
       <Rollout />
       <Angebot />
       <Contact />
