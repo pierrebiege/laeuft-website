@@ -197,6 +197,9 @@ function Story() {
       </div>
       <div className="max-w-4xl mx-auto mt-28">
         <ScrollRevealText text="Ich denke nicht in einer Saison, sondern in einem Jahrzehnt. Aus dem Wallis hinaus, Tag für Tag, Berg für Berg – auf die grössten Ziele zu, die ich mir vorstellen kann." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+      </div>
+      <div className="max-w-4xl mx-auto mt-28">
+        <ScrollRevealText text="Mein Equipment muss allem standhalten: vier Jahreszeiten in den Alpen, 40 Stunden am Stück, jeder Höhenmeter, jede Nacht. Ausdauer, Präzision, Verlässlichkeit – genau dafür ist Garmin gebaut." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
         <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Jeden Tag ein Schritt näher.“</p></FadeUp>
       </div>
     </section>
