@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Youtube, Instagram, Camera, Mountain, Mail, Phone, ArrowRight, Eye, Calendar, Trophy, Heart, Infinity as InfinityIcon, Footprints, BarChart3 } from "lucide-react";
+import { Youtube, Instagram, Camera, Mountain, Mail, Phone, Calendar, Trophy, Heart, Infinity as InfinityIcon, Footprints, BarChart3, Medal } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const GARMIN_BLUE = "#007CC3";
@@ -22,17 +21,19 @@ function AnimatedWords({ text, className = "", delay = 0, stagger = 0.05 }: { te
   return (
     <span ref={ref} className={className} style={{ display: "inline-block" }}>
       {words.map((word, i) => (
-        <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
-          <motion.span
-            style={{ display: "inline-block", willChange: "transform" }}
-            initial={{ y: "110%", opacity: 0 }}
-            animate={inView ? { y: "0%", opacity: 1 } : { y: "110%", opacity: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: delay + i * stagger }}
-          >
-            {word}
-            {i < words.length - 1 ? " " : ""}
-          </motion.span>
-        </span>
+        <Fragment key={i}>
+          <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
+            <motion.span
+              style={{ display: "inline-block", willChange: "transform" }}
+              initial={{ y: "110%", opacity: 0 }}
+              animate={inView ? { y: "0%", opacity: 1 } : { y: "110%", opacity: 0 }}
+              transition={{ duration: 0.9, ease: EASE, delay: delay + i * stagger }}
+            >
+              {word}
+            </motion.span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
+        </Fragment>
       ))}
     </span>
   );
@@ -166,6 +167,14 @@ function Bio() {
                 <p className="text-lg md:text-xl text-zinc-600 leading-relaxed font-light mt-6">
                   Zuhause in den Bergen, Familienvater, immer in Bewegung. Ich baue nicht auf einen einzelnen Moment hin, sondern Schritt für Schritt auf die grössten Ziele, die ich mir vorstellen kann.
                 </p>
+              </FadeUp>
+              <FadeUp delay={0.75}>
+                <div className="mt-8 flex items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4">
+                  <Medal size={22} strokeWidth={1.5} style={{ color: GARMIN_BLUE }} className="shrink-0" />
+                  <p className="text-base text-zinc-700 leading-snug">
+                    An meiner Seite: <span className="font-semibold text-zinc-900">Tom Elmer</span>, Schweizer Meister – mein Coach, der mich aufs nächste Level bringt.
+                  </p>
+                </div>
               </FadeUp>
             </div>
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-100">
@@ -429,13 +438,14 @@ function Events() {
     { name: "Witikoner Backyard", date: "14.–16. Mai 2026", location: "Zürich · 23 Runden", done: true },
     { name: "99 Lap Race", date: "25.–26. Juli 2026", location: "Deutschland", done: false },
     { name: "Last Soul Ultra", date: "14. August 2026", location: "International", done: false },
+    { name: "Berlin Marathon", date: "27. September 2026", location: "Berlin", done: false },
   ];
   return (
     <section className="bg-black text-white py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Saison 2026</div></FadeUp>
         <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16"><AnimatedWords text="Die Events dieses Jahr." stagger={0.06} /></h2>
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {races.map((r, i) => (
             <FadeUp key={i} delay={0.2 + i * 0.1}>
               <div className="bg-zinc-900 rounded-2xl p-8 hover:bg-zinc-800 transition-colors h-full">
@@ -503,12 +513,6 @@ function Contact() {
             <a href="mailto:pierre@laeuft.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Mail size={20} className="group-hover:scale-110 transition-transform" /> pierre@laeuft.ch</a>
             <a href="tel:+41798533672" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 79 853 36 72</a>
           </div>
-        </FadeUp>
-        <FadeUp delay={1}>
-          <Link href="/insights" target="_blank" className="mt-16 inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-sm text-white/80 hover:bg-white hover:text-black transition-colors group">
-            <Eye size={16} /> Live-Insights ansehen <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <p className="mt-4 text-sm text-white/40">Passwort: partner2026</p>
         </FadeUp>
         <FadeUp delay={1.2}><div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">laeuft.ch</div></FadeUp>
       </div>

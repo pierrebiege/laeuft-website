@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
 import { Youtube, Instagram, Camera, Users, Mail, Phone, BarChart3, ArrowRight, Car, Mountain, Heart, Eye, Calendar } from "lucide-react";
 
@@ -28,7 +28,8 @@ function AnimatedWords({ text, className = "", delay = 0, stagger = 0.05 }: { te
   return (
     <span ref={ref} className={className} style={{ display: "inline-block" }}>
       {words.map((word, i) => (
-        <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
+        <Fragment key={i}>
+          <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
           <motion.span
             style={{ display: "inline-block", willChange: "transform" }}
             initial={{ y: "110%", opacity: 0 }}
@@ -38,7 +39,9 @@ function AnimatedWords({ text, className = "", delay = 0, stagger = 0.05 }: { te
             {word}
             {i < words.length - 1 ? " " : ""}
           </motion.span>
-        </span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
+        </Fragment>
       ))}
     </span>
   );
