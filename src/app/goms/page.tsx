@@ -138,11 +138,13 @@ function RouteMap() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const [act, setAct] = useState(0);
+  const [km, setKm] = useState(0);
   useEffect(() => {
     const unsub = scrollYProgress.on("change", (v) => {
       const rev = Math.max(0, Math.min(1, (v - 0.08) / 0.82));
       iframeRef.current?.contentWindow?.postMessage({ rev }, "*");
       setAct(rev < 0.25 ? 0 : rev < 0.52 ? 1 : rev < 0.82 ? 2 : 3);
+      setKm(Math.round(rev * 60));
     });
     return () => unsub();
   }, [scrollYProgress]);
@@ -172,7 +174,7 @@ function RouteMap() {
         </div>
         <div className="absolute right-6 md:right-12 bottom-14 text-right pointer-events-none">
           <div className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-1">Scrollen, um zu laufen</div>
-          <div className="text-4xl md:text-6xl font-bold text-white/90">60<span className="text-lg md:text-2xl align-top">km</span></div>
+          <div className="text-4xl md:text-6xl font-bold text-white/90 tabular-nums">{km}<span className="text-lg md:text-2xl align-top ml-0.5">km</span></div>
         </div>
       </div>
     </section>
