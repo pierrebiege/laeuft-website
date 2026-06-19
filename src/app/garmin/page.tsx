@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Youtube, Instagram, Camera, Mountain, Mail, Phone, ArrowRight, Eye, Calendar, Trophy, Heart, Infinity as InfinityIcon, Footprints } from "lucide-react";
+import { Youtube, Instagram, Camera, Mountain, Mail, Phone, ArrowRight, Eye, Calendar, Trophy, Heart, Infinity as InfinityIcon, Footprints, BarChart3 } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const GARMIN_BLUE = "#007CC3";
@@ -111,9 +111,9 @@ function Hero() {
         <motion.div className="inline-block mb-10 px-5 py-2 border border-white/20 rounded-full text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
           Pierre Biege × Garmin
         </motion.div>
-        <h1 className="sr-only">Pierre Biege × Garmin — Beat Yesterday</h1>
+        <h1 className="sr-only">Pierre Biege × Garmin — Jeden Tag. Jeder Berg.</h1>
         <div className="text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight leading-[0.85] mb-6">
-          <AnimatedWords text="Beat Yesterday." delay={0.4} stagger={0.08} />
+          <AnimatedWords text="Jeden Tag. Jeder Berg." delay={0.4} stagger={0.08} />
         </div>
         <motion.p className="text-xl md:text-3xl text-white/80 font-light tracking-wide mt-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
           Ultraläufer · Content Creator · Täglich in den Walliser Alpen
@@ -224,7 +224,7 @@ function Story() {
           text="Ich denke nicht in einer Saison, sondern in einem Jahrzehnt. Aus dem Wallis hinaus, Tag für Tag, Berg für Berg – auf die grössten Ziele zu, die ich mir vorstellen kann."
           className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-white text-center"
         />
-        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Beat Yesterday – das lebe ich, jeden einzelnen Tag.“</p></FadeUp>
+        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ich denke nicht in Tagen, sondern in Jahren.“</p></FadeUp>
       </div>
     </section>
   );
@@ -232,20 +232,101 @@ function Story() {
 
 function StatsLine() {
   const stats = [
-    { value: "Täglich", label: "Laufen – seit Jahren ohne Pause", image: G(6) },
-    { value: "200+", label: "Kilometer pro Race", image: G(18) },
-    { value: "40 h+", label: "am Stück unterwegs", image: G(2) },
-    { value: "12 Mio.", label: "Aufrufe · letzte 90 Tage", image: G(14) },
+    { value: "12 Mio.", label: "Aufrufe · letzte 90 Tage", image: G(6) },
+    { value: "794k", label: "Konten erreicht · 90 Tage", image: G(18) },
+    { value: "2,2 Mio.", label: "Aufrufe · letzte 30 Tage", image: G(2) },
+    { value: "200+", label: "Kilometer pro Race", image: G(14) },
   ];
   return (
     <section className="bg-black text-white py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto mb-16">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">In Zahlen</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl"><AnimatedWords text="Jeden Tag. Am Limit." stagger={0.06} /></h2>
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Reichweite in Zahlen</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl"><AnimatedWords text="Wir wachsen. Schnell." stagger={0.06} /></h2>
       </div>
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {stats.map((s, i) => (<FadeUp key={i} delay={i * 0.1} y={50}><StatTile value={s.value} label={s.label} image={s.image} /></FadeUp>))}
       </div>
+      <div className="max-w-6xl mx-auto mt-10">
+        <FadeUp delay={0.4}>
+          <p className="text-white/50 text-base md:text-lg font-light max-w-3xl">
+            Ich bin (noch) kein riesiger Creator – aber ich erreiche schon heute extrem viele Menschen, und die Kurve zeigt steil nach oben. Wer jetzt einsteigt, wächst mit. Genau das ist die Chance.
+          </p>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+function YouTubeBuild() {
+  const points = [
+    { Icon: Youtube, title: "Aufbau mit einem Profi", text: "An meiner Seite: Clemens Hovekamp – Mitorganisator des Ultimate Run und verantwortlich für den Aufbau grosser YouTube-Formate wie «7 vs. Wild». Er betreut mich und den Kanal." },
+    { Icon: Mountain, title: "Garmin mittendrin", text: "Garmin ist Teil der Adventures – nicht ein nachträglich platziertes Logo, sondern fest in den Geschichten, während der Kanal wächst." },
+    { Icon: BarChart3, title: "Ziel: starkes Wachstum", text: "Wir bauen den Kanal in den nächsten Jahren gezielt aus – langfristig gedacht, nicht für einen einzelnen Moment." },
+  ];
+  return (
+    <section className="bg-black text-white py-28 px-6 overflow-hidden border-t border-white/10">
+      <div className="max-w-6xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-5">Der Plan</div></FadeUp>
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-5 leading-[0.95]"><AnimatedWords text="Wir bauen YouTube auf." stagger={0.05} /></h2>
+        <FadeUp delay={0.3}>
+          <p className="text-base md:text-lg text-white/55 font-light leading-relaxed max-w-2xl mb-12">
+            Es geht nicht um einzelne Clips, sondern um den gezielten Aufbau eines YouTube-Kanals – und Garmin ist bei den Abenteuern mittendrin.
+          </p>
+        </FadeUp>
+        <div className="grid md:grid-cols-3 gap-5">
+          {points.map(({ Icon, title, text }, i) => (
+            <FadeUp key={i} delay={0.2 + i * 0.1}>
+              <div className="bg-zinc-950 border border-white/10 rounded-2xl p-7 h-full hover:bg-zinc-900 transition-colors">
+                <Icon size={30} strokeWidth={1.5} className="mb-5" style={{ color: GARMIN_BLUE }} />
+                <h3 className="text-base font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-white/55 leading-relaxed font-light">{text}</p>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroMoment() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.4, 1.1, 1]);
+  const textScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 1.08]);
+  return (
+    <section ref={ref} className="relative h-screen flex items-center justify-center overflow-hidden bg-black text-white">
+      <motion.div className="absolute inset-0" style={{ scale }}>
+        <Image src={G(1)} alt="" fill className="object-cover opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
+      </motion.div>
+      <motion.div className="relative z-10 text-center px-6" style={{ scale: textScale }}>
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/50 mb-8">Jeden einzelnen Tag</div></FadeUp>
+        <h2 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9] max-w-5xl mx-auto"><AnimatedWords text="Wo andere aufhören, fängt mein Tag erst an." stagger={0.04} /></h2>
+        <FadeUp delay={0.6}><p className="text-xl md:text-2xl text-white/70 font-light mt-10 max-w-2xl mx-auto">Bei jedem Wetter. Seit Jahren ohne Pause.</p></FadeUp>
+      </motion.div>
+    </section>
+  );
+}
+
+function HorizontalDrift() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const x = useTransform(scrollYProgress, [0, 1], ["10%", "-40%"]);
+  const images = [G(20), G(5), G(7), G(13), G(16), G(21), G(17), G(22), G(10)];
+  return (
+    <section ref={ref} className="bg-black py-32 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 mb-20">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Behind the Scenes</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] text-white"><AnimatedWords text="Jeder Tag zählt." stagger={0.06} /></h2>
+      </div>
+      <motion.div className="flex gap-6 px-6 will-change-transform" style={{ x }}>
+        {images.map((src, i) => (
+          <motion.div key={i} className="relative shrink-0 w-[80vw] md:w-[55vw] lg:w-[42vw] aspect-[4/5] rounded-3xl overflow-hidden bg-zinc-900" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1, ease: EASE, delay: i * 0.05 }}>
+            <Image src={src} alt="" fill className="object-cover" />
+          </motion.div>
+        ))}
+      </motion.div>
     </section>
   );
 }
@@ -447,11 +528,14 @@ export default function GarminPresentationPage() {
       <Heimat />
       <Story />
       <StatsLine />
+      <YouTubeBuild />
       <Channels />
       <Interlude text="Berge, Schnee, Hitze, Nacht. Mein Trainingsplatz sind die Walliser Alpen – und das Abenteuer hört nie auf." />
       <Vision />
       <Events />
+      <HeroMoment />
       <GalleryGrid />
+      <HorizontalDrift />
       <Contact />
     </div>
   );
