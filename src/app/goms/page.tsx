@@ -348,8 +348,8 @@ function Deliverables() {
   const pieces = [
     { n: "1", t: "YouTube-Folge", d: "Das Herzstück. Die ganze Geschichte – für immer festgehalten." },
     { n: "1", t: "Reel", d: "Der virale Kurzclip aus den stärksten Momenten." },
-    { n: "Mehrere", t: "Stories", d: "Live vom Lauf: Sonnenaufgang, Etappen, Ziel – Reichweite am Tag selbst." },
-    { n: "100+", t: "Fotos & Footage", d: "Hochwertige Aufnahmen zur freien Nutzung durch die Region." },
+    { n: "Mehrere", t: "Stories", d: "Live vom Lauf: Sonnenaufgang, Etappen, Ziel – Sichtbarkeit am Tag selbst." },
+    { n: "Auswahl", t: "Fotos & Clips", d: "Eine Auswahl hochwertiger Aufnahmen für eure eigenen Kanäle." },
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
@@ -370,10 +370,10 @@ function Deliverables() {
         <FadeUp delay={0.3}>
           <div className="mt-14 flex flex-col md:flex-row md:items-end gap-6 md:gap-16 border-t border-white/15 pt-10">
             <div className="flex gap-10">
-              <div><div className="text-4xl md:text-6xl font-bold" style={{ color: GOMS }}>12 Mio.</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Aufrufe / 90 Tage</div></div>
-              <div><div className="text-4xl md:text-6xl font-bold">794k</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Konten erreicht</div></div>
+              <div><div className="text-4xl md:text-6xl font-bold" style={{ color: GOMS }}>12 Mio.</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Aufrufe / 90 Tage · alle Kanäle</div></div>
+              <div><div className="text-4xl md:text-6xl font-bold">794k</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">aktive Konten erreicht</div></div>
             </div>
-            <p className="text-white/60 font-light md:text-lg md:max-w-md">Eure Region – vor einem Publikum, das wirklich hinschaut. Plus freigegebenes Material zur Weiternutzung.</p>
+            <p className="text-white/60 font-light md:text-lg md:max-w-md">Über seine Kanäle erreicht Pierre ein grosses, <span className="text-white">aktives und outdoor-affines Publikum</span> – genau die Menschen, die eine Bergregion ansprechen will.</p>
           </div>
         </FadeUp>
       </div>
@@ -419,7 +419,7 @@ function Angebot() {
     "YouTube-Hauptvideo (das Herzstück)",
     "Reels & Shorts aus den besten Momenten",
     "Live-Content am Tag (Stories & Fotos)",
-    "Freigegebenes Bild-/Videomaterial zur Weiternutzung durch die Region",
+    "Eine Auswahl an Fotos & Clips für eure eigenen Kanäle",
   ];
   return (
     <section id="angebot" className="relative bg-zinc-950 text-white py-28 md:py-40 px-6 overflow-hidden scroll-mt-16">
@@ -445,7 +445,7 @@ function Angebot() {
           </FadeUp>
         </div>
         <FadeUp delay={0.3}>
-          <p className="text-white/80 md:text-lg max-w-2xl mt-12">Reichweite und Produktion in dieser Qualität kosten normalerweise ein Vielfaches. Hier als echte Geschichte – <span className="text-white font-medium">kein Aufwand für euch</span>, und das <span className="text-white font-medium">Material gehört euch</span>.</p>
+          <p className="text-white/80 md:text-lg max-w-2xl mt-12">Produktion und Sichtbarkeit in dieser Qualität kosten normalerweise ein Vielfaches. Hier als echte Geschichte – <span className="text-white font-medium">kein Aufwand für euch</span>, und ihr erhaltet die <span className="text-white font-medium">fertige Folge plus eine Auswahl an Aufnahmen</span> für eure Kanäle.</p>
           <p className="text-white/45 text-sm mt-5 max-w-2xl">Termin: 30. Juni oder 4. Juli 2026 (Wetter-Ausweichtermin definiert). Nutzungsrechte & Collab-Bedingungen vorab kurz schriftlich.</p>
         </FadeUp>
       </div>
@@ -519,7 +519,7 @@ function Pitch() {
       </FadeUp>
       <FadeUp delay={0.2}>
         <p className="text-lg md:text-2xl text-white/65 font-light mt-8 max-w-3xl mx-auto">
-          60 km durchs Goms, vor einem Publikum von Millionen – und am Ende gehört euch das ganze Material.
+          Pierre Biege, Ultraläufer aus dem Wallis, durchquert das ganze Goms an einem Tag – und erzählt die Region einem aktiven, draussen-begeisterten Publikum. Ihr bekommt die Folge und eine Auswahl an Aufnahmen für eure Kanäle.
         </p>
       </FadeUp>
     </section>
