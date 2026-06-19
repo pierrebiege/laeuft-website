@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Weinschmiede Salgesch",
+    "contact_name": "Christian Schmid",
+    "email": "christian.schmid@netplus.ch",
+    "website": "https://weinschmiede.ch/",
+    "notes": "Weingut in Salgesch, familiengeführt von Reinhard & Christian Schmid seit über 25 Jahren. Bio-zertifizierte Weine, mehrfach mit Goldmedaillen und Prix Bio Suisse ausgezeichnet. Adresse: Tschütrigstrasse 27, 3970 Salgesch. Branche: Weinbau. Persönliche E-Mail vom Inhaber auf der Kontaktseite gefunden."
+  },
+  {
+    "company": "Bäckerei A. Mathieu-Zumstein AG",
+    "contact_name": "Paul Mathieu",
+    "email": "baeck.mathieu@bluewin.ch",
+    "website": "https://baeckerei-mathieu.ch/",
+    "notes": "Traditionsbäckerei seit 1938 in 3. Generation, geführt von Paul und Anneliese Mathieu. 3 Standorte: Leuk-Stadt, Susten, Salgesch. Ca. 20 Mitarbeiter plus Lehrlinge. Eigene Fructum Vitis Manufaktur mit regionalen Rohstoffen. Branche: Bäckerei/Konditorei. E-Mail via search.ch und valais.ch verifiziert."
+  },
+  {
+    "company": "Metzgerei Nessier AG",
+    "contact_name": "Thomas Nessier",
+    "email": "info@metzgerei-nessier.ch",
+    "website": "https://www.metzgerei-nessier.ch/",
+    "notes": "Walliser Fleischtrocknerei in 4. Familiengeneration seit 1923, Standort in Münster (Goms). Thomas Nessier ist seit 2016 alleiniger operativer Leiter. IGP-Label für Walliser Trockenfleisch, zahlreiche Goldmedaillen. Online-Shop auf der Website vorhanden. Branche: Metzgerei/Fleischverarbeitung."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch/",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit mehreren Standorten (Susten, Visp-Center, Visp-Süd, Stalden). 24/7 geöffnet, Online-Abo-Kauf auf der Website. 4.9 von 5 Sternen bei 485 Bewertungen. Inhaber: Samuel Millius. Branche: Fitness. Hauptsitz: Kantonsstrasse 136, 3952 Susten."
+  },
+  {
+    "company": "Garage et Carrosserie Mistral Martigny SA",
+    "contact_name": "Guy Bruchez",
+    "email": "info@garage-mistral.ch",
+    "website": "https://www.garage-mistral.ch/",
+    "notes": "Gegründet 1991 von Jean-Pierre und Guy Bruchez. Offizieller Konzessionär für Citroën, DS, Peugeot, Hyundai, Mazda, Alfa Romeo, Opel, Suzuki, Jeep, Fiat, Abarth. Guy Bruchez ist Directeur. Standort: Av. des Grandes-Maresches 102, 1920 Martigny. Branche: Autogarage/Carrosserie."
+  }
+]
