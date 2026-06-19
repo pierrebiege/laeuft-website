@@ -107,7 +107,7 @@ function Hero() {
           <AnimatedWords text="Vom ersten Licht zum Gletscher." delay={0.35} stagger={0.06} />
         </div>
         <motion.p className="text-lg md:text-2xl text-white/80 font-light max-w-3xl mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
-          Ein Läufer mit grosser Community durchquert das ganze Goms an einem Tag – Dörfer, Trails, Berge, bis zum Gletscher. Und hält die Region für immer fest: YouTube-Folge, Reel, Stories, Bilder.
+          Ein Läufer durchquert das ganze Goms an einem einzigen Tag – von der Morgendämmerung bis zur Gletscherzunge. Und macht eine Region sichtbar, die kaum jemand kennt.
         </motion.p>
       </motion.div>
       <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
@@ -421,7 +421,10 @@ function Angebot() {
             </div>
           </FadeUp>
         </div>
-        <FadeUp delay={0.3}><p className="text-white/45 text-sm mt-12 max-w-2xl">Termin: 30. Juni oder 4. Juli 2026 (Wetter-Ausweichtermin definiert). Nutzungsrechte & Collab-Bedingungen vorab kurz schriftlich.</p></FadeUp>
+        <FadeUp delay={0.3}>
+          <p className="text-white/80 md:text-lg max-w-2xl mt-12">Reichweite und Produktion in dieser Qualität kosten normalerweise ein Vielfaches. Hier als echte Geschichte – <span className="text-white font-medium">kein Aufwand für euch</span>, und das <span className="text-white font-medium">Material gehört euch</span>.</p>
+          <p className="text-white/45 text-sm mt-5 max-w-2xl">Termin: 30. Juni oder 4. Juli 2026 (Wetter-Ausweichtermin definiert). Nutzungsrechte & Collab-Bedingungen vorab kurz schriftlich.</p>
+        </FadeUp>
       </div>
     </section>
   );
@@ -441,7 +444,8 @@ function Contact() {
       </motion.div>
       <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
         <FadeUp><p className="text-xl md:text-3xl text-white/60 italic mb-12">„Ich bin 60 km gelaufen, um diesen Gletscher zu sehen – bevor er weg ist.“</p></FadeUp>
-        <h2 className="text-6xl md:text-9xl font-bold tracking-tight leading-[0.85] mb-12"><AnimatedWords text="Lauf mit uns." stagger={0.07} /></h2>
+        <h2 className="text-6xl md:text-9xl font-bold tracking-tight leading-[0.85] mb-10"><AnimatedWords text="Lauf mit uns." stagger={0.07} /></h2>
+        <FadeUp delay={0.35}><p className="text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto mb-12">Ein kurzes Gespräch genügt. Der Termin steht: <span className="text-white">30. Juni / 4. Juli 2026</span> – lasst uns das gemeinsam festhalten.</p></FadeUp>
         <FadeUp delay={0.5}>
           <div className="inline-flex flex-col items-center gap-5">
             <div className="text-2xl font-semibold">Pierre Biege</div>
@@ -455,6 +459,25 @@ function Contact() {
   );
 }
 
+// ==================== PITCH (der eine Satz) ====================
+
+function Pitch() {
+  return (
+    <section className="bg-black text-white py-24 md:py-36 px-6 text-center border-y border-white/10">
+      <FadeUp>
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] max-w-5xl mx-auto">
+          Eine Region. Eine Geschichte.<br className="hidden md:block" /> Ein Film, der bleibt.
+        </h2>
+      </FadeUp>
+      <FadeUp delay={0.2}>
+        <p className="text-lg md:text-2xl text-white/65 font-light mt-8 max-w-3xl mx-auto">
+          60 km durchs Goms, vor einem Publikum von Millionen – und am Ende gehört euch das ganze Material.
+        </p>
+      </FadeUp>
+    </section>
+  );
+}
+
 // ==================== PAGE ====================
 
 export default function GomsPresentationPage() {
@@ -463,6 +486,7 @@ export default function GomsPresentationPage() {
       <Header />
       <Hero />
       <RouteMap />
+      <Pitch />
       <Idee />
       <Region />
       <Eckwerte />
