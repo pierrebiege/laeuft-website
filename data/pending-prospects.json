@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Aletsch Elektro AG",
+    "contact_name": "Norbert Rittiner",
+    "email": "norbert.rittiner@aletsch-elektro.ch",
+    "website": "https://www.aletsch-elektro.ch",
+    "notes": "Elektroplanung und -installation in Naters, gegründet 2001 von Ruth und Norbert Rittiner. Team von ca. 20 Fachleuten inkl. bis zu 6 Lehrlingen. Bedient Kunden von Brig-Glis/Naters über die Aletschregion bis Goms. Persönliche E-Mail des Inhabers gefunden."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "24/7 Fitnessstudio mit Standorten in Stalden, Susten, Visp-Center und Visp-Süd. Inhaber Samuel Millius ist Athletic & Performance Trainer und Ernährungsberater. Bietet Personal Training, Gruppenkurse und CrossGym an. Wachsendes Unternehmen mit mehreren Standorten im Oberwallis."
+  },
+  {
+    "company": "Schmid Bautech AG",
+    "contact_name": "Beda Theler",
+    "email": "info@schmidbautech.ch",
+    "website": "https://www.schmidbautech.ch",
+    "notes": "Bauunternehmen und Bautenschutz in Brig-Gamsen, gegründet 2003. Geschäftsführer Beda Theler. Ca. 20 Mitarbeiter. Filialen in Ausserberg und Visp. Spezialisiert auf Bautenschutz und Bauarbeiten."
+  },
+  {
+    "company": "Schreinerei Zurbriggen AG",
+    "contact_name": "Roman Zurbriggen",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "Traditionsschreinerei in Visp seit 1888, geführt in 4. Generation von Inhaber Roman Zurbriggen. Spezialisiert auf Fenster, Möbel und Innenausbau im Oberwallis. Team-Seite mit mehreren Mitarbeitern vorhanden."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "administration@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "Weingut und Kellerei in Salgesch, geführt von den Brüdern Manfred und Damian Cina (seit 1987, beide studierte Weinbauer und Önologen). Über 40 Weinsorten im Shop, Degustationen und Besichtigungen. Winzerfamilie mit langer Tradition."
+  }
+]
