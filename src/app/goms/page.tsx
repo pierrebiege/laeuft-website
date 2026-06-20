@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef, useState, useEffect, Fragment } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Mail, Phone, Sunrise, Users, Waves } from "lucide-react";
+import { Mail, Phone, Sunrise, Users, Waves, Film } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const GOMS = "#2fb4c4"; // Gletscher-Türkis
@@ -188,7 +188,7 @@ function Idee() {
     <section id="idee" className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Die Idee</div></FadeUp>
-        <ScrollRevealText text="Ein Läufer mit grosser Community durchquert das ganze Goms an einem Tag – aus eigener Kraft, von ganz unten bis zum Eis. Vorbei an Walserdörfern, über Trails, durch eines der eindrücklichsten und untertouristischsten Hochtäler der Schweiz." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Ein Läufer mit grosser Community durchquert das ganze Goms an einem Tag – aus eigener Kraft, von ganz unten bis zum Eis. Vorbei an Walserdörfern, über Trails, durch eines der schönsten Hochtäler der Schweiz." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
       </div>
       <div className="max-w-4xl mx-auto mt-28">
         <ScrollRevealText text="Er durchlebt die Geschichte und hält alles für immer fest: in einer YouTube-Folge, einem Reel, mehreren Stories und hunderten Bildern. Das Finale am verschwindenden Rhonegletscher macht sie teilbar." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
@@ -309,7 +309,7 @@ function Region() {
     { t: "Die Walserdörfer", d: "Münster, Geschinen, Ulrichen, Obergesteln, Oberwald – seit Jahrhunderten kaum verändert." },
     { t: "Trails & Höhenweg", d: "Der Gommer Höhenweg, einsame Pfade, der junge Rotten als ständiger Begleiter." },
     { t: "Berge & Aussichten", d: "Viertausender am Horizont, Pässe, Gipfel – gewaltige Natur zum Greifen nah." },
-    { t: "Untertouristisch", d: "Ein Hochtal, das die wenigsten kennen – genau das macht es so wertvoll." },
+    { t: "Eine der schönsten Regionen", d: "Wir zeigen den Menschen ein Hochtal, das viele noch entdecken dürfen – ehrlich und in seiner ganzen Schönheit." },
   ];
   return (
     <section className="bg-black text-white py-28 md:py-40 px-6">
@@ -348,14 +348,29 @@ function Deliverables() {
   const pieces = [
     { n: "1", t: "YouTube-Folge", d: "Das Herzstück. Die ganze Geschichte – für immer festgehalten." },
     { n: "1", t: "Reel", d: "Der virale Kurzclip aus den stärksten Momenten." },
-    { n: "Mehrere", t: "Stories", d: "Live vom Lauf: Sonnenaufgang, Etappen, Ziel – Sichtbarkeit am Tag selbst." },
+    { n: "Mehrere", t: "Stories & Erwähnungen", d: "Live vom Lauf auf Instagram – plus Erwähnungen und Collab-Posts mit @goms, wenn ihr möchtet." },
     { n: "Auswahl", t: "Fotos & Clips", d: "Eine Auswahl hochwertiger Aufnahmen für eure eigenen Kanäle." },
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
       <div className="max-w-7xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Das bekommt ihr</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16"><AnimatedWords text="Eure Region, festgehalten." stagger={0.05} /></h2>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-12"><AnimatedWords text="Eure Region, festgehalten." stagger={0.05} /></h2>
+
+        {/* Highlight: eigener Werbespot */}
+        <FadeUp>
+          <div className="relative overflow-hidden border border-white/15 mb-12 p-8 md:p-12" style={{ background: "linear-gradient(120deg, rgba(47,180,196,0.14), rgba(47,180,196,0.02))" }}>
+            <div className="grid md:grid-cols-[1fr_auto] gap-6 md:gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] mb-4" style={{ color: GOMS }}><Film size={15} /> Exklusiv für Goms</div>
+                <h3 className="text-3xl md:text-5xl font-bold tracking-tight leading-[0.95] mb-4">Euer eigener Werbespot.</h3>
+                <p className="text-white/70 font-light md:text-lg max-w-2xl">Ein Spot bis 60 Sekunden – mit Voiceover von Pierre. Ihr bestimmt die Botschaft. Ihr könnt eigenes Material beisteuern, oder wir gestalten ihn aus den Aufnahmen des Tages. Ein fertiges Werbemittel, das euch gehört.</p>
+              </div>
+              <div className="text-6xl md:text-8xl font-bold tracking-tight shrink-0" style={{ color: GOMS }}>60<span className="text-2xl md:text-3xl align-top">sek</span></div>
+            </div>
+          </div>
+        </FadeUp>
+
         <div className="grid grid-cols-2 md:grid-cols-4 border-t border-white/15">
           {pieces.map((p, i) => (
             <FadeUp key={i} delay={i * 0.08}>
@@ -417,7 +432,8 @@ function Angebot() {
     "Konzeption, Lauf-Projekt & Durchführung (60 km / 4'500 hm, an einem Tag)",
     "Team vor Ort: Pierre + Fotografin/Filmerin an Schlüsselpunkten",
     "YouTube-Hauptvideo (das Herzstück)",
-    "Reels & Shorts aus den besten Momenten",
+    "Eigener Werbespot bis 60 Sek. mit Voiceover von Pierre – Botschaft & Material nach euren Wünschen",
+    "Reel + Instagram-Erwähnungen & Collab-Posts (auf Wunsch)",
     "Live-Content am Tag (Stories & Fotos)",
     "Eine Auswahl an Fotos & Clips für eure eigenen Kanäle",
   ];
