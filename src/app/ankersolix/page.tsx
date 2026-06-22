@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef, useState, useEffect, Fragment } from "react";
 import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Mail, Phone, BatteryCharging, Sun, Camera, Mountain, Youtube, Instagram, Calendar } from "lucide-react";
+import { Mail, Phone, BatteryCharging, Sun, Camera, Mountain, Youtube, Instagram, Calendar, Handshake, Zap } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const ANKER = "#10c9b6"; // SOLIX Teal
@@ -92,7 +92,7 @@ function Header() {
         <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.2em] text-white/80">
           <button onClick={() => go("pierre")} className="hover:text-white transition-colors">Über mich</button>
           <button onClick={() => go("projekte")} className="hover:text-white transition-colors">Projekte</button>
-          <button onClick={() => go("kontakt")} className="hover:text-white transition-colors"><span className="border-b-2 pb-1" style={{ borderColor: ANKER }}>Kontakt</span></button>
+          <button onClick={() => go("angebot")} className="hover:text-white transition-colors"><span className="border-b-2 pb-1" style={{ borderColor: ANKER }}>Angebot</span></button>
         </nav>
       </div>
     </header>
@@ -181,10 +181,13 @@ function Story() {
     <section className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden">
       <div className="max-w-4xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Warum Anker SOLIX</div></FadeUp>
-        <ScrollRevealText text="Wenn ich tagelang draussen bin – in den Bergen, bei Ultra-Events, bei mehrtägigen Projekten – läuft alles über Strom. Und es gibt keine Steckdose. Genau da entscheidet sich, ob die Geschichte weiterlebt oder im Dunkeln endet." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Ich bin ständig in den Bergen unterwegs – im Auto habe ich Powerbanks immer dabei. Aber der Knackpunkt sind die Events: Backyard Ultras und mehrtägige Rennen, bei denen ich 3 bis 4 Tage komplett auf mobile Energie angewiesen bin." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
       </div>
       <div className="max-w-4xl mx-auto mt-28">
-        <ScrollRevealText text="Anker SOLIX passt nicht einfach in mein Umfeld – es ist die Voraussetzung dafür. Powerstation und Solar, die allem standhalten, was die Alpen über vier Jahreszeiten austeilen. Authentisch im Einsatz, weil ich es wirklich brauche." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Genau diese Formate boomen gerade – Backyard und Mehrtages-Ultras sind voll im Trend. Und sie alle haben dasselbe Problem: keine Steckdose, tagelang. Wer hier Energie liefert, ist sichtbar, wo es wirklich zählt." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+      </div>
+      <div className="max-w-4xl mx-auto mt-28">
+        <ScrollRevealText text="Anker SOLIX passt nicht einfach in mein Umfeld – es ist die Voraussetzung dafür. Powerstation und Solar, die allem standhalten, was die Alpen austeilen. Authentisch im Einsatz, weil ich es wirklich brauche." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
         <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Energie, die durchhält, solange ich durchhalte.“</p></FadeUp>
       </div>
     </section>
@@ -239,21 +242,24 @@ function Reach() {
 
 function Projekte() {
   const items = [
-    { Icon: BatteryCharging, title: "1000 km am Stück", text: "Nach 1000 Tagen täglichem Laufen: 1000 Kilometer ohne Halt. Tagelang unterwegs – Kameras und Geräte müssen durchlaufen." },
-    { Icon: Mountain, title: "Alle 4000er der Alpen", text: "Jeden Viertausender der Alpen besteigen – in 10 Jahren alle in einem durchgehenden Run. Mehrtägige Etappen, komplett autark." },
-    { Icon: Sun, title: "100'000 Höhenmeter", text: "Für krebskranke Kinder – an wechselnden Spots in der ganzen Schweiz. Mobile Energie als ständiger Begleiter." },
+    { Icon: BatteryCharging, tag: "2027 · Tag 1000", title: "1000 km am Stück", text: "Nach 1000 Tagen täglichem Laufen ohne Pause: 1000 Kilometer ohne Halt. Tagelang unterwegs – Kameras und Geräte müssen durchlaufen." },
+    { Icon: Sun, tag: "2027", title: "100'000 Höhenmeter", text: "Wohltätigkeits-Run für krebskranke Kinder – an wechselnden Spots in der ganzen Schweiz. Mobile Energie als ständiger Begleiter." },
+    { Icon: Mountain, tag: "ab 2027", title: "Alle 4000er der Alpen", text: "Jeden Viertausender der Alpen besteigen – später alle in einem durchgehenden Run. Mehrtägige Etappen, komplett autark." },
   ];
   return (
     <section id="projekte" className="relative bg-zinc-950 text-white py-28 md:py-40 px-6 overflow-hidden scroll-mt-16">
       <div className="max-w-7xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Mehrtägige Projekte · 2026 & darüber hinaus</div></FadeUp>
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Kommende Grossprojekte · 2027</div></FadeUp>
         <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-10 leading-[0.9]"><AnimatedWords text="Tage draussen. Ohne Steckdose." stagger={0.05} /></h2>
-        <FadeUp delay={0.3}><p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-16">Genau die Projekte, bei denen mobile Energie zur Hauptrolle wird – authentisch im Einsatz, über mehrere Tage, mit konkreten Integrations-Ideen.</p></FadeUp>
+        <FadeUp delay={0.3}><p className="text-lg md:text-2xl text-white/60 font-light leading-relaxed max-w-3xl mb-16">Genau die Projekte, bei denen mobile Energie zur Hauptrolle wird – mehrtägig, autark, mit konkreten Integrations-Ideen. Wer jetzt einsteigt, ist von Anfang an dabei.</p></FadeUp>
         <div className="grid md:grid-cols-3 gap-6">
-          {items.map(({ Icon, title, text }, i) => (
+          {items.map(({ Icon, tag, title, text }, i) => (
             <FadeUp key={i} delay={0.1 + i * 0.08}>
               <div className="bg-black border border-white/10 p-10 h-full">
-                <Icon size={32} strokeWidth={1.5} className="mb-6" style={{ color: ANKER }} />
+                <div className="flex items-center justify-between mb-6">
+                  <Icon size={32} strokeWidth={1.5} style={{ color: ANKER }} />
+                  <span className="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full border border-white/15 text-white/70">{tag}</span>
+                </div>
                 <h3 className="text-xl md:text-2xl font-semibold mb-3">{title}</h3>
                 <p className="text-white/60 leading-relaxed font-light">{text}</p>
               </div>
@@ -290,6 +296,38 @@ function Deliverables() {
             </FadeUp>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ==================== ANGEBOT (flexibles Modell) ====================
+
+function Angebot() {
+  const models = [
+    { Icon: Handshake, title: "Langfristige Partnerschaft", text: "6–12 Monate an eurer Seite – durchgehend sichtbar über Training, Events und die grossen Projekte. Plan- und aufbaubar, wächst mit." },
+    { Icon: Zap, title: "Einzelne Kampagnen", text: "Lieber projektbezogen? Dann begleite ich gezielt ein Event oder ein Mehrtages-Projekt – fokussiert, mit klarem Output." },
+  ];
+  return (
+    <section id="angebot" className="bg-black text-white py-28 md:py-40 px-6 overflow-hidden scroll-mt-16">
+      <div className="max-w-7xl mx-auto">
+        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Das Angebot</div></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="So flexibel, wie ihr wollt." stagger={0.05} /></h2>
+        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-16">Wir finden das Modell, das für euch passt – von der langfristigen Kooperation bis zur einzelnen Kampagne. Die Konditionen klären wir im Gespräch, fair und transparent.</p></FadeUp>
+        <div className="grid md:grid-cols-2 gap-6">
+          {models.map(({ Icon, title, text }, i) => (
+            <FadeUp key={i} delay={0.1 + i * 0.1}>
+              <div className="border border-white/15 p-10 md:p-12 h-full">
+                <Icon size={36} strokeWidth={1.5} style={{ color: ANKER }} className="mb-7" />
+                <h3 className="text-2xl md:text-3xl font-semibold mb-3">{title}</h3>
+                <p className="text-white/60 font-light leading-relaxed md:text-lg">{text}</p>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+        <FadeUp delay={0.3}>
+          <p className="text-white/45 text-sm mt-10 max-w-2xl">Produkte, Reichweite und Content in dieser Qualität sind sonst kaum zu bekommen – hier als echte, langfristige Geschichte statt einmaliger Werbung.</p>
+        </FadeUp>
       </div>
     </section>
   );
@@ -394,6 +432,7 @@ export default function AnkerSolixPresentationPage() {
       <Reach />
       <Projekte />
       <Deliverables />
+      <Angebot />
       <Events />
       <Gallery />
       <Contact />
