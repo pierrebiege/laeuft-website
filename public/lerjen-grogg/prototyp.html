@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kundenportal · Lerjen & Grogg — Prototyp</title>
+<style>
+  :root{
+    --ink:#0c1d5c; --ink2:#34405e; --blue:#2f6ad0; --blue-deep:#2453a8;
+    --paper:#ffffff; --panel:#f7f8fb; --line:#e3e7ef; --muted:#5a6480;
+    --good:#2f8f5b; --warn:#c8772e; --red:#b23a2e; --rad:14px;
+    --shadow:0 10px 30px -22px rgba(12,29,92,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Inter","Helvetica Neue",system-ui,sans-serif;color:var(--ink);background:var(--panel);
+    -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+  h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;font-weight:600;letter-spacing:-.01em}
+  .tnum{font-variant-numeric:tabular-nums}
+  a{color:inherit}
+
+  .topbar{height:60px;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;
+    gap:18px;padding:0 22px;position:sticky;top:0;z-index:10}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .logomark{width:30px;height:30px;border-radius:7px;background:var(--ink);position:relative;flex:none}
+  .logomark::before{content:"";position:absolute;inset:7px 8px 9px 7px;border:2px solid #aebfe2;border-right:none;border-bottom:none;border-radius:2px}
+  .logomark::after{content:"";position:absolute;width:4px;height:4px;border-radius:50%;background:#8fb2e6;right:8px;bottom:8px}
+  .brand small{display:block;font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .nav{display:flex;gap:4px;margin-left:6px}
+  .navlink{padding:8px 14px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer}
+  .navlink.active{background:#eef4ff;color:var(--blue-deep)}
+  .navlink:hover{color:var(--ink)}
+  .search{flex:1;max-width:320px}
+  .search input{width:100%;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,106,208,.15)}
+  .topright{margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px}
+  .ch{display:inline-flex;align-items:center;gap:6px;background:#eef4ff;color:var(--blue-deep);padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;padding:9px 15px;border-radius:999px;border:1px solid var(--line);background:var(--paper);cursor:pointer;color:var(--ink);text-decoration:none}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  .btn.primary:hover{background:var(--blue-deep)}
+  .btn:hover{border-color:#cdd4e0}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+
+  .demo-note{background:#fff8ec;border:1px solid #f0dcb8;color:#8a6d2f;font-size:12.5px;padding:8px 14px;border-radius:10px;margin:18px 30px 0}
+
+  /* Dashboard / Fristen full width */
+  .wrap{padding:24px 30px;max-width:1180px}
+  .wrap h1{font-size:24px;margin-bottom:2px}
+  .sub{color:var(--muted);margin-bottom:20px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);padding:16px}
+  .kpi .v{font-family:Georgia,serif;font-size:25px;font-weight:600}
+  .kpi .l{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);padding:18px}
+  .card h3{font-size:16px;margin-bottom:12px}
+  .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .ini{width:34px;height:34px;border-radius:9px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none;cursor:pointer}
+  .grow{flex:1;min-width:0}
+  .nm{font-weight:600;font-size:14px}
+  .mt{font-size:12.5px;color:var(--muted)}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .pill.ok{background:#e8f4ee;color:var(--good)} .pill.soon{background:#fbecd9;color:var(--warn)}
+  .pill.late{background:#fbe9e7;color:var(--red)} .pill.ai{background:#eef4ff;color:var(--blue-deep)}
+  .insight{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .insight:last-child{border-bottom:none}
+  .insight .ic{font-size:17px}
+  .insight b{display:block;font-size:13.5px}.insight p{color:var(--ink2);font-size:12.5px}
+
+  /* Kunden split */
+  .app{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 60px)}
+  .sidebar{background:var(--paper);border-right:1px solid var(--line);padding:16px 12px;overflow:auto}
+  .side-h{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:6px 10px 10px}
+  .cust{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+  .cust:hover{background:var(--panel)} .cust.active{background:#eef4ff;border-color:#d4e2fb}
+  .cust .ini{cursor:inherit} .cust.active .ini{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .main{padding:26px 30px;overflow:auto}
+  .chead{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .chead .big{width:60px;height:60px;border-radius:14px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex:none}
+  .chead h1{font-size:26px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue-deep);background:#eef4ff;padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:8px}
+  .meta{color:var(--ink2);font-size:14px;margin-top:6px;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:6px}
+  .tab{padding:11px 16px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:var(--ink);border-bottom-color:var(--blue)}
+  .panel{padding:22px 0;display:none}.panel.active{display:block}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .insbox{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:12px;padding:14px 16px}
+  .insbox.warn{border-left-color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line)}
+  td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .firma{font-weight:600}
+  .tl{position:relative;margin-left:8px;padding-left:24px}
+  .tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line)}
+  .ev{position:relative;padding:0 0 22px}
+  .ev::before{content:"";position:absolute;left:-23px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--paper);border:2px solid var(--blue)}
+  .ev.out::before{border-color:var(--muted)}
+  .ev .d{font-size:12px;color:var(--muted)}.ev .s{font-weight:600;margin-top:1px}.ev .x{font-size:13.5px;color:var(--ink2);margin-top:3px}
+  .dir{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:6px;margin-right:8px}
+  .dir.in{background:#eef4ff;color:var(--blue-deep)}.dir.out{background:#eef1f6;color:var(--muted)}
+  .doc{display:flex;align-items:center;gap:14px;padding:13px 12px;border-bottom:1px solid var(--line)}.doc:last-child{border-bottom:none}
+  .doc .ft{width:38px;height:46px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#b23a2e;background:#fff;flex:none}
+  .doc .nm{font-weight:600}.doc .src{font-size:12.5px;color:var(--muted)}
+  .foot-note{margin-top:26px;font-size:12.5px;color:var(--muted)}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(12,29,92,.35);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:var(--paper);border-radius:16px;max-width:520px;width:100%;padding:26px;box-shadow:0 30px 70px -30px rgba(12,29,92,.5)}
+  .modal h2{font-size:20px;margin-bottom:4px}
+  .field{margin-top:14px}.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+  .field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none;background:var(--paper)}
+  .field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,106,208,.15)}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+  @media(max-width:880px){.app{grid-template-columns:1fr}.sidebar{display:none}.kpis{grid-template-columns:1fr 1fr}.cols,.grid2{grid-template-columns:1fr}.nav{display:none}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="logomark"></span><span>Kundenportal<small>Lerjen &amp; Grogg</small></span></div>
+    <div class="nav" id="nav"></div>
+    <div class="search"><input id="q" placeholder="Suchen…" oninput="onSearch(this.value)"></div>
+    <div class="topright">
+      <span class="ch">🇨🇭 Daten in der Schweiz</span>
+      <button class="btn primary" onclick="openModal()">＋ Neuer Kunde</button>
+      <span class="avatar">JL</span>
+    </div>
+  </div>
+
+  <div class="demo-note">⚠️ Prototyp / Demo mit <b>fiktiven</b> Daten — zur Veranschaulichung. Keine echten Kundendaten.</div>
+  <div id="root"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>Neuer Kunde</h2>
+      <p class="mt">Im fertigen Portal wird der Kontakt automatisch mit den Mails &amp; Dokumenten aus Microsoft 365 verknüpft.</p>
+      <div class="field"><label>Name</label><input placeholder="z. B. Familie Imhof"></div>
+      <div class="field"><label>Firma (optional)</label><input placeholder="z. B. Garage Muster GmbH"></div>
+      <div class="field"><label>Typ</label><select><option>Privat</option><option>KMU</option><option>Ärztin / Praxis</option><option>Verein</option></select></div>
+      <div class="field"><label>E-Mail</label><input placeholder="kontakt@beispiel.ch"></div>
+      <div class="field"><label>Telefon</label><input placeholder="079 …"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">Abbrechen</button>
+        <button class="btn primary" onclick="closeModal()">Anlegen</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const TODAY = new Date(2026,5,23);
+const CUSTOMERS = [
+  {id:"imhof",name:"Familie Imhof",type:"Privat",loc:"Visp",ini:"FI",phone:"079 123 45 67",email:"r.imhof@bluewin.ch",addr:"Bahnhofstrasse 12, 3930 Visp",
+   insights:[{ic:"⏰",t:"warn",b:"Autoversicherung läuft in 45 Tagen ab",p:"Hauptverfall AXA (31.08.2026). Vergleich anstossen?"},{ic:"💡",t:"",b:"Lücke: Privathaftpflicht fehlt",p:"Hausrat vorhanden, aber keine Privathaftpflicht. Cross-Sell."}],
+   contracts:[{firma:"Helvetia",sparte:"Hausrat & Privathaftpflicht",nr:"HV-884 221",praemie:"CHF 410",ablauf:"31.12.2026"},{firma:"AXA",sparte:"Motorfahrzeug (Vollkasko)",nr:"MF-22 119 04",praemie:"CHF 1'290",ablauf:"31.08.2026"},{firma:"Helsana",sparte:"Krankenkasse (Grund + Zusatz)",nr:"KK-5512-IM",praemie:"CHF 4'140",ablauf:"31.12.2026"},{firma:"Swiss Life",sparte:"Säule 3a",nr:"3A-7781",praemie:"CHF 640",ablauf:"laufend",ai:true}],
+   emails:[{dir:"in",d:"12.06.2026",s:"AW: Offerte Autoversicherung",x:"„Die AXA-Offerte sieht gut aus. Telefonisch besprechen?“"},{dir:"out",d:"10.06.2026",s:"Offerte Autoversicherung 2026",x:"Drei Varianten Teil-/Vollkasko gesendet (PDF)."},{dir:"in",d:"03.04.2026",s:"Police Hausrat — Bestätigung",x:"Neue Helvetia-Police als PDF erhalten."},{dir:"out",d:"15.01.2026",s:"Jahres-Check Ihrer Versicherungen",x:"Einladung zum Überprüfungsgespräch."}],
+   docs:[{n:"Police_Helvetia_Hausrat_2026.pdf",s:"aus Outlook-Mail vom 03.04.2026"},{n:"Offerte_AXA_Auto_2026.pdf",s:"aus Outlook-Mail vom 10.06.2026"},{n:"Police_Helsana_2026.pdf",s:"aus Outlook-Mail vom 28.11.2025"}]},
+  {id:"zenklusen",name:"Garage Zenklusen GmbH",type:"KMU",loc:"Brig",ini:"GZ",phone:"027 923 11 22",email:"info@garage-zenklusen.ch",addr:"Industriestrasse 5, 3900 Brig",
+   insights:[{ic:"⏰",t:"warn",b:"Betriebshaftpflicht: Frist in 7 Tagen",p:"Vaudoise (30.06.2026). Jetzt Marktvergleich anstossen."}],
+   contracts:[{firma:"Vaudoise",sparte:"Betriebshaftpflicht",nr:"BH-99 002",praemie:"CHF 3'200",ablauf:"30.06.2026"},{firma:"Mobiliar",sparte:"Sachversicherung Betrieb",nr:"SA-44 781",praemie:"CHF 5'400",ablauf:"31.12.2026"},{firma:"Groupe Mutuel",sparte:"Krankentaggeld (KTG)",nr:"KTG-1190",praemie:"CHF 7'100",ablauf:"31.12.2026"},{firma:"Suva",sparte:"UVG (obligatorisch)",nr:"UVG-2200",praemie:"CHF 2'200",ablauf:"laufend"},{firma:"Swiss Life",sparte:"BVG / Pensionskasse",nr:"BVG-7781",praemie:"—",ablauf:"laufend",ai:true},{firma:"AXA",sparte:"Motorflotte (3 Fahrzeuge)",nr:"MF-3-558",praemie:"CHF 1'000",ablauf:"31.12.2026"}],
+   emails:[{dir:"in",d:"18.06.2026",s:"Frage zur Betriebshaftpflicht",x:"„Verlängern oder vergleichen? Wir vertrauen Ihrem Rat.“"},{dir:"out",d:"05.06.2026",s:"Erinnerung Kündigungsfrist",x:"Hinweis auf Frist 30.06. + Vorschlag Marktvergleich."},{dir:"in",d:"20.01.2026",s:"Neue Mitarbeiterin BVG",x:"Anmeldung neue Angestellte zur Pensionskasse."}],
+   docs:[{n:"Police_Vaudoise_Betriebshaftpflicht.pdf",s:"aus Outlook-Mail vom 02.07.2025"},{n:"BVG_Anschluss_SwissLife.pdf",s:"aus Outlook-Mail vom 20.01.2026"}]},
+  {id:"pfammatter",name:"Dr. med. A. Pfammatter",type:"Ärztin / Praxis",loc:"Naters",ini:"AP",phone:"027 924 33 44",email:"praxis@pfammatter.ch",addr:"Furkastrasse 8, 3904 Naters",
+   insights:[{ic:"💡",t:"",b:"FMH-Services-Konditionen prüfen",p:"Mögliche Vorzugslösung für Praxisinventar."}],
+   contracts:[{firma:"Helvetia",sparte:"Berufshaftpflicht Arzt",nr:"BHA-7781",praemie:"CHF 2'900",ablauf:"31.12.2026"},{firma:"Mobiliar",sparte:"Praxisinventar",nr:"PI-2231",praemie:"CHF 1'800",ablauf:"31.12.2026"},{firma:"Swiss Life",sparte:"BVG Praxisteam",nr:"BVG-5567",praemie:"CHF 6'500",ablauf:"laufend"},{firma:"Sanitas",sparte:"Krankenzusatz (privat)",nr:"KZ-8890",praemie:"CHF 3'000",ablauf:"31.12.2026",ai:true}],
+   emails:[{dir:"in",d:"09.06.2026",s:"Praxiserweiterung — Versicherung?",x:"„Wir stellen eine MPA an. Was beachten?“"},{dir:"out",d:"02.05.2026",s:"Jahresübersicht Praxis 2026",x:"Gesamtübersicht aller Praxis-Policen als PDF."}],
+   docs:[{n:"Police_Helvetia_Berufshaftpflicht.pdf",s:"aus Outlook-Mail vom 12.12.2025"},{n:"Jahresuebersicht_Praxis_2026.pdf",s:"aus Outlook-Mail vom 02.05.2026"}]},
+  {id:"tveyholz",name:"Turnverein Eyholz",type:"Verein",loc:"Eyholz",ini:"TV",phone:"079 555 22 33",email:"praesident@tv-eyholz.ch",addr:"Postfach 11, 3930 Eyholz",
+   insights:[{ic:"💡",t:"",b:"Anlass im August",p:"Vereinsfest geplant — Anlassversicherung anbieten?"}],
+   contracts:[{firma:"Generali",sparte:"Vereinshaftpflicht",nr:"VH-3320",praemie:"CHF 650",ablauf:"31.12.2026"},{firma:"Zürich",sparte:"Unfall Mitglieder (Sammel)",nr:"UM-1180",praemie:"CHF 500",ablauf:"31.12.2026"}],
+   emails:[{dir:"in",d:"14.06.2026",s:"Versicherung Vereinsfest",x:"„Wir machen im August ein Fest — was brauchen wir?“"}],
+   docs:[{n:"Police_Generali_Vereinshaftpflicht.pdf",s:"aus Outlook-Mail vom 05.01.2026"}]},
+  {id:"schnyder",name:"Marco & Lea Schnyder",type:"Privat",loc:"Raron",ini:"MS",phone:"078 444 11 99",email:"schnyder.raron@gmail.com",addr:"Dorfplatz 3, 3942 Raron",
+   insights:[{ic:"💡",t:"",b:"Eigenheim gekauft (2025)",p:"Gebäudeversicherung + Bauherrenhaftpflicht prüfen."}],
+   contracts:[{firma:"Visana",sparte:"Krankenkasse",nr:"KK-7711",praemie:"CHF 3'900",ablauf:"31.12.2026"},{firma:"Helvetia",sparte:"Hausrat & Privathaftpflicht",nr:"HV-1209",praemie:"CHF 380",ablauf:"31.12.2026"},{firma:"Mobiliar",sparte:"Gebäudeversicherung",nr:"GV-6650",praemie:"CHF 920",ablauf:"31.12.2026",ai:true}],
+   emails:[{dir:"out",d:"07.06.2026",s:"Willkommen im Eigenheim — Check",x:"Vorschlag Gebäude- & Bauversicherung nach Hauskauf."}],
+   docs:[{n:"Kaufvertrag_Haus_Auszug.pdf",s:"aus Outlook-Mail vom 30.05.2026"}]},
+];
+
+/* Helpers */
+const parseP=s=>parseInt(String(s).replace(/[^\d]/g,""),10)||0;
+const fmt=n=>"CHF "+n.toLocaleString("de-CH");
+function parseD(s){const m=/(\d{2})\.(\d{2})\.(\d{4})/.exec(s||"");return m?new Date(+m[3],+m[2]-1,+m[1]):null;}
+const days=d=>Math.round((d-TODAY)/86400000);
+function statusOf(c){const d=parseD(c.ablauf);if(c.ai)return["ai","✦ aus PDF erkannt – prüfen"];if(!d)return["ok","aktiv"];const dd=days(d);if(dd<0)return["late","überfällig"];if(dd<=60)return["soon","läuft in "+dd+" Tagen ab"];return["ok","aktiv"];}
+const TABS=[["ueberblick","Überblick"],["vertraege","Verträge"],["komm","Kommunikation"],["dok","Dokumente"]];
+const NAV=[["dashboard","Dashboard"],["kunden","Kunden"],["fristen","Fristen"]];
+
+let view="dashboard", current=CUSTOMERS[0].id, tab="ueberblick", search="";
+
+function renderNav(){document.getElementById("nav").innerHTML=NAV.map(n=>`<span class="navlink ${n[0]===view?'active':''}" onclick="go('${n[0]}')">${n[1]}</span>`).join("");}
+function go(v){view=v;render();}
+function openCust(id){current=id;tab="ueberblick";view="kunden";render();}
+function setTab(t){tab=t;renderKunden();}
+function onSearch(v){search=v;if(view!=="kunden")view="kunden";render();}
+function openModal(){document.getElementById("overlay").classList.add("open");}
+function closeModal(){document.getElementById("overlay").classList.remove("open");}
+
+function render(){renderNav();const r=document.getElementById("root");
+  if(view==="dashboard")r.innerHTML=dashboardHTML();
+  else if(view==="fristen")r.innerHTML=fristenHTML();
+  else renderKunden();
+}
+
+/* DASHBOARD */
+function allContracts(){return CUSTOMERS.flatMap(c=>c.contracts.map(k=>({...k,cust:c})));}
+function dashboardHTML(){
+  const contracts=allContracts();
+  const totalP=contracts.reduce((s,k)=>s+parseP(k.praemie),0);
+  const dated=contracts.map(k=>({...k,date:parseD(k.ablauf)})).filter(k=>k.date).sort((a,b)=>a.date-b.date);
+  const soon=dated.filter(k=>days(k.date)<=60);
+  const insights=CUSTOMERS.flatMap(c=>c.insights.map(i=>({...i,cust:c})));
+  const mails=CUSTOMERS.flatMap(c=>c.emails.map(e=>({...e,cust:c,date:parseD(e.d)}))).sort((a,b)=>b.date-a.date).slice(0,5);
+  const kpi=(v,l)=>`<div class="kpi"><div class="v tnum">${v}</div><div class="l">${l}</div></div>`;
+  return `<div class="wrap">
+    <h1>Guten Tag, Jean-Claude</h1><div class="sub">Ihr Überblick für heute · 23. Juni 2026</div>
+    <div class="kpis">${kpi(CUSTOMERS.length,"Kunden")}${kpi(contracts.length,"Verträge")}${kpi(fmt(totalP),"Jahresprämien betreut")}${kpi(soon.length,"Fristen in 60 Tagen")}</div>
+    <div class="cols">
+      <div class="card"><h3>⏰ Anstehende Fristen</h3>
+        ${soon.map(k=>`<div class="row"><span class="ini" onclick="openCust('${k.cust.id}')">${k.cust.ini}</span><div class="grow"><div class="nm">${k.sparte}</div><div class="mt">${k.cust.name} · ${k.firma}</div></div><span class="pill ${statusOf(k)[0]}">${k.ablauf}</span></div>`).join("")||'<div class="mt">Keine Fristen in den nächsten 60 Tagen.</div>'}
+      </div>
+      <div class="card"><h3>💡 Hinweise &amp; Chancen</h3>
+        ${insights.map(i=>`<div class="insight"><span class="ic">${i.ic}</span><div><b>${i.b}</b><p>${i.cust.name} — ${i.p}</p></div></div>`).join("")}
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>✉ Letzte Kommunikation</h3>
+      ${mails.map(m=>`<div class="row"><span class="ini" onclick="openCust('${m.cust.id}')">${m.cust.ini}</span><div class="grow"><div class="nm">${m.s}</div><div class="mt">${m.cust.name} · ${m.d}</div></div><span class="dir ${m.dir}">${m.dir==='in'?'Eingang':'Ausgang'}</span></div>`).join("")}
+    </div>
+    <div class="foot-note">🔒 Alle Daten verschlüsselt in der Schweiz (Infomaniak Genf) · synchronisiert aus Microsoft 365 · Outlook bleibt führend.</div>
+  </div>`;
+}
+
+/* FRISTEN */
+function fristenHTML(){
+  const dated=allContracts().map(k=>({...k,date:parseD(k.ablauf)})).filter(k=>k.date).sort((a,b)=>a.date-b.date);
+  return `<div class="wrap"><h1>Fristen &amp; Ablaufdaten</h1><div class="sub">Alle datierten Verträge, chronologisch — nie mehr eine Kündigungsfrist verpassen.</div>
+    <div class="card" style="padding:4px 4px">
+    <table><thead><tr><th>Ablauf</th><th>Kunde</th><th>Gesellschaft</th><th>Sparte</th><th>Prämie/Jahr</th><th>Status</th></tr></thead><tbody>
+    ${dated.map(k=>{const st=statusOf(k);return `<tr><td class="tnum">${k.ablauf}</td><td><span class="nm" style="cursor:pointer;color:var(--blue-deep)" onclick="openCust('${k.cust.id}')">${k.cust.name}</span></td><td class="firma">${k.firma}</td><td>${k.sparte}</td><td class="tnum">${k.praemie}</td><td><span class="pill ${st[0]}">${st[1]}</span></td></tr>`;}).join("")}
+    </tbody></table></div></div>`;
+}
+
+/* KUNDEN (Liste + Akte) */
+function renderKunden(){
+  const items=CUSTOMERS.filter(c=>(c.name+c.loc+c.type).toLowerCase().includes(search.toLowerCase()));
+  const c=CUSTOMERS.find(x=>x.id===current)||items[0]||CUSTOMERS[0];
+  const list=items.map(x=>`<div class="cust ${x.id===c.id?'active':''}" onclick="openCust('${x.id}')"><div class="ini">${x.ini}</div><div><div class="nm">${x.name}</div><div class="mt">${x.type} · ${x.loc}</div></div></div>`).join("");
+  document.getElementById("root").innerHTML=`<div class="app">
+    <aside class="sidebar"><div class="side-h">Kunden (${items.length})</div>${list}</aside>
+    <main class="main">${detailHTML(c)}</main></div>`;
+}
+function detailHTML(c){
+  const kpiList=[["⏰ "+c.contracts.filter(k=>{const d=parseD(k.ablauf);return d&&days(d)<=60;}).length,"Fristen < 60 T."]];
+  const totalP=c.contracts.reduce((s,k)=>s+parseP(k.praemie),0);
+  const kpis=[[c.contracts.length,"Verträge"],[fmt(totalP),"Jahresprämie"],[c.insights.length,"Hinweise"],[c.docs.length,"Dokumente"]]
+    .map(k=>`<div class="kpi"><div class="v tnum">${k[0]}</div><div class="l">${k[1]}</div></div>`).join("");
+  const tabsH=TABS.map(t=>`<div class="tab ${t[0]===tab?'active':''}" onclick="setTab('${t[0]}')">${t[1]}</div>`).join("");
+  const ueb=`<div class="panel ${tab==='ueberblick'?'active':''}"><div class="grid2" style="margin-bottom:14px">${c.insights.map(i=>`<div class="insbox ${i.t}"><span style="font-size:18px">${i.ic}</span><div><b>${i.b}</b><p style="color:var(--ink2);font-size:13.5px">${i.p}</p></div></div>`).join("")}</div>
+    <div class="card"><h3 style="font-size:16px;margin-bottom:8px">Verträge (${c.contracts.length})</h3>${c.contracts.slice(0,3).map(k=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span><b class="firma">${k.firma}</b> · ${k.sparte}</span><span class="tnum" style="color:var(--ink2)">${k.praemie}/J</span></div>`).join("")}<div style="margin-top:10px"><span class="btn" onclick="setTab('vertraege')">Alle Verträge →</span></div></div></div>`;
+  const ver=`<div class="panel ${tab==='vertraege'?'active':''}"><div class="card" style="padding:4px 4px"><table><thead><tr><th>Gesellschaft</th><th>Sparte</th><th>Police-Nr.</th><th>Prämie/Jahr</th><th>Ablauf</th><th>Status</th></tr></thead><tbody>${c.contracts.map(k=>{const st=statusOf(k);return `<tr><td class="firma">${k.firma}</td><td>${k.sparte}</td><td class="tnum" style="color:var(--muted)">${k.nr}</td><td class="tnum">${k.praemie}</td><td class="tnum">${k.ablauf}</td><td><span class="pill ${st[0]}">${st[1]}</span></td></tr>`;}).join("")}</tbody></table></div><p class="foot-note">✦ = von der KI aus der PDF-Police vorgeschlagen — vom Berater zu bestätigen (Mensch entscheidet).</p></div>`;
+  const kom=`<div class="panel ${tab==='komm'?'active':''}"><div class="tl">${c.emails.map(e=>`<div class="ev ${e.dir}"><div class="d"><span class="dir ${e.dir}">${e.dir==='in'?'Eingang':'Ausgang'}</span>${e.d}</div><div class="s">${e.s}</div><div class="x">${e.x}</div><div style="margin-top:6px"><span class="btn" style="padding:5px 11px;font-size:12px">In Outlook öffnen ↗</span></div></div>`).join("")}</div></div>`;
+  const dok=`<div class="panel ${tab==='dok'?'active':''}"><div class="card" style="padding:6px 8px">${c.docs.map(d=>`<div class="doc"><div class="ft">PDF</div><div style="flex:1"><div class="nm">${d.n}</div><div class="src">${d.s}</div></div><span class="btn" style="padding:6px 12px;font-size:12.5px">Öffnen</span></div>`).join("")}</div></div>`;
+  void kpiList;
+  return `<div class="chead"><div class="big">${c.ini}</div><div><h1>${c.name}<span class="tag">${c.type}</span></h1><div class="meta"><span>📞 ${c.phone}</span><span>✉ ${c.email}</span><span>📍 ${c.addr}</span></div></div>
+    <div class="actions"><span class="btn primary">＋ Notiz</span><span class="btn">Anrufen</span><span class="btn">In Outlook öffnen ↗</span></div></div>
+    <div class="kpis" style="margin:22px 0">${kpis}</div><div class="tabs">${tabsH}</div>${ueb}${ver}${kom}${dok}
+    <div class="foot-note">🔒 Verschlüsselt in der Schweiz · synchronisiert aus Microsoft 365 · Outlook bleibt führend.</div>`;
+}
+
+render();
+</script>
+</body>
+</html>
