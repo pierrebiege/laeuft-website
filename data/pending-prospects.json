@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cristal Garage SA",
+    "contact_name": "Nicolas Rey",
+    "email": "direction@cristalgarage.ch",
+    "website": "https://www.cristalgarage.ch",
+    "notes": "Garage und Autohaus in Martigny (Route du Levant 108). Offizieller Händler für Kia, Ford, Subaru und Mitsubishi. Direktor Nicolas Rey. Bietet Verkauf, Wartung und Karosserie."
+  },
+  {
+    "company": "Fux Bau AG",
+    "contact_name": "Hubert Fux",
+    "email": "fuxbauag@bluewin.ch",
+    "website": "https://www.fuxbauag.ch",
+    "notes": "Bauunternehmen in Glis bei Brig, gegründet 1972. Hoch- und Tiefbau seit zwei Generationen. Präsident Hubert Fux. Nutzt Bluewin-E-Mail statt eigener Domain-E-Mail."
+  },
+  {
+    "company": "Restaurant Walliserstuba",
+    "contact_name": "Carmen Gratta",
+    "email": "info@walliserstuba.ch",
+    "website": "https://www.walliserstuba.ch",
+    "notes": "Italienisch-Walliser Restaurant an der Bahnhofstrasse 9 in Brig. Inhaberin und Gastgeberin Carmen Gratta. Speisekarte online verfügbar, Sonnenterrasse vorhanden."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "Samuel Millius",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "Fitnessstudio-Kette im Oberwallis mit Standorten in Visp-Center, Visp-Süd, Stalden und Susten. Inhaber Samuel Millius. 24/7 geöffnet. Website-Domain weicht vom Firmennamen ab (fitnessstudio-oberwallis.ch statt samsgym.ch)."
+  },
+  {
+    "company": "Elektro Wasmer GmbH",
+    "contact_name": "Iwan Wasmer",
+    "email": "info@elektrowasmer.ch",
+    "website": "http://elektrowasmer.ch",
+    "notes": "Elektroinstallationsbetrieb mit Standorten in Visp und Eggerberg. Geschäftsführer Iwan Wasmer. Website nutzt HTTP statt HTTPS und alte URL-Struktur (index.php?id=). Dienstleistungen: Elektroinstallationen, Planung, Kontrollen, Telekommunikation, Blitzschutz."
+  }
+]
