@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>läuft. × Lerjen & Grogg — Webauftritt & Kundenportal</title>
+<title>Für dich, Jean-Claude — Webauftritt & Kundenübersicht</title>
 <meta name="robots" content="noindex" />
 <style>
   :root{
@@ -15,56 +15,48 @@
   html{scroll-behavior:smooth}
   body{font-family:"Inter","Helvetica Neue",system-ui,sans-serif;color:var(--ink);background:var(--panel);
     -webkit-font-smoothing:antialiased;line-height:1.6;font-size:16px}
-  h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;font-weight:600;letter-spacing:-.015em;line-height:1.1}
+  h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;font-weight:600;letter-spacing:-.015em;line-height:1.12}
   .wrap{max-width:960px;margin:0 auto;padding:0 22px}
   a{color:inherit}
   .eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep)}
 
   .top{background:var(--paper);border-bottom:1px solid var(--line)}
   .top .wrap{display:flex;align-items:center;gap:14px;height:64px}
-  .lf{font-family:Georgia,serif;font-weight:700;font-size:22px}
-  .lf b{color:var(--blue)}
-  .top .sep{color:var(--line)}
-  .top .for{color:var(--muted);font-size:14px}
+  .lf{font-family:Georgia,serif;font-weight:700;font-size:22px}.lf b{color:var(--blue)}
+  .top .sep{color:var(--line)} .top .for{color:var(--muted);font-size:14px}
   .top .mail{margin-left:auto;font-size:14px;color:var(--muted)}
 
   .hero{background:var(--paper);border-bottom:1px solid var(--line)}
-  .hero .wrap{padding:60px 22px 50px}
-  .hero h1{font-size:clamp(30px,5vw,48px);margin:14px 0 0;max-width:18ch}
-  .hero p.lead{font-size:clamp(17px,2vw,21px);color:var(--ink2);margin-top:18px;max-width:60ch}
+  .hero .wrap{padding:58px 22px 48px}
+  .hero h1{font-size:clamp(30px,5vw,46px);margin:14px 0 0;max-width:20ch}
+  .hero p.lead{font-size:clamp(17px,2vw,20px);color:var(--ink2);margin-top:18px;max-width:62ch}
   .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
   .btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;
     border:1px solid var(--line);background:var(--paper);color:var(--ink);text-decoration:none;cursor:pointer;transition:.15s}
   .btn:hover{border-color:#cdd4e0;transform:translateY(-1px)}
-  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-  .btn.primary:hover{background:var(--blue-deep)}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-deep)}
 
-  section.block{padding:54px 0;border-bottom:1px solid var(--line)}
+  section.block{padding:52px 0;border-bottom:1px solid var(--line)}
   section.block:nth-child(even){background:var(--paper)}
-  h2.t{font-size:clamp(24px,3.4vw,34px);margin-bottom:8px}
+  h2.t{font-size:clamp(24px,3.4vw,33px);margin-bottom:8px}
   .sub{color:var(--ink2);max-width:64ch;font-size:17px}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
   .mini{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:20px}
-  .mini .ic{font-size:22px}
-  .mini h3{font-size:18px;margin:10px 0 6px}
-  .mini p{font-size:14.5px;color:var(--ink2)}
+  .mini .ic{font-size:22px}.mini h3{font-size:18px;margin:10px 0 6px}.mini p{font-size:14.5px;color:var(--ink2)}
 
   .baustein{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center}
   .baustein.rev{grid-template-columns:.95fr 1.05fr}
   .baustein.rev .txt{order:2}
-  .shot{border:1px solid var(--line);border-radius:var(--rad);overflow:hidden;box-shadow:var(--shadow);background:#fff}
+  .shot{border:1px solid var(--line);border-radius:var(--rad);overflow:hidden;box-shadow:var(--shadow);background:#fff;display:block}
   .shot img{display:block;width:100%}
   .price{display:inline-flex;align-items:baseline;gap:8px;margin:16px 0 6px}
-  .price .v{font-family:Georgia,serif;font-size:34px;font-weight:600;color:var(--ink)}
-  .price .u{color:var(--muted);font-size:14px}
+  .price .v{font-family:Georgia,serif;font-size:34px;font-weight:600;color:var(--ink)}.price .u{color:var(--muted);font-size:14px}
   ul.feat{list-style:none;margin:14px 0 0;display:grid;gap:8px}
   ul.feat li{position:relative;padding-left:26px;color:var(--ink2);font-size:15px}
   ul.feat li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border:2px solid var(--blue);border-radius:50%}
 
-  /* Offerte table */
   .offer{background:var(--ink);color:#fff;border-radius:20px;padding:34px;box-shadow:var(--shadow)}
-  .offer h2{color:#fff}
-  .offer .eyebrow{color:#8fb2e6}
+  .offer h2{color:#fff}.offer .eyebrow{color:#8fb2e6}
   .otable{width:100%;border-collapse:collapse;margin-top:18px;font-size:15.5px}
   .otable td{padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.16);vertical-align:top}
   .otable .desc{color:#c7d2ec;font-size:13.5px;margin-top:3px}
@@ -73,109 +65,111 @@
   .otable tr.total .amt{font-size:24px;color:#fff}
   .hint{color:#aebfe2;font-size:13px;margin-top:14px}
 
-  footer{padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer{padding:42px 0;text-align:center;color:var(--muted);font-size:14px}
   .badge{display:inline-flex;align-items:center;gap:6px;background:#eef4ff;color:var(--blue-deep);padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600}
+  .sign{font-family:Georgia,serif;font-size:20px;color:var(--ink)}
   @media(max-width:760px){.grid3{grid-template-columns:1fr}.baustein,.baustein.rev{grid-template-columns:1fr}.baustein.rev .txt{order:0}}
 </style>
 </head>
 <body>
   <div class="top"><div class="wrap">
     <span class="lf">läuft<b>.</b></span><span class="sep">│</span>
-    <span class="for">für Neutrales Versicherungsbüro Lerjen &amp; Grogg</span>
+    <span class="for">für dich, Jean-Claude</span>
     <span class="mail">pierre@laeuft.ch</span>
   </div></div>
 
   <div class="hero"><div class="wrap">
-    <span class="eyebrow">Vorschlag · Webauftritt &amp; Kundenportal</span>
-    <h1>Ein moderner Auftritt — und alles zu jedem Kunden an einem Ort.</h1>
-    <p class="lead">Zwei Bausteine für Lerjen &amp; Grogg: ein neuer, eigenständiger Webauftritt und eine intelligente Kundenverwaltung als Brille über Ihr Outlook. Daten in der Schweiz, neutral umgesetzt.</p>
+    <span class="eyebrow">Hoi Jean-Claude</span>
+    <h1>Ich hab dir was gebaut — schau's dir an.</h1>
+    <p class="lead">Du hast erzählt, wie verstreut heute alles ist: Kontakte im Outlook, der Verlauf in tausend Mails, die Policen irgendwo in alten Anhängen. Ich hab mir Gedanken gemacht — und gleich etwas gebaut, damit du's siehst statt nur hörst. Zwei Sachen: einen neuen Webauftritt für euch und eine Übersicht, die dir zu jedem Kunden alles an einem Ort zeigt. Beides liegt schon bereit zum Anklicken.</p>
     <div class="cta-row">
-      <a class="btn primary" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener">🌐 Neue Webseite ansehen</a>
-      <a class="btn" href="./prototyp.html" target="_blank" rel="noopener">🖥️ Prototyp Kundenportal öffnen</a>
-      <a class="btn" href="#offerte">📄 Zur Offerte</a>
+      <a class="btn primary" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener">🌐 Neue Webseite anschauen</a>
+      <a class="btn" href="./prototyp.html" target="_blank" rel="noopener">🖥️ Demo Kundenübersicht öffnen</a>
+      <a class="btn" href="#preis">📄 Was es kosten würde</a>
     </div>
   </div></div>
 
-  <!-- Empfehlung / Recherche -->
+  <!-- Idee -->
   <section class="block"><div class="wrap">
-    <span class="eyebrow">Die Empfehlung</span>
-    <h2 class="t">Was wir vorschlagen — und warum.</h2>
-    <p class="sub">Wir haben Ihre Ausgangslage gründlich analysiert. Die Kundenverwaltung ist keine Outlook-Ablösung, sondern eine intelligente Übersichts-Schicht darüber (Fachbegriff: «Customer-360»).</p>
+    <span class="eyebrow">Meine Idee in Kürze</span>
+    <h2 class="t">Nicht Outlook ersetzen — sondern eine schlaue Brille drüberlegen.</h2>
+    <p class="sub">Ihr arbeitet weiter ganz normal mit Outlook. Obendrauf kommt eine Übersicht, die automatisch alles zu einem Kunden zusammenzieht: Kontakt, ganzer Mailverlauf, Policen und eine Vertragsübersicht. Du klickst auf einen Kunden — und siehst alles.</p>
     <div class="grid3">
-      <div class="mini"><div class="ic">🗂️</div><h3>Alles pro Kunde</h3><p>Kontakt, gesamte Korrespondenz, Policen-PDFs und eine Vertragsübersicht — an einem Ort, statt verstreut in tausenden Mails.</p></div>
-      <div class="mini"><div class="ic">🇨🇭</div><h3>Daten in der Schweiz</h3><p>Anbindung an Microsoft 365; App, Datenbank und KI in der Schweiz (Infomaniak Genf), verschlüsselt und revDSG-konform.</p></div>
-      <div class="mini"><div class="ic">⚖️</div><h3>Neutral beraten</h3><p>Wo eine fertige Schweizer Lösung genügt, sagen wir es offen. Wo sich Eigenes lohnt, bauen wir es. Ehrlich kalkuliert.</p></div>
+      <div class="mini"><div class="ic">🗂️</div><h3>Alles zu einem Kunden</h3><p>Kontakt, Mailverlauf, Policen-PDFs und Verträge an einem Ort — statt überall verstreut.</p></div>
+      <div class="mini"><div class="ic">🇨🇭</div><h3>Eure Daten bleiben in der Schweiz</h3><p>Angebunden an Microsoft 365, gespeichert in Genf, verschlüsselt. Passt zu eurer seriösen Linie.</p></div>
+      <div class="mini"><div class="ic">⚖️</div><h3>Ehrlich gerechnet</h3><p>Wenn ein fertiges Tool das günstiger besser kann, sag ich dir das ehrlich. Versprochen.</p></div>
     </div>
   </div></section>
 
-  <!-- Konzept / Warum läuft -->
+  <!-- Warum ich -->
   <section class="block"><div class="wrap">
-    <span class="eyebrow">Warum läuft.</span>
-    <h2 class="t">Ihr neutraler Digital-Partner — aus dem Wallis.</h2>
-    <p class="sub">Sie verkaufen Ihren Kunden Neutralität: «Wir arbeiten für Sie, nicht für eine Versicherung.» Genau dasselbe Versprechen geben wir Ihnen für die IT — lokal, persönlich, ohne Hersteller-Bindung. Outlook bleibt Ihr Mailprogramm; wir legen die intelligente Brille darüber.</p>
+    <span class="eyebrow">Warum ich</span>
+    <h2 class="t">Du bist der neutrale Berater für deine Kunden. Ich bin's für dich bei der IT.</h2>
+    <p class="sub">Einer aus der Region, den du anrufen kannst — ohne Hersteller-Bla und ohne dass du dich um den technischen Kram kümmern musst. Outlook bleibt euer Mailprogramm; ich leg nur die schlaue Übersicht drüber.</p>
   </div></section>
 
-  <!-- Baustein 1: Webseite -->
+  <!-- Webseite -->
   <section class="block" id="webseite"><div class="wrap">
     <div class="baustein">
       <div class="txt">
-        <span class="eyebrow">Baustein 1</span>
-        <h2 class="t">Der neue Webauftritt</h2>
+        <span class="eyebrow">Das Erste</span>
+        <h2 class="t">Euer neuer Webauftritt</h2>
         <div class="price"><span class="v">CHF 1'500</span><span class="u">einmalig</span></div>
         <ul class="feat">
-          <li>Eigenständiges, modernes Design — kein Baukasten-Template</li>
-          <li>Startseite + alle Kernseiten + SEO-Landingpages</li>
-          <li>Texte sowie Such- &amp; KI-Optimierung (SEO/AEO)</li>
-          <li>Mobil, schnell, mit Prämiencheck- &amp; Kontaktformular</li>
-          <li>Daten/Hosting in der Schweiz, Rechtstext-Entwürfe</li>
+          <li>Eigenes, modernes Design — kein 0815-Baukasten</li>
+          <li>Startseite, alle wichtigen Seiten und Themen-Seiten für Google</li>
+          <li>Texte, suchmaschinen- und KI-tauglich aufbereitet</li>
+          <li>Auf dem Handy top, mit Prämiencheck- &amp; Kontaktformular</li>
+          <li>Daten/Hosting in der Schweiz</li>
         </ul>
-        <div style="margin-top:18px"><a class="btn primary" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener">🌐 Webseite live öffnen</a></div>
+        <div style="margin-top:18px"><a class="btn primary" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener">🌐 Die echte Seite live öffnen</a></div>
       </div>
-      <a class="shot" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener" style="display:block"><img src="./website-vorschau.png" alt="Vorschau neue Webseite Lerjen & Grogg" loading="lazy"></a>
+      <a class="shot" href="https://lerjen-grogg.vercel.app" target="_blank" rel="noopener"><img src="./website-vorschau.png" alt="Vorschau eure neue Webseite" loading="lazy"></a>
     </div>
   </div></section>
 
-  <!-- Baustein 2: Kundenportal -->
+  <!-- Kundenübersicht -->
   <section class="block"><div class="wrap">
     <div class="baustein rev">
-      <div class="shot"><img src="./portal-vorschau.png" alt="Vorschau Kundenportal" loading="lazy"></div>
+      <a class="shot" href="./prototyp.html" target="_blank" rel="noopener"><img src="./portal-vorschau.png" alt="Demo Kundenübersicht" loading="lazy"></a>
       <div class="txt">
-        <span class="eyebrow">Baustein 2</span>
-        <h2 class="t">Das Kundenportal «Customer-360»</h2>
-        <div class="price"><span class="v">CHF 3'000</span><span class="u">Richtwert, erste Ausbaustufe</span></div>
+        <span class="eyebrow">Das Zweite</span>
+        <h2 class="t">Die Übersicht über deine Kunden</h2>
+        <div class="price"><span class="v">CHF 3'000</span><span class="u">Richtwert, erste Stufe</span></div>
         <ul class="feat">
-          <li>Kundenakte: Kontakt + Mailverlauf + Verträge + Dokumente</li>
-          <li>Anbindung an Microsoft 365 — Outlook bleibt führend</li>
-          <li>Vertrags-Übersicht (Gesellschaft, Prämie, Ablauf) &amp; Fristen</li>
-          <li>Daten in der Schweiz, verschlüsselt (revDSG)</li>
-          <li>Definitiver Preis nach kurzer Discovery-Phase</li>
+          <li>Pro Kunde: Kontakt + ganzer Mailverlauf + Verträge + Dokumente</li>
+          <li>Angebunden an Microsoft 365 — Outlook bleibt führend</li>
+          <li>Verträge auf einen Blick (Gesellschaft, Prämie, Ablauf) + Fristen-Wecker</li>
+          <li>Alles in der Schweiz, verschlüsselt</li>
+          <li>Den genauen Preis legen wir nach einem kurzen Vorgespräch fest</li>
         </ul>
-        <div style="margin-top:18px"><a class="btn primary" href="./prototyp.html" target="_blank" rel="noopener">🖥️ Prototyp ausprobieren</a></div>
+        <div style="margin-top:18px"><a class="btn primary" href="./prototyp.html" target="_blank" rel="noopener">🖥️ Demo ausprobieren</a></div>
       </div>
     </div>
   </div></section>
 
-  <!-- Offerte -->
-  <section class="block" id="offerte"><div class="wrap">
+  <!-- Preis -->
+  <section class="block" id="preis"><div class="wrap">
     <div class="offer">
-      <span class="eyebrow">Die Offerte</span>
-      <h2 class="t">Investition im Überblick</h2>
+      <span class="eyebrow">Was es kosten würde</span>
+      <h2 class="t">Kein Stress — du kannst auch nur mit der Webseite starten.</h2>
       <table class="otable">
-        <tr><td>Neuer Webauftritt lerjen-grogg.ch<div class="desc">Design, Inhalte, SEO, Formulare, Aufschaltung & Schulung</div></td><td class="amt">CHF 1'500</td></tr>
-        <tr><td>Kundenportal «Customer-360» mit Microsoft-365-Anbindung<div class="desc">Erste Ausbaustufe · Richtwert, definitiv nach Discovery</div></td><td class="amt">CHF 3'000</td></tr>
-        <tr class="total"><td>Total bei beidem</td><td class="amt">CHF 4'500</td></tr>
+        <tr><td>Euer neuer Webauftritt<div class="desc">Design, Inhalte, Google-Themen-Seiten, Formulare, Aufschalten &amp; kurze Einführung</div></td><td class="amt">CHF 1'500</td></tr>
+        <tr><td>Kundenübersicht mit Microsoft-365-Anbindung<div class="desc">Erste Stufe · Richtwert, genauer Preis nach dem Vorgespräch</div></td><td class="amt">CHF 3'000</td></tr>
+        <tr class="total"><td>Zusammen, wenn du beides willst</td><td class="amt">CHF 4'500</td></tr>
       </table>
-      <p class="hint">Beide Bausteine sind einzeln beauftragbar. Preise exkl. MwSt. · Hosting/Lizenzen werden transparent weiterverrechnet · Gültig bis 31.07.2026.</p>
+      <p class="hint">Beides geht auch einzeln. Preise exkl. MwSt. · Hosting/Lizenzen rechne ich transparent weiter.</p>
       <div class="cta-row" style="margin-top:22px">
-        <a class="btn primary" href="mailto:pierre@laeuft.ch?subject=Webauftritt%20%26%20Kundenportal%20Lerjen%20%26%20Grogg">Unverbindlich besprechen</a>
-        <a class="btn" href="./prototyp.html" target="_blank" rel="noopener">Prototyp ansehen</a>
+        <a class="btn primary" href="mailto:pierre@laeuft.ch?subject=Hoi%20Pierre%20%E2%80%93%20l%C3%A4uft.%20Sache%20Webseite%2FKundenportal">Lass uns kurz quatschen</a>
+        <a class="btn" href="./prototyp.html" target="_blank" rel="noopener">Nochmal die Demo</a>
       </div>
     </div>
   </div></section>
 
   <footer>
-    <span class="badge">🇨🇭 Daten in der Schweiz</span>
-    <p style="margin-top:14px">läuft. · Pierre Biege · <a href="mailto:pierre@laeuft.ch" style="color:var(--blue-deep)">pierre@laeuft.ch</a> · laeuft.ch</p>
+    <span class="badge">🇨🇭 Eure Daten bleiben in der Schweiz</span>
+    <p style="margin-top:16px" class="sign">Bis bald — Pierre</p>
+    <p style="margin-top:4px"><a href="mailto:pierre@laeuft.ch" style="color:var(--blue-deep)">pierre@laeuft.ch</a> · läuft.</p>
   </footer>
 </body>
 </html>
