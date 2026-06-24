@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PartnerDetail } from "@/components/PartnerDetail";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import type { Partner, PartnerType, PartnerStatus, CollaborationType, SortOption } from "@/lib/supabase";
 import { calcPriority, priorityOrder, parseValue, POTENTIAL_LEVELS, FIT_LEVELS, SORT_OPTIONS, PRIORITY_COLORS } from "@/lib/supabase";

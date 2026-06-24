@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
-import { supabase, Client } from "@/lib/supabase";
+import { Client } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 
 export default function NewTrainingPlanPage() {
   const router = useRouter();

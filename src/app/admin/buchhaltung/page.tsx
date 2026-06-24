@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase, Expense, Income, Invoice, Category } from "@/lib/supabase";
+import { Expense, Income, Invoice, Category } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import {
   TrendingUp,
   TrendingDown,

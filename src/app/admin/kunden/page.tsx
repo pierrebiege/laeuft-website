@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase, Client } from "@/lib/supabase";
+import { Client } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { Plus, X, Trash2, Pencil, Check } from "lucide-react";
 
 export default function ClientsPage() {

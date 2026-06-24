@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { supabase, Invoice, InvoiceItem, Client } from "@/lib/supabase";
+import { Invoice, InvoiceItem, Client } from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
 import { Check, Printer, Download } from "lucide-react";
 
@@ -33,13 +33,11 @@ export default function InvoicePage({ params }: { params: Promise<{ token: strin
 
   async function loadInvoice() {
     // Load invoice
-    const { data, error: invoiceError } = await supabase
-      .from("invoices")
-      .select(`*, client:clients(*), items:invoice_items(*)`)
-      .eq("unique_token", token)
-      .single();
+    const res = await fetch(`/api/public/invoice?token=${encodeURIComponent(token)}`);
+    const json = await res.json().catch(() => ({ data: null }));
+    const data = json.data as InvoiceWithDetails | null;
 
-    if (invoiceError || !data) {
+    if (!res.ok || !data) {
       setError("Rechnung nicht gefunden");
       setLoading(false);
       return;

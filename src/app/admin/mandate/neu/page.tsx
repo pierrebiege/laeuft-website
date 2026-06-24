@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase, Client } from "@/lib/supabase";
+import { Client } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { Plus, X, Save, Trash2, GripVertical, ChevronDown, ChevronUp } from "lucide-react";
 
 interface PricingPhase {

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase, Mandate, Client, MandatePricingPhase } from "@/lib/supabase";
+import { Mandate, Client, MandatePricingPhase } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, Pause, Play, Trash2, Receipt } from "lucide-react";
 
 type MandateWithClient = Mandate & { client: Client; pricing_phases?: MandatePricingPhase[] };

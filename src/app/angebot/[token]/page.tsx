@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase, Offer, Client, OfferItem } from "@/lib/supabase";
+import { Offer, Client, OfferItem } from "@/lib/supabase";
 import { Check, Clock, Calendar, Building2, Printer, Download, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
@@ -27,16 +27,14 @@ export default function PublicOfferPage() {
   }, [token]);
 
   async function loadOffer() {
-    const { data, error } = await supabase
-      .from("offers")
-      .select(`*, client:clients(*), items:offer_items(*)`)
-      .eq("unique_token", token)
-      .single();
+    const res = await fetch(`/api/public/offer?token=${encodeURIComponent(token)}`);
+    const json = await res.json().catch(() => ({ data: null }));
+    const data = json.data as FullOffer | null;
 
-    if (error || !data) {
+    if (!res.ok || !data) {
       setError("Offerte nicht gefunden");
     } else {
-      setOffer(data as FullOffer);
+      setOffer(data);
       if (data.status === "accepted") {
         setAccepted(true);
       }

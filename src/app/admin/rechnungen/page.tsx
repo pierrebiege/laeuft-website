@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase, Invoice, Client } from "@/lib/supabase";
+import { Invoice, Client } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { useAdminRole } from "@/components/admin/AdminRoleContext";
 import { Plus, Send, Check, X, Clock, ExternalLink, Mail, Copy, CreditCard, AlertCircle, Trash2, Bell, Download } from "lucide-react";
 

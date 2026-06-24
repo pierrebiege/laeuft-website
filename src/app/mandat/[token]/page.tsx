@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { supabase, Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice, MandateSystem } from "@/lib/supabase";
+import { Mandate, MandatePricingPhase, MandateSection, MandateOption, Client, Invoice, MandateInvoice, MandateSystem } from "@/lib/supabase";
 import { Check, Printer, Download, XCircle, AlertTriangle, PlayCircle, FileText, ExternalLink, Pencil, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -32,21 +32,11 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
   }, [token]);
 
   async function loadMandate() {
-    const { data: mandateData, error: mandateError } = await supabase
-      .from("mandates")
-      .select(`
-        *,
-        client:clients(*),
-        pricing_phases:mandate_pricing_phases(*),
-        sections:mandate_sections(*, items:mandate_section_items(*)),
-        options:mandate_options(*),
-        mandate_invoices(*, invoice:invoices(*)),
-        systems:mandate_systems(*)
-      `)
-      .eq("unique_token", token)
-      .single();
+    const res = await fetch(`/api/public/mandate?token=${encodeURIComponent(token)}`);
+    const json = await res.json().catch(() => ({ data: null }));
+    const mandateData = json.data as MandateWithDetails | null;
 
-    if (mandateError || !mandateData) {
+    if (!res.ok || !mandateData) {
       setError("Mandat nicht gefunden");
       setLoading(false);
       return;
@@ -77,16 +67,17 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
     if (!mandate) return;
     setActionLoading(true);
 
-    const { error } = await supabase
-      .from("clients")
-      .update({
-        name: contactForm.name,
-        email: contactForm.email,
-        company: contactForm.company || null,
-      })
-      .eq("id", mandate.client.id);
+    const res = await fetch("/api/public/mandate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token,
+        action: "contact",
+        contact: { name: contactForm.name, email: contactForm.email, company: contactForm.company || null },
+      }),
+    });
 
-    if (error) {
+    if (!res.ok) {
       alert("Fehler beim Speichern");
     } else {
       setShowContactEdit(false);
@@ -100,17 +91,13 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
     setAccepting(true);
 
-    const { error } = await supabase
-      .from("mandates")
-      .update({
-        accepted_option_id: selectedOption,
-        accepted_at: new Date().toISOString(),
-        status: mandate.options.find(o => o.id === selectedOption)?.is_rejection ? "rejected" : "accepted",
-        start_date: new Date().toISOString().split('T')[0],
-      })
-      .eq("id", mandate.id);
+    const res = await fetch("/api/public/mandate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, action: "accept", optionId: selectedOption }),
+    });
 
-    if (error) {
+    if (!res.ok) {
       alert("Fehler beim Speichern der Auswahl");
     } else {
       setAccepted(true);
@@ -125,22 +112,13 @@ export default function MandatePage({ params }: { params: Promise<{ token: strin
 
     setActionLoading(true);
 
-    // Calculate effective date based on cancellation period
-    const monthsMatch = mandate.cancellation_period.match(/(\d+)/);
-    const months = monthsMatch ? parseInt(monthsMatch[1]) : 3;
-    const effectiveDate = new Date();
-    effectiveDate.setMonth(effectiveDate.getMonth() + months);
+    const res = await fetch("/api/public/mandate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, action: "cancel" }),
+    });
 
-    const { error } = await supabase
-      .from("mandates")
-      .update({
-        status: "cancelling",
-        cancelled_at: new Date().toISOString(),
-        cancellation_effective_date: effectiveDate.toISOString().split('T')[0],
-      })
-      .eq("id", mandate.id);
-
-    if (error) {
+    if (!res.ok) {
       alert("Fehler beim Kündigen");
     } else {
       setShowCancelDialog(false);

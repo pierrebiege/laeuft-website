@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { supabase, Client, Service } from "@/lib/supabase";
+import { Client, Service } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 
 interface OfferItem {

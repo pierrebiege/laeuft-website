@@ -3,7 +3,8 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { supabase, Client, Offer } from "@/lib/supabase";
+import { Client, Offer } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 
 interface InvoiceItem {

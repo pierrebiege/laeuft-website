@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase, Prospect, ProspectStatus } from "@/lib/supabase";
+import { Prospect, ProspectStatus } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 import {
   Plus,
   Mail,

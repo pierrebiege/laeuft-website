@@ -6,7 +6,7 @@ import type { CalendarDisplayEvent, CalendarEvent, CalendarEventType, Recurrence
 import { EVENT_TYPES, COLOR_PRESETS, RECURRENCE_OPTIONS } from "./calendarConstants";
 import { VIRTUAL_EVENT_CONFIG } from "./calendarConstants";
 import { toDateStr, toTimeStr } from "./calendarHelpers";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/adminDb";
 
 interface EventModalProps {
   event: CalendarDisplayEvent | null; // null = new event
