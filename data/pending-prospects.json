@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Pascal Ruppen",
+    "email": "pascal.ruppen@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "FAKTEN: Garagist in Brig-Glis, Kantonsstrasse 61. Inhaber und Geschäftsführer: Pascal Ruppen. stop+go Partner. Team von 4 Personen. Bietet Neuwagen, Occasionen, Service und Reparaturen für alle Marken an. Persönliche E-Mail vom Geschäftsführer verifiziert."
+  },
+  {
+    "company": "Schalbetter AG",
+    "contact_name": "Sascha Schalbetter",
+    "email": "sascha@schalbetter-ag.ch",
+    "website": "https://www.schalbetter-ag.ch",
+    "notes": "FAKTEN: Schreinerei in Grengiols (Oberwallis), Mossistrasse 9. Geschäftsführer und Produktionsleiter: Sascha Schalbetter. Familienbetrieb. Bietet Möbel, Schränke, Türen, Treppen, Innenausbau, Küchen, Parkett, Fensterläden. Hat neben schalbetter-ag.ch auch eine alte Jimdo-Seite (jimdoweb.com) aktiv — veraltete Web-Präsenz. Persönliche E-Mail verifiziert."
+  },
+  {
+    "company": "Fux Bau AG",
+    "contact_name": "Fux Bau AG",
+    "email": "fuxbauag@bluewin.ch",
+    "website": "https://www.fuxbauag.ch",
+    "notes": "FAKTEN: Bauunternehmen in Glis (Brig-Glis), Neuweg 13. Gegründet 1972. Präsident: Hubert Fux, Vizepräsident: Armin Fux. Spezialisiert auf Hochbau, Tiefbau und Erdarbeiten. Nutzt eine Bluewin-E-Mail als Firmen-E-Mail — niedrige digitale Reife. Keine persönliche E-Mail gefunden."
+  },
+  {
+    "company": "Metzgerei Bammatter",
+    "contact_name": "Belinda Bammatter",
+    "email": "info@bammatter-naters.ch",
+    "website": "https://www.bammatter-naters.ch",
+    "notes": "FAKTEN: Metzgerei und Partyservice in Naters, Belalpstrasse 7. Familienbetrieb seit 1983, heute geführt von Belinda Bammatter. Bietet Online-Shop, Partyservice und regionale Spezialitäten. Keine persönliche E-Mail gefunden, info@ verwendet."
+  },
+  {
+    "company": "Gempeler Haustechnik GmbH",
+    "contact_name": "Diego Gempeler",
+    "email": "gempeler.d@hotmail.ch",
+    "website": "https://www.gempeler-haustechnik.ch",
+    "notes": "FAKTEN: Haustechnik-Betrieb in Visp, Mühleye 20. Inhaber und Geschäftsführer: Diego Gempeler. Bietet Heizung, Sanitär, Installationen und 24/7-Reparaturservice im Oberwallis. Nutzt eine Hotmail-Adresse als Geschäftskontakt — sehr niedrige digitale Reife. Persönliche E-Mail verifiziert."
+  }
+]
