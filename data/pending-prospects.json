@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Gempeler Haustechnik GmbH",
+    "contact_name": "Diego Gempeler",
+    "email": "gempeler.d@hotmail.ch",
+    "website": "https://www.gempeler-haustechnik.ch/",
+    "notes": "Haustechnik-Betrieb in Visp (Heizung, Sanitär, Installationen, Reparaturen). Gegründet 2001, Inhaber Diego Gempeler. Nutzt eine Hotmail-Adresse als Geschäfts-E-Mail. Branche: Gebäudetechnik/Handwerk. Adresse: Mondstrasse 20, 3930 Visp."
+  },
+  {
+    "company": "Schalbetter AG",
+    "contact_name": "Sascha Schalbetter",
+    "email": "sascha@schalbetter-ag.ch",
+    "website": "https://www.schalbetter-ag.ch/",
+    "notes": "Schreinerei in Grengiols, Oberwallis. Geschäftsführer und Produktionsleiter: Sascha Schalbetter. Angebot: Möbel, Einbauschränke, Türen, Treppen, Innenausbau, Küchen, Holzböden, Balkongeländer. Betreibt parallel eine Jimdo-Website als Zweitpräsenz. Team mit mehreren Fachkräften inkl. Schreinermeister. Adresse: Mossistrasse 9, 3993 Grengiols."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Domenico Jelo",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch/",
+    "notes": "Auto-Garage in Naters, offizieller Partner für Fiat, Alfa Romeo, Hyundai, Jeep und Abarth. Familienunternehmen, 2015 von der nächsten Generation (Domenico und Marco Jelo) übernommen. Website zeigt veraltete Inhalte (Fiat-Modelle und News von 2016), wenige Seiten indexiert. Adresse: Weingartenstrasse 70, 3904 Naters."
+  },
+  {
+    "company": "Fitness Olympe",
+    "contact_name": "Serge Frély",
+    "email": "info@fitness-olympe.ch",
+    "website": "https://fitness-olympe.ch/",
+    "notes": "Fitnessstudio in Sierre. Inhaber Serge Frély, ausgebildeter Krafttrainer und Personal Trainer. Angebot: Krafttraining, Gruppenklassen (Spinning, Body Sculpt, Pilates, Circuit Training), Cardio, Sauna, Dampfbad, Solarium. Badge-Zugang 365 Tage/Jahr. Einzelunternehmen mit Team-Seite. Adresse: Avenue du Marché 18, 3960 Sierre."
+  },
+  {
+    "company": "Agten Immobilien AG",
+    "contact_name": "Armin Agten",
+    "email": "agten@agtenimmobilien.ch",
+    "website": "https://www.agtenimmobilien.ch/",
+    "notes": "Immobilienagentur in Naters, gegründet 2009 von Armin Agten (Präsident). Vermittlung aller Immobilienarten im Oberwallis. Rund 80 Objekte auf Immoscout24/Homegate gelistet. Team mit mehreren Mitarbeitern. Adresse: Weingartenstrasse 32, 3904 Naters."
+  }
+]
