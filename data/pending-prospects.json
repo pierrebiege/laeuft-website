@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Weingut in Salgesch, Familienunternehmen in 3. Generation (Olivier und Sandra Mounir). Swiss Winery of the Year 2022. Bio-Weinbau. Website auf Shopify mit Online-Shop, 360°-Touren, virtuellen Degustationen und Rezept-Blog."
+  },
+  {
+    "company": "Gebr. Zengaffinen AG",
+    "contact_name": "Alexander Geiser",
+    "email": "alexander.geiser@zengaffinenag.ch",
+    "website": "https://www.zengaffinenag.ch",
+    "notes": "Bauunternehmung in Steg VS, seit 1946 aktiv. Hoch-/Tiefbau, Kieswerk, Spezialtiefbau, Tunnelbau, Natursteinmauerwerk. Seit Januar 2024 unter neuer Geschäftsleitung (Alexander Geiser und Charly Grand). Website mit Organisations-, News-, Karriere- und Kontaktseiten."
+  },
+  {
+    "company": "Bestazzoni SA",
+    "contact_name": "Umberto Bestazzoni",
+    "email": "info@bestazzoni.ch",
+    "website": "https://www.bestazzoni.ch",
+    "notes": "Sanitär- und Heizungsinstallateur in Martigny, gegründet 1984 von Umberto Bestazzoni (Präsident). 25+ Mitarbeiter. Spezialisiert auf Heizung, Sanitär, Lüftung und Industrieleitungen im Unterwallis. Website auf Französisch mit Kontaktformular, Referenzen und Stellenangeboten."
+  },
+  {
+    "company": "Garage City AG",
+    "contact_name": "Charly Ruppen",
+    "email": "info@garage-city.ch",
+    "website": "https://www.garage-city.ch",
+    "notes": "Toyota Center Oberwallis in Visp, auch Mitsubishi-Vertretung. Inhaber Charly Ruppen. Neuwagen, Occasionen und Spezialumbauten für Pick-ups. Website mit Team-Seite, Fahrzeugangebot und Zertifikaten. Firma gegründet November 2024."
+  },
+  {
+    "company": "Schreinerei Schalbetter AG",
+    "contact_name": "Sascha Jörg Schalbetter",
+    "email": "info@schalbetter-ag.ch",
+    "website": "https://www.schalbetter-ag.ch",
+    "notes": "Schreinerei in Grengiols, Oberwallis. Familienbetrieb (VR-Präsident Sascha Schalbetter, Vize Ivan Schalbetter). Möbel, Schränke, Treppen, Türen, Küchen, Innenausbau, Fenster, Parkett. Auch Immobilien im Angebot. Frühere Website war auf Jimdo-Baukastensystem gehostet."
+  }
+]
