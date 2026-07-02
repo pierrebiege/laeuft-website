@@ -50,6 +50,7 @@ export default function NeuesHausPage() {
         if (data.size_m2 != null) setSizeM2(String(data.size_m2))
         if (data.location) setLocation(data.location)
         if (data.blocked) setBlockedMessage(data.message)
+        else if (data.note) setBlockedMessage(data.note)
       } else {
         setError(data.error || 'Vorschau konnte nicht geladen werden.')
       }

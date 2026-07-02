@@ -175,42 +175,6 @@ function extractFromJsonLd($: cheerio.CheerioAPI): ExtractResult {
   return result
 }
 
-// 3) Regex-Fallback auf dem sichtbaren Text (z.B. Ferienhaus-Seiten ohne strukturierte Daten)
-function extractFromText(text: string): ExtractResult {
-  const result = empty()
-
-  const pricePatterns: Array<{ re: RegExp; currency: string; group: number }> = [
-    { re: /(?:CHF|Fr\.)\s?([\d'.,]{3,})/i, currency: 'CHF', group: 1 },
-    { re: /([\d'.,]{3,})\s?(?:CHF|Fr\.-?)/i, currency: 'CHF', group: 1 },
-    { re: /(?:€|EUR)\s?([\d.,]{3,})/i, currency: 'EUR', group: 1 },
-    { re: /([\d.,]{3,})\s?(?:€|EUR)/i, currency: 'EUR', group: 1 },
-    { re: /\$\s?([\d.,]{3,})/, currency: 'USD', group: 1 },
-    { re: /£\s?([\d.,]{3,})/, currency: 'GBP', group: 1 },
-  ]
-  for (const p of pricePatterns) {
-    const m = text.match(p.re)
-    if (m) {
-      const value = parsePriceNumber(m[p.group])
-      if (value != null) {
-        result.price = value
-        result.currency = p.currency
-        break
-      }
-    }
-  }
-
-  const roomsMatch = text.match(/(\d+(?:[.,]\d+)?)\s*[- ]?(?:Zimmer|zimmer|rooms?)\b/)
-  if (roomsMatch) result.rooms = parseDecimalNumber(roomsMatch[1])
-
-  const sizeMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:m²|m2\b|qm\b)/i)
-  if (sizeMatch) result.size_m2 = parseDecimalNumber(sizeMatch[1])
-
-  const locationMatch = text.match(/\b(\d{4,5})\s+([A-ZÄÖÜ][\wäöüÄÖÜß\-]{2,30}(?:[\s-][A-ZÄÖÜ][\wäöüÄÖÜß\-]{2,30}){0,2})/)
-  if (locationMatch) result.location = `${locationMatch[1]} ${locationMatch[2]}`.trim()
-
-  return result
-}
-
 function mergeResults(...results: ExtractResult[]): ExtractResult {
   const merged = empty()
   for (const r of results) {
@@ -229,7 +193,9 @@ function looksBotBlocked(html: string, status: number): boolean {
   return BOT_WALL_SIGNATURES.some((sig) => lower.includes(sig))
 }
 
-// POST /api/haus-biege/preview — lädt so viel wie möglich vom Inserat automatisch (best effort)
+// POST /api/haus-biege/preview — Titel/Bild/Beschreibung immer via og:-Tags; Preis/Zimmer/Grösse/Ort
+// NUR aus explizit strukturierten Daten (schema.org itemprop oder JSON-LD) — nie aus Freitext geraten.
+
 export async function POST(request: NextRequest) {
   const { url } = await request.json()
   const parsed = isSafeHttpUrl(url)
@@ -276,16 +242,9 @@ export async function POST(request: NextRequest) {
     const description = meta('og:description') || meta('description') || null
     const image_url = absolutize(meta('og:image'), parsed)
 
-    const bodyText = $('body')
-      .clone()
-      .find('script, style, noscript')
-      .remove()
-      .end()
-      .text()
-      .replace(/\s+/g, ' ')
-      .trim()
-
-    const extracted = mergeResults(extractFromMicrodata($), extractFromJsonLd($), extractFromText(bodyText))
+    const extracted = mergeResults(extractFromMicrodata($), extractFromJsonLd($))
+    const foundStructuredData =
+      extracted.price != null || extracted.rooms != null || extracted.size_m2 != null || extracted.location != null
 
     return NextResponse.json({
       title: title.trim(),
@@ -296,6 +255,9 @@ export async function POST(request: NextRequest) {
       rooms: extracted.rooms,
       size_m2: extracted.size_m2,
       location: extracted.location,
+      note: foundStructuredData
+        ? null
+        : 'Für diese Seite gibt es keine auswertbaren strukturierten Daten — Preis/Zimmer/Grösse/Ort bitte von Hand eintragen (nicht geraten).',
     })
   } catch {
     return NextResponse.json({ title: parsed.hostname, image_url: null, description: null })
