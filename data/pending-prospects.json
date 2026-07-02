@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rottu AG",
+    "contact_name": "Pascal Ruppen",
+    "email": "pascal.ruppen@garage-rottu.ch",
+    "website": "https://www.garage-rottu.ch",
+    "notes": "FAKTEN: Garage in Brig-Glis seit 1992. stop+go Partner. Vertretung für VW, Audi, SEAT, Škoda via AMAG Import. Pascal Ruppen ist Inhaber und Geschäftsführer. Team mit Werkstattleiter (Marinko Tolic) und Administration (Chantal Ruppen). Kontaktseite und Team-Seite auf Website vorhanden."
+  },
+  {
+    "company": "Valfida Treuhand AG",
+    "contact_name": "Marc Zenhäusern",
+    "email": "marc.zenhaeusern@ztag.ch",
+    "website": "https://valfida.ch",
+    "notes": "FAKTEN: Treuhandbüro in Visp, gegründet 1966 von Karl Zenhäusern. Teil der Zenhäusern Gruppe (ztag.ch). Geschäftsleitung: Marc, Daniel, Stephan und Karl Zenhäusern. Dienstleistungen: Treuhand, Buchhaltung, Revision. Standort: Kantonsstrasse 39, CH-3930 Visp."
+  },
+  {
+    "company": "Cave St. Philippe",
+    "contact_name": "Philippe Constantin",
+    "email": "info@cave-st-philippe.ch",
+    "website": "https://www.cave-st-philippe.ch",
+    "notes": "FAKTEN: Weingut und Kellerei in Salgesch (Wallis). Inhaber Philippe Constantin. Produziert 17 Weintypen aus 10 verschiedenen Rebsorten. Bietet auch B&B-Übernachtungen und Degustationen an. Standort: Pachienstrasse 19, 3970 Salgesch. Nur allgemeine E-Mail gefunden."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Markus Supersaxo",
+    "email": "elektro@supersaxo.swiss",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "FAKTEN: Elektroinstallateur im Wallis, gegründet 1981 von Armin Supersaxo. Markus Supersaxo (eidg. dipl. Elektroinstallateur) ist Inhaber und Geschäftsführer seit 2005. Standorte in Saas-Fee, Saas-Almagell, Visp und Gampel. Dienstleistungen: Elektroinstallationen, Photovoltaik, E-Mobilität/Ladestationen, Schaltanlagenbau, Elektroplanung."
+  },
+  {
+    "company": "Dirren Maler und Gipser GmbH",
+    "contact_name": "Romeo Dirren",
+    "email": "info@malerei-dirren.ch",
+    "website": "https://www.malerei-dirren.ch",
+    "notes": "FAKTEN: Maler- und Gipserbetrieb in Visp, gegründet 1990 in Unterbäch. Seit 2021 von Söhnen Romeo Jr. (eidg. dipl. Malermeister, Geschäftsführer) und Ricardo Dirren geführt. Familienbetrieb in 2. Generation. Angebot: Malerei, Gipserarbeiten, Leichtbau, Strahlerei. Präsenz auf Instagram und Facebook."
+  }
+]
