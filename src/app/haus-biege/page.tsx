@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Star, Plus, Users } from 'lucide-react'
 import { useHausBiegePerson } from './PersonProvider'
-import { HausBiegeHouse, voteAverage } from '@/lib/hausBiege'
+import { HausBiegeHouse, voteAverage, formatPrice } from '@/lib/hausBiege'
 
 function Stars({ value }: { value: number | null }) {
   if (value === null) return <span className="text-zinc-400 text-sm">Noch keine Bewertung</span>
@@ -85,7 +85,7 @@ export default function HausBiegePage() {
                 <div className="flex flex-wrap gap-1.5 text-xs text-zinc-600">
                   {house.price != null && (
                     <span className="bg-zinc-100 rounded-full px-2 py-0.5">
-                      CHF {Number(house.price).toLocaleString('de-CH')}
+                      {formatPrice(house.price, house.currency)}
                     </span>
                   )}
                   {house.rooms != null && (

@@ -19,7 +19,7 @@ export async function GET() {
 // POST /api/haus-biege/houses — neues Haus anlegen
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const { url, title, image_url, description, price, rooms, size_m2, location, notes, added_by } = body
+  const { url, title, image_url, description, price, currency, rooms, size_m2, location, notes, added_by } = body
 
   if (!url || typeof url !== 'string') {
     return NextResponse.json({ error: 'url ist erforderlich' }, { status: 400 })
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       image_url: image_url || null,
       description: description || null,
       price: price ?? null,
+      currency: currency || 'EUR',
       rooms: rooms ?? null,
       size_m2: size_m2 ?? null,
       location: location || null,

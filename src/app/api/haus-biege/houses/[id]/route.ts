@@ -7,6 +7,7 @@ const EDITABLE_FIELDS = [
   'image_url',
   'description',
   'price',
+  'currency',
   'rooms',
   'size_m2',
   'location',

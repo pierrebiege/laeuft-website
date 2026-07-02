@@ -28,6 +28,24 @@ export interface HausBiegeVote {
   updated_at: string
 }
 
+export const SUPPORTED_CURRENCIES = ['EUR', 'CHF', 'USD', 'GBP'] as const
+export type HausBiegeCurrency = (typeof SUPPORTED_CURRENCIES)[number]
+
+export const CURRENCY_SYMBOLS: Record<HausBiegeCurrency, string> = {
+  EUR: '€',
+  CHF: 'CHF',
+  USD: '$',
+  GBP: '£',
+}
+
+export function formatPrice(price: number | string, currency: string): string {
+  const num = Number(price)
+  const locale = currency === 'CHF' ? 'de-CH' : 'de-DE'
+  const formatted = num.toLocaleString(locale)
+  const symbol = CURRENCY_SYMBOLS[currency as HausBiegeCurrency] ?? currency
+  return currency === 'CHF' ? `${symbol} ${formatted}` : `${formatted} ${symbol}`
+}
+
 export interface HausBiegeHouse {
   id: string
   url: string
@@ -35,6 +53,7 @@ export interface HausBiegeHouse {
   image_url: string | null
   description: string | null
   price: number | null
+  currency: string
   rooms: number | null
   size_m2: number | null
   location: string | null

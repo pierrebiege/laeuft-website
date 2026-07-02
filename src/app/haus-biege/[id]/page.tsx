@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Star, ExternalLink, Pencil, Trash2 } from 'lucide-react'
 import { useHausBiegePerson } from '../PersonProvider'
-import { HAUS_BIEGE_PEOPLE, HausBiegeHouse, voteAverage } from '@/lib/hausBiege'
+import { HAUS_BIEGE_PEOPLE, HausBiegeHouse, voteAverage, formatPrice, SUPPORTED_CURRENCIES } from '@/lib/hausBiege'
 
 interface EditForm {
   url: string
@@ -13,6 +13,7 @@ interface EditForm {
   imageUrl: string
   description: string
   price: string
+  currency: string
   rooms: string
   sizeM2: string
   location: string
@@ -26,6 +27,7 @@ function toEditForm(house: HausBiegeHouse): EditForm {
     imageUrl: house.image_url ?? '',
     description: house.description ?? '',
     price: house.price != null ? String(house.price) : '',
+    currency: house.currency || 'EUR',
     rooms: house.rooms != null ? String(house.rooms) : '',
     sizeM2: house.size_m2 != null ? String(house.size_m2) : '',
     location: house.location ?? '',
@@ -108,6 +110,7 @@ export default function HausDetailPage() {
         image_url: form.imageUrl || null,
         description: form.description || null,
         price: form.price ? Number(form.price) : null,
+        currency: form.currency,
         rooms: form.rooms ? Number(form.rooms) : null,
         size_m2: form.sizeM2 ? Number(form.sizeM2) : null,
         location: form.location || null,
@@ -163,7 +166,7 @@ export default function HausDetailPage() {
           {house.location && <p className="text-zinc-500 mb-3">{house.location}</p>}
           <div className="flex flex-wrap gap-2 text-sm text-zinc-600 mb-4">
             {house.price != null && (
-              <span className="bg-zinc-100 rounded-full px-3 py-1">CHF {Number(house.price).toLocaleString('de-CH')}</span>
+              <span className="bg-zinc-100 rounded-full px-3 py-1">{formatPrice(house.price, house.currency)}</span>
             )}
             {house.rooms != null && <span className="bg-zinc-100 rounded-full px-3 py-1">{house.rooms} Zimmer</span>}
             {house.size_m2 != null && <span className="bg-zinc-100 rounded-full px-3 py-1">{house.size_m2} m²</span>}
@@ -197,14 +200,27 @@ export default function HausDetailPage() {
             placeholder="Ort"
             className="border border-zinc-300 rounded-lg px-3 py-2"
           />
-          <div className="grid grid-cols-3 gap-3">
+          <div className="flex gap-3">
             <input
               type="number"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
               placeholder="Preis"
-              className="border border-zinc-300 rounded-lg px-3 py-2"
+              className="flex-1 border border-zinc-300 rounded-lg px-3 py-2 min-w-0"
             />
+            <select
+              value={form.currency}
+              onChange={(e) => setForm({ ...form, currency: e.target.value })}
+              className="border border-zinc-300 rounded-lg px-2 py-2 text-sm shrink-0"
+            >
+              {SUPPORTED_CURRENCIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             <input
               type="number"
               step="0.5"
