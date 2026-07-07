@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "FAKTEN: Familienweingut in 3. Generation in Salgesch, 13 Hektar Rebfläche. Über 200 internationale Auszeichnungen, Weingut des Jahres Grand Prix du Vin Suisse. Online-Weinshop vorhanden (Shopify). Inhaber Sandra und Olivier Mounir, Kellermeister Nicolas Gaudin. Persönliche E-Mail mounir@rhodan.ch auf der Website publiziert."
+  },
+  {
+    "company": "Fiduciaire Bender SA",
+    "contact_name": "Fiduciaire Bender SA",
+    "email": "info@fidbender.ch",
+    "website": "https://www.fidbender.ch",
+    "notes": "FAKTEN: Treuhandunternehmen seit über 50 Jahren. Standorte in Martigny (Rue d'Octodure 31A) und Monthey (Rue du Coppet 7). Directeur général Benoît Bender (dipl. Treuhandexperte). Team: Delphine Bender, Thomas Morard. Dienstleistungen: Buchhaltung, Steuererklärungen, Revisionen, Expertisen. Website auf Französisch, schlicht mit ca. 8 Unterseiten."
+  },
+  {
+    "company": "Garage Carrosserie Wyssen AG",
+    "contact_name": "Garage Carrosserie Wyssen AG",
+    "email": "info@garagewyssen.ch",
+    "website": "https://www.garagewyssen.ch",
+    "notes": "FAKTEN: Familienbetrieb mit 2 Standorten in Mörel-Filet (Furkastrasse 48) und Naters (Furkastrasse 13). Offizieller Suzuki-Partner im Oberwallis. Geschäftsführerin Fränzi Wyssen-Walker, Söhne Michael und Dominic im Betrieb. Dienstleistungen: Reparaturen aller Marken, Carrosserie und Lackierung, Occasionshandel, Reifenservice, Tankstelle. Website mit nur 6 Unterseiten."
+  },
+  {
+    "company": "Elektro Supersaxo AG",
+    "contact_name": "Elektro Supersaxo AG",
+    "email": "info@elektrosupersaxo.ch",
+    "website": "https://elektrosupersaxo.ch",
+    "notes": "FAKTEN: Elektroinstallationsfirma mit Hauptsitz in Saas-Almagell und Filialen in Saas-Fee, Visp, Stalden, Gampel. Geschäftsleiter und Inhaber Markus Supersaxo (Eidg. dipl. Elektroinstallateur). Bietet auch E-Mobilität und Ladestationen, Elektroplanung und Beratung. Team-Seite mit mehreren Mitarbeitern vorhanden."
+  },
+  {
+    "company": "Zurbriggen AG",
+    "contact_name": "Zurbriggen AG",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "FAKTEN: Traditionsschreinerei seit 1888, 4. Generation unter Geschäftsführer Roman Zurbriggen. Rund 40 Fachspezialisten. Standort Kleegärtenstrasse 52, Visp. Schwerpunkte: Innenausbau, Fensterbau, Möbel, Sonderanfertigungen. Website von indual GmbH erstellt mit umfangreicher Bilderwelt."
+  }
+]
