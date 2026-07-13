@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Rex J&N AG",
+    "contact_name": "Thomas Hischier",
+    "email": "hischier@garage-rex.ch",
+    "website": "https://www.garage-rex.ch",
+    "notes": "Toyota-Händler in Visp seit 1962. Thomas Hischier ist Geschäftsführer, Nicolas Truffer Geschäftsführer Verkauf. Team- und Kontaktseite auf Website vorhanden. Kantonsstrasse 34, 3930 Visp. Branche: Automobil/Garage."
+  },
+  {
+    "company": "Zenhäusern Treuhand AG",
+    "contact_name": "Marc Zenhäusern",
+    "email": "marc.zenhaeusern@ztag.ch",
+    "website": "https://ztag.ch",
+    "notes": "Treuhandbüro in Visp mit Dienstleistungen in Steuerberatung, Unternehmensberatung, Immobilienverwaltung und Buchhaltung. Geschäftsleitung: Marc Zenhäusern, Adrian Amacker, Karl, Stefan und Daniel Zenhäusern. Kantonsstrasse 39, 3930 Visp. Branche: Treuhand/Buchhaltung."
+  },
+  {
+    "company": "Fernand Cina SA",
+    "contact_name": "Fernand Cina SA",
+    "email": "info@fernand-cina.ch",
+    "website": "https://www.fernand-cina.ch",
+    "notes": "Weinkellerei in Salgesch, geführt von den Brüdern Manfred und Damian Cina seit 1987. Über 30 Jahre Erfahrung. Bahnhofstrasse 27, 3970 Salgesch. Verkauf und Degustation vor Ort. Auch administration@fernand-cina.ch als Kontakt verfügbar. Branche: Weingut/Kellerei."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber",
+    "contact_name": "Bäckerei-Konditorei A. Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "Familienbäckerei seit 1990, geführt von Alexander und Renate Zuber. Über 60 Mitarbeiter, Filialen in Stalden, Grächen, Visp und Naters. Hauptsitz: Gewerbestrasse 18, 3922 Stalden. Bietet 25-30 Brotsorten täglich an. Branche: Bäckerei/Konditorei."
+  },
+  {
+    "company": "MDK Immobilier & Fiduciaire SA",
+    "contact_name": "MDK Immobilier & Fiduciaire SA",
+    "email": "monthey@mdk.ch",
+    "website": "https://mdk.ch",
+    "notes": "Immobilien- und Treuhandunternehmen in Monthey (Unterwallis) und Champéry. Bietet Immobilienvermittlung, -verwaltung und Treuhanddienstleistungen an. 4 Personen in der Geschäftsleitung. Rue du Château 1, 1870 Monthey. Branche: Immobilien/Treuhand."
+  }
+]
