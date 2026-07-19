@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Garage Arena AG",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "Familienbetrieb in Naters seit 1982, 2. Generation (Domenico und Marco Jelo). Offizieller Partner von Fiat, Hyundai, Alfa Romeo, Jeep. Website zeigt Beiträge über Modelle von 2016 (Fiat Tipo AUTOBEST 2016), wenig aktuelle Inhalte sichtbar. Branche: Garagist/Autohandel. Standort: Weingartenstrasse 70, 3904 Naters."
+  },
+  {
+    "company": "Kurt Arnold Bergführer",
+    "contact_name": "Kurt Arnold",
+    "email": "kurt@allalin4027.ch",
+    "website": "https://www.allalin4027.ch",
+    "notes": "Selbständiger Berg- und Skiführer in Saas-Fee mit 34 Jahren Erfahrung. Bietet geführte Touren (Klettern, Skitouren, Hochtouren) in Saas-Fee, Zermatt, Aletsch Arena, Crans-Montana, Verbier. Ein-Personen-Betrieb. Branche: Tourismus/Bergführer. Standort: Grosses Moos 23, 3906 Saas-Fee."
+  },
+  {
+    "company": "Johanniterkellerei Kuonen & Grichting AG",
+    "contact_name": "Johanniterkellerei Kuonen & Grichting AG",
+    "email": "info@johanniterkellerei.ch",
+    "website": "https://www.johanniterkellerei.ch",
+    "notes": "Familienweingut in Salgesch seit 1913, 3. Generation unter Thomas Grichting (Geschäftsführer seit über 35 Jahren). Online-Weinshop vorhanden (WordPress-basiert). Veranstaltet Events wie Weinfrühling. Branche: Weingut/Weintourismus. Standort: Unterdorfstrasse 8, 3970 Salgesch."
+  },
+  {
+    "company": "gipsmalWERK GmbH",
+    "contact_name": "gipsmalWERK GmbH",
+    "email": "info@gipsmalwerk.ch",
+    "website": "https://www.gipsmalwerk.ch",
+    "notes": "Gegründet 2021 von Yves Genolet. Maler- und Gipserarbeiten in der Region Brig-Glis. Inhaber hat 15 Jahre Berufserfahrung. Dienstleistungen: Gipserarbeiten, Malerarbeiten, Renovationen, Trockenbau, Isolationen. Junges, kleines Unternehmen. Branche: Handwerk/Maler-Gipser. Standort: Fabrikstrasse 64, 3900 Gamsen."
+  },
+  {
+    "company": "MDK Immobilier & Fiduciaire SA",
+    "contact_name": "MDK Immobilier & Fiduciaire SA",
+    "email": "monthey@mdk-immobilier.ch",
+    "website": "https://mdk.ch",
+    "notes": "Immobilien- und Treuhandbüro in Monthey (Chablais/Vallée d'Illiez). Dienstleistungen: Immobilienverwaltung, Verkauf, Steuererklärungen, Buchhaltung, Jahresabschlüsse, MWST-Abrechnungen, Lohnbuchhaltung. Branche: Immobilien/Treuhand. Standort: Rue du Château 1, 1870 Monthey."
+  }
+]
