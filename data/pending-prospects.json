@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "olivier.mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "Weingut in Salgesch, geführt von Olivier und Sandra Mounir. Familienbetrieb mit über 40 Jahren Tradition. Betreibt einen Shopify-basierten Onlineshop, bietet Weindegustationen und Events an. Kontaktpersonen auf der Website genannt. Potenzial: AI-gestützter Kundenservice für Weinbestellungen, automatisierte Degustations-Buchungen."
+  },
+  {
+    "company": "Garage Carrosserie Wyssen AG",
+    "contact_name": "Fränzi Wyssen-Walker",
+    "email": "info@garagewyssen.ch",
+    "website": "https://www.garagewyssen.ch",
+    "notes": "Offizieller Suzuki-Partner im Oberwallis mit zwei Standorten in Mörel-Filet und Naters. Familienbetrieb geführt von Geschäftsführerin Fränzi Wyssen-Walker, Betriebsleiter Martin Wyssen. Bietet Mechanik, Carrosserie, Lackiererei, Reifenservice. Website auf Baukasten-System, wirkt funktional aber nicht modern."
+  },
+  {
+    "company": "Fitnesscenter ChrisTOP-Park",
+    "contact_name": "Christoph Oberholzer",
+    "email": "info@christoppark.ch",
+    "website": "https://christoppark.ch",
+    "notes": "Fitnesscenter in Visp, gegründet 1995 von Christoph Oberholzer (Schweizer Bodybuilding-Meister 1988). 600m² Trainingsfläche auf 3 Etagen, Qualitop-zertifiziert. Website ist WordPress-basiert mit grundlegendem Design. Potenzial: Online-Buchungssystem für Gruppenkurse, Mitgliederverwaltung, automatisierte Kommunikation."
+  },
+  {
+    "company": "Hotel Waldhaus Leukerbad",
+    "contact_name": "Hotel Waldhaus (Familie Beckert)",
+    "email": "info@hotel-waldhaus.ch",
+    "website": "https://www.hotel-waldhaus.ch",
+    "notes": "3-Sterne-Superior Hotel in Leukerbad, geführt von Familie Evelyne und Harald Beckert-Grichting. Seit 2022 auch Sohn Joshua Beckert und Partner Lorenzo Leuenberger im Team. Harald Beckert ist auch Küchenchef. Website vorhanden mit Buchungsfunktion. Potenzial: AI-Chatbot für Gästeanfragen, automatisierte Gästekommunikation."
+  },
+  {
+    "company": "Gempeler Haustechnik GmbH",
+    "contact_name": "Diego Gempeler",
+    "email": "gempeler.d@hotmail.ch",
+    "website": "https://www.gempeler-haustechnik.ch",
+    "notes": "Sanitär- und Heizungsinstallateur in Visp, Inhaber und Geschäftsführer Diego Gempeler. Bietet Heizung, Sanitär und Reparaturendienst an. Nutzt eine Hotmail-Adresse als Geschäfts-E-Mail — deutet auf minimale digitale Infrastruktur hin. Einfache Website vorhanden. Potenzial: Professionelle Web-Präsenz, digitale Auftragserfassung, Kundenmanagement."
+  }
+]
