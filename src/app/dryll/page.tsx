@@ -324,7 +324,7 @@ function Eckwerte() {
         </div>
         <FadeUp delay={0.3}>
           <p className="text-white/55 text-base md:text-lg font-light max-w-3xl mt-12">
-            Die Route ist fertig geplant: auf echte Wege und Trails gesnappt, alle grossen Seen umlaufen, als GPX-Datei bereit. Das grösste bekannte GPS-Kunstwerk zu Fuss lag bisher bei rund 170 km — wir laufen mehr als das Sechsfache.
+            Die Route ist fertig geplant: auf echte Wege und Trails gesnappt, alle grossen Seen umlaufen, als GPX-Datei bereit. Die grössten dokumentierten GPS-Artworks zu Fuss liegen bei 116 bis rund 153 km — wir laufen ein einzelnes Wort von {fmt(TOTAL_KM)} km.
           </p>
         </FadeUp>
       </div>
@@ -336,16 +336,17 @@ function Eckwerte() {
 
 function Rekord() {
   const facts = [
-    "Grösstes bekanntes GPS-Artwork zu Fuss bisher: rund 170 km. Unser Schriftzug: " + fmt(TOTAL_KM) + " km.",
-    "Der Claim «die grösste erlaufene Werbung der Welt» ist damit belastbar — und genau so kommunizieren wir ihn.",
-    "Auf dem Velo existieren grössere Artworks (2'000+ km). Deshalb sagen wir bewusst «erlaufen» — ehrlich bleibt glaubwürdig.",
+    "Das grösste dokumentierte GPS-Drawing zu Fuss: 116 km, nonstop in 24 Stunden (Wales, 2024). Das grösste mehrtägig erlaufene Einzel-Artwork: rund 153 km (San Francisco). Unser Wort: " + fmt(TOTAL_KM) + " km.",
+    "Grössere GPS-Drawings existieren nur mit Fahrzeugen: per Velo bis 7'237 km, per Auto 7'164 km («Marry Me», quer durch Japan). Unser Claim heisst deshalb präzis: das grösste je erlaufene GPS-Artwork der Welt.",
+    "Volle Transparenz: Ein Läufer in Toronto sammelte 2024 rund 1'100 km für Strava-Art — verteilt auf über 100 kleine Einzelbilder einer Animation. Ein einzelnes, zusammenhängendes Artwork dieser Grösse ist zu Fuss noch nie entstanden.",
+    "«The World's Biggest Ad» ist Kampagnen-Titel, kein Rekord-Claim: Physische Werbe-Rekorde misst Guinness in m² (grösstes Poster ~29'000 m²). Unser Schriftzug spannt sich über 150 km Landesbreite — eine andere Liga, aber kein Inserat. Der belastbare Superlativ lautet: erlaufen.",
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
       <div className="max-w-5xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Rekord</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="6× grösser als alles bisher." stagger={0.05} /></h2>
-        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Der Rekord ist kein Nebeneffekt — er ist der PR-Hebel. Jede Redaktion braucht eine Zahl, die sie in die Überschrift schreiben kann.</p></FadeUp>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="7× grösser als jedes erlaufene Artwork." stagger={0.05} /></h2>
+        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Der Rekord ist der PR-Hebel — und er muss jedem Faktencheck standhalten. Darum hier die ehrliche Rekordlage (recherchiert, Stand Juli 2026).</p></FadeUp>
         <div>
           {facts.map((f, i) => (
             <FadeUp key={i} delay={0.04 * i}>
