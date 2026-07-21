@@ -368,33 +368,32 @@ function Etappen() {
     <section id="etappen" className="bg-black text-white py-28 md:py-40 px-6 scroll-mt-16">
       <div className="max-w-7xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Wie ich das laufe</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16 max-w-4xl"><AnimatedWords text="Zwei Wege, ein Wort." stagger={0.05} /></h2>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-16 max-w-4xl"><AnimatedWords text="Ein Wort. Am Stück." stagger={0.05} /></h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           <FadeUp>
             <div className="border p-8 md:p-10 h-full relative overflow-hidden" style={{ borderColor: RED, background: "linear-gradient(140deg, rgba(255,46,31,0.10), rgba(255,46,31,0.02))" }}>
-              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 font-semibold" style={{ background: RED, color: "#000" }}>Empfehlung</div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Variante A · Jeder Buchstabe ein Ultra</h3>
-              <p className="text-white/70 font-light leading-relaxed mb-6">Fünf Ultra-Blöcke à 166–268 km, jeder Buchstabe am Stück bzw. mit Kurzschlaf im Crew-Fahrzeug. Zwischen den Buchstaben 1–2 Regenerationstage.</p>
+              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 font-semibold" style={{ background: RED, color: "#000" }}>Der Plan</div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">Alles am Stück</h3>
+              <p className="text-white/70 font-light leading-relaxed mb-6">Eine durchgehende Expedition vom ersten bis zum letzten Strich: 12–14 Tagesetappen à 80–90 km, ohne Ruhetag.</p>
               <ul className="space-y-2.5 text-white/75 font-light">
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />5 Strava-Aktivitäten = das Wort baut sich öffentlich Buchstabe für Buchstabe auf</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />5 dramaturgische Höhepunkte statt einem — zwei Wochen Dauerpräsenz im Feed</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Puffer für Wetter und Körper — das Projekt scheitert nicht an einem schlechten Tag</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Ein einziger erzählerischer Bogen — maximale Fallhöhe, echtes Expeditionsgefühl</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Jeder fertige Buchstabe bleibt ein eigener Meilenstein im Feed — das Wort wächst öffentlich</li>
               </ul>
-              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitfenster: <span className="text-white">Sa 10. – Sa 24. Oktober</span> · ca. 14 Tage</div>
+              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitfenster: <span className="text-white">Sa 10. – Do 22. Oktober</span> · plus Reservetage bis Sa 24.</div>
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
             <div className="border border-white/15 p-8 md:p-10 h-full">
-              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 border border-white/25 text-white/60">Alternative</div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Variante B · Alles am Stück</h3>
-              <p className="text-white/70 font-light leading-relaxed mb-6">Eine durchgehende Expedition: rund 12 Tagesetappen à ~90 km ohne Ruhetag, vom ersten bis zum letzten Strich.</p>
+              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 border border-white/25 text-white/60">Der Rhythmus</div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">So sieht ein Tag aus</h3>
               <ul className="space-y-2.5 text-white/75 font-light">
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Ein einziger erzählerischer Bogen — maximale Fallhöhe, echtes Expeditionsgefühl</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Risiko: kein Puffer — eine Verletzung oder ein Wettersturz gefährdet das ganze Wort</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Start im Morgengrauen — 80–90 km in 10–13 Stunden, in Blöcken mit Verpflegungsstopps</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Das Crew-Fahrzeug springt voraus: Verpflegung, Kleiderwechsel, kurze Checks</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Abends: Physio, Content-Schnitt, Schlaf im Basecamp — jeden Tag derselbe Ablauf</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />Puffer liegt am Ende, nicht unterwegs: Reservetage fangen Wetter und Körper ab</li>
               </ul>
-              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitfenster: <span className="text-white">Sa 10. – Mi 21. Oktober</span> · ca. 12 Tage</div>
             </div>
           </FadeUp>
         </div>
@@ -427,7 +426,7 @@ function Setup() {
     { Icon: Radio, t: "Live-Producer", d: "GPS-Live-Tracking und Streaming auf dem Kampagnen-Hub. Die Route zeichnet sich in Echtzeit auf der Karte — jeder kann zuschauen." },
     { Icon: MessageCircle, t: "Social Media", d: "Begleitet das Projekt durchgehend: tägliche Reels, Stories, Community-Antworten — Content geht raus, während gelaufen wird." },
     { Icon: HeartPulse, t: "Physio", d: "Tägliche Behandlung, Belastungssteuerung, Fussmanagement. Bei diesen Umfängen keine Option, sondern Voraussetzung." },
-    { Icon: Brain, t: "Mentale Begleitung", d: "Eine Bezugsperson für die dunklen Stunden — Nacht 2 im Buchstaben D gewinnt man im Kopf, nicht in den Beinen." },
+    { Icon: Brain, t: "Mentale Begleitung", d: "Eine Bezugsperson für die dunklen Stunden — Tag 9 im Dauerregen gewinnt man im Kopf, nicht in den Beinen." },
     { Icon: Map, t: "Pierre", d: "Läuft. Alles davor und danach macht das Team — genau dafür steht dieses Konzept." },
   ];
   return (
@@ -515,7 +514,7 @@ function WarumPierre() {
 
 function Entscheide() {
   const items = [
-    { t: "Variante A oder B?", d: "5 Buchstaben-Ultras mit Regeneration (Empfehlung) — oder eine durchgehende Expedition ohne Ruhetag." },
+    { t: "80 oder 90 km pro Tag?", d: "90 km/Tag = 12 Etappen, 80 km/Tag = 14. Definiert Enddatum, Reservetage und wie lange die Crew gebucht wird." },
     { t: "Ford als Fahrzeugpartner?", d: "Ein gebrandeter Van als rollendes Basecamp senkt Kosten und bringt einen zweiten Partner mit eigener Reichweite ins Projekt." },
     { t: "Livestream: 24/7 oder Daily?", d: "Durchgehender Stream mit fixem Producer — oder tägliche Live-Fenster plus Recap? Kosten- und Personalfrage." },
     { t: "Budgetrahmen & Crew-Rekrutierung", d: "7 Rollen über ~2 Wochen: Welche besetzen wir aus dem Netzwerk, welche buchen wir ein? Entscheid nötig bis Ende August." },
