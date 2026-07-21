@@ -274,7 +274,7 @@ function Pitch() {
       </FadeUp>
       <FadeUp delay={0.2}>
         <p className="text-lg md:text-2xl text-white/65 font-light mt-8 max-w-3xl mx-auto">
-          Pierre Biege — Ultraläufer, Head of Switzerland bei DRYLL — schreibt den Markennamen als Strava-Artwork über das ganze Land. Die Aktion lebt dort, wo die Szene zuhause ist: Strava, Social Feeds und ein Live-Hub, auf dem alles zusammenläuft.
+          Pierre Biege — Ultraläufer und Teil des DRYLL-Teams — schreibt den Markennamen als Strava-Artwork über das ganze Land. Die Aktion lebt dort, wo die Szene zuhause ist: Strava, Social Feeds und ein Live-Hub, auf dem alles zusammenläuft.
         </p>
       </FadeUp>
     </section>
@@ -492,7 +492,7 @@ function WarumPierre() {
           <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Aus dem Team, für die Marke." stagger={0.05} /></h2>
           <FadeUp delay={0.2}>
             <p className="text-lg md:text-xl text-white/65 font-light mb-10 max-w-2xl">
-              Pierre ist Ultraläufer, Content Creator — und als Head of Switzerland Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält: Das hier ist die Geschichte von jemandem, der für seine eigene Marke durch das ganze Land läuft.
+              Pierre ist Ultraläufer, Content Creator — und Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält: Das hier ist die Geschichte von jemandem, der für seine eigene Marke durch das ganze Land läuft.
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
@@ -561,7 +561,7 @@ function Contact() {
         <FadeUp delay={0.35}><p className="text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto mb-12">Route steht. GPX ist fertig. Startfenster: <span className="text-white">ab Sa 10. Oktober 2026</span>. Jetzt braucht es nur noch ein Go vom Team.</p></FadeUp>
         <FadeUp delay={0.5}>
           <div className="inline-flex flex-col items-center gap-5">
-            <div className="text-2xl font-semibold">Pierre Biege · Head of Switzerland</div>
+            <div className="text-2xl font-semibold">Pierre Biege</div>
             <a href="mailto:pierre@laeuft.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Mail size={20} className="group-hover:scale-110 transition-transform" /> pierre@laeuft.ch</a>
             <a href="tel:+41798533672" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 79 853 36 72</a>
           </div>
