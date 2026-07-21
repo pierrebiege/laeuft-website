@@ -187,14 +187,14 @@ function Hero() {
       </motion.div>
       <motion.div className="relative z-10 max-w-6xl mx-auto px-6 text-center" style={{ opacity: contentOpacity }}>
         <motion.div className="inline-block mb-8 px-5 py-2 border border-white/20 rounded-full text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-          DRYLL Switzerland · Internes Konzept · Oktober 2026
+          DRYLL Switzerland · Internes Konzept · Herbst 2026
         </motion.div>
         <h1 className="sr-only">The World&apos;s Biggest Ad — der DRYLL-Schriftzug als Strava-Artwork über die Schweiz</h1>
         <div className="text-6xl md:text-8xl lg:text-[8.5rem] font-bold tracking-tight leading-[0.85] mb-8">
           <AnimatedWords text="The World's Biggest Ad." delay={0.35} stagger={0.08} />
         </div>
         <motion.p className="text-lg md:text-2xl text-white/80 font-light max-w-3xl mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
-          Ein Läufer schreibt DRYLL quer über die Schweiz. {fmt(TOTAL_KM)} Kilometer, {fmt(TOTAL_HM)} Höhenmeter, fünf Buchstaben. Erlaufen, nicht erkauft.
+          Ein Läufer schreibt DRYLL quer über die Schweiz. {fmt(TOTAL_KM)} Kilometer, {fmt(TOTAL_HM)} Höhenmeter, fünf Buchstaben. Reichweite: Erlaufen, nicht erkauft.
         </motion.p>
       </motion.div>
       <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
@@ -288,7 +288,7 @@ function Idee() {
     <section id="idee" className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Die Idee</div></FadeUp>
-        <ScrollRevealText text="Im Oktober lassen wir die vermutlich grösste erlaufene Werbung der Welt entstehen: der DRYLL-Schriftzug als gigantisches Strava-Artwork, das sich vom Freiburgerland bis ins Zürcher Oberland erstreckt." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Diesen Herbst lassen wir die vermutlich grösste erlaufene Werbung der Welt entstehen: der DRYLL-Schriftzug als gigantisches Strava-Artwork, das sich vom Freiburgerland bis ins Zürcher Oberland erstreckt." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
       </div>
       <div className="max-w-4xl mx-auto mt-28">
         <ScrollRevealText text="Kein Mediabudget kauft diese Geschichte. Sie wird gelaufen — Kilometer für Kilometer, live verfolgbar, mit einem Making-of, das zeigt, was ein Mensch für eine Idee leistet." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
@@ -382,7 +382,7 @@ function Etappen() {
                 <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
                 <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 rounded-full shrink-0" style={{ background: RED }} />Jeder fertige Buchstabe bleibt ein eigener Meilenstein im Feed — das Wort wächst öffentlich</li>
               </ul>
-              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitfenster: <span className="text-white">Sa 10. – Do 22. Oktober</span> · plus Reservetage bis Sa 24.</div>
+              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitraum: <span className="text-white">Oktober / November 2026</span> · 12–14 Tage plus Reservetage — genaues Fenster definieren wir gemeinsam</div>
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
@@ -456,7 +456,7 @@ function Setup() {
 
 function Rollout() {
   const phases = [
-    { k: "Vorher", d: "Teaser, der andeutet statt verrät: «Im Oktober schreibe ich etwas, das man aus dem All sieht.» Presse-Seeding mit der Rekordzahl." },
+    { k: "Vorher", d: "Teaser, der andeutet statt verrät: «Diesen Herbst schreibe ich etwas, das man aus dem All sieht.» Presse-Seeding mit der Rekordzahl." },
     { k: "Während", d: "Live-Tracking auf dem Kampagnen-Hub, tägliche Reels und Stories, jeder fertige Buchstabe als eigener Strava- und Social-Moment. Optional: durchgehender Livestream." },
     { k: "Nachher", d: "Die grosse Doku als Herzstück, Making-of, Pressekit mit dem fertigen Artwork — und ein Bild, das DRYLL für immer gehört." },
   ];
@@ -515,6 +515,7 @@ function WarumPierre() {
 
 function Entscheide() {
   const items = [
+    { t: "Welcher Zeitraum im Oktober / November?", d: "12–14 Tage plus Reservetage. Muss mit dem ganzen Team, der Crew-Verfügbarkeit und Pierres Familie abgestimmt werden (Schulferien der Kids)." },
     { t: "80 oder 90 km pro Tag?", d: "90 km/Tag = 12 Etappen, 80 km/Tag = 14. Definiert Enddatum, Reservetage und wie lange die Crew gebucht wird." },
     { t: "Ford als Fahrzeugpartner?", d: "Ein gebrandeter Van als rollendes Basecamp senkt Kosten und bringt einen zweiten Partner mit eigener Reichweite ins Projekt." },
     { t: "Livestream: 24/7 oder Daily?", d: "Durchgehender Stream mit fixem Producer — oder tägliche Live-Fenster plus Recap? Kosten- und Personalfrage." },
@@ -524,7 +525,7 @@ function Entscheide() {
     <section className="bg-black text-white py-28 md:py-40 px-6">
       <div className="max-w-5xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Für die interne Diskussion</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-14"><AnimatedWords text="Vier Entscheide, dann laufen wir." stagger={0.05} /></h2>
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9] mb-14"><AnimatedWords text="Fünf Entscheide, dann laufen wir." stagger={0.05} /></h2>
         <div>
           {items.map((it, i) => (
             <FadeUp key={i} delay={0.05 * i}>
@@ -558,7 +559,7 @@ function Contact() {
       <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
         <FadeUp><p className="text-xl md:text-3xl text-white/60 italic mb-12">„Man kann Werbung kaufen. Oder man kann sie laufen.“</p></FadeUp>
         <h2 className="text-6xl md:text-9xl font-bold tracking-tight leading-[0.85] mb-10"><AnimatedWords text="Schreiben wir das Land an." stagger={0.07} /></h2>
-        <FadeUp delay={0.35}><p className="text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto mb-12">Route steht. GPX ist fertig. Startfenster: <span className="text-white">ab Sa 10. Oktober 2026</span>. Jetzt braucht es nur noch ein Go vom Team.</p></FadeUp>
+        <FadeUp delay={0.35}><p className="text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto mb-12">Route steht. GPX ist fertig. Zielfenster: <span className="text-white">Oktober / November 2026</span> — den genauen Zeitraum legen wir gemeinsam fest. Jetzt braucht es nur noch ein Go vom Team.</p></FadeUp>
         <FadeUp delay={0.5}>
           <div className="inline-flex flex-col items-center gap-5">
             <div className="text-2xl font-semibold">Pierre Biege</div>
