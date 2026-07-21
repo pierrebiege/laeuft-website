@@ -1,83 +1,30 @@
 "use client";
 
-import Image from "next/image";
-import { useRef, useState, useEffect, Fragment } from "react";
-import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
-import { Mail, Phone, Truck, Camera, Radio, MessageCircle, HeartPulse, Brain, ClipboardList, Map } from "lucide-react";
-import { VIEW, CH_BORDER, CITIES, LETTERS, TOTAL_KM, TOTAL_HM } from "./route-data";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { VIEW, CH_BORDER, CITIES, LETTERS, TOTAL_KM } from "./route-data";
+import "./dryll.css";
 
+const RED = "#FF2E1F";
 const EASE = [0.22, 1, 0.36, 1] as const;
-const RED = "#FF2E1F"; // DRYLL Signalrot
-const W = (n: number) => `/presentations/garmin/${String(n).padStart(2, "0")}.jpg`;
 const fmt = (n: number) => n.toLocaleString("de-CH");
+const CAPS = ["Königsetappe", "Königsetappe", "Mittelstück", "Finale", "Finale"];
 
-// ==================== PRIMITIVES ====================
-
-function AnimatedWords({ text, className = "", delay = 0, stagger = 0.05 }: { text: string; className?: string; delay?: number; stagger?: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
-  const words = text.split(" ");
+function DryllLogo() {
   return (
-    <span ref={ref} className={className} style={{ display: "inline-block" }}>
-      {words.map((word, i) => (
-        <Fragment key={i}>
-          <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
-            <motion.span style={{ display: "inline-block", willChange: "transform" }} initial={{ y: "110%", opacity: 0 }} animate={inView ? { y: "0%", opacity: 1 } : { y: "110%", opacity: 0 }} transition={{ duration: 0.9, ease: EASE, delay: delay + i * stagger }}>
-              {word}
-            </motion.span>
-          </span>
-          {i < words.length - 1 ? " " : ""}
-        </Fragment>
-      ))}
-    </span>
+    <svg viewBox="0 0 87 22" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DRYLL">
+      <path fill="currentColor" d="M69.7656 21.5412C69.7656 20.5773 69.7656 19.6393 69.7656 18.7274C69.7656 17.8069 69.7656 16.756 69.7656 15.5749V9.19172C69.7656 7.94982 69.7656 6.85121 69.7656 5.8959C69.7656 4.94059 69.7656 3.96358 69.7656 2.96484L76.1749 2.96484C76.1749 3.96358 76.1749 4.94059 76.1749 5.8959C76.1749 6.85121 76.1749 7.94982 76.1749 9.19172V14.5328C76.1749 15.7139 76.1749 16.7647 76.1749 17.6853C76.1749 18.5972 76.1749 19.5351 76.1749 20.4991L74.0385 16.0178H77.9205C78.7108 16.0178 79.4056 16.0178 80.0048 16.0178C80.6127 16.0178 81.1772 16.0178 81.6983 16.0178C82.2194 16.0178 82.7491 16.0178 83.2876 16.0178V21.5412L69.7656 21.5412Z" />
+      <path fill="currentColor" d="M54.4219 21.5412C54.4219 20.5773 54.4219 19.6393 54.4219 18.7274C54.4219 17.8069 54.4219 16.756 54.4219 15.5749V9.19172C54.4219 7.94982 54.4219 6.85121 54.4219 5.8959C54.4219 4.94059 54.4219 3.96358 54.4219 2.96484L60.8311 2.96484C60.8311 3.96358 60.8311 4.94059 60.8311 5.8959C60.8311 6.85121 60.8311 7.94982 60.8311 9.19172V14.5328C60.8311 15.7139 60.8311 16.7647 60.8311 17.6853C60.8311 18.5972 60.8311 19.5351 60.8311 20.4991L58.6947 16.0178H62.5767C63.367 16.0178 64.0618 16.0178 64.661 16.0178C65.269 16.0178 65.8335 16.0178 66.3545 16.0178C66.8756 16.0178 67.4054 16.0178 67.9438 16.0178V21.5412L54.4219 21.5412Z" />
+      <path fill="currentColor" d="M40.9325 15.7573L37.337 8.00627C36.9462 7.16386 36.5728 6.36053 36.2167 5.59628C35.8607 4.82335 35.4525 3.94621 34.9922 2.96484L42.2352 2.96484C42.3828 3.5554 42.5087 4.06779 42.6129 4.50202C42.7172 4.92757 42.817 5.3314 42.9126 5.71353C43.0081 6.09565 43.1123 6.51686 43.2252 6.97714L43.7723 9.19172H44.2413L44.8145 7.01622C44.9448 6.53857 45.0577 6.10433 45.1532 5.71353C45.2574 5.31403 45.366 4.90152 45.4789 4.47597C45.6004 4.04174 45.7351 3.53803 45.8827 2.96484L52.8912 2.96484C52.5091 3.80725 52.1226 4.65834 51.7318 5.51812C51.341 6.36921 50.9632 7.19425 50.5984 7.99324L47.0551 15.7573H40.9325ZM40.8022 21.5412C40.8022 20.5773 40.8022 19.6393 40.8022 18.7274C40.8022 17.8069 40.8022 16.756 40.8022 15.5749V10.3641L47.2115 10.3641V15.5749C47.2115 16.756 47.2115 17.8069 47.2115 18.7274C47.2115 19.6393 47.2115 20.5773 47.2115 21.5412L40.8022 21.5412Z" />
+      <path fill="currentColor" d="M19.0312 21.5412C19.0312 20.5773 19.0312 19.6393 19.0312 18.7274C19.0312 17.8069 19.0312 16.756 19.0312 15.5749L19.0312 9.19172C19.0312 7.94982 19.0312 6.85121 19.0312 5.8959C19.0312 4.94059 19.0312 3.96358 19.0312 2.96484C19.6565 2.96484 20.4208 2.96484 21.324 2.96484C22.2359 2.96484 23.1912 2.96484 24.1899 2.96484C25.1973 2.96484 26.1613 2.96484 27.0819 2.96484C28.7059 2.96484 30.0955 3.12985 31.2505 3.45987C32.4143 3.78988 33.3044 4.37175 33.921 5.20548C34.5376 6.03052 34.8459 7.19425 34.8459 8.69669C34.8459 9.83438 34.6201 10.8157 34.1685 11.6408C33.7169 12.4571 33.0222 13.0868 32.0842 13.5297C31.155 13.9726 29.9739 14.1941 28.5409 14.1941L31.1724 12.24L33.2567 16.0439C33.578 16.6258 33.921 17.251 34.2858 17.9198C34.6592 18.5885 35.0196 19.2398 35.367 19.8738C35.7144 20.5078 36.0184 21.0636 36.2789 21.5412L29.1141 21.5412C28.7928 20.8725 28.4845 20.2386 28.1892 19.6393C27.8939 19.0401 27.603 18.4495 27.3164 17.8677L24.7631 12.6569L28.5149 15.0017L24.1378 15.0017V11.1718L26.7692 11.1718C27.0298 11.1718 27.273 11.1284 27.4988 11.0415C27.7246 10.9547 27.9069 10.7897 28.0459 10.5465C28.1848 10.2947 28.2543 9.92991 28.2543 9.45226C28.2543 9.18303 28.2239 8.94421 28.1631 8.73577C28.1023 8.52734 28.0111 8.34931 27.8896 8.20167C27.7767 8.05403 27.6377 7.94547 27.4727 7.876C27.3077 7.79783 27.1166 7.75875 26.8995 7.75875L20.6987 7.75875L25.3102 4.007C25.3102 5.00573 25.3102 5.98275 25.3102 6.93806C25.3102 7.89337 25.3102 8.99197 25.3102 10.2339V15.5749C25.3102 16.756 25.3102 17.8069 25.3102 18.7274C25.3102 19.6393 25.3102 20.5773 25.3102 21.5412H19.0312Z" />
+      <path fill="currentColor" d="M0 21.5412C0 20.5773 0 19.6393 0 18.7274C0 17.8069 0 16.756 0 15.5749L0 9.19172C0 7.94982 0 6.85121 0 5.8959C0 4.94059 0 3.96358 0 2.96484C0.6774 2.96484 1.4677 2.96484 2.3709 2.96484C3.28279 2.96484 4.24678 2.96484 5.26288 2.96484C6.28767 2.96484 7.31245 2.96484 8.33724 2.96484C9.73546 2.96484 10.9817 3.16893 12.076 3.57711C13.1702 3.9766 14.0951 4.5715 14.8507 5.3618C15.6149 6.14341 16.1968 7.10741 16.5963 8.25378C16.9958 9.40015 17.1955 10.7202 17.1955 12.214C17.1955 13.5253 17.0175 14.7499 16.6614 15.8876C16.3141 17.0166 15.7496 18.0066 14.9679 18.8577C14.1863 19.7001 13.1485 20.3601 11.8545 20.8378C10.5692 21.3068 8.98858 21.5412 7.1127 21.5412C6.18345 21.5412 5.30196 21.5412 4.46824 21.5412C3.6432 21.5412 2.85724 21.5412 2.11036 21.5412C1.37217 21.5412 0.668716 21.5412 0 21.5412ZM6.40925 16.5129H7.08665C7.93774 16.5129 8.61514 16.3261 9.11885 15.9527C9.62256 15.5706 9.98297 15.0495 10.2001 14.3895C10.4172 13.7294 10.5258 12.9782 10.5258 12.1358C10.5258 11.5192 10.4606 10.959 10.3304 10.4553C10.2088 9.95162 10.0134 9.51739 9.74414 9.15264C9.48361 8.7792 9.14491 8.49261 8.72804 8.29286C8.31118 8.09311 7.80747 7.99324 7.21692 7.99324H6.40925C6.40925 8.38405 6.40925 8.79657 6.40925 9.2308C6.40925 9.66503 6.40925 10.1904 6.40925 10.8071L6.40925 13.9075C6.40925 14.4633 6.40925 14.9496 6.40925 15.3665C6.40925 15.7747 6.40925 16.1568 6.40925 16.5129Z" />
+    </svg>
   );
 }
 
-function FadeUp({ children, delay = 0, y = 40, className = "" }: { children: React.ReactNode; delay?: number; y?: number; className?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
-  return (
-    <motion.div ref={ref} className={className} initial={{ opacity: 0, y }} animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }} transition={{ duration: 1, ease: EASE, delay }}>
-      {children}
-    </motion.div>
-  );
-}
+// ==================== KARTE (SVG, rote Route — Pierres Animation) ====================
 
-function ScrollRevealText({ text, className = "" }: { text: string; className?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "start 0.25"] });
-  const words = text.split(" ");
-  return (
-    <p ref={ref} className={className}>
-      {words.map((word, i) => {
-        const start = i / words.length;
-        const end = start + 1 / words.length;
-        return <RevealWord key={i} progress={scrollYProgress} range={[start, end]}>{word}</RevealWord>;
-      })}
-    </p>
-  );
-}
-
-function RevealWord({ children, progress, range }: { children: React.ReactNode; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.18, 1]);
-  return <motion.span style={{ opacity }} className="inline-block mr-[0.25em]">{children}</motion.span>;
-}
-
-function ParallaxImage({ src, className = "" }: { src: string; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1.04]);
-  return (
-    <motion.div ref={ref} className={`relative overflow-hidden bg-zinc-900 ${className}`} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 1.1, ease: EASE }}>
-      <motion.div className="absolute inset-0" style={{ y, scale }}><Image src={src} alt="" fill className="object-cover" /></motion.div>
-    </motion.div>
-  );
-}
-
-// ==================== KARTE (SVG, dunkel + rote Route) ====================
-
-function SwissMap({ progress, className = "", staticFull = false }: { progress?: MotionValue<number>; className?: string; staticFull?: boolean }) {
+function SwissMap({ progress, className = "" }: { progress: MotionValue<number>; className?: string }) {
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
   const [lengths, setLengths] = useState<number[]>([]);
 
@@ -85,7 +32,6 @@ function SwissMap({ progress, className = "", staticFull = false }: { progress?:
     setLengths(pathRefs.current.map((p) => (p ? p.getTotalLength() : 0)));
   }, []);
 
-  // km-Anteile bestimmen, wann welcher Buchstabe gezeichnet wird
   const total = LETTERS.reduce((s, l) => s + l.km, 0);
   const fractions: [number, number][] = [];
   let acc = 0;
@@ -95,7 +41,7 @@ function SwissMap({ progress, className = "", staticFull = false }: { progress?:
   }
 
   useEffect(() => {
-    if (staticFull || !progress || lengths.length === 0) return;
+    if (lengths.length === 0) return;
     const apply = (v: number) => {
       pathRefs.current.forEach((p, i) => {
         if (!p || !lengths[i]) return;
@@ -108,7 +54,7 @@ function SwissMap({ progress, className = "", staticFull = false }: { progress?:
     const unsub = progress.on("change", apply);
     return () => unsub();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress, lengths, staticFull]);
+  }, [progress, lengths]);
 
   return (
     <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className={className} preserveAspectRatio="xMidYMid meet">
@@ -118,16 +64,13 @@ function SwissMap({ progress, className = "", staticFull = false }: { progress?:
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-      {/* Landesumriss */}
       <path d={CH_BORDER} fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" />
-      {/* Städte zur Orientierung */}
       {CITIES.map((c) => (
         <g key={c.n} opacity="0.45">
           <circle cx={c.x} cy={c.y} r="2.5" fill="rgba(255,255,255,0.6)" />
-          <text x={c.x + 8} y={c.y + 4} fill="rgba(255,255,255,0.55)" fontSize="14" fontFamily="inherit" style={{ letterSpacing: "0.08em" }}>{c.n}</text>
+          <text x={c.x + 8} y={c.y + 4} fill="rgba(255,255,255,0.55)" fontSize="14" style={{ letterSpacing: "0.08em" }}>{c.n}</text>
         </g>
       ))}
-      {/* Route: pro Buchstabe ein Pfad, per Scroll gezeichnet */}
       {LETTERS.map((l, i) => (
         <path
           key={i}
@@ -139,79 +82,19 @@ function SwissMap({ progress, className = "", staticFull = false }: { progress?:
           strokeLinecap="round"
           strokeLinejoin="round"
           filter="url(#routeGlow)"
-          style={staticFull || lengths.length === 0 ? undefined : { strokeDasharray: lengths[i], strokeDashoffset: lengths[i] }}
+          style={lengths.length === 0 ? undefined : { strokeDasharray: lengths[i], strokeDashoffset: lengths[i] }}
         />
       ))}
     </svg>
   );
 }
 
-// ==================== HEADER ====================
-
-function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-black/60 backdrop-blur-md py-4" : "py-6"}`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className={`text-sm font-semibold uppercase tracking-[0.25em] text-white transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0 pointer-events-none"}`}>DRYLL × Pierre</button>
-        <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.2em] text-white/80">
-          <button onClick={() => go("idee")} className="hover:text-white transition-colors">Die Idee</button>
-          <button onClick={() => go("etappen")} className="hover:text-white transition-colors">Etappen</button>
-          <button onClick={() => go("setup")} className="hover:text-white transition-colors"><span className="border-b-2 border-white pb-1">Das Setup</span></button>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-// ==================== HERO ====================
-
-function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const mapY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const mapScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.25]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  return (
-    <section ref={ref} className="relative h-screen flex items-center justify-center overflow-hidden bg-black text-white">
-      <motion.div className="absolute inset-0 flex items-center justify-center opacity-35" style={{ y: mapY, scale: mapScale }}>
-        <SwissMap staticFull className="w-full h-full max-w-none p-8" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black" />
-      </motion.div>
-      <motion.div className="relative z-10 max-w-6xl mx-auto px-6 text-center" style={{ opacity: contentOpacity }}>
-        <motion.div className="inline-block mb-8 px-5 py-2 border border-white/20 text-xs uppercase tracking-[0.4em] text-white/70" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-          DRYLL Switzerland · Internes Konzept · Herbst 2026
-        </motion.div>
-        <h1 className="sr-only">The World&apos;s Biggest Ad — der DRYLL-Schriftzug als Strava-Artwork über die Schweiz</h1>
-        <div className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tight leading-[0.9] mb-8">
-          <AnimatedWords text="The World's Biggest Ad." delay={0.35} stagger={0.08} />
-        </div>
-        <motion.p className="text-lg md:text-2xl text-white/80 font-light max-w-3xl mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}>
-          Ein Läufer schreibt DRYLL quer über die Schweiz. {fmt(TOTAL_KM)} Kilometer, {fmt(TOTAL_HM)} Höhenmeter, fünf Buchstaben. Reichweite: Erlaufen, nicht erkauft.
-        </motion.p>
-      </motion.div>
-      <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2 }}>
-        <motion.div className="w-px h-16 bg-white/40" animate={{ scaleY: [0, 1, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "top" }} />
-      </motion.div>
-    </section>
-  );
-}
-
-// ==================== ROUTE (Scroll-Animation) ====================
-
 const LETTER_ACTS = [
-  { k: "Buchstabe 1 · D", t: "Der Auftakt im Westen", d: "Zwei Loops zwischen Freiburg und Bern — der grösste Buchstabe des Wortes." },
-  { k: "Buchstabe 2 · R", t: "Durchs Emmental", d: "Hügel, Höfe, Panoramen — das R frisst fast so viele Höhenmeter wie das D." },
-  { k: "Buchstabe 3 · Y", t: "Die Mitte des Wortes", d: "Durchs Hügelland von Oberaargau und Luzerner Hinterland — Halbzeit auf der Karte." },
-  { k: "Buchstabe 4 · L", t: "Der schnellste Buchstabe", d: "Durchs Aargauer Freiamt — der kürzeste Abschnitt, das Ziel rückt in Sichtweite." },
-  { k: "Buchstabe 5 · L", t: "Das Finale im Zürcher Oberland", d: "Der letzte Strich. Danach steht das Wort — sichtbar aus dem All." },
+  { t: "Der Auftakt im Westen", d: "Zwei Loops zwischen Freiburg und Bern — der grösste Buchstabe des Wortes." },
+  { t: "Durchs Emmental", d: "Hügel, Höfe, Panoramen — das R frisst fast so viele Höhenmeter wie das D." },
+  { t: "Die Mitte des Wortes", d: "Durchs Hügelland von Oberaargau und Luzerner Hinterland — Halbzeit auf der Karte." },
+  { t: "Der schnellste Buchstabe", d: "Durchs Aargauer Freiamt — der kürzeste Abschnitt, das Ziel rückt in Sichtweite." },
+  { t: "Das Finale im Zürcher Oberland", d: "Der letzte Strich. Danach steht das Wort — sichtbar aus dem All." },
 ];
 
 function RouteMap() {
@@ -236,340 +119,28 @@ function RouteMap() {
   }, [drawProgress, total]);
 
   return (
-    <section ref={ref} className="relative h-[520vh] bg-black">
-      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
-        <SwissMap progress={drawProgress} className="w-full h-full max-h-screen px-4 md:px-12 py-24" />
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/60" />
-        <div className="absolute top-24 left-6 right-6 flex justify-between text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/60 pointer-events-none">
+    <div ref={ref} className="maproute">
+      <div className="stick">
+        <SwissMap progress={drawProgress} />
+        <div className="topline">
           <span>Start · bei Bern</span>
           <span style={{ color: RED }}>Ziel · Zürcher Oberland</span>
         </div>
-        <div className="absolute left-6 md:left-12 bottom-14 w-[85%] md:w-[30rem] h-44 pointer-events-none">
+        <div className="act">
           {LETTER_ACTS.map((a, i) => (
-            <motion.div key={i} className="absolute inset-0" animate={{ opacity: act === i ? 1 : 0, y: act === i ? 0 : 14 }} transition={{ duration: 0.5, ease: EASE }}>
-              <div className="text-[11px] uppercase tracking-[0.25em] mb-3" style={{ color: RED }}>{a.k} · {fmt(LETTERS[i].km)} km · +{fmt(LETTERS[i].hm)} hm</div>
-              <h3 className="text-3xl md:text-5xl font-black leading-[0.95] text-white mb-3">{a.t}</h3>
-              <p className="text-white/70 font-light text-sm md:text-base">{a.d}</p>
+            <motion.div key={i} style={{ position: "absolute", inset: 0 }} animate={{ opacity: act === i ? 1 : 0, y: act === i ? 0 : 14 }} transition={{ duration: 0.5, ease: EASE }}>
+              <div className="k">Buchstabe {i + 1} · {LETTERS[i].label} · {fmt(LETTERS[i].km)} km · +{fmt(LETTERS[i].hm)} hm</div>
+              <h3>{a.t}</h3>
+              <p>{a.d}</p>
             </motion.div>
           ))}
         </div>
-        <div className="absolute right-6 md:right-12 bottom-14 text-right pointer-events-none">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-1">Scrollen, um zu schreiben</div>
-          <div className="text-4xl md:text-6xl font-black text-white/90 tabular-nums">{fmt(km)}<span className="text-lg md:text-2xl align-top ml-0.5">km</span></div>
+        <div className="counter">
+          <div className="lab">Scrollen, um zu schreiben</div>
+          <div className="val num">{fmt(km)}<span className="unit">km</span></div>
         </div>
       </div>
-    </section>
-  );
-}
-
-// ==================== PITCH ====================
-
-function Pitch() {
-  return (
-    <section className="bg-black text-white py-24 md:py-36 px-6 text-center border-y border-white/10">
-      <FadeUp>
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] max-w-5xl mx-auto">
-          Die extremste Werbung der Welt:<br className="hidden md:block" /> erlaufen, nicht erkauft.
-        </h2>
-      </FadeUp>
-      <FadeUp delay={0.2}>
-        <p className="text-lg md:text-2xl text-white/65 font-light mt-8 max-w-3xl mx-auto">
-          Pierre Biege ist Ultraläufer und Teil des DRYLL-Teams. Er schreibt den Markennamen als Strava-Artwork über das ganze Land. Die Aktion lebt auf Strava, in den Social Feeds und auf einem Live-Hub.
-        </p>
-      </FadeUp>
-    </section>
-  );
-}
-
-// ==================== IDEE ====================
-
-function Idee() {
-  return (
-    <section id="idee" className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden scroll-mt-16">
-      <div className="max-w-4xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Die Idee</div></FadeUp>
-        <ScrollRevealText text="Diesen Herbst entsteht die grösste erlaufene Werbung der Welt. Der DRYLL-Schriftzug spannt sich vom Freiburgerland bis ins Zürcher Oberland. Ein Artwork, 1'079 Kilometer." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
-      </div>
-      <div className="max-w-4xl mx-auto mt-28">
-        <ScrollRevealText text="Kein Mediabudget kauft diese Geschichte. Sie wird gelaufen — Kilometer für Kilometer, live verfolgbar. Das Making-of zeigt die Arbeit dahinter." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
-        <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ich bin nicht das Testimonial. Ich bin Teil des Teams — und laufe das selbst.“</p></FadeUp>
-      </div>
-    </section>
-  );
-}
-
-// ==================== ECKWERTE ====================
-
-function Eckwerte() {
-  const stats = [
-    { value: fmt(TOTAL_KM), unit: "km", label: "Gesamtdistanz — quer durchs Mittelland" },
-    { value: `+${fmt(TOTAL_HM)}`, unit: "hm", label: "Höhenmeter — mehr als 3× Everest" },
-    { value: "5", unit: "", label: "Buchstaben · 7 Loops" },
-    { value: "≈153", unit: "km", label: "Breite des Schriftzugs Luftlinie" },
-  ];
-  return (
-    <section className="bg-black text-white py-28 md:py-40 px-6">
-      <div className="max-w-7xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Die Dimension</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-16 max-w-4xl"><AnimatedWords text="Ein Wort, so gross wie das Mittelland." stagger={0.05} /></h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 border-t border-white/15">
-          {stats.map((s, i) => (
-            <FadeUp key={i} delay={i * 0.08}>
-              <div className="border-b md:border-b-0 border-r border-white/15 py-10 pr-4 md:pl-6 first:md:pl-0">
-                <div className="text-4xl md:text-6xl font-black tracking-tight" style={{ color: i === 0 ? RED : "#fff" }}>{s.value}<span className="text-xl md:text-2xl align-top ml-1">{s.unit}</span></div>
-                <div className="text-xs uppercase tracking-wider text-white/50 mt-3">{s.label}</div>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-        <FadeUp delay={0.3}>
-          <p className="text-white/55 text-base md:text-lg font-light max-w-3xl mt-12">
-            Die Route ist fertig geplant. Jeder Kilometer liegt auf echten Wegen und Trails. Alle grossen Seen sind umlaufen, die GPX-Datei ist bereit. Bisheriges Maximum zu Fuss: rund 153 km. Unser Wort: {fmt(TOTAL_KM)} km.
-          </p>
-        </FadeUp>
-      </div>
-    </section>
-  );
-}
-
-// ==================== REKORD ====================
-
-function Rekord() {
-  const facts = [
-    "Das grösste GPS-Drawing zu Fuss misst 116 km, nonstop in 24 Stunden (Wales, 2024). Das grösste mehrtägige Einzel-Artwork misst rund 153 km (San Francisco). Unser Wort misst " + fmt(TOTAL_KM) + " km.",
-    "Grössere GPS-Drawings existieren nur mit Fahrzeugen. Velo: bis 7'237 km. Auto: 7'164 km («Marry Me», Japan). Unser Claim heisst deshalb präzis: das grösste je erlaufene GPS-Artwork der Welt.",
-    "Zur Transparenz: Ein Läufer in Toronto sammelte 2024 rund 1'100 km für Strava-Art. Verteilt auf über 100 kleine Einzelbilder einer Animation. Ein einzelnes Artwork dieser Grösse lief noch niemand.",
-    "«The World's Biggest Ad» ist Kampagnen-Titel, kein Rekord-Claim. Guinness misst Werbung in m² — das grösste Poster misst rund 29'000 m². Unser Schriftzug spannt sich über 150 km Landesbreite. Der belastbare Superlativ lautet: erlaufen.",
-  ];
-  return (
-    <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
-      <div className="max-w-5xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Rekord</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-8"><AnimatedWords text="7× grösser als jedes erlaufene Artwork." stagger={0.05} /></h2>
-        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Der Rekord ist der PR-Hebel. Er muss jedem Faktencheck standhalten. Hier die Rekordlage, recherchiert im Juli 2026.</p></FadeUp>
-        <div>
-          {facts.map((f, i) => (
-            <FadeUp key={i} delay={0.04 * i}>
-              <div className="grid grid-cols-[auto_1fr] gap-5 py-5 border-t border-white/12 items-baseline">
-                <div className="text-sm font-bold tabular-nums text-white/50">{String(i + 1).padStart(2, "0")}</div>
-                <p className="text-white/75 font-light md:text-lg leading-relaxed">{f}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== ETAPPEN ====================
-
-function Etappen() {
-  return (
-    <section id="etappen" className="bg-black text-white py-28 md:py-40 px-6 scroll-mt-16">
-      <div className="max-w-7xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Wie ich das laufe</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-16 max-w-4xl"><AnimatedWords text="Ein Wort. Am Stück." stagger={0.05} /></h2>
-
-        <div className="grid md:grid-cols-2 gap-6 mb-16">
-          <FadeUp>
-            <div className="border border-white p-8 md:p-10 h-full relative overflow-hidden bg-white/[0.04]">
-              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 font-semibold bg-white text-black">Der Plan</div>
-              <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Alles am Stück</h3>
-              <p className="text-white/70 font-light leading-relaxed mb-6">Eine durchgehende Expedition vom ersten bis zum letzten Strich: 12–14 Tagesetappen à 80–90 km, ohne Ruhetag.</p>
-              <ul className="space-y-2.5 text-white/75 font-light">
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Ein einziger erzählerischer Bogen — eine Geschichte ohne Unterbruch</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Jeder fertige Buchstabe bleibt ein eigener Meilenstein im Feed — das Wort wächst öffentlich</li>
-              </ul>
-              <div className="mt-8 pt-6 border-t border-white/15 text-sm text-white/55">Zeitraum: <span className="text-white">Oktober / November 2026</span> · 12–14 Tage plus Reservetage — genaues Fenster definieren wir gemeinsam</div>
-            </div>
-          </FadeUp>
-          <FadeUp delay={0.1}>
-            <div className="border border-white/15 p-8 md:p-10 h-full">
-              <div className="inline-block text-[10px] uppercase tracking-[0.3em] px-3 py-1 mb-6 border border-white/25 text-white/60">Der Rhythmus</div>
-              <h3 className="text-3xl md:text-4xl font-extrabold mb-4">So sieht ein Tag aus</h3>
-              <ul className="space-y-2.5 text-white/75 font-light">
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 bg-white/40 shrink-0" />Start im Morgengrauen — 80–90 km in 10–13 Stunden, in Blöcken mit Verpflegungsstopps</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 bg-white/40 shrink-0" />Das Crew-Fahrzeug springt voraus: Verpflegung, Kleiderwechsel, kurze Checks</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 bg-white/40 shrink-0" />Abends: Physio, Content-Schnitt, Schlaf im Basecamp — jeden Tag derselbe Ablauf</li>
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 bg-white/40 shrink-0" />Puffer liegt am Ende, nicht unterwegs: Reservetage fangen Wetter und Körper ab</li>
-              </ul>
-            </div>
-          </FadeUp>
-        </div>
-
-        <FadeUp><div className="text-xs uppercase tracking-[0.3em] text-white/40 mb-5">Die fünf Buchstaben im Detail</div></FadeUp>
-        <div className="grid grid-cols-2 md:grid-cols-5 border-t border-white/15">
-          {LETTERS.map((l, i) => (
-            <FadeUp key={i} delay={i * 0.06}>
-              <div className="border-b md:border-b-0 border-r border-white/15 py-8 pr-4 md:pl-6 first:md:pl-0 h-full">
-                <div className="text-6xl md:text-7xl font-black tracking-tight" style={{ color: RED }}>{l.label}</div>
-                <div className="text-2xl md:text-3xl font-bold mt-4">{fmt(l.km)} km</div>
-                <div className="text-sm text-white/55 font-light mt-1">+{fmt(l.hm)} hm</div>
-                <div className="text-xs uppercase tracking-wider text-white/40 mt-3">{i < 2 ? "Königsetappe" : i === 2 ? "Mittelstück" : "Finale"}</div>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== SETUP / CREW ====================
-
-function Setup() {
-  const roles = [
-    { Icon: ClipboardList, t: "Crew-Chief & Logistik", d: "Plant Tagesabläufe, Verpflegung, Übernachtungen und Übergabepunkte. Die eine Person, die immer weiss, was als Nächstes passiert." },
-    { Icon: Truck, t: "Crew-Fahrzeug", d: "Rollendes Basecamp: Schlafen, Küche, Material, Ladezentrale. Idee: Ford als Fahrzeugpartner an Bord holen — Branding auf dem Van inklusive." },
-    { Icon: Camera, t: "Kamera-Team (2)", d: "Dokumentation in Kinoqualität plus Drohne. Material für die grosse Doku, den Making-of-Film und alle Cutdowns." },
-    { Icon: Radio, t: "Live-Producer", d: "GPS-Live-Tracking und Streaming auf dem Kampagnen-Hub. Die Route zeichnet sich in Echtzeit auf der Karte — jeder kann zuschauen." },
-    { Icon: MessageCircle, t: "Social Media", d: "Begleitet das Projekt durchgehend. Tägliche Reels und Stories, beantwortet Kommentare. Content geht raus, während gelaufen wird." },
-    { Icon: HeartPulse, t: "Physio", d: "Tägliche Behandlung, Belastungssteuerung, Fussmanagement. Bei diesen Umfängen keine Option, sondern Voraussetzung." },
-    { Icon: Brain, t: "Mentale Begleitung", d: "Eine Bezugsperson für die dunklen Stunden — Tag 9 im Dauerregen gewinnt man im Kopf, nicht in den Beinen." },
-    { Icon: Map, t: "Pierre", d: "Läuft. Alles davor und danach macht das Team — genau dafür steht dieses Konzept." },
-  ];
-  return (
-    <section id="setup" className="bg-zinc-950 text-white py-28 md:py-40 px-6 scroll-mt-16">
-      <div className="max-w-7xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Das Setup</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Einer läuft. Ein Team macht es möglich." stagger={0.04} /></h2>
-        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Sieben Rollen, ein Fahrzeug, zwei Wochen. Das ist die Crew, die aus einem Lauf eine Kampagne macht.</p></FadeUp>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10">
-          {roles.map(({ Icon, t, d }, i) => (
-            <FadeUp key={i} delay={0.06 * i}>
-              <div className="bg-zinc-950 p-8 h-full">
-                <Icon size={28} strokeWidth={1.5} className="mb-5 text-white" />
-                <h3 className="text-xl font-extrabold mb-2.5">{t}</h3>
-                <p className="text-white/60 font-light text-sm leading-relaxed">{d}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== ROLLOUT ====================
-
-function Rollout() {
-  const phases = [
-    { k: "Vorher", d: "Teaser, der andeutet statt verrät: «Diesen Herbst schreibe ich etwas, das man aus dem All sieht.» Presse-Seeding mit der Rekordzahl." },
-    { k: "Während", d: "Live-Tracking auf dem Kampagnen-Hub, tägliche Reels und Stories, jeder fertige Buchstabe als eigener Strava- und Social-Moment. Optional: durchgehender Livestream." },
-    { k: "Nachher", d: "Die grosse Doku als Herzstück, Making-of, Pressekit mit dem fertigen Artwork — und ein Bild, das DRYLL für immer gehört." },
-  ];
-  return (
-    <section className="bg-black text-white py-28 md:py-40 px-6">
-      <div className="max-w-7xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Rollout</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-16"><AnimatedWords text="Spannung. Live. Nachhall." stagger={0.05} /></h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {phases.map((p, i) => (
-            <FadeUp key={i} delay={0.1 * i}>
-              <div className="border border-white/12 p-10 h-full">
-                <div className="text-5xl font-black mb-6 text-white/40">{String(i + 1).padStart(2, "0")}</div>
-                <h3 className="text-2xl font-extrabold mb-3">{p.k}</h3>
-                <p className="text-white/60 font-light leading-relaxed">{p.d}</p>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== WARUM PIERRE ====================
-
-function WarumPierre() {
-  return (
-    <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-10 md:gap-16 items-center">
-        <div className="md:col-span-7">
-          <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Warum das glaubwürdig ist</div></FadeUp>
-          <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Aus dem Team, für die Marke." stagger={0.05} /></h2>
-          <FadeUp delay={0.2}>
-            <p className="text-lg md:text-xl text-white/65 font-light mb-10 max-w-2xl">
-              Pierre ist Ultraläufer, Content Creator und Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält. Er läuft für die eigene Marke durch das ganze Land.
-            </p>
-          </FadeUp>
-          <FadeUp delay={0.3}>
-            <div className="flex gap-10 border-t border-white/15 pt-8">
-              <div><div className="text-4xl md:text-6xl font-bold" style={{ color: RED }}>12 Mio.</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">Aufrufe / 90 Tage · alle Kanäle</div></div>
-              <div><div className="text-4xl md:text-6xl font-bold">794k</div><div className="text-xs uppercase tracking-wider text-white/50 mt-2">aktive Konten erreicht</div></div>
-            </div>
-          </FadeUp>
-        </div>
-        <div className="md:col-span-5 grid grid-cols-2 gap-3 md:gap-4">
-          <ParallaxImage src={W(19)} className="aspect-[3/4]" />
-          <ParallaxImage src={W(9)} className="aspect-[3/4] mt-6 md:mt-12" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== OFFENE ENTSCHEIDE ====================
-
-function Entscheide() {
-  const items = [
-    { t: "Welcher Zeitraum im Oktober / November?", d: "12–14 Tage plus Reservetage. Muss mit dem ganzen Team, der Crew-Verfügbarkeit und Pierres Familie abgestimmt werden (Schulferien der Kids)." },
-    { t: "80 oder 90 km pro Tag?", d: "90 km/Tag = 12 Etappen, 80 km/Tag = 14. Definiert Enddatum, Reservetage und wie lange die Crew gebucht wird." },
-    { t: "Ford als Fahrzeugpartner?", d: "Ein gebrandeter Van als rollendes Basecamp senkt Kosten und bringt einen zweiten Partner mit eigener Reichweite ins Projekt." },
-    { t: "Livestream: 24/7 oder Daily?", d: "Durchgehender Stream mit fixem Producer — oder tägliche Live-Fenster plus Recap? Kosten- und Personalfrage." },
-    { t: "Budgetrahmen & Crew-Rekrutierung", d: "7 Rollen über ~2 Wochen: Welche besetzen wir aus dem Netzwerk, welche buchen wir ein? Entscheid nötig bis Ende August." },
-  ];
-  return (
-    <section className="bg-black text-white py-28 md:py-40 px-6">
-      <div className="max-w-5xl mx-auto">
-        <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Für die interne Diskussion</div></FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-14"><AnimatedWords text="Fünf Entscheide, dann laufen wir." stagger={0.05} /></h2>
-        <div>
-          {items.map((it, i) => (
-            <FadeUp key={i} delay={0.05 * i}>
-              <div className="grid grid-cols-[auto_1fr] gap-5 py-6 border-t border-white/15 items-baseline">
-                <div className="text-sm font-bold tabular-nums text-white/50">{String(i + 1).padStart(2, "0")}</div>
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-extrabold mb-1.5">{it.t}</h3>
-                  <p className="text-white/60 font-light leading-relaxed">{it.d}</p>
-                </div>
-              </div>
-            </FadeUp>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ==================== KONTAKT ====================
-
-function Contact() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1]);
-  return (
-    <section ref={ref} className="relative min-h-screen flex items-center px-6 py-32 overflow-hidden bg-black text-white">
-      <motion.div className="absolute inset-0 flex items-center justify-center opacity-25" style={{ scale }}>
-        <SwissMap staticFull className="w-full h-full p-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
-      </motion.div>
-      <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
-        <FadeUp><p className="text-xl md:text-3xl text-white/60 italic mb-12">„Man kann Werbung kaufen. Oder man kann sie laufen.“</p></FadeUp>
-        <h2 className="text-6xl md:text-9xl font-black tracking-tight leading-[0.85] mb-10"><AnimatedWords text="Schreiben wir das Land an." stagger={0.07} /></h2>
-        <FadeUp delay={0.35}><p className="text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto mb-12">Route steht. GPX ist fertig. Zielfenster: <span className="text-white">Oktober / November 2026</span> — den genauen Zeitraum legen wir gemeinsam fest. Jetzt braucht es nur noch ein Go vom Team.</p></FadeUp>
-        <FadeUp delay={0.5}>
-          <div className="inline-flex flex-col items-center gap-5">
-            <div className="text-2xl font-semibold">Pierre Biege</div>
-            <a href="mailto:pierre@laeuft.ch" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Mail size={20} className="group-hover:scale-110 transition-transform" /> pierre@laeuft.ch</a>
-            <a href="tel:+41798533672" className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-lg group"><Phone size={20} className="group-hover:scale-110 transition-transform" /> +41 79 853 36 72</a>
-          </div>
-        </FadeUp>
-        <FadeUp delay={0.8}><div className="mt-24 text-xs uppercase tracking-[0.4em] text-white/30">Internes Konzept · nicht öffentlich teilen</div></FadeUp>
-      </div>
-    </section>
+    </div>
   );
 }
 
@@ -577,20 +148,174 @@ function Contact() {
 
 export default function DryllPresentationPage() {
   return (
-    <div className="antialiased bg-black">
-      <Header />
-      <Hero />
+    <div className="dryllpage">
+      <nav className="nav"><div className="wrap">
+        <a className="logo" href="#top" aria-label="DRYLL"><DryllLogo /></a>
+        <div className="links">
+          <a href="#idee">Die Idee</a>
+          <a href="#etappen">Etappen</a>
+          <a href="#setup">Das Setup</a>
+        </div>
+      </div></nav>
+
+      <header className="hero" id="top"><div className="wrap">
+        <div className="eyebrow">DRYLL × Pierre Biege · Internes Konzept · Herbst 2026</div>
+        <h1>The World&apos;s<br />Biggest Ad</h1>
+        <p className="lead">Ein Läufer schreibt <b>DRYLL</b> quer über die Schweiz. Der Markenname als GPS-Artwork auf Strava, vom Freiburgerland bis ins Zürcher Oberland. <b>Reichweite: erlaufen, nicht erkauft.</b></p>
+        <div className="kpis">
+          <div className="kpi"><div className="v num">1&apos;079</div><div className="l">Kilometer gesamt</div></div>
+          <div className="kpi"><div className="v num">28&apos;100</div><div className="l">Höhenmeter (3× Everest)</div></div>
+          <div className="kpi"><div className="v num">5</div><div className="l">Buchstaben · 7 Loops</div></div>
+          <div className="kpi"><div className="v num">153</div><div className="l">km Breite (Luftlinie)</div></div>
+        </div>
+      </div></header>
+
       <RouteMap />
-      <Pitch />
-      <Idee />
-      <Eckwerte />
-      <Rekord />
-      <Etappen />
-      <Setup />
-      <Rollout />
-      <WarumPierre />
-      <Entscheide />
-      <Contact />
+
+      <section id="idee"><div className="wrap">
+        <div className="tag">Die Idee</div>
+        <h2>Die grösste erlaufene Werbung der Welt</h2>
+        <div className="rule"></div>
+        <div className="body">
+          <p>Diesen Herbst entsteht der DRYLL-Schriftzug als durchgehendes Artwork über 1&apos;079 Kilometer. <b>Kein Mediabudget kauft diese Geschichte.</b> Sie wird gelaufen — Kilometer für Kilometer, live verfolgbar auf Strava, in den Social Feeds und auf einem Kampagnen-Hub.</p>
+          <p>Pierre Biege ist Ultraläufer und Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält — er läuft für die eigene Marke durch das ganze Land. Das Making-of zeigt die Arbeit dahinter.</p>
+        </div>
+      </div></section>
+
+      <div className="quote"><div className="wrap">
+        <blockquote>„Ich bin nicht das Testimonial. Ich bin Teil des Teams — und laufe das selbst.&quot;</blockquote>
+        <cite>Pierre Biege</cite>
+      </div></div>
+
+      <section><div className="wrap">
+        <div className="tag">Die Dimension</div>
+        <h2>Ein Wort, so gross wie das Mittelland</h2>
+        <div className="rule"></div>
+        <div className="body"><p>Die Route ist fertig geplant. Jeder Kilometer liegt auf echten Wegen und Trails, alle grossen Seen sind umlaufen, die GPX-Datei ist bereit. Bisheriges Maximum zu Fuss: rund 153 km. Unser Wort: <b>1&apos;079 km.</b></p></div>
+        <div className="metrics">
+          <div className="metric"><div className="v num">1&apos;079</div><div className="l">km Gesamtdistanz — quer durchs Mittelland</div></div>
+          <div className="metric"><div className="v num">+28&apos;100</div><div className="l">Höhenmeter — mehr als 3× Everest</div></div>
+          <div className="metric"><div className="v num">5·7</div><div className="l">Buchstaben über sieben Loops</div></div>
+          <div className="metric"><div className="v num">≈153</div><div className="l">km Breite des Schriftzugs (Luftlinie)</div></div>
+        </div>
+      </div></section>
+
+      <section><div className="wrap">
+        <div className="tag">Der Rekord</div>
+        <h2>7× grösser als jedes erlaufene Artwork</h2>
+        <div className="rule"></div>
+        <div className="body"><p>Der Rekord ist der PR-Hebel. Er muss jedem Faktencheck standhalten. Hier die Rekordlage, recherchiert im Juli 2026.</p></div>
+        <div className="records">
+          <div className="rec"><div className="n num">01</div><p>Das grösste GPS-Drawing zu Fuss misst 116 km, nonstop in 24 Stunden (Wales, 2024). Das grösste mehrtägige Einzel-Artwork misst rund 153 km (San Francisco). <b>Unser Wort misst 1&apos;079 km.</b></p></div>
+          <div className="rec"><div className="n num">02</div><p>Grössere GPS-Drawings existieren nur mit Fahrzeugen. Velo bis 7&apos;237 km, Auto 7&apos;164 km («Marry Me», Japan). Unser Claim heisst deshalb präzis: <b>das grösste je erlaufene GPS-Artwork der Welt.</b></p></div>
+          <div className="rec"><div className="n num">03</div><p>Zur Transparenz: Ein Läufer in Toronto sammelte 2024 rund 1&apos;100 km für Strava-Art — verteilt auf über 100 kleine Einzelbilder. <b>Ein einzelnes Artwork dieser Grösse lief noch niemand.</b></p></div>
+          <div className="rec"><div className="n num">04</div><p>«The World&apos;s Biggest Ad» ist Kampagnen-Titel, kein Rekord-Claim. Guinness misst Werbung in m². Der belastbare Superlativ lautet: <b>erlaufen.</b></p></div>
+        </div>
+      </div></section>
+
+      <section id="etappen"><div className="wrap">
+        <div className="tag">Wie ich das laufe</div>
+        <h2>Ein Wort. Am Stück.</h2>
+        <div className="rule"></div>
+        <div className="letters">
+          {LETTERS.map((l, i) => (
+            <div className="let" key={i}>
+              <div className="big">{l.label}</div>
+              <div className="km num">{fmt(l.km)} km</div>
+              <div className="hm num">+{fmt(l.hm)} hm</div>
+              <div className="cap">{CAPS[i]}</div>
+            </div>
+          ))}
+        </div>
+        <div className="cols">
+          <div className="col">
+            <h3>Der Plan</h3><div className="sub">Alles am Stück</div>
+            <ul>
+              <li>Eine durchgehende Expedition vom ersten bis zum letzten Strich: 12–14 Tagesetappen à 80–90 km, ohne Ruhetag.</li>
+              <li>Ein einziger erzählerischer Bogen — eine Geschichte ohne Unterbruch.</li>
+              <li>Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
+              <li>Jeder fertige Buchstabe bleibt ein eigener Meilenstein im Feed — das Wort wächst öffentlich.</li>
+              <li>Zeitraum: Oktober / November 2026 · 12–14 Tage plus Reservetage.</li>
+            </ul>
+          </div>
+          <div className="col">
+            <h3>Der Rhythmus</h3><div className="sub">So sieht ein Tag aus</div>
+            <ul>
+              <li>Start im Morgengrauen — 80–90 km in 10–13 Stunden, in Blöcken mit Verpflegungsstopps.</li>
+              <li>Das Crew-Fahrzeug springt voraus: Verpflegung, Kleiderwechsel, kurze Checks.</li>
+              <li>Abends: Physio, Content-Schnitt, Schlaf im Basecamp — jeden Tag derselbe Ablauf.</li>
+              <li>Puffer liegt am Ende, nicht unterwegs: Reservetage fangen Wetter und Körper ab.</li>
+            </ul>
+          </div>
+        </div>
+      </div></section>
+
+      <section id="setup"><div className="wrap">
+        <div className="tag">Das Setup</div>
+        <h2>Einer läuft. Ein Team macht es möglich.</h2>
+        <div className="rule"></div>
+        <div className="body"><p>Sieben Rollen, ein Fahrzeug, zwei Wochen. Das ist die Crew, die aus einem Lauf eine Kampagne macht.</p></div>
+        <div className="crew">
+          <div className="role"><div className="rn">01</div><h4>Crew-Chief &amp; Logistik</h4><p>Plant Tagesabläufe, Verpflegung, Übernachtungen und Übergabepunkte. Die eine Person, die immer weiss, was als Nächstes passiert.</p></div>
+          <div className="role"><div className="rn">02</div><h4>Crew-Fahrzeug</h4><p>Rollendes Basecamp: Schlafen, Küche, Material, Ladezentrale. Idee: Ford als Fahrzeugpartner an Bord — Branding auf dem Van inklusive.</p></div>
+          <div className="role"><div className="rn">03</div><h4>Kamera-Team (2)</h4><p>Dokumentation in Kinoqualität plus Drohne. Material für die grosse Doku, den Making-of-Film und alle Cutdowns.</p></div>
+          <div className="role"><div className="rn">04</div><h4>Live-Producer</h4><p>GPS-Live-Tracking und Streaming auf dem Kampagnen-Hub. Die Route zeichnet sich in Echtzeit auf der Karte — jeder kann zuschauen.</p></div>
+          <div className="role"><div className="rn">05</div><h4>Social Media</h4><p>Begleitet das Projekt durchgehend. Tägliche Reels und Stories, beantwortet Kommentare. Content geht raus, während gelaufen wird.</p></div>
+          <div className="role"><div className="rn">06</div><h4>Physio</h4><p>Tägliche Behandlung, Belastungssteuerung, Fussmanagement. Bei diesen Umfängen keine Option, sondern Voraussetzung.</p></div>
+          <div className="role"><div className="rn">07</div><h4>Mentale Begleitung</h4><p>Eine Bezugsperson für die dunklen Stunden — Tag 9 im Dauerregen gewinnt man im Kopf, nicht in den Beinen.</p></div>
+          <div className="role"><div className="rn">—</div><h4>Pierre</h4><p>Läuft. Alles davor und danach macht das Team — genau dafür steht dieses Konzept.</p></div>
+        </div>
+      </div></section>
+
+      <section><div className="wrap">
+        <div className="tag">Rollout</div>
+        <h2>Spannung. Live. Nachhall.</h2>
+        <div className="rule"></div>
+        <div className="phases">
+          <div className="phase"><div className="pn num">01</div><h4>Vorher</h4><p>Teaser, der andeutet statt verrät: «Diesen Herbst schreibe ich etwas, das man aus dem All sieht.» Presse-Seeding mit der Rekordzahl.</p></div>
+          <div className="phase"><div className="pn num">02</div><h4>Während</h4><p>Live-Tracking auf dem Kampagnen-Hub, tägliche Reels und Stories, jeder fertige Buchstabe als eigener Strava- und Social-Moment.</p></div>
+          <div className="phase"><div className="pn num">03</div><h4>Nachher</h4><p>Die grosse Doku und der Making-of-Film, Press-Kit mit der Rekordzahl — ein Artwork, das der Marke für immer gehört.</p></div>
+        </div>
+      </div></section>
+
+      <div className="cred"><div className="wrap">
+        <div className="tag">Warum das glaubwürdig ist</div>
+        <h2>Aus dem Team, für die Marke</h2>
+        <div className="rule"></div>
+        <div className="body"><p>Pierre ist Ultraläufer, Content Creator und Teil des DRYLL-Teams. <b>Kein gekaufter Athlet, der ein Produkt hochhält.</b> Er läuft für die eigene Marke durch das ganze Land.</p></div>
+        <div className="band">
+          <div><div className="v num">12 Mio.</div><div className="l">Aufrufe / 90 Tage · alle Kanäle</div></div>
+          <div><div className="v num">794k</div><div className="l">aktive Konten erreicht</div></div>
+        </div>
+      </div></div>
+
+      <section className="dec"><div className="wrap">
+        <div className="tag">Für die interne Diskussion</div>
+        <h2>Fünf Entscheide, dann laufen wir.</h2>
+        <div className="rule"></div>
+        <div className="declist">
+          <div className="decrow"><div className="di">01</div><div><div className="dq">Welcher Zeitraum im Oktober / November?</div><div className="da">12–14 Tage plus Reservetage. Muss mit dem ganzen Team, der Crew-Verfügbarkeit und Pierres Familie abgestimmt werden (Schulferien der Kids).</div></div></div>
+          <div className="decrow"><div className="di">02</div><div><div className="dq">80 oder 90 km pro Tag?</div><div className="da">90 km/Tag = 12 Etappen, 80 km/Tag = 14. Definiert Enddatum, Reservetage und wie lange die Crew gebucht wird.</div></div></div>
+          <div className="decrow"><div className="di">03</div><div><div className="dq">Ford als Fahrzeugpartner?</div><div className="da">Ein gebrandeter Van als rollendes Basecamp senkt Kosten und bringt einen zweiten Partner mit eigener Reichweite ins Projekt.</div></div></div>
+          <div className="decrow"><div className="di">04</div><div><div className="dq">Livestream: 24/7 oder Daily?</div><div className="da">Durchgehender Stream mit fixem Producer — oder tägliche Live-Fenster plus Recap? Kosten- und Personalfrage.</div></div></div>
+          <div className="decrow"><div className="di">05</div><div><div className="dq">Budgetrahmen &amp; Crew-Rekrutierung</div><div className="da">7 Rollen über ~2 Wochen: Welche besetzen wir aus dem Netzwerk, welche buchen wir ein? Entscheid nötig bis Ende August.</div></div></div>
+        </div>
+      </div></section>
+
+      <div className="cta"><div className="wrap">
+        <div className="big">„Man kann Werbung kaufen. Oder man kann sie laufen.&quot;</div>
+        <div className="body">Route steht. GPX ist fertig. Zielfenster: Oktober / November 2026 — den genauen Zeitraum legen wir gemeinsam fest. Jetzt braucht es nur noch ein Go vom Team.</div>
+        <div className="contact">
+          <div className="name">Pierre Biege</div>
+          <a href="mailto:pierre@laeuft.ch">pierre@laeuft.ch</a>
+          <a href="tel:+41798533672">+41 79 853 36 72</a>
+        </div>
+      </div></div>
+
+      <footer><div className="wrap">
+        <div className="note">Internes Konzept · nicht öffentlich teilen</div>
+        <div className="cities">Genf · Bern · Zürich · Basel · Luzern · Sion · St. Moritz · Lugano</div>
+      </div></footer>
     </div>
   );
 }
