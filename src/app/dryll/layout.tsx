@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { Commissioner } from "next/font/google";
+
+const commissioner = Commissioner({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "The World's Biggest Ad — DRYLL × Pierre Biege",
@@ -14,5 +17,5 @@ export const metadata: Metadata = {
 };
 
 export default function DryllLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <div className={commissioner.className}>{children}</div>;
 }
