@@ -274,7 +274,7 @@ function Pitch() {
       </FadeUp>
       <FadeUp delay={0.2}>
         <p className="text-lg md:text-2xl text-white/65 font-light mt-8 max-w-3xl mx-auto">
-          Pierre Biege — Ultraläufer und Teil des DRYLL-Teams — schreibt den Markennamen als Strava-Artwork über das ganze Land. Die Aktion lebt dort, wo die Szene zuhause ist: Strava, Social Feeds und ein Live-Hub, auf dem alles zusammenläuft.
+          Pierre Biege ist Ultraläufer und Teil des DRYLL-Teams. Er schreibt den Markennamen als Strava-Artwork über das ganze Land. Die Aktion lebt auf Strava, in den Social Feeds und auf einem Live-Hub.
         </p>
       </FadeUp>
     </section>
@@ -288,10 +288,10 @@ function Idee() {
     <section id="idee" className="bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white py-40 md:py-48 px-6 overflow-hidden scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-12 text-center">Die Idee</div></FadeUp>
-        <ScrollRevealText text="Diesen Herbst lassen wir die vermutlich grösste erlaufene Werbung der Welt entstehen: der DRYLL-Schriftzug als gigantisches Strava-Artwork, das sich vom Freiburgerland bis ins Zürcher Oberland erstreckt." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Diesen Herbst entsteht die grösste erlaufene Werbung der Welt. Der DRYLL-Schriftzug spannt sich vom Freiburgerland bis ins Zürcher Oberland. Ein Artwork, 1'079 Kilometer." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
       </div>
       <div className="max-w-4xl mx-auto mt-28">
-        <ScrollRevealText text="Kein Mediabudget kauft diese Geschichte. Sie wird gelaufen — Kilometer für Kilometer, live verfolgbar, mit einem Making-of, das zeigt, was ein Mensch für eine Idee leistet." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
+        <ScrollRevealText text="Kein Mediabudget kauft diese Geschichte. Sie wird gelaufen — Kilometer für Kilometer, live verfolgbar. Das Making-of zeigt die Arbeit dahinter." className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.25] text-center" />
         <FadeUp delay={0.3}><p className="text-center mt-16 text-lg text-white/50 italic">„Ich bin nicht das Testimonial. Ich bin Teil des Teams — und laufe das selbst.“</p></FadeUp>
       </div>
     </section>
@@ -324,7 +324,7 @@ function Eckwerte() {
         </div>
         <FadeUp delay={0.3}>
           <p className="text-white/55 text-base md:text-lg font-light max-w-3xl mt-12">
-            Die Route ist fertig geplant: auf echte Wege und Trails gesnappt, alle grossen Seen umlaufen, als GPX-Datei bereit. Die grössten dokumentierten GPS-Artworks zu Fuss liegen bei 116 bis rund 153 km — wir laufen ein einzelnes Wort von {fmt(TOTAL_KM)} km.
+            Die Route ist fertig geplant. Jeder Kilometer liegt auf echten Wegen und Trails. Alle grossen Seen sind umlaufen, die GPX-Datei ist bereit. Bisheriges Maximum zu Fuss: rund 153 km. Unser Wort: {fmt(TOTAL_KM)} km.
           </p>
         </FadeUp>
       </div>
@@ -336,17 +336,17 @@ function Eckwerte() {
 
 function Rekord() {
   const facts = [
-    "Das grösste dokumentierte GPS-Drawing zu Fuss: 116 km, nonstop in 24 Stunden (Wales, 2024). Das grösste mehrtägig erlaufene Einzel-Artwork: rund 153 km (San Francisco). Unser Wort: " + fmt(TOTAL_KM) + " km.",
-    "Grössere GPS-Drawings existieren nur mit Fahrzeugen: per Velo bis 7'237 km, per Auto 7'164 km («Marry Me», quer durch Japan). Unser Claim heisst deshalb präzis: das grösste je erlaufene GPS-Artwork der Welt.",
-    "Volle Transparenz: Ein Läufer in Toronto sammelte 2024 rund 1'100 km für Strava-Art — verteilt auf über 100 kleine Einzelbilder einer Animation. Ein einzelnes, zusammenhängendes Artwork dieser Grösse ist zu Fuss noch nie entstanden.",
-    "«The World's Biggest Ad» ist Kampagnen-Titel, kein Rekord-Claim: Physische Werbe-Rekorde misst Guinness in m² (grösstes Poster ~29'000 m²). Unser Schriftzug spannt sich über 150 km Landesbreite — eine andere Liga, aber kein Inserat. Der belastbare Superlativ lautet: erlaufen.",
+    "Das grösste GPS-Drawing zu Fuss misst 116 km, nonstop in 24 Stunden (Wales, 2024). Das grösste mehrtägige Einzel-Artwork misst rund 153 km (San Francisco). Unser Wort misst " + fmt(TOTAL_KM) + " km.",
+    "Grössere GPS-Drawings existieren nur mit Fahrzeugen. Velo: bis 7'237 km. Auto: 7'164 km («Marry Me», Japan). Unser Claim heisst deshalb präzis: das grösste je erlaufene GPS-Artwork der Welt.",
+    "Zur Transparenz: Ein Läufer in Toronto sammelte 2024 rund 1'100 km für Strava-Art. Verteilt auf über 100 kleine Einzelbilder einer Animation. Ein einzelnes Artwork dieser Grösse lief noch niemand.",
+    "«The World's Biggest Ad» ist Kampagnen-Titel, kein Rekord-Claim. Guinness misst Werbung in m² — das grösste Poster misst rund 29'000 m². Unser Schriftzug spannt sich über 150 km Landesbreite. Der belastbare Superlativ lautet: erlaufen.",
   ];
   return (
     <section className="bg-zinc-950 text-white py-28 md:py-40 px-6">
       <div className="max-w-5xl mx-auto">
         <FadeUp><div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-6">Der Rekord</div></FadeUp>
         <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-8"><AnimatedWords text="7× grösser als jedes erlaufene Artwork." stagger={0.05} /></h2>
-        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Der Rekord ist der PR-Hebel — und er muss jedem Faktencheck standhalten. Darum hier die ehrliche Rekordlage (recherchiert, Stand Juli 2026).</p></FadeUp>
+        <FadeUp delay={0.25}><p className="text-lg md:text-xl text-white/60 font-light max-w-3xl mb-14">Der Rekord ist der PR-Hebel. Er muss jedem Faktencheck standhalten. Hier die Rekordlage, recherchiert im Juli 2026.</p></FadeUp>
         <div>
           {facts.map((f, i) => (
             <FadeUp key={i} delay={0.04 * i}>
@@ -378,7 +378,7 @@ function Etappen() {
               <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Alles am Stück</h3>
               <p className="text-white/70 font-light leading-relaxed mb-6">Eine durchgehende Expedition vom ersten bis zum letzten Strich: 12–14 Tagesetappen à 80–90 km, ohne Ruhetag.</p>
               <ul className="space-y-2.5 text-white/75 font-light">
-                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Ein einziger erzählerischer Bogen — maximale Fallhöhe, echtes Expeditionsgefühl</li>
+                <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Ein einziger erzählerischer Bogen — eine Geschichte ohne Unterbruch</li>
                 <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Live-Tracking wird zum Dauerformat: Wo ist Pierre gerade?</li>
                 <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-white" />Jeder fertige Buchstabe bleibt ein eigener Meilenstein im Feed — das Wort wächst öffentlich</li>
               </ul>
@@ -425,7 +425,7 @@ function Setup() {
     { Icon: Truck, t: "Crew-Fahrzeug", d: "Rollendes Basecamp: Schlafen, Küche, Material, Ladezentrale. Idee: Ford als Fahrzeugpartner an Bord holen — Branding auf dem Van inklusive." },
     { Icon: Camera, t: "Kamera-Team (2)", d: "Dokumentation in Kinoqualität plus Drohne. Material für die grosse Doku, den Making-of-Film und alle Cutdowns." },
     { Icon: Radio, t: "Live-Producer", d: "GPS-Live-Tracking und Streaming auf dem Kampagnen-Hub. Die Route zeichnet sich in Echtzeit auf der Karte — jeder kann zuschauen." },
-    { Icon: MessageCircle, t: "Social Media", d: "Begleitet das Projekt durchgehend: tägliche Reels, Stories, Community-Antworten — Content geht raus, während gelaufen wird." },
+    { Icon: MessageCircle, t: "Social Media", d: "Begleitet das Projekt durchgehend. Tägliche Reels und Stories, beantwortet Kommentare. Content geht raus, während gelaufen wird." },
     { Icon: HeartPulse, t: "Physio", d: "Tägliche Behandlung, Belastungssteuerung, Fussmanagement. Bei diesen Umfängen keine Option, sondern Voraussetzung." },
     { Icon: Brain, t: "Mentale Begleitung", d: "Eine Bezugsperson für die dunklen Stunden — Tag 9 im Dauerregen gewinnt man im Kopf, nicht in den Beinen." },
     { Icon: Map, t: "Pierre", d: "Läuft. Alles davor und danach macht das Team — genau dafür steht dieses Konzept." },
@@ -492,7 +492,7 @@ function WarumPierre() {
           <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] mb-8"><AnimatedWords text="Aus dem Team, für die Marke." stagger={0.05} /></h2>
           <FadeUp delay={0.2}>
             <p className="text-lg md:text-xl text-white/65 font-light mb-10 max-w-2xl">
-              Pierre ist Ultraläufer, Content Creator — und Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält: Das hier ist die Geschichte von jemandem, der für seine eigene Marke durch das ganze Land läuft.
+              Pierre ist Ultraläufer, Content Creator und Teil des DRYLL-Teams. Kein gekaufter Athlet, der ein Produkt hochhält. Er läuft für die eigene Marke durch das ganze Land.
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
