@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Fux Bau AG",
+    "contact_name": "Fux Bau AG",
+    "email": "fuxbauag@bluewin.ch",
+    "website": "https://www.fuxbauag.ch",
+    "notes": "FAKTEN: Bauunternehmen in Brig-Glis (Oberwallis), gegründet 1972, 10-49 Mitarbeiter. Hoch- und Tiefbau, Neubauten, Umbauten und Renovationen. Nutzt eine Bluewin-E-Mail-Adresse als Geschäftskontakt. Verwaltungsrat: Hubert Fux (Präsident), Armin Fux (Vizepräsident)."
+  },
+  {
+    "company": "SAMS GYM GmbH",
+    "contact_name": "SAMS GYM GmbH",
+    "email": "info@samsgym.ch",
+    "website": "https://fitnessstudio-oberwallis.ch",
+    "notes": "FAKTEN: Fitnessstudio-Kette im Oberwallis mit Standorten in Susten, Stalden und Leuk. Inhaber: Samuel Millius (Athletic & Performance Trainer). 24/7 geöffnet. Bietet Probetraining und Ernährungsanalyse an."
+  },
+  {
+    "company": "DIRREN Maler und Gipser GmbH",
+    "contact_name": "DIRREN Maler und Gipser GmbH",
+    "email": "info@malerei-dirren.ch",
+    "website": "https://www.malerei-dirren.ch",
+    "notes": "FAKTEN: Maler- und Gipsergeschäft in Visp, 25 festangestellte Mitarbeiter. Entstanden durch Zusammenschluss von drei Malergeschäften. Geschäftsführer und Inhaber: Romeo Junior Dirren. Bietet Malerei, Gipserei, Leichtbau und Strahlerei. Gegründet 2013."
+  },
+  {
+    "company": "Zurbriggen AG",
+    "contact_name": "Zurbriggen AG",
+    "email": "info@zurbriggen.net",
+    "website": "https://www.zurbriggen.net",
+    "notes": "FAKTEN: Traditionsschreinerei in Visp seit 1888, aktuell in 4. Generation geführt von Roman Zurbriggen. Rund 40 Fachspezialisten. Spezialisiert auf Fenster, Möbel und Innenausbau im Oberwallis."
+  },
+  {
+    "company": "Cave du Rhodan Mounir Weine AG",
+    "contact_name": "Olivier Mounir",
+    "email": "mounir@rhodan.ch",
+    "website": "https://rhodan.ch",
+    "notes": "FAKTEN: Familienweingut in Salgesch, 3. Generation, 13 Hektar Rebfläche. Inhaber: Sandra und Olivier Mounir. Über 200 Auszeichnungen an internationalen Weinwettbewerben. Schweizer Weingut des Jahres. Online-Shop auf rhodan.ch (Shopify-basiert). Kellermeister: Nicolas Gaudin."
+  }
+]
