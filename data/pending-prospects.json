@@ -68,5 +68,40 @@
     "email": "monthey@mdk-immobilier.ch",
     "website": "https://mdk.ch",
     "notes": "FAKTEN: Immobilien-Agentur und Treuhand in Monthey (Unterwallis), gegründet 2007. Standorte in Monthey (Rue du Château 1) und Champéry. Geschäftsleitung: Mathieu Kerneur, Vincent Rouiller, Maxime Délez. Bietet Immobilienvermittlung, Verwaltung und Treuhand-Dienstleistungen im Chablais und Portes-du-Soleil."
+  },
+  {
+    "company": "Boulangerie Taillens SA",
+    "contact_name": "Nicolas Taillens",
+    "email": "nicolas@boulangerietaillens.ch",
+    "website": "https://www.boulangerietaillens.ch",
+    "notes": "FAKTEN: Bäckerei-Konditorei in Crans-Montana (Unterwallis), gegründet 1943 von Oscar und Berthe Taillens. Über 85 Mitarbeiter in Produktion, Verkauf und Service. Mehrere Standorte in Crans-Montana mit Tearooms. Familienbetrieb, aktuell geführt von Nicolas Taillens. Website nur auf Französisch. Bäckerei mit Fokus auf handwerkliches Sauerteigbrot und lokale Zutaten aus der Region."
+  },
+  {
+    "company": "Restaurant Les Touristes",
+    "contact_name": "Christophe Genetti & Maël Gross",
+    "email": "chefs@touristes-martigny.ch",
+    "website": "https://touristes-martigny.ch",
+    "notes": "FAKTEN: Gastronomie-Restaurant in Martigny (Unterwallis), Rue de l'Hôpital 2. Geführt von den zwei Walliser Köchen Christophe Genetti und Maël Gross, die das Restaurant Anfang 2023 übernommen haben. Im Michelin Guide gelistet und GaultMillau bewertet (16/20). Bietet gehobene Küche mit Walliser Terroir-Bezug. Öffnungszeiten: Dienstag bis Samstag."
+  },
+  {
+    "company": "Prato Borni Ski & Snowboardschule",
+    "contact_name": "Elmar Lehner",
+    "email": "info@pratoborni.ch",
+    "website": "https://www.pratoborni.ch",
+    "notes": "FAKTEN: Kleine Skischule in Zermatt, spezialisiert auf Privatunterricht für Ski, Snowboard und Telemark. Skischulleiter: Elmar Lehner (Experte Skilehrer seit 2001). Gründer stammen aus Zermatter Familien mit Tradition als Skilehrer und Bergführer. Website auf Deutsch, Englisch und Französisch. Adresse: Bahnhofstrasse 78, 3920 Zermatt."
+  },
+  {
+    "company": "Zahnarztpraxis Dres. Perren",
+    "contact_name": "Dr. Roman Perren",
+    "email": "info@zahnarzt-perren.ch",
+    "website": "https://zahnarzt-perren.ch",
+    "notes": "FAKTEN: Zahnarztpraxis in Brig-Glis, geführt von Dres. med. dent. Roman und Chantal Perren-Jäggi. Familienzahnarztpraxis an der Bahnhofstrasse 4A, CH-3900 Brig-Glis. Bietet moderne Zahnmedizin, Notfalldienst und Online-Terminbuchung über OneDoc. Website mit Informationen zu Angebot, Team und Kontakt."
+  },
+  {
+    "company": "Metzgerei Nessier AG",
+    "contact_name": "Metzgerei Nessier AG",
+    "email": "info@metzgerei-nessier.ch",
+    "website": "https://www.metzgerei-nessier.ch",
+    "notes": "FAKTEN: Walliser Fleischtrocknerei in Geschinen/Münster (Goms), Familienbetrieb in 4. Generation. 20 Mitarbeiter. Spezialisiert auf Walliser Trockenfleisch mit IGP-Label. Eigener Online-Shop auf der Website. Produkte umfassen Trockenfleisch, Rohschinken und regionale Walliser Spezialitäten. Adresse: Furkastrasse, 3985 Münster."
   }
 ]
