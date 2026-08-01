@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "company": "Valfida Treuhand AG",
+    "contact_name": "Stefan Zenhäusern",
+    "email": "stefan.zenhaeusern@valfida.ch",
+    "website": "https://valfida.ch",
+    "notes": "FAKTEN: Treuhandbüro in Visp, gegründet 1985. Drei Geschäftsführer: Daniel, Stephan und Marc Zenhäusern. Dienstleistungen: Steuerberatung, Buchhaltung, Wirtschaftsprüfung, Immobilienverwaltung. Website vorhanden (valfida.ch). Branche: Treuhand/Finanzen."
+  },
+  {
+    "company": "Garage Arena AG",
+    "contact_name": "Garage Arena AG",
+    "email": "info@garage-arena.ch",
+    "website": "https://www.garage-arena.ch",
+    "notes": "FAKTEN: Autowerkstatt und offizieller Fiat-Partner in Naters. Familienbetrieb seit 1982, gegründet von Giuseppe Jelo. 2015 von Söhnen Domenico und Marco Jelo übernommen. Andrea Jelo-Amstutz ist Alleingesellschafterin. Website vorhanden (garage-arena.ch). Branche: Garagist/Automobil."
+  },
+  {
+    "company": "Bäckerei-Konditorei A. Zuber",
+    "contact_name": "Bäckerei-Konditorei A. Zuber",
+    "email": "info@baeckerei-zuber.ch",
+    "website": "https://www.baeckerei-zuber.ch",
+    "notes": "FAKTEN: Bäckerei in Stalden mit Filialen in Visp, Grächen und Naters. Ca. 60 Voll- und Teilzeitmitarbeiter. Geschäftsführer Andreas Zuber. Gegründet 1990 von Alexander und Renate Zuber. Website vorhanden (baeckerei-zuber.ch). Branche: Gastronomie/Bäckerei."
+  },
+  {
+    "company": "Eyer Immobilien AG",
+    "contact_name": "Eyer Immobilien AG",
+    "email": "info@eyer-immobilien.ch",
+    "website": "https://eyer-immobilien.ch",
+    "notes": "FAKTEN: Immobilienverwaltung in Brig-Glis, gegründet 2014. Geschäftsführer Silvan Matthew Eyer, Stellv. GF Desirée Schmidhalter, GF Dr. Martin Eyer. Spezialisiert auf Vermietung und Verwaltung von Liegenschaften im Oberwallis. Website vorhanden (eyer-immobilien.ch). Branche: Immobilien."
+  },
+  {
+    "company": "Bestazzoni SA",
+    "contact_name": "Bestazzoni SA",
+    "email": "info@bestazzoni.ch",
+    "website": "https://www.bestazzoni.ch",
+    "notes": "FAKTEN: Sanitär- und Heizungsinstallateur in Martigny (Unterwallis), gegründet 1984 von Umberto Bestazzoni. Über 25 Mitarbeiter. Spezialisiert auf Heizung, Sanitärinstallationen, Lüftung und Industrierohrleitungen. Kontaktperson: Tristan Carrupt. Geschäftsleitung: Claude Alain Bestazzoni. Website vorhanden (bestazzoni.ch). Branche: Sanitär/Heizung."
+  }
+]
