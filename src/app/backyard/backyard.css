@@ -1,0 +1,164 @@
+/* Backyard Ultra World Team Championship – Team Schweiz.
+   Alles unter .byd gekapselt: eigene Farbvariablen, eigene Hilfsklassen.
+   Der Rest von laeuft.ch bleibt davon unberührt. */
+
+.byd {
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-synthesis-weight: none;
+  background: var(--byd-bg);
+  color: var(--byd-fg);
+  overflow-x: clip;
+}
+
+/* ============================================================
+   Team Schweiz · Backyard
+   Gestaltungsprinzip: die Seite läuft die Uhr mit.
+   Oben Samstag 14 Uhr, hell. Mitte Nacht. Unten Sonntagmorgen.
+   Keine Verläufe, kein Glühen, kein Glas. Haarlinien, Zahlen,
+   harte Kanten. Alle Läufer sind gleich gross gesetzt.
+   ============================================================ */
+
+
+.byd {
+  --byd-bg: #e9e5dd;
+  --byd-fg: #0b0b0b;
+  --byd-rule: rgba(11, 11, 11, 0.16);
+  --byd-mute: rgba(11, 11, 11, 0.52);
+  --byd-accent: #d8000e;
+  color-scheme: light;
+}
+
+/* Vier Tageszeiten. Jede Sektion trägt eine davon. */
+
+.byd [data-hour="tag"] {
+  --byd-bg: #e9e5dd;
+  --byd-fg: #0b0b0b;
+  --byd-rule: rgba(11, 11, 11, 0.16);
+  --byd-mute: rgba(11, 11, 11, 0.52);
+  color-scheme: light;
+}
+
+.byd [data-hour="daemmerung"] {
+  --byd-bg: #1b1613;
+  --byd-fg: #e7ded1;
+  --byd-rule: rgba(231, 222, 209, 0.18);
+  --byd-mute: rgba(231, 222, 209, 0.55);
+  color-scheme: dark;
+}
+
+.byd [data-hour="nacht"] {
+  --byd-bg: #070709;
+  --byd-fg: #e8e8ec;
+  --byd-rule: rgba(232, 232, 236, 0.16);
+  --byd-mute: rgba(232, 232, 236, 0.5);
+  color-scheme: dark;
+}
+
+.byd [data-hour="tief"] {
+  --byd-bg: #000000;
+  --byd-fg: #e8e8ec;
+  --byd-rule: rgba(232, 232, 236, 0.14);
+  --byd-mute: rgba(232, 232, 236, 0.42);
+  color-scheme: dark;
+}
+
+
+.byd section[data-hour] {
+  background: var(--byd-bg);
+  color: var(--byd-fg);
+}
+
+/* Übergang zwischen zwei Tageszeiten – ein schmaler Streifen,
+   damit die Seite nicht springt, sondern dämmert. */
+.byd .dawn {
+  height: 9rem;
+  background: linear-gradient(to bottom, var(--byd-from), var(--byd-to));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------- Typografie ---------------- */
+
+.byd .display {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 0.94;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.byd .stamp {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--byd-mute);
+}
+
+.byd .tnum { font-variant-numeric: tabular-nums; }
+
+.byd .rule { border-color: var(--byd-rule); }
+
+/* ---------------- Reveal ---------------- */
+
+.byd .reveal > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.byd .reveal.is-in > * {
+  opacity: 1;
+  transform: none;
+}
+.byd .reveal.is-in > *:nth-child(2) { transition-delay: 70ms; }
+.byd .reveal.is-in > *:nth-child(3) { transition-delay: 140ms; }
+.byd .reveal.is-in > *:nth-child(4) { transition-delay: 210ms; }
+.byd .reveal.is-in > *:nth-child(5) { transition-delay: 280ms; }
+
+/* ---------------- Bahn (scroll-snap wie bei Apple) ---------------- */
+
+.byd .rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(19rem, 74vw);
+  gap: 1px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  scroll-padding-inline: 1.25rem;
+}
+.byd .rail::-webkit-scrollbar { display: none; }
+.byd .rail > * { scroll-snap-align: start; }
+
+/* ---------------- Glocke ---------------- */
+
+@keyframes byd-bell-ring {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-13deg); }
+  35% { transform: rotate(10deg); }
+  55% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+}
+.byd .bell-ring { animation: byd-bell-ring 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes byd-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.byd .blink { animation: byd-blink 1.6s steps(2, end) infinite; }
+
+.byd ::selection {
+  background: var(--byd-accent);
+  color: #fff;
+}
