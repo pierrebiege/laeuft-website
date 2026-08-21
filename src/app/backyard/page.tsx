@@ -49,7 +49,7 @@ function Hero() {
           </h1>
 
           <p className="mt-6 max-w-md text-sm leading-relaxed sm:mt-8 sm:text-[15px]" style={{ color: "var(--byd-mute)" }}>
-            Fünfzehn Schweizerinnen und Schweizer, 6706 Meter, jede volle Stunde neu.
+            Fünfzehn Läuferinnen und Läufer, 6706 Meter, jede volle Stunde neu.
             Kein Ziel, keine Zwischenwertung, keine Ausreden. Wer die Runde nicht in
             sechzig Minuten schafft, ist raus. Am Schluss zählt, wie viele Runden
             das Land zusammenbringt.
@@ -252,7 +252,7 @@ function Tiefpunkt() {
           2020: 373. 2022: 360. 2024: 501.
         </h2>
         <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Deutschland war jedes Mal vor uns. Österreich jedes Mal knapp dahinter.
+          Deutschland war jedes Mal vor uns, Österreich jedes Mal dahinter.
           2026 steht nichts davon fest.
         </p>
       </Reveal>

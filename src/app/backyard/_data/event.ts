@@ -78,7 +78,7 @@ export const STAFF = [
   {
     name: "Nima Javaheri",
     role: "Team Captain",
-    does: ["Motivator", "Trainings", "Support für die Läufer"],
+    does: ["Motivationsredner", "Organisiert die Trainings", "Support für die Läufer"],
   },
 ] as const;
 

@@ -5,7 +5,7 @@ import { TEAM, RESERVE, STAFF } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
   title: "Kader",
-  description: "Die fünfzehn Läuferinnen und Läufer von Team Schweiz 2026, Reserve und Staff.",
+  description: "Die fünfzehn Läuferinnen und Läufer von Team Schweiz 2026 und das Team dahinter.",
 };
 
 export default function TeamPage() {
