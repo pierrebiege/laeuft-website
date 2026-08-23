@@ -45,9 +45,9 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
         )}
       </div>
 
-      <div className="flex flex-1 flex-col justify-between p-4">
+      <div className={`flex flex-1 flex-col justify-between ${compact ? "p-3" : "p-4"}`}>
         <div>
-          <p className="text-base font-semibold uppercase leading-tight tracking-[-0.01em]">
+          <p className={`font-semibold uppercase leading-tight tracking-[-0.01em] ${compact ? "text-sm" : "text-base"}`}>
             {a.first}
             <br />
             {a.name}
@@ -60,12 +60,12 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
         <div className="mt-4 flex items-end justify-between border-t pt-3 rule">
           <div>
             <p className="stamp">Qualifying</p>
-            <p className="display tnum mt-1 text-3xl leading-none">{a.qual}</p>
+            <p className={`display tnum mt-1 leading-none ${compact ? "text-2xl" : "text-3xl"}`}>{a.qual}</p>
           </div>
           <div className="text-right">
             <p className="stamp">{past.length ? "Team champs" : "Debut"}</p>
-            <p className="mt-1 font-mono text-xs tnum" style={{ color: "var(--byd-mute)" }}>
-              {past.length ? past.map((r) => `${r.year}: ${r.laps}`).join(" · ") : "—"}
+            <p className="mt-1 font-mono text-[11px] tnum" style={{ color: "var(--byd-mute)" }}>
+              {past.length ? past.map((r) => `${compact ? String(r.year).slice(2) : r.year}: ${r.laps}`).join(" · ") : "—"}
             </p>
           </div>
         </div>

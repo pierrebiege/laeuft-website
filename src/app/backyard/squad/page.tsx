@@ -25,7 +25,7 @@ export default function SquadPage() {
       {/* Porträtraster */}
       <section data-hour="tag" data-stamp="Squad" className="px-5 pb-24">
         <div className="mx-auto max-w-[76rem]">
-          <div className="grid gap-px border-y sm:grid-cols-3 lg:grid-cols-5 rule">
+          <div className="grid grid-cols-2 gap-px border-y sm:grid-cols-3 lg:grid-cols-5 rule">
             {TEAM.map((a) => (
               <RunnerCard key={a.name} a={a} compact />
             ))}
@@ -99,7 +99,7 @@ export default function SquadPage() {
               <div className="border-b pb-4 rule">
                 <span className="stamp">Reserve</span>
               </div>
-              <div className="grid gap-px border-b sm:grid-cols-4 rule">
+              <div className="grid grid-cols-2 gap-px border-b sm:grid-cols-4 rule">
                 {RESERVE.map((a) => (
                   <RunnerCard key={a.name} a={a} compact />
                 ))}
