@@ -10,8 +10,9 @@ APP = pathlib.Path.home() / "Documents/laeuft/laeuft-website/src/app"
 DEST = APP / "backyard"
 API = APP / "api/backyard"
 
-for d in [DEST/"_components", DEST/"_lib", DEST/"_data", DEST/"live", DEST/"welt",
-          DEST/"team", DEST/"strecke", DEST/"format", API/"live", API/"world"]:
+ROUTES = ["live", "world", "squad", "course", "rules"]
+
+for d in [DEST/"_components", DEST/"_lib", DEST/"_data", *[DEST/r for r in ROUTES], API/"live", API/"world"]:
     d.mkdir(parents=True, exist_ok=True)
 
 def code(t: str) -> str:
@@ -19,12 +20,12 @@ def code(t: str) -> str:
     t = t.replace('@/lib/', '@/app/backyard/_lib/')
     t = t.replace('@/components/', '@/app/backyard/_components/')
     # Routen unter /backyard
-    for r in ["live", "welt", "team", "strecke", "format"]:
+    for r in ROUTES:
         t = t.replace(f'href="/{r}"', f'href="/backyard/{r}"')
         t = t.replace(f'"{r}", "/{r}"', f'"{r}", "/backyard/{r}"')
         t = t.replace(f"href: \"/{r}\"", f"href: \"/backyard/{r}\"")
+        t = t.replace(f'"/{r}"]', f'"/backyard/{r}"]')
     t = t.replace('href="/"', 'href="/backyard"')
-    t = t.replace('["Live", "/live"]', '["Live", "/backyard/live"]')
     # API
     t = t.replace('/api/live?', '/api/backyard/live?')
     t = t.replace('/api/world?', '/api/backyard/world?')
@@ -42,7 +43,7 @@ for sub, dst in [("components", "_components"), ("lib", "_lib"), ("data", "_data
 
 # Seiten
 (DEST/"page.tsx").write_text(code((SRC/"app/page.tsx").read_text()))
-for r in ["live", "welt", "team", "strecke", "format"]:
+for r in ROUTES:
     (DEST/r/"page.tsx").write_text(code((SRC/f"app/{r}/page.tsx").read_text()))
 
 # API-Routen

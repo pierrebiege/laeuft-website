@@ -9,7 +9,7 @@ import { useRaceClock, countdownText, pad } from "@/app/backyard/_lib/clock";
  * Vor dem Start läuft sie rückwärts auf den Glockenschlag zu.
  */
 function Split({ text }: { text: string }) {
-  const m = /^(\d+) T (.+)$/.exec(text);
+  const m = /^(\d+) D (.+)$/.exec(text);
   if (!m) {
     return <p className="font-mono text-[2rem] font-medium tnum leading-none">{text}</p>;
   }
@@ -18,7 +18,7 @@ function Split({ text }: { text: string }) {
       <p className="display tnum text-[3.2rem] leading-none">
         {m[1]}
         <span className="ml-2 text-base font-medium" style={{ color: "var(--byd-mute)" }}>
-          Tage
+          Days
         </span>
       </p>
       <p className="mt-3 font-mono text-lg tnum" style={{ color: "var(--byd-mute)" }}>
@@ -85,10 +85,10 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
           <div className="h-16 w-32" />
         ) : c.running ? (
           <>
-            <p className="stamp mb-3">Runde</p>
+            <p className="stamp mb-3">Loop</p>
             <p className="display tnum text-[5rem] leading-none sm:text-[6.5rem]">{c.lap}</p>
             <p className="mt-4 font-mono text-sm tnum" style={{ color: "var(--byd-mute)" }}>
-              Glocke in {pad(c.toBell / 60000)}:{pad((c.toBell % 60000) / 1000)}
+              Bell in {pad(c.toBell / 60000)}:{pad((c.toBell % 60000) / 1000)}
             </p>
             <span className={`mt-3 text-xl ${ringing ? "bell-ring" : ""}`} aria-hidden>
               🔔
@@ -96,7 +96,7 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
           </>
         ) : (
           <>
-            <p className="stamp mb-4">Glockenschlag in</p>
+            <p className="stamp mb-4">Bell in</p>
             <Split text={countdownText(c)} />
             <p className="stamp mt-4">17.10.2026 · 14:00</p>
           </>

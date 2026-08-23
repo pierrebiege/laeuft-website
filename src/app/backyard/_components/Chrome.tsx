@@ -9,10 +9,10 @@ import { EVENT } from "@/app/backyard/_data/event";
 
 const LINKS = [
   { href: "/backyard/live", label: "Live" },
-  { href: "/backyard/welt", label: "Weltstand" },
-  { href: "/backyard/team", label: "Kader" },
-  { href: "/backyard/strecke", label: "Strecke" },
-  { href: "/backyard/format", label: "Format" },
+  { href: "/backyard/world", label: "World" },
+  { href: "/backyard/squad", label: "Squad" },
+  { href: "/backyard/course", label: "Course" },
+  { href: "/backyard/rules", label: "Rules" },
 ];
 
 export default function Chrome() {
@@ -44,7 +44,7 @@ export default function Chrome() {
               <span className="absolute h-[3px] w-[11px] bg-white" />
             </span>
             <span className="text-[13px] font-semibold uppercase tracking-[0.06em]">
-              Team Schweiz
+              Team Switzerland
             </span>
           </Link>
 
@@ -68,14 +68,14 @@ export default function Chrome() {
           >
             <span className="h-1.5 w-1.5 shrink-0 blink" style={{ background: "var(--byd-accent)" }} />
             <span className="font-mono text-[11px] tnum leading-none">
-              {clock.running ? `RUNDE ${clock.lap}` : countdownText(clock)}
+              {clock.running ? `LOOP ${clock.lap}` : countdownText(clock)}
             </span>
           </Link>
 
           <button
             onClick={() => setOpen((o) => !o)}
             className="flex h-8 w-8 shrink-0 items-center justify-center md:hidden"
-            aria-label="Menü"
+            aria-label="Menu"
             aria-expanded={open}
           >
             <span className="flex flex-col gap-[5px]">

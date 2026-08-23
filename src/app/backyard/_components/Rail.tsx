@@ -37,7 +37,7 @@ export default function Rail({ children, label }: { children: ReactNode; label: 
               key={d}
               onClick={() => nudge(d)}
               disabled={d === -1 ? atStart : atEnd}
-              aria-label={d === -1 ? "zurück" : "weiter"}
+              aria-label={d === -1 ? "previous" : "next"}
               className="grid h-9 w-9 place-items-center border text-sm transition-opacity disabled:opacity-25 rule"
             >
               {d === -1 ? "←" : "→"}

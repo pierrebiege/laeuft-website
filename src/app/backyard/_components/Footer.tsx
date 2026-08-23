@@ -3,12 +3,12 @@ import Link from "next/link";
 const COLS = [
   [
     ["Live", "/backyard/live"],
-    ["Weltstand", "/welt"],
-    ["Kader", "/team"],
+    ["World", "/backyard/world"],
+    ["Squad", "/backyard/squad"],
   ],
   [
-    ["Strecke", "/strecke"],
-    ["Format", "/format"],
+    ["Course", "/backyard/course"],
+    ["Rules", "/backyard/rules"],
   ],
 ];
 
@@ -18,11 +18,10 @@ export default function Footer() {
       <div className="mx-auto max-w-[76rem]">
         <div className="grid gap-10 border-t pt-10 sm:grid-cols-[1fr_auto_auto] rule">
           <div>
-            <p className="display text-xl">Team Schweiz</p>
+            <p className="display text-xl">Team Switzerland</p>
             <p className="mt-3 max-w-sm text-sm leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-              Backyard Ultra World Team Championship, Samstag 17. Oktober 2026, 14:00,
-              Vereinshaus SV Baar. Fünfzehn Läuferinnen und Läufer, eine Runde pro Stunde,
-              bis niemand mehr kann.
+              Backyard Ultra World Team Championship, Saturday 17 October 2026, 14:00,
+              Vereinshaus SV Baar. Fifteen runners, one loop an hour.
             </p>
           </div>
           {COLS.map((col, i) => (
@@ -46,8 +45,8 @@ export default function Footer() {
           ))}
         </div>
         <p className="mt-10 text-xs" style={{ color: "var(--byd-mute)" }}>
-          Livedaten über die öffentliche race|result-Schnittstelle der jeweiligen Nation.
-          Inoffizielle Seite von und für das Team.
+          Live data comes from each nation&rsquo;s public race|result feed. Unofficial page,
+          made by and for the team.
         </p>
       </div>
     </footer>

@@ -38,7 +38,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4 rule">
         <span className="stamp">
-          {loading ? "Frage die Nationen ab" : `${data?.nations.length ?? 0} Nationen verbunden`}
+          {loading ? "Querying nations" : `${data?.nations.length ?? 0} nations connected`}
         </span>
         <div className="flex gap-px">
           {(["2026", "2024"] as Year[]).map((y) => (
@@ -52,7 +52,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
                   : { color: "var(--byd-mute)" }
               }
             >
-              {y === "2026" ? "WM 2026" : "Probelauf 2024"}
+              {y === "2026" ? "2026" : "2024 replay"}
             </button>
           ))}
         </div>
@@ -60,18 +60,18 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
 
       {data && data.nations.length === 0 && !loading && (
         <div className="border-b py-16 rule">
-          <h2 className="display max-w-xl text-[1.8rem] sm:text-4xl">Noch keine Nation online.</h2>
+          <h2 className="display max-w-xl text-[1.8rem] sm:text-4xl">No nation online yet.</h2>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            Für 2026 sind die Zeitmessungen der einzelnen Länder noch nicht veröffentlicht.
-            Jede Nation, deren Event-Nummer hinterlegt ist, erscheint hier automatisch.
-            Der Probelauf 2024 zeigt, wie es am Renntag aussieht.
+            The individual timing feeds for 2026 are not published yet. Every nation whose
+            event number is on file shows up here on its own. The 2024 replay shows what
+            this looks like on race day.
           </p>
           <button
             onClick={() => setYear("2024")}
             className="mt-8 border px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.08em]"
             style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
           >
-            Probelauf 2024 starten
+            Run the 2024 replay
           </button>
         </div>
       )}
@@ -90,15 +90,15 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
               <div className="min-w-0 flex-1">
                 <p className="truncate text-lg font-semibold uppercase tracking-tight">{n.nation}</p>
                 <p className="stamp mt-1 truncate">
-                  {n.standing > 0 && !n.over ? `${n.standing} noch im Rennen · ` : ""}
-                  Runde {n.currentLap} · {n.runners.length} Läufer
+                  {n.standing > 0 && !n.over ? `${n.standing} still running · ` : ""}
+                  Loop {n.currentLap} · {n.runners.length} runners
                 </p>
               </div>
               <div className="text-right">
                 <p className="display tnum text-[2rem] leading-none sm:text-[2.6rem]">
-                  {n.laps.toLocaleString("de-CH")}
+                  {n.laps.toLocaleString("en-GB")}
                 </p>
-                <p className="stamp mt-1">Runden</p>
+                <p className="stamp mt-1">Loops</p>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
 
       {data && data.failed.length > 0 && (
         <p className="mt-5 text-xs" style={{ color: "var(--byd-mute)" }}>
-          Keine Daten von: {data.failed.join(", ")}
+          No data from: {data.failed.join(", ")}
         </p>
       )}
     </div>

@@ -4,31 +4,30 @@ import Reveal from "@/app/backyard/_components/Reveal";
 import { TEAM, RESERVE, STAFF } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
-  title: "Kader",
-  description: "Die fünfzehn Läuferinnen und Läufer von Team Schweiz 2026 und das Team dahinter.",
+  title: "Squad",
+  description: "The fifteen runners of Team Switzerland 2026 and the people running the race.",
 };
 
-export default function TeamPage() {
+export default function SquadPage() {
   const max = Math.max(...TEAM.map((a) => a.qual));
 
   return (
     <>
       <PageHead
         hour="tag"
-        stamp="Kader · Stand 19. August 2026 · Qualifikation geschlossen"
-        title="Die fünfzehn."
-        lead="Qualifikationsfenster 16. August 2024 bis 15. August 2026. Zwei Plätze über Silver Tickets, dreizehn über die At-Large-Liste. Ab dem Glockenschlag zählt keine dieser Zahlen mehr."
+        stamp="Squad · as of 19 August 2026 · qualifying closed"
+        title="The fifteen"
+        lead="Qualifying ran from 16 August 2024 to 15 August 2026. Two places came from Silver Ticket wins, thirteen from the At Large list."
       />
 
-      <section data-hour="tag" data-stamp="Kader" className="px-5 pb-24">
+      <section data-hour="tag" data-stamp="Squad" className="px-5 pb-24">
         <div className="mx-auto max-w-[76rem]">
-          {/* Ein Startlistenblatt: alle Zeilen gleich hoch, gleiche Schriftgrösse. */}
           <div className="border-t rule">
             <div className="hidden grid-cols-[3rem_1fr_9rem_5rem_5rem_10rem] items-baseline gap-4 border-b py-3 sm:grid rule">
               <span className="stamp">Pos</span>
               <span className="stamp">Name</span>
-              <span className="stamp">Weg ins Team</span>
-              <span className="stamp text-right">Quali</span>
+              <span className="stamp">Route in</span>
+              <span className="stamp text-right">Qual</span>
               <span className="stamp text-right">Best</span>
               <span className="stamp"></span>
             </div>
@@ -63,46 +62,43 @@ export default function TeamPage() {
           </div>
 
           <p className="mt-5 text-xs" style={{ color: "var(--byd-mute)" }}>
-            Steht bei «Best» eine höhere Zahl als bei «Quali», liegt der beste Lauf
-            vor dem Qualifikationsfenster. Matteo Tenchio: 61 Runden.
+            Where Best is higher than Qual, the runner&rsquo;s best race was before the
+            qualifying window. Matteo Tenchio: 61 loops.
           </p>
         </div>
       </section>
 
       {RESERVE.length > 0 && (
-      <section data-hour="tag" data-stamp="Reserve" className="px-5 pb-24">
-        <div className="mx-auto max-w-[76rem]">
-          <Reveal>
-            <div className="border-b pb-4 rule">
-              <span className="stamp">Reserve · rückt nach, wenn jemand ausfällt</span>
-            </div>
-            <div className="grid border-b sm:grid-cols-4 rule">
-              {RESERVE.map((a) => (
-                <div key={a.name} className="border-b py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 rule">
-                  <p className="text-[15px] font-medium uppercase tracking-tight">
-                    {a.first} {a.name}
-                  </p>
-                  <p className="mt-2 font-mono text-sm tnum" style={{ color: "var(--byd-mute)" }}>
-                    {a.qual} Runden
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
+        <section data-hour="tag" data-stamp="Reserve" className="px-5 pb-24">
+          <div className="mx-auto max-w-[76rem]">
+            <Reveal>
+              <div className="border-b pb-4 rule">
+                <span className="stamp">Reserve</span>
+              </div>
+              <div className="grid border-b sm:grid-cols-4 rule">
+                {RESERVE.map((a) => (
+                  <div key={a.name} className="border-b py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 rule">
+                    <p className="text-[15px] font-medium uppercase tracking-tight">
+                      {a.first} {a.name}
+                    </p>
+                    <p className="mt-2 font-mono text-sm tnum" style={{ color: "var(--byd-mute)" }}>
+                      {a.qual} loops
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
       )}
 
-      <section data-hour="daemmerung" data-stamp="Staff" className="px-5 py-24">
+      <section data-hour="daemmerung" data-stamp="Race organisation" className="px-5 py-24">
         <div className="mx-auto max-w-[76rem]">
           <Reveal>
             <div className="border-b pb-4 rule">
-              <span className="stamp">Wer das Rennen trägt</span>
+              <span className="stamp">Race organisation</span>
             </div>
-            <h2 className="display mt-10 max-w-2xl text-[2rem] sm:text-4xl">
-              Vier Leute, ohne die niemand eine Runde läuft.
-            </h2>
-            <div className="mt-12 grid border-t sm:grid-cols-2 lg:grid-cols-4 rule">
+            <div className="mt-10 grid border-t sm:grid-cols-2 lg:grid-cols-4 rule">
               {STAFF.map((s) => (
                 <div key={s.name} className="border-b py-7 lg:border-r lg:px-6 lg:first:pl-0 lg:last:border-r-0 rule">
                   <p className="stamp mb-3">{s.role}</p>

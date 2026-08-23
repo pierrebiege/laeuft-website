@@ -4,27 +4,27 @@ import Reveal from "@/app/backyard/_components/Reveal";
 import { RULES } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
-  title: "Format",
-  description: "Wertung, Backyard-Regeln und was Teamarbeit bei der Team-WM konkret heisst.",
+  title: "Rules",
+  description: "Scoring, backyard rules and what teamwork means at the team championship.",
 };
 
 const BLOCKS = [
-  { stamp: "Wertung", title: "Eine Runde ist ein Punkt.", items: RULES.scoring, accent: true },
-  { stamp: "Backyard", title: "Was überall auf der Welt gleich gilt.", items: RULES.backyard },
-  { stamp: "Teamarbeit", title: "Helfen wir uns, kommen wir weiter.", items: RULES.teamwork },
+  { stamp: "Scoring", title: "One loop, one point.", items: RULES.scoring, accent: true },
+  { stamp: "Backyard", title: "The same everywhere in the world.", items: RULES.backyard },
+  { stamp: "Teamwork", title: "Help each other get far.", items: RULES.teamwork },
 ];
 
-export default function FormatPage() {
+export default function RulesPage() {
   return (
     <>
       <PageHead
         hour="tief"
-        stamp="Format · 6706 m · jede volle Stunde · last one standing"
-        title="Die Glocke entscheidet, nicht die Uhr."
-        lead="Zum Glockenschlag steht das ganze Feld im Corral. Wer nicht drinsteht, ist raus. Wer die Runde nicht in sechzig Minuten schafft, ist raus. Viel mehr Regeln braucht es nicht."
+        stamp="Rules · 6706 m · on the hour · last one standing"
+        title="Two ways out: the bell, or the hour."
+        lead="At the bell the whole field is in the corral. Not in it, you are out. Loop not finished inside sixty minutes, you are out. There is not much more to it."
       />
 
-      <section data-hour="tief" data-stamp="Format" className="px-5 pb-28">
+      <section data-hour="tief" data-stamp="Rules" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem] space-y-20">
           {BLOCKS.map((b) => (
             <Reveal key={b.stamp}>
@@ -53,11 +53,11 @@ export default function FormatPage() {
           ))}
 
           <Reveal>
-            <div className="border-y py-16 text-center rule">
-              <p className="display text-[1.8rem] sm:text-4xl">
-                «Haben wir Spass, laufen wir länger.»
+            <div className="border-y py-14 text-center rule">
+              <p className="display text-[1.6rem] sm:text-3xl">
+                &laquo;If we have fun, we will run longer.&raquo;
               </p>
-              <p className="stamp mt-5">Aus dem Team-Briefing. Steht da wirklich so.</p>
+              <p className="stamp mt-5">From the team briefing</p>
             </div>
           </Reveal>
         </div>

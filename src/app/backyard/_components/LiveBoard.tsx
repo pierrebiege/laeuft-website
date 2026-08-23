@@ -27,7 +27,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
       setError(null);
       setData(json as NationLive);
       setUpdated(
-        new Date().toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
       );
     } catch (e) {
       setError((e as Error).message);
@@ -49,7 +49,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
             className={`h-1.5 w-1.5 ${data && !data.over ? "blink" : ""}`}
             style={{ background: data && !data.over ? "var(--byd-accent)" : "var(--byd-mute)" }}
           />
-          {data ? (data.over ? "Rennen beendet" : "Live") : "Verbinde"}
+          {data ? (data.over ? "Race finished" : "Live") : "Connecting"}
           {updated && ` · ${updated}`}
         </span>
 
@@ -65,7 +65,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
                   : { color: "var(--byd-mute)" }
               }
             >
-              {y === "2026" ? "WM 2026" : "Probelauf 2024"}
+              {y === "2026" ? "2026" : "2024 replay"}
             </button>
           ))}
         </div>
@@ -74,46 +74,46 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
       {pending && (
         <div className="border-b py-16 rule">
           <h2 className="display max-w-xl text-[1.8rem] sm:text-4xl">
-            Die Zeitmessung ist noch nicht verbunden.
+            Timing not connected yet.
           </h2>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            Sobald das race|result-Event für Baar 2026 online ist, hängt es hier automatisch
-            drin und diese Seite wird live – ohne dass jemand etwas nachpflegen muss.
-            Bis dahin läuft das ganze System mit den echten Daten der Team-WM 2024.
+            As soon as the race|result event for Baar 2026 is online it is picked up here
+            and the page goes live. Nobody has to type anything in. Until then the whole
+            board runs on the real data from the 2024 team championship.
           </p>
           <button
             onClick={() => setYear("2024")}
             className="mt-8 border px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.08em]"
             style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
           >
-            Probelauf 2024 starten
+            Run the 2024 replay
           </button>
         </div>
       )}
 
       {error && !pending && (
         <p className="border-b py-8 text-sm rule" style={{ color: "var(--byd-mute)" }}>
-          Daten gerade nicht erreichbar: {error}
+          Data not reachable right now: {error}
         </p>
       )}
 
       {data && (
         <>
           <div className="grid border-b sm:grid-cols-4 rule">
-            <Stat label="Runden total" value={data.laps} accent />
-            <Stat label="Aktuelle Runde" value={data.currentLap} />
-            <Stat label="Noch im Rennen" value={data.standing} />
-            <Stat label="Kilometer" value={Math.round(data.laps * 6.7056)} />
+            <Stat label="Loops total" value={data.laps} accent />
+            <Stat label="Current loop" value={data.currentLap} />
+            <Stat label="Still running" value={data.standing} />
+            <Stat label="Kilometres" value={Math.round(data.laps * 6.7056)} />
           </div>
 
           <div className="mt-14">
             <div className="mb-5 flex flex-wrap items-center gap-x-7 gap-y-2">
-              <span className="stamp">Jede Runde ein Quadrat</span>
+              <span className="stamp">One square per loop</span>
               <span className="stamp flex items-center gap-2">
-                <span className="h-2.5 w-2.5" style={{ background: "var(--byd-accent)" }} /> im Rennen
+                <span className="h-2.5 w-2.5" style={{ background: "var(--byd-accent)" }} /> running
               </span>
               <span className="stamp flex items-center gap-2">
-                <span className="h-2.5 w-2.5" style={{ background: "var(--byd-mute)" }} /> ausgeschieden
+                <span className="h-2.5 w-2.5" style={{ background: "var(--byd-mute)" }} /> out
               </span>
             </div>
             <LapGrid
@@ -126,12 +126,12 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
             <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b text-left rule">
-                  <Th>Rang</Th>
+                  <Th>Rank</Th>
                   <Th>Name</Th>
                   <Th>Nat</Th>
-                  <Th right>Runden</Th>
-                  <Th right>Kilometer</Th>
-                  <Th right>Zeit</Th>
+                  <Th right>Loops</Th>
+                  <Th right>Kilometres</Th>
+                  <Th right>Time</Th>
                 </tr>
               </thead>
               <tbody>
@@ -162,7 +162,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
           </div>
 
           <p className="mt-6 text-xs" style={{ color: "var(--byd-mute)" }}>
-            Quelle: {data.eventName} · race|result #{data.eventId} · Liste „{data.listName}“
+            Source: {data.eventName} · race|result #{data.eventId} · list &ldquo;{data.listName}&rdquo;
           </p>
         </>
       )}
@@ -175,7 +175,7 @@ function Stat({ label, value, accent }: { label: string; value: number; accent?:
     <div className="border-b py-8 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 rule">
       <p className="stamp mb-3">{label}</p>
       <p className="display tnum text-[2.6rem] leading-none" style={accent ? { color: "var(--byd-accent)" } : undefined}>
-        {value.toLocaleString("de-CH")}
+        {value.toLocaleString("en-GB")}
       </p>
     </div>
   );

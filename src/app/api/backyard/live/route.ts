@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   if (!src) {
     return NextResponse.json(
-      { error: `Für ${slug} ist ${year} noch keine Zeitmessung hinterlegt.`, pending: true },
+      { error: `No timing feed on file for ${slug} in ${year}.`, pending: true },
       { status: 404 },
     );
   }

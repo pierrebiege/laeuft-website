@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    // Die Backyard-Seite lief zwei Tage mit deutschen Pfaden, bevor das Team
+    // auf Englisch umgestellt hat. Alte Links aus dem Chat sollen weiter gehen.
+    return [
+      { source: "/backyard/welt", destination: "/backyard/world", permanent: true },
+      { source: "/backyard/team", destination: "/backyard/squad", permanent: true },
+      { source: "/backyard/strecke", destination: "/backyard/course", permanent: true },
+      { source: "/backyard/format", destination: "/backyard/rules", permanent: true },
+    ];
+  },
   async headers() {
     const base = [
       { key: "X-Content-Type-Options", value: "nosniff" },

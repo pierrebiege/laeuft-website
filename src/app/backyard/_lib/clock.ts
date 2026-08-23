@@ -53,5 +53,5 @@ export function countdownText(c: RaceClock): string {
   const h = Math.floor((c.toStart % 86400000) / HOUR_MS);
   const m = Math.floor((c.toStart % HOUR_MS) / 60000);
   const s = Math.floor((c.toStart % 60000) / 1000);
-  return d > 0 ? `${d} T ${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(h)}:${pad(m)}:${pad(s)}`;
+  return d > 0 ? `${d} D ${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(h)}:${pad(m)}:${pad(s)}`;
 }

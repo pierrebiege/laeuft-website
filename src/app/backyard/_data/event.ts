@@ -63,22 +63,22 @@ export const STAFF = [
   {
     name: "Jan Bruhnsen",
     role: "Race Director",
-    does: ["Organisation und Infrastruktur", "Regeln durchsetzen", "Sicherheit der Athleten"],
+    does: ["Organisation and infrastructure", "Enforcing rules", "Athlete safety"],
   },
   {
     name: "Christian Pötzsch",
     role: "Co-Race Director",
-    does: ["Alles, was Jan nicht schafft"],
+    does: ["Whatever Jan can't do"],
   },
   {
     name: "Carsten Drilling",
     role: "Team Manager",
-    does: ["Masseur", "Psychotherapeut", "Koch", "Coach"],
+    does: ["Masseur", "Psychotherapist", "Chef", "Coach"],
   },
   {
     name: "Nima Javaheri",
     role: "Team Captain",
-    does: ["Motivationsredner", "Organisiert die Trainings", "Support für die Läufer"],
+    does: ["Motivational speaker", "Arranges training", "Runners support"],
   },
 ] as const;
 
@@ -89,46 +89,61 @@ export const HISTORY = [
   { year: 2024, ch: 501, at: 407, de: 542 },
 ] as const;
 
-/** Weltrekord-Kontext 2024 */
 export const WORLD_2024 = {
-  gold: { nation: "Belgien", yards: 1147, note: "alle 15 Läufer durch 48 Stunden – Weltrekord" },
-  silver: { nation: "Australien" },
+  gold: { nation: "Belgium", yards: 1147, note: "all fifteen through 48 hours, world record" },
+  silver: { nation: "Australia" },
   bronze: { nation: "USA" },
 } as const;
 
+/** Wortlaut aus dem Briefing, unverändert. */
 export const RULES = {
   scoring: [
-    "Jede beendete Runde einer Person = 1 Punkt.",
-    "Das Land mit den meisten Punkten gewinnt.",
-    "Je länger wir mit vollem Team laufen, desto mehr Punkte.",
+    "Each person completing one loop scores one point.",
+    "The country with the most points wins.",
+    "The longer we run with a full team, the more points we score.",
   ],
   backyard: [
-    "Zum Glockenschlag müssen alle im Corral stehen.",
-    "Alle starten mit der Glocke. Kein verspäteter Start.",
-    "Ausser für die Toilette darf die Strecke während einer Runde nicht verlassen werden.",
-    "Niemand ausserhalb des Rennens darf mitlaufen – auch ausgeschiedene Läufer nicht.",
-    "Was du auf die Runde mitnimmst, bringst du zurück. Kleider, Flaschen, Geschirr, alles.",
-    "Keine persönliche Hilfe während einer Runde.",
-    "Rundenzeiten selber stoppen ist freiwillig.",
+    "Participants must be inside the corral at the bell.",
+    "All competitors must start at the bell. No late starts.",
+    "Except for restroom breaks a competitor cannot leave the course until the yard is complete.",
+    "No non-competitors may accompany active entrants on the course, including eliminated runners.",
+    "Whatever you bring with you on the loop, you have to return with. Clothes, flasks, crockery, everything.",
+    "No personal aid during a yard.",
+    "Keeping lap times is optional.",
   ],
   teamwork: [
-    "Wer die Startnummer vergisst: sag ihm, dass sie egal ist.",
-    "Wer nicht mehr kann: lauf mit, hilf gehen. Auf der Strecke dürfen wir uns helfen – jede beendete Runde ist ein Punkt.",
-    "Wer gepaced wird: schick den Pacer weg. Sonst droht die Disqualifikation.",
-    "Wer die Stirnlampe vergisst: nimm ihn mit oder erinnere ihn ans Handy.",
+    "When someone forgets their bib, remind them it is not important.",
+    "When someone can't continue, help them walk. We are allowed to help each other on the course, and each person completing one loop is one point.",
+    "When it appears someone gets paced, send the pacer away. Remind them the runner can get disqualified.",
+    "When someone forgets their headlamp, offer them to run with you or remind them they can use their phone.",
   ],
 } as const;
 
 export const COURSE = {
   start: "Vereinshaus SV Baar",
-  shape: "Out-and-back der Lorze entlang",
-  surface: "Kies und Beton",
-  elevation: "rund 30 Höhenmeter",
+  shape: "Out and back along the Lorze",
+  surface: "Gravel and concrete",
+  elevation: "About 30 metres",
   crossings: [
-    "Erste Querung ohne Zebrastreifen, wenig befahren.",
-    "Zweite kurz vor Kilometer 2, mit Verkehrsinsel.",
+    "The first has no zebra crossing and is a less used street.",
+    "The second is just before 2 km and has an island.",
   ],
-  notes: ["Grösstenteils im Schatten", "Wendepunkt in der Mitte", "Wenig Platz – Crews teilen sich", "X-Bionic ist vor Ort"],
+  notes: [
+    "Mostly shaded",
+    "Turn around at a Wendepunkt",
+    "Limited space, crews are shared",
+    "X-Bionic will be there to help",
+  ],
+} as const;
+
+/**
+ * Links für den Renntag. Sobald die Zeitmessung für Baar 2026 und ein
+ * Livestream existieren, hier eintragen – die Seite blendet sie dann ein.
+ */
+export const RACE_DAY = {
+  timing: null as string | null,
+  youtube: null as string | null,
+  bigs: "https://bigsbackyardultra.com/world-team-championship-2026/",
 } as const;
 
 /** Interne Termine – nicht öffentlich. */

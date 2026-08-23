@@ -12,22 +12,22 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   title: {
-    default: "Team Schweiz · Backyard Ultra World Team Championship 2026",
-    template: "%s · Team Schweiz Backyard",
+    default: "Team Switzerland · Backyard Ultra World Team Championship 2026",
+    template: "%s · Team Switzerland Backyard",
   },
   description:
-    "Fünfzehn Läuferinnen und Läufer, eine Runde von 6706 Metern pro Stunde, bis niemand mehr kann. 17. Oktober 2026, Baar ZG. Live-Rundenstand und Weltstand aller Nationen.",
+    "Fifteen runners, one 6706 metre loop every hour, until nobody can. 17 October 2026, Baar ZG. Live loop count and world standings.",
   openGraph: {
-    title: "Team Schweiz · Backyard Ultra World Team Championship 2026",
-    description: "17. Oktober 2026, 14:00, Baar ZG. Jede Stunde eine Runde.",
-    locale: "de_CH",
+    title: "Team Switzerland · Backyard Ultra World Team Championship 2026",
+    description: "17 October 2026, 14:00, Baar ZG. One loop every hour.",
+    locale: "en",
     type: "website",
   },
 };
 
 export default function BackyardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`byd ${archivo.variable}`}>
+    <div lang="en" className={`byd ${archivo.variable}`}>
       <Chrome />
       <main>{children}</main>
       <Footer />
