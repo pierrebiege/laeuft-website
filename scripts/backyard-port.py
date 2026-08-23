@@ -29,6 +29,8 @@ def code(t: str) -> str:
     # API
     t = t.replace('/api/live?', '/api/backyard/live?')
     t = t.replace('/api/world?', '/api/backyard/world?')
+    # Porträts liegen in laeuft-website unter /public/backyard/squad
+    t = t.replace('PHOTO_BASE = "/squad"', 'PHOTO_BASE = "/backyard/squad"')
     # Inline gesetzte Custom Properties ebenfalls kapseln
     t = t.replace('"--from"', '"--byd-from"').replace('"--to"', '"--byd-to"')
     # CSS-Variablen kapseln
@@ -96,4 +98,11 @@ header = """/* Backyard Ultra World Team Championship – Team Schweiz.
 
 """
 (DEST/"backyard.css").write_text(header + css.lstrip())
+
+# Porträt-Ordner + Anleitung
+PUB = pathlib.Path.home() / "Documents/laeuft/laeuft-website/public/backyard/squad"
+PUB.mkdir(parents=True, exist_ok=True)
+readme = SRC.parent / "public/squad/README.md"
+if readme.exists():
+    (PUB/"README.md").write_text(readme.read_text())
 print("CSS + Dateien portiert")

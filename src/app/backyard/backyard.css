@@ -130,7 +130,7 @@
 .byd .rail {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(19rem, 74vw);
+  grid-auto-columns: min(16.5rem, 72vw);
   gap: 1px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;

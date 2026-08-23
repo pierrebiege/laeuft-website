@@ -4,6 +4,9 @@ import Reveal from "@/app/backyard/_components/Reveal";
 import Rail from "@/app/backyard/_components/Rail";
 import PinnedTally from "@/app/backyard/_components/PinnedTally";
 import Section, { Dawn, TONE } from "@/app/backyard/_components/Section";
+import LoopStrip from "@/app/backyard/_components/LoopStrip";
+import OnPaper from "@/app/backyard/_components/OnPaper";
+import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import { EVENT, TEAM, RESERVE, HISTORY, RULES, COURSE, STAFF, RACE_DAY } from "@/app/backyard/_data/event";
 
 export default function Home() {
@@ -15,6 +18,7 @@ export default function Home() {
       <Scoring />
       <Dawn from={TONE.daemmerung} to={TONE.nacht} />
       <Squad />
+      <Paper />
       <Rules />
       <PastResults />
       <Dawn from={TONE.tief} to={TONE.tag} />
@@ -122,6 +126,16 @@ function Format() {
           ))}
         </div>
       </Reveal>
+
+      <Reveal>
+        <div className="mt-16">
+          <div className="mb-5 flex items-baseline justify-between gap-6">
+            <span className="stamp">The loop, to scale</span>
+            <span className="stamp">The dot runs one loop per hour, on the clock</span>
+          </div>
+          <LoopStrip startISO={EVENT.startISO} />
+        </div>
+      </Reveal>
     </Section>
   );
 }
@@ -154,29 +168,7 @@ function Squad() {
       <div className="mt-14">
         <Rail label="15 runners · drag or use the arrows">
           {all.map((a) => (
-            <article
-              key={`${a.first}-${a.name}`}
-              className="flex h-56 flex-col justify-between border-l p-6 rule"
-              style={{ opacity: a.status === "reserve" ? 0.55 : 1 }}
-            >
-              <div className="flex items-start justify-between">
-                <span className="stamp">
-                  {a.status === "reserve" ? "Reserve" : String(a.pos).padStart(2, "0")}
-                </span>
-                <span className="stamp">{a.status === "silver" ? "Silver Ticket" : ""}</span>
-              </div>
-              <div>
-                <p className="text-xl font-semibold uppercase leading-tight tracking-[-0.01em]">
-                  {a.first}
-                  <br />
-                  {a.name}
-                </p>
-              </div>
-              <div className="flex items-baseline justify-between border-t pt-3 rule">
-                <span className="stamp">Loops</span>
-                <span className="display tnum text-3xl">{a.qual}</span>
-              </div>
-            </article>
+            <RunnerCard key={`${a.first}-${a.name}`} a={a} />
           ))}
         </Rail>
       </div>
@@ -200,6 +192,16 @@ function Squad() {
           Full squad with personal bests →
         </Link>
       </Reveal>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════ Hour 11 · Sunday 01:00 */
+
+function Paper() {
+  return (
+    <Section hour="nacht" stamp="Hour 11 · Sun 01:00" title="What the numbers say">
+      <OnPaper />
     </Section>
   );
 }

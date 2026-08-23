@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
-import { COURSE } from "@/app/backyard/_data/event";
+import LoopStrip from "@/app/backyard/_components/LoopStrip";
+import { COURSE, EVENT } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
   title: "Course",
@@ -35,6 +36,16 @@ export default function CoursePage() {
               </div>
             ))}
           </div>
+
+          <Reveal>
+            <div className="mt-16">
+              <div className="mb-5 flex items-baseline justify-between gap-6">
+                <span className="stamp">The loop, to scale</span>
+                <span className="stamp">One loop per hour, on the clock</span>
+              </div>
+              <LoopStrip startISO={EVENT.startISO} />
+            </div>
+          </Reveal>
 
           <div className="mt-16 grid gap-x-16 gap-y-14 lg:grid-cols-2">
             <Reveal>

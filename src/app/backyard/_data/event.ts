@@ -21,6 +21,8 @@ export type Athlete = {
   name: string;
   first: string;
   status: Status;
+  /** Dateiname unter PHOTO_BASE, ohne Endung. Fehlt das Bild, zeigt die Karte den Platzhalter. */
+  photo?: string;
   /** beste Rundenzahl im Qualifikationsfenster 16.08.2024 – 15.08.2026 */
   qual: number;
   /** persönliche Bestleistung in Runden */
@@ -58,6 +60,58 @@ export const TEAM: Athlete[] = [
  * als alte Namen.
  */
 export const RESERVE: Athlete[] = [];
+
+/**
+ * Wo die Porträts liegen. Dateiname = Nachname klein, ohne Umlaute, .jpg.
+ * Beispiel: /squad/javaheri.jpg. Die Karten greifen automatisch darauf zu.
+ */
+export const PHOTO_BASE = "/backyard/squad";
+
+export const slug = (a: Athlete) =>
+  a.name
+    .toLowerCase()
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
+    .replace(/[^a-z]/g, "");
+
+/**
+ * Team-Schweiz-Einzelresultate der bisherigen Team-WMs, aus dem Briefing
+ * (Folie «Individual Goal»). Nachname, Runden.
+ */
+export const WTC_RESULTS: Record<2020 | 2022 | 2024, { name: string; laps: number }[]> = {
+  2024: [
+    { name: "Javaheri", laps: 59 }, { name: "Tenchio", laps: 58 }, { name: "Lehmann", laps: 38 },
+    { name: "Briner", laps: 34 }, { name: "Hormann", laps: 34 }, { name: "Schneider", laps: 33 },
+    { name: "Stamm", laps: 32 }, { name: "Schneckenburger", laps: 31 }, { name: "Knoche", laps: 30 },
+    { name: "Desteffani", laps: 30 }, { name: "Schwitter", laps: 30 }, { name: "Drilling", laps: 25 },
+    { name: "Vetterli", laps: 26 }, { name: "Kopp", laps: 24 }, { name: "Nonorgue", laps: 17 },
+  ],
+  2022: [
+    { name: "Javaheri", laps: 35 }, { name: "Desteffani", laps: 34 }, { name: "Erne", laps: 33 },
+    { name: "Drilling", laps: 32 }, { name: "Knoche", laps: 29 }, { name: "Schumacher", laps: 28 },
+    { name: "Knusel", laps: 24 }, { name: "Weilenmann", laps: 24 }, { name: "Shepherd", laps: 22 },
+    { name: "Rubin", laps: 21 }, { name: "Vetterli", laps: 20 }, { name: "Kohler", laps: 20 },
+    { name: "Treptow", laps: 14 }, { name: "Buchler", laps: 13 }, { name: "Muller", laps: 11 },
+  ],
+  2020: [
+    { name: "Sjöblom", laps: 32 }, { name: "Dippacher", laps: 31 }, { name: "Brennwald", laps: 30 },
+    { name: "Bühler", laps: 29 }, { name: "Knüsel", laps: 28 }, { name: "Knapp", laps: 28 },
+    { name: "Evers", laps: 27 }, { name: "Ambrosini", laps: 26 }, { name: "Winkler", laps: 25 },
+    { name: "Stimpfle", laps: 24 }, { name: "Knoche", laps: 24 }, { name: "Förster", laps: 22 },
+    { name: "Schmid", laps: 18 }, { name: "Kaufmann", laps: 18 }, { name: "Stolba", laps: 11 },
+  ],
+};
+
+/** Frühere Team-WM-Resultate eines Läufers aus dem aktuellen Kader. */
+export function pastResults(a: Athlete): { year: 2020 | 2022 | 2024; laps: number }[] {
+  return ([2020, 2022, 2024] as const)
+    .map((y) => ({ year: y, hit: WTC_RESULTS[y].find((r) => r.name === a.name) }))
+    .filter((x): x is { year: 2020 | 2022 | 2024; hit: { name: string; laps: number } } => Boolean(x.hit))
+    .map((x) => ({ year: x.year, laps: x.hit.laps }));
+}
+
+/** Resultat 2024 an jeder Position, absteigend sortiert – der Massstab «beat previous position's best». */
+export const BENCH_2024 = [...WTC_RESULTS[2024]].map((r) => r.laps).sort((a, b) => b - a);
+
 
 export const STAFF = [
   {
