@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
+import Rail from "@/app/backyard/_components/Rail";
 import OnPaper from "@/app/backyard/_components/OnPaper";
 import { TEAM, RESERVE, STAFF, pastResults } from "@/app/backyard/_data/event";
 
@@ -22,10 +23,17 @@ export default function SquadPage() {
         lead="Qualifying ran from 16 August 2024 to 15 August 2026. Two places came from Silver Ticket wins, thirteen from the At Large list."
       />
 
-      {/* Porträtraster */}
+      {/* Porträts: auf dem Handy eine Bahn zum Wischen, ab Tablet ein Raster */}
       <section data-hour="tag" data-stamp="Squad" className="px-5 pb-24">
         <div className="mx-auto max-w-[76rem]">
-          <div className="grid grid-cols-2 gap-px border-y sm:grid-cols-3 lg:grid-cols-5 rule">
+          <div className="sm:hidden">
+            <Rail label="15 runners · swipe">
+              {TEAM.map((a) => (
+                <RunnerCard key={a.name} a={a} />
+              ))}
+            </Rail>
+          </div>
+          <div className="hidden grid-cols-3 gap-px border-y sm:grid lg:grid-cols-5 rule">
             {TEAM.map((a) => (
               <RunnerCard key={a.name} a={a} compact />
             ))}
@@ -99,7 +107,14 @@ export default function SquadPage() {
               <div className="border-b pb-4 rule">
                 <span className="stamp">Reserve</span>
               </div>
-              <div className="grid grid-cols-2 gap-px border-b sm:grid-cols-4 rule">
+              <div className="sm:hidden">
+                <Rail label="Reserve · swipe">
+                  {RESERVE.map((a) => (
+                    <RunnerCard key={a.name} a={a} />
+                  ))}
+                </Rail>
+              </div>
+              <div className="hidden gap-px border-b sm:grid sm:grid-cols-4 rule">
                 {RESERVE.map((a) => (
                   <RunnerCard key={a.name} a={a} compact />
                 ))}
