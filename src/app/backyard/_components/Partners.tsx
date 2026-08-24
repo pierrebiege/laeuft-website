@@ -29,7 +29,7 @@ export default function Partners() {
               <img
                 src={`${LOGO_BASE}/${main.logo}`}
                 alt={main.name}
-                className="mx-auto h-auto w-full max-w-[15rem]"
+                className="mx-auto h-auto w-full max-w-[26rem]"
                 loading="lazy"
               />
             )}

@@ -206,7 +206,7 @@ export const PARTNERS: { name: string; url?: string; logo?: string; note?: strin
   {
     name: "X-Bionic",
     url: "https://www.x-bionic.com",
-    logo: "x-bionic.jpg",
+    logo: "x-bionic.svg",
     note: "X-Bionic Switzerland backs the team and will be on site in Baar on race day.",
   },
 ];
