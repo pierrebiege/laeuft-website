@@ -6,6 +6,7 @@ import PinnedTally from "@/app/backyard/_components/PinnedTally";
 import Section, { Dawn, TONE } from "@/app/backyard/_components/Section";
 import LoopStrip from "@/app/backyard/_components/LoopStrip";
 import OnPaper from "@/app/backyard/_components/OnPaper";
+import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import { EVENT, TEAM, RESERVE, HISTORY, RULES, COURSE, STAFF, RACE_DAY } from "@/app/backyard/_data/event";
 
@@ -23,6 +24,7 @@ export default function Home() {
       <PastResults />
       <Dawn from={TONE.tief} to={TONE.tag} />
       <RaceDay />
+      <Partners />
     </>
   );
 }

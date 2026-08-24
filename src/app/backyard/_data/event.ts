@@ -194,6 +194,23 @@ export const COURSE = {
  * Links für den Renntag. Sobald die Zeitmessung für Baar 2026 und ein
  * Livestream existieren, hier eintragen – die Seite blendet sie dann ein.
  */
+/**
+ * Team-Partner. Nur echte Sponsoren des Teams, keine offene Werbung.
+ * Logo als /partners/<slug>.svg oder .png ablegen und hier eintragen –
+ * ohne Logodatei zeigt die Zeile den Namen als Wortmarke.
+ * Was ein Partner bekommt (Logo, Link, Zeile), entscheidet das Team.
+ */
+export const LOGO_BASE = "/partners";
+
+export const PARTNERS: { name: string; url?: string; logo?: string; note?: string }[] = [
+  {
+    name: "X-Bionic Switzerland",
+    url: "https://www.x-bionic.com",
+    logo: "x-bionic.jpg",
+    note: "Sportswear · on site in Baar on race day",
+  },
+];
+
 export const RACE_DAY = {
   timing: null as string | null,
   youtube: null as string | null,
