@@ -200,14 +200,14 @@ export const COURSE = {
  * ohne Logodatei zeigt die Zeile den Namen als Wortmarke.
  * Was ein Partner bekommt (Logo, Link, Zeile), entscheidet das Team.
  */
-export const LOGO_BASE = "/partners";
+export const LOGO_BASE = "/backyard/partners";
 
 export const PARTNERS: { name: string; url?: string; logo?: string; note?: string }[] = [
   {
-    name: "X-Bionic Switzerland",
+    name: "X-Bionic",
     url: "https://www.x-bionic.com",
     logo: "x-bionic.jpg",
-    note: "Sportswear · on site in Baar on race day",
+    note: "X-Bionic Switzerland backs the team and will be on site in Baar on race day.",
   },
 ];
 

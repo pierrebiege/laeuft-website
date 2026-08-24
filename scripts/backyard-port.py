@@ -31,6 +31,7 @@ def code(t: str) -> str:
     t = t.replace('/api/world?', '/api/backyard/world?')
     # Porträts liegen in laeuft-website unter /public/backyard/squad
     t = t.replace('PHOTO_BASE = "/squad"', 'PHOTO_BASE = "/backyard/squad"')
+    t = t.replace('LOGO_BASE = "/partners"', 'LOGO_BASE = "/backyard/partners"')
     # Inline gesetzte Custom Properties ebenfalls kapseln
     t = t.replace('"--from"', '"--byd-from"').replace('"--to"', '"--byd-to"')
     # CSS-Variablen kapseln
