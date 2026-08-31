@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LiveBoard from "@/app/backyard/_components/LiveBoard";
+import LiveFeed from "@/app/backyard/_components/LiveFeed";
 import PageHead from "@/app/backyard/_components/PageHead";
 
 export const metadata: Metadata = {
@@ -19,6 +20,12 @@ export default function LivePage() {
       <section data-hour="nacht" data-stamp="Live" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem]">
           <LiveBoard />
+
+          {/* Was die Leute vor Ort schreiben, direkt neben dem Rundenstand. */}
+          <div className="mt-20">
+            <LiveFeed />
+          </div>
+
           <p className="mt-10 max-w-xl text-xs leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             One note on the 2024 replay: the timing feed adds up to 502 loops, while the
             official Swiss total for that year is 501. We show the feed as it answers and

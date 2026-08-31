@@ -3,6 +3,12 @@
 
 export const LOOP_M = 6706;
 
+/**
+ * Wo der Live-Feed liegt. In laeuft-website hängt die Route unter
+ * /api/backyard/ – das Portierskript setzt den Pfad um.
+ */
+export const FEED_API = "/api/backyard/feed";
+
 export const EVENT = {
   name: "Backyard Ultra World Team Championship",
   nation: "Schweiz",
