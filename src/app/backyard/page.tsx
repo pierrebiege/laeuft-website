@@ -11,10 +11,11 @@ import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
 
 /**
- * Die Startseite läuft die Rennuhr mit: oben Samstag 14:00, unten
- * Sonntagnachmittag. Jede Sektion trägt die Stunde, in der ihr Inhalt
- * tatsächlich passiert – nachts wird es dunkel, nach einem vollen Tag
- * kommt die Wertung, danach das Licht zurück.
+ * Die Seite wird in der Mitte dunkel und am Ende wieder hell – wie das
+ * Rennen, das durch eine Nacht geht. Das ist Atmosphäre, keine Angabe:
+ * Stundenstempel standen hier einmal, aber nachdem Strecke und Team nach
+ * vorne gerückt sind, liesse sich die Reihenfolge nicht mehr ehrlich als
+ * Rennstunden lesen.
  *
  * Was auf einer Unterseite steht, steht hier nicht noch einmal: die
  * Regeln nur auf /rules, die Rennorganisation nur auf /squad.
@@ -27,11 +28,10 @@ export default function Home() {
       <Valley />
       <Squad />
       <Satellite />
-      <Dawn from={TONE.tag} to={TONE.daemmerung} />
+      <Dawn from={TONE.tag} to={TONE.nacht} />
       <Nightfall />
-      <Dawn from={TONE.daemmerung} to={TONE.tief} />
       <Together />
-      <Dawn from={TONE.tief} to={TONE.tag} />
+      <Dawn from={TONE.nacht} to={TONE.tag} />
       <Scoring />
       <Paper />
       <RaceDay />
@@ -40,13 +40,11 @@ export default function Home() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 00 · Saturday 14:00 */
-
 function Hero() {
   return (
     <section
       data-hour="tag"
-      data-stamp="Hour 00 · Sat 14:00"
+      data-stamp="Team Switzerland"
       className="flex min-h-dvh flex-col justify-between px-5 pb-8 pt-20"
     >
       <div className="mx-auto grid w-full max-w-[76rem] flex-1 items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
@@ -96,13 +94,11 @@ function Hero() {
       <div className="mx-auto flex w-full max-w-[76rem] items-baseline justify-between border-t pt-4 rule">
         <span className="stamp">Sat 17 October 2026</span>
         <span className="stamp hidden sm:block">Vereinshaus SV Baar</span>
-        <span className="stamp">↓ The page runs the race clock</span>
+        <span className="stamp">Free to watch</span>
       </div>
     </section>
   );
 }
-
-/* ═══════════════════════════════════ Hour 01 · Saturday 15:00 */
 
 function Format() {
   const facts = [
@@ -124,7 +120,7 @@ function Format() {
   ];
 
   return (
-    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
+    <Section hour="tag" stamp="The loop">
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">No finish line. A bell every hour.</h2>
         <div className="mt-14 grid border-t rule sm:grid-cols-3">
@@ -146,12 +142,10 @@ function Format() {
 
 
 
-/* ═══════════════════════════════════ Hour 01 · Saturday 15:00, weiter */
-
 function Valley() {
   return (
     <>
-      <section data-hour="tag" data-stamp="Hour 01 · the loop in its valley">
+      <section data-hour="tag" data-stamp="The loop in its valley">
         <CourseTerrain />
       </section>
       <section data-hour="tag" className="px-5 pb-24">
@@ -165,11 +159,9 @@ function Valley() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 04 · Saturday 18:00 */
-
 function Satellite() {
   return (
-    <Section hour="tag" stamp="Hour 04 · Sat 18:00">
+    <Section hour="tag" stamp="The satellite race">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">
@@ -198,11 +190,9 @@ function Satellite() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 05 · Saturday 19:00 */
-
 function Nightfall() {
   return (
-    <Section hour="daemmerung" stamp="Hour 05 · Sat 19:00">
+    <Section hour="nacht" stamp="After dark">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">The sun sets at 18:37.</h2>
@@ -225,11 +215,9 @@ function Nightfall() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 14 · Sunday 04:00 */
-
 function Together() {
   return (
-    <Section hour="tief" stamp="Hour 14 · Sun 04:00">
+    <Section hour="nacht" stamp="Nobody runs alone" tight>
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Nobody here runs for themselves.</h2>
@@ -259,23 +247,19 @@ function Together() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 24 · Sunday 14:00 */
-
 function Scoring() {
   return (
-    <section data-hour="tag" data-stamp="Hour 24 · Sun 14:00">
+    <section data-hour="tag" data-stamp="Scoring">
       <PinnedTally />
     </section>
   );
 }
 
-/* ═══════════════════════════════════ Hour 08 · Saturday 22:00 */
-
 function Squad() {
   const all = [...TEAM, ...RESERVE];
   const best = Math.max(...TEAM.map((a) => a.pb));
   return (
-    <Section hour="tag" stamp="Hour 02 · Sat 16:00" wide>
+    <Section hour="tag" stamp="The squad" wide>
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
           Nobody in this squad has gone past {best} loops.
@@ -305,11 +289,9 @@ function Squad() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 11 · Sunday 01:00 */
-
 function Paper() {
   return (
-    <Section hour="tag" stamp="Hour 26 · Sun 16:00">
+    <Section hour="tag" stamp="On paper">
       <OnPaper />
       <PastResults />
     </Section>
@@ -382,11 +364,9 @@ function PastResults() {
   );
 }
 
-/* ═══════════════════════════════════ Hour 28 · Sunday 18:00 */
-
 function RaceDay() {
   return (
-    <Section hour="tag" stamp="Hour 28 · Sun 18:00">
+    <Section hour="tag" stamp="Race day">
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Baar, along the Lorze.</h2>

@@ -15,15 +15,23 @@ export default function Section({
   id,
   children,
   wide = false,
+  tight = false,
 }: {
   hour: Hour;
   stamp: string;
   id?: string;
   children: ReactNode;
   wide?: boolean;
+  /** Schliesst oben an die vorige Sektion an, statt den vollen Abstand zu halten. */
+  tight?: boolean;
 }) {
   return (
-    <section id={id} data-hour={hour} data-stamp={stamp} className="px-5 py-24 sm:py-32">
+    <section
+      id={id}
+      data-hour={hour}
+      data-stamp={stamp}
+      className={`px-5 pb-24 sm:pb-32 ${tight ? "pt-4" : "pt-24 sm:pt-32"}`}
+    >
       <div className={`mx-auto ${wide ? "max-w-[86rem]" : "max-w-[76rem]"}`}>
         <div className="mb-12 border-b pb-4 rule">
           <span className="stamp">{stamp}</span>

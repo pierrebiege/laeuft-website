@@ -78,7 +78,10 @@
    damit die Seite nicht springt, sondern dämmert. */
 .byd .dawn {
   height: 9rem;
-  background: linear-gradient(to bottom, var(--byd-from), var(--byd-to));
+  /* --from/--to setzt die Komponente an jedem Streifen selbst. Sie sind
+     nicht Teil der Palette und dürfen deshalb kein --byd-Präfix tragen –
+     mit dem Präfix war der Verlauf ungültig und fiel ersatzlos weg. */
+  background: linear-gradient(to bottom, var(--from), var(--to));
 }
 
 @media (prefers-reduced-motion: reduce) {
