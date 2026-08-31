@@ -51,7 +51,7 @@ export const TEAM: Athlete[] = [
   { pos: 12, first: "Francois", name: "Gervaix", status: "atlarge", qual: 30, pb: 30, photo: "gervaix" },
   { pos: 13, first: "Daniel", name: "Schwitter", status: "atlarge", qual: 30, pb: 30, photo: "schwitter" },
   { pos: 14, first: "Jörg", name: "Desteffani", status: "atlarge", qual: 30, pb: 30, photo: "desteffani" },
-  { pos: 15, first: "Sebastian", name: "Kopp", status: "atlarge", qual: 30, pb: 30 },
+  { pos: 15, first: "Sebastian", name: "Kopp", status: "atlarge", qual: 30, pb: 30, photo: "kopp" },
 ];
 
 /**
