@@ -2,9 +2,29 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async redirects() {
+    // Die Team-Domain swiss-backyardultra.ch (DNS bei Hostpoint, A-Record auf
+    // Vercel) führt direkt auf die Backyard-Seite. Bewusst 307, nicht 308 –
+    // falls die Domain die Seite später selbst ausliefern soll, hängt sie in
+    // keinem Browser-Cache fest.
+    const teamHosts = ["swiss-backyardultra.ch", "www.swiss-backyardultra.ch"];
+    const teamRedirects = teamHosts.flatMap((host) => [
+      {
+        source: "/backyard/:path*",
+        has: [{ type: "host" as const, value: host }],
+        destination: "https://laeuft.ch/backyard/:path*",
+        permanent: false,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: host }],
+        destination: "https://laeuft.ch/backyard/:path*",
+        permanent: false,
+      },
+    ]);
     // Die Backyard-Seite lief zwei Tage mit deutschen Pfaden, bevor das Team
     // auf Englisch umgestellt hat. Alte Links aus dem Chat sollen weiter gehen.
     return [
+      ...teamRedirects,
       { source: "/backyard/welt", destination: "/backyard/world", permanent: true },
       { source: "/backyard/team", destination: "/backyard/squad", permanent: true },
       { source: "/backyard/strecke", destination: "/backyard/course", permanent: true },
