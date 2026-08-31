@@ -37,13 +37,13 @@ export type Athlete = {
  * alle Positionen dahinter sind neu nummeriert.
  */
 export const TEAM: Athlete[] = [
-  { pos: 1, first: "Nima", name: "Javaheri", status: "silver", qual: 59, pb: 59, role: "Team Captain" },
-  { pos: 2, first: "Matteo", name: "Tenchio", status: "atlarge", qual: 58, pb: 61 },
+  { pos: 1, first: "Nima", name: "Javaheri", status: "silver", qual: 59, pb: 59, role: "Team Captain", photo: "javaheri" },
+  { pos: 2, first: "Matteo", name: "Tenchio", status: "atlarge", qual: 58, pb: 61, photo: "tenchio" },
   { pos: 3, first: "Ismael", name: "Röthlisberger", status: "atlarge", qual: 40, pb: 40, photo: "roethlisberger" },
   { pos: 4, first: "Marc", name: "Schneider", status: "atlarge", qual: 40, pb: 40, photo: "schneider" },
   { pos: 5, first: "Nicolas", name: "Lehmann", status: "atlarge", qual: 38, pb: 38 },
   { pos: 6, first: "Felix", name: "Stamm", status: "silver", qual: 37, pb: 37, photo: "stamm" },
-  { pos: 7, first: "Mona", name: "Winter", status: "atlarge", qual: 35, pb: 35 },
+  { pos: 7, first: "Mona", name: "Winter", status: "atlarge", qual: 35, pb: 35, photo: "winter" },
   { pos: 8, first: "Doron", name: "De Wolf", status: "atlarge", qual: 33, pb: 33, photo: "dewolf" },
   { pos: 9, first: "Pierre", name: "Biege", status: "atlarge", qual: 33, pb: 33, photo: "biege" },
   { pos: 10, first: "Julian", name: "Schneckenburger", status: "atlarge", qual: 32, pb: 32, photo: "schneckenburger" },
