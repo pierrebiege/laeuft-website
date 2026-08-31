@@ -27,10 +27,13 @@ export function useSectionTheme() {
       const sections = document.querySelectorAll<HTMLElement>("section[data-hour]");
       if (!sections.length) return;
       const probe = 72; // knapp unter der Leiste
+      // Liegt zwischen zwei Sektionen ein Streifen ohne data-hour, gilt die
+      // zuletzt passierte – nicht die erste der Seite. Sonst sprangen
+      // Leiste und Stundenschiene auf verschiedene Stunden.
       let current: HTMLElement = sections[0];
       for (const s of sections) {
         const r = s.getBoundingClientRect();
-        if (r.top <= probe && r.bottom > probe) current = s;
+        if (r.top <= probe) current = s;
       }
       setHour((current.dataset.hour as Hour) ?? "tag");
       setLabel(current.dataset.stamp ?? null);

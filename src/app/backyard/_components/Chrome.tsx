@@ -8,11 +8,11 @@ import { useRaceClock, countdownText } from "@/app/backyard/_lib/clock";
 import { EVENT } from "@/app/backyard/_data/event";
 
 const LINKS = [
-  { href: "/backyard/live", label: "Live" },
-  { href: "/backyard/world", label: "World" },
-  { href: "/backyard/squad", label: "Squad" },
-  { href: "/backyard/course", label: "Course" },
-  { href: "/backyard/rules", label: "Rules" },
+  { href: "/live", label: "Live" },
+  { href: "/world", label: "World" },
+  { href: "/squad", label: "Squad" },
+  { href: "/course", label: "Course" },
+  { href: "/rules", label: "Rules" },
 ];
 
 export default function Chrome() {
@@ -38,7 +38,7 @@ export default function Chrome() {
         }}
       >
         <nav className="mx-auto flex h-14 max-w-[76rem] items-center gap-6 px-5">
-          <Link href="/backyard" className="flex shrink-0 items-center gap-2.5">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <span className="relative grid h-[18px] w-[18px] place-items-center" style={{ background: "var(--byd-accent)" }}>
               <span className="absolute h-[11px] w-[3px] bg-white" />
               <span className="absolute h-[3px] w-[11px] bg-white" />
@@ -53,17 +53,19 @@ export default function Chrome() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="stamp transition-opacity hover:opacity-100"
-                style={{ color: path === l.href ? "var(--byd-fg)" : undefined, opacity: path === l.href ? 1 : 0.75 }}
+                className="stamp transition-colors"
+                style={{ color: path === l.href ? "var(--byd-fg)" : undefined }}
               >
                 {l.label}
               </Link>
             ))}
           </div>
 
+          {/* Unter sm wandert die Uhr ins Menü – sonst schiebt sie den
+              Menüknopf aus dem Bild und die Navigation ist unerreichbar. */}
           <Link
-            href="/backyard/live"
-            className="ml-auto flex shrink-0 items-center gap-2.5 border px-3 py-1.5 md:ml-0"
+            href="/live"
+            className="ml-auto hidden shrink-0 items-center gap-2.5 border px-3 py-1.5 sm:flex md:ml-0"
             style={{ borderColor: "var(--byd-rule)" }}
           >
             <span className="h-1.5 w-1.5 shrink-0 blink" style={{ background: "var(--byd-accent)" }} />
@@ -74,7 +76,7 @@ export default function Chrome() {
 
           <button
             onClick={() => setOpen((o) => !o)}
-            className="flex h-8 w-8 shrink-0 items-center justify-center md:hidden"
+            className="ml-auto flex h-11 w-11 shrink-0 items-center justify-center sm:ml-0 md:hidden"
             aria-label="Menu"
             aria-expanded={open}
           >
@@ -97,6 +99,13 @@ export default function Chrome() {
                 {l.label}
               </Link>
             ))}
+            {/* Die Uhr, die unter sm aus der Leiste genommen ist. */}
+            <Link href="/live" className="mt-4 flex items-center gap-2.5 sm:hidden">
+              <span className="h-1.5 w-1.5 shrink-0" style={{ background: "var(--byd-accent)" }} />
+              <span className="font-mono text-[11px] tnum leading-none">
+                {clock.running ? `LOOP ${clock.lap}` : countdownText(clock)}
+              </span>
+            </Link>
           </div>
         )}
       </header>

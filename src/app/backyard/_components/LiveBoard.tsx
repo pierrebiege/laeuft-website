@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import LapGrid from "./LapGrid";
+import { LOOP_M } from "@/app/backyard/_data/event";
 import type { NationLive } from "@/app/backyard/_lib/raceresult";
 
 type Year = "2026" | "2024";
@@ -15,11 +16,11 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(`/api/backyard/live?year=${year}&nation=ch`, { cache: "no-store" });
+      const res = await fetch(`/api/live?year=${year}&nation=ch`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) {
         setPending(Boolean(json.pending));
-        setError(json.error ?? "Unbekannter Fehler");
+        setError(json.error ?? "Unknown error");
         setData(null);
         return;
       }
@@ -103,7 +104,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
             <Stat label="Loops total" value={data.laps} accent />
             <Stat label="Current loop" value={data.currentLap} />
             <Stat label="Still running" value={data.standing} />
-            <Stat label="Kilometres" value={Math.round(data.laps * 6.7056)} />
+            <Stat label="Kilometres" value={Math.round(data.laps * LOOP_M / 1000)} />
           </div>
 
           <div className="mt-14">

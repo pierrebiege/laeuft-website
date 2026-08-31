@@ -48,8 +48,8 @@ export default function SquadPage() {
             <span className="stamp">All fifteen, as a list</span>
           </div>
           <div className="overflow-x-auto">
-            <div className="min-w-[760px] border-t rule">
-              <div className="grid grid-cols-[3rem_1fr_8rem_4.5rem_4.5rem_12rem_8rem] items-baseline gap-4 border-b py-3 rule">
+            <div className="min-w-[1000px] border-t rule">
+              <div className="grid grid-cols-[3rem_minmax(11rem,1fr)_8rem_4.5rem_4.5rem_12rem_8rem] items-baseline gap-4 border-b py-3 rule">
                 <span className="stamp">Pos</span>
                 <span className="stamp">Name</span>
                 <span className="stamp">Route in</span>
@@ -64,7 +64,7 @@ export default function SquadPage() {
                 return (
                   <div
                     key={a.name}
-                    className="grid grid-cols-[3rem_1fr_8rem_4.5rem_4.5rem_12rem_8rem] items-baseline gap-4 border-b py-4 rule"
+                    className="grid grid-cols-[3rem_minmax(11rem,1fr)_8rem_4.5rem_4.5rem_12rem_8rem] items-baseline gap-4 border-b py-4 rule"
                   >
                     <span className="font-mono text-xs tnum" style={{ color: "var(--byd-mute)" }}>
                       {String(a.pos).padStart(2, "0")}

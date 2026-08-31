@@ -38,6 +38,10 @@ export const metadata: Metadata = {
 export default function BackyardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div lang="en" className={`byd ${archivo.variable}`}>
+      {/* Ohne JavaScript hebt nichts das opacity:0 der Reveal-Blöcke auf. */}
+      <noscript>
+        <style>{`.byd .reveal > * { opacity: 1 !important; transform: none !important; }`}</style>
+      </noscript>
       <Chrome />
       <main>{children}</main>
       <Footer />

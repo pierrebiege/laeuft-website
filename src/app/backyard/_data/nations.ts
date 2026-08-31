@@ -17,11 +17,11 @@ export type NationSource = {
 };
 
 export const NATIONS: NationSource[] = [
-  { slug: "ch", nation: "Schweiz", cc: "CH", id2024: "310176", id2026: process.env.RR_CH_2026 },
-  { slug: "de", nation: "Deutschland", cc: "DE", id2024: "313630", id2026: process.env.RR_DE_2026 },
-  { slug: "be", nation: "Belgien", cc: "BE", id2024: "313634", id2026: process.env.RR_BE_2026 },
-  { slug: "nz", nation: "Neuseeland", cc: "NZ", id2024: "312584", id2026: process.env.RR_NZ_2026 },
-  { slug: "se", nation: "Schweden", cc: "SE", id2024: "309311", id2026: process.env.RR_SE_2026 },
+  { slug: "ch", nation: "Switzerland", cc: "CH", id2024: "310176", id2026: process.env.RR_CH_2026 },
+  { slug: "de", nation: "Germany", cc: "DE", id2024: "313630", id2026: process.env.RR_DE_2026 },
+  { slug: "be", nation: "Belgium", cc: "BE", id2024: "313634", id2026: process.env.RR_BE_2026 },
+  { slug: "nz", nation: "New Zealand", cc: "NZ", id2024: "312584", id2026: process.env.RR_NZ_2026 },
+  { slug: "se", nation: "Sweden", cc: "SE", id2024: "309311", id2026: process.env.RR_SE_2026 },
 ];
 
 export const HOME = NATIONS[0];
