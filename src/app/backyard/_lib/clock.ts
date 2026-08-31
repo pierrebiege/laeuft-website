@@ -19,6 +19,10 @@ export function useRaceClock(startISO: string, tick = 250): RaceClock {
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
+    // Bewusst im Effekt: der Server kennt die Uhrzeit des Besuchers nicht.
+    // Würde `now` schon beim ersten Rendern stehen, stimmte das Markup vom
+    // Server nicht mit dem des Browsers überein.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), tick);
     return () => clearInterval(id);

@@ -8,21 +8,31 @@ import LoopStrip from "@/app/backyard/_components/LoopStrip";
 import OnPaper from "@/app/backyard/_components/OnPaper";
 import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
-import { EVENT, TEAM, RESERVE, HISTORY, RULES, COURSE, STAFF, RACE_DAY } from "@/app/backyard/_data/event";
+import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
 
+/**
+ * Die Startseite läuft die Rennuhr mit: oben Samstag 14:00, unten
+ * Sonntagnachmittag. Jede Sektion trägt die Stunde, in der ihr Inhalt
+ * tatsächlich passiert – nachts wird es dunkel, nach einem vollen Tag
+ * kommt die Wertung, danach das Licht zurück.
+ *
+ * Was auf einer Unterseite steht, steht hier nicht noch einmal: die
+ * Regeln nur auf /rules, die Rennorganisation nur auf /squad.
+ */
 export default function Home() {
   return (
     <>
       <Hero />
       <Format />
+      <Satellite />
       <Dawn from={TONE.tag} to={TONE.daemmerung} />
-      <Scoring />
+      <Nightfall />
       <Dawn from={TONE.daemmerung} to={TONE.nacht} />
       <Squad />
-      <Paper />
-      <Rules />
-      <PastResults />
+      <Together />
       <Dawn from={TONE.tief} to={TONE.tag} />
+      <Scoring />
+      <Paper />
       <RaceDay />
       <Partners />
     </>
@@ -55,7 +65,7 @@ function Hero() {
           </h1>
 
           <p className="mt-6 max-w-md text-sm leading-relaxed sm:mt-8 sm:text-[15px]" style={{ color: "var(--byd-mute)" }}>
-            Fifteen runners for Switzerland, 6706 metres, on the hour. Not in the
+            {TEAM.length} runners for Switzerland, {LOOP_M} metres, on the hour. Not in the
             corral at the bell and you are out. Loop not finished inside sixty
             minutes and you are out. The country with the most completed loops wins.
           </p>
@@ -85,7 +95,7 @@ function Hero() {
       <div className="mx-auto flex w-full max-w-[76rem] items-baseline justify-between border-t pt-4 rule">
         <span className="stamp">Sat 17 October 2026</span>
         <span className="stamp hidden sm:block">Vereinshaus SV Baar</span>
-        <span className="stamp">Scroll ↓</span>
+        <span className="stamp">↓ The page runs the race clock</span>
       </div>
     </section>
   );
@@ -96,7 +106,7 @@ function Hero() {
 function Format() {
   const facts = [
     {
-      n: "6706",
+      n: String(LOOP_M),
       u: "Metres",
       t: "The loop. Out and back along the Lorze, gravel and concrete, 19 metres down and 19 back up. The same one every time.",
     },
@@ -113,7 +123,7 @@ function Format() {
   ];
 
   return (
-    <Section hour="tag" stamp="Hour 01 · Sat 15:00" title="The format">
+    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">No finish line. A bell every hour.</h2>
         <div className="mt-14 grid border-t rule sm:grid-cols-3">
@@ -133,7 +143,7 @@ function Format() {
         <div className="mt-16">
           <div className="mb-5 flex items-baseline justify-between gap-6">
             <span className="stamp">The loop, to scale</span>
-            <span className="stamp">The dot runs one loop per hour, on the clock</span>
+            <span className="stamp">One loop per hour, on the clock</span>
           </div>
           <LoopStrip startISO={EVENT.startISO} />
         </div>
@@ -142,11 +152,106 @@ function Format() {
   );
 }
 
+
+/* ═══════════════════════════════════ Hour 02 · Saturday 16:00 */
+
+function Satellite() {
+  return (
+    <Section hour="tag" stamp="Hour 02 · Sat 16:00">
+      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
+        <Reveal>
+          <h2 className="display text-[2rem] sm:text-5xl">
+            Everyone started at the same second.
+          </h2>
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            The world team championship is a satellite race. Every nation runs it at
+            home, on its own loop, and the clocks start together. Nobody sees anybody
+            else run. Each nation times its own race, and the totals are normally only
+            added up afterwards.
+          </p>
+        </Reveal>
+        <Reveal>
+          <p className="stamp mb-6">What that means for this page</p>
+          <p className="max-w-md text-[15px] leading-relaxed">
+            Every nation that publishes its timing feed can be read while the race is
+            still on. So we pull them together and add them up ourselves, live. Not
+            every nation publishes one — a missing country is not a statement.
+          </p>
+          <Link href="/world" className="stamp mt-8 inline-block underline underline-offset-4">
+            World standings →
+          </Link>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
 /* ═══════════════════════════════════ Hour 05 · Saturday 19:00 */
+
+function Nightfall() {
+  return (
+    <Section hour="daemmerung" stamp="Hour 05 · Sat 19:00">
+      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
+        <Reveal>
+          <h2 className="display text-[2rem] sm:text-5xl">The sun sets at 18:37.</h2>
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            By the fifth bell it is dark, and it stays dark for thirteen hours. Same
+            {" "}{LOOP_M} metres, now by headlamp. The two road crossings nobody thought
+            about at three in the afternoon are the only places with light.
+          </p>
+        </Reveal>
+        <Reveal>
+          <p className="stamp mb-6">Crews are shared</p>
+          <p className="max-w-md text-[15px] leading-relaxed">
+            There is not enough room in Baar for fifteen separate crews, so they are
+            shared. The person handing you a cup is handing the next one a cup too, and
+            at four in the morning they have been awake exactly as long as you have.
+          </p>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════ Hour 14 · Sunday 04:00 */
+
+function Together() {
+  return (
+    <Section hour="tief" stamp="Hour 14 · Sun 04:00">
+      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
+        <Reveal>
+          <h2 className="display text-[2rem] sm:text-5xl">Nobody here runs for themselves.</h2>
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            In a normal backyard you are on your own and everybody but one loses. Here
+            your loop is his loop: every loop any of the fifteen finishes is one point,
+            and the points belong to the country. Somebody dropping out does not just
+            end their race — it costs a point an hour for the rest of the weekend.
+          </p>
+        </Reveal>
+        <Reveal>
+          <p className="stamp mb-6">So this is allowed, and this is not</p>
+          <ul className="border-t rule">
+            <li className="border-b py-4 text-[15px] leading-relaxed rule">
+              Walking the last kilometre next to someone who is falling apart. Allowed.
+            </li>
+            <li className="border-b py-4 text-[15px] leading-relaxed rule">
+              Running a loop as somebody&rsquo;s pacer. Not allowed — it disqualifies them.
+            </li>
+          </ul>
+          <Link href="/rules" className="stamp mt-8 inline-block underline underline-offset-4">
+            All the rules →
+          </Link>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════ Hour 24 · Sunday 14:00 */
 
 function Scoring() {
   return (
-    <section data-hour="daemmerung" data-stamp="Hour 05 · Sat 19:00">
+    <section data-hour="tag" data-stamp="Hour 24 · Sun 14:00">
       <PinnedTally />
     </section>
   );
@@ -156,19 +261,23 @@ function Scoring() {
 
 function Squad() {
   const all = [...TEAM, ...RESERVE];
+  const best = Math.max(...TEAM.map((a) => a.pb));
   return (
-    <Section hour="nacht" stamp="Hour 08 · Sat 22:00" title="The squad" wide>
+    <Section hour="nacht" stamp="Hour 10 · Sun 00:00" wide>
       <Reveal>
-        <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">Fifteen runners.</h2>
+        <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
+          Nobody in this squad has gone past {best} loops.
+        </h2>
         <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          The number is each runner&rsquo;s best loop count between 16 August 2024 and
-          15 August 2026. Two places came from Silver Ticket wins, thirteen from the
-          At Large list.
+          The number on each card is the runner&rsquo;s best loop count between 16 August
+          2024 and 15 August 2026 — that is what selects the team. Two got in by
+          winning a qualifying race outright, a Silver Ticket. The other thirteen came
+          off the At Large list, ranked by that number.
         </p>
       </Reveal>
 
       <div className="mt-14">
-        <Rail label="15 runners · drag or use the arrows">
+        <Rail label={`${all.length} runners · swipe`}>
           {all.map((a) => (
             <RunnerCard key={`${a.first}-${a.name}`} a={a} />
           ))}
@@ -176,22 +285,8 @@ function Squad() {
       </div>
 
       <Reveal>
-        <div className="mt-14 border-t pt-6 rule">
-          <p className="stamp mb-6">Race organisation</p>
-          <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-            {STAFF.map((s) => (
-              <div key={s.name}>
-                <p className="stamp mb-2">{s.role}</p>
-                <p className="text-[15px] font-medium uppercase tracking-tight">{s.name}</p>
-                <p className="mt-1 text-xs" style={{ color: "var(--byd-mute)" }}>
-                  {s.does.join(" · ")}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <Link href="/squad" className="stamp mt-8 inline-block underline underline-offset-4">
-          Full squad with personal bests →
+        <Link href="/squad" className="stamp mt-14 inline-block underline underline-offset-4">
+          Full squad, the table and who runs the race →
         </Link>
       </Reveal>
     </Section>
@@ -202,69 +297,24 @@ function Squad() {
 
 function Paper() {
   return (
-    <Section hour="nacht" stamp="Hour 11 · Sun 01:00" title="What the numbers say">
+    <Section hour="tag" stamp="Hour 26 · Sun 16:00">
       <OnPaper />
+      <PastResults />
     </Section>
   );
 }
-
-/* ═══════════════════════════════════ Hour 14 · Sunday 04:00 */
-
-function Rules() {
-  return (
-    <Section hour="tief" stamp="Hour 14 · Sun 04:00" title="Rules">
-      <Reveal>
-        <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
-          Two ways out: the bell, or the hour.
-        </h2>
-      </Reveal>
-
-      <div className="mt-14 grid gap-x-16 gap-y-14 lg:grid-cols-2">
-        <Reveal>
-          <p className="stamp mb-6">Backyard</p>
-          <ol className="border-t rule">
-            {RULES.backyard.map((t, i) => (
-              <li key={t} className="flex gap-6 border-b py-4 rule">
-                <span className="font-mono text-[11px] tnum pt-1" style={{ color: "var(--byd-mute)" }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="text-[15px] leading-relaxed">{t}</p>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
-
-        <Reveal>
-          <p className="stamp mb-6">Teamwork</p>
-          <ol className="border-t rule">
-            {RULES.teamwork.map((t, i) => (
-              <li key={t} className="flex gap-6 border-b py-4 rule">
-                <span className="font-mono text-[11px] tnum pt-1" style={{ color: "var(--byd-mute)" }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="text-[15px] leading-relaxed">{t}</p>
-              </li>
-            ))}
-          </ol>
-          <Link href="/rules" className="stamp mt-8 inline-block underline underline-offset-4">
-            All rules →
-          </Link>
-        </Reveal>
-      </div>
-    </Section>
-  );
-}
-
-/* ═══════════════════════════════════ Hour 18 · Sunday 08:00 */
 
 function PastResults() {
   const max = Math.max(...HISTORY.flatMap((h) => [h.ch, h.at, h.de]));
   return (
-    <Section hour="tief" stamp="Hour 18 · Sun 08:00" title="Past championships">
+    <div className="mt-24">
       <Reveal>
-        <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">2020: 373. 2022: 360. 2024: 501.</h2>
+        <p className="stamp mb-6">Every championship so far</p>
+        <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
+          {HISTORY.map((h) => `${h.year}: ${h.ch}.`).join(" ")}
+        </h2>
         <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Germany finished ahead of Switzerland every time, Austria behind every time.
+          Germany has finished ahead of Switzerland every time, Austria behind every time.
         </p>
       </Reveal>
 
@@ -286,7 +336,7 @@ function PastResults() {
                         className="block h-full"
                         style={{
                           width: `${(row.v / max) * 100}%`,
-                          background: row.hot ? "var(--byd-accent)" : "var(--byd-rule)",
+                          background: row.hot ? "var(--byd-accent)" : "var(--bar)",
                         }}
                       />
                     </span>
@@ -316,15 +366,15 @@ function PastResults() {
           </div>
         </Reveal>
       </div>
-    </Section>
+    </div>
   );
 }
 
-/* ═══════════════════════════════════ Hour 26 · Sunday 16:00 */
+/* ═══════════════════════════════════ Hour 28 · Sunday 18:00 */
 
 function RaceDay() {
   return (
-    <Section hour="tag" stamp="Hour 26 · Sun 16:00" title="Course and race day">
+    <Section hour="tag" stamp="Hour 28 · Sun 18:00">
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Baar, along the Lorze.</h2>
@@ -347,11 +397,21 @@ function RaceDay() {
         </Reveal>
 
         <Reveal>
-          <p className="stamp mb-6">On race day</p>
-          <p className="max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            Loop counts come straight from the timing system in Baar and refresh every
-            thirty seconds. The world standings pull in every nation that publishes its
-            timing feed. Both already run on the real 2024 data.
+          <p className="stamp mb-6">Come and stand there</p>
+          <p className="max-w-md text-[15px] leading-relaxed">
+            Anyone can watch. It costs nothing, there is nothing to book, and the whole
+            thing happens at {COURSE.start}. The bell goes on the hour, every hour —
+            that is the minute worth being there for, and it comes back until the race
+            is over. Saturday evening is when it gets good. Sunday morning is when it
+            gets serious.
+          </p>
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            Loop counts on this page come straight from the timing system in Baar and
+            refresh every thirty seconds. Both boards already run on the real 2024 data,
+            so you can see now what they will do on the day.
+            {RACE_DAY.streamAnnounced && !RACE_DAY.youtube
+              ? " A livestream has been announced; the link goes here as soon as it exists."
+              : ""}
           </p>
           <div className="mt-8 border-t rule">
             <RaceLink href="/live" label="Live scoring" note="Team Switzerland, loop by loop" />

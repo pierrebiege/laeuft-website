@@ -12,13 +12,18 @@ export default function LivePage() {
     <>
       <PageHead
         hour="nacht"
-        stamp="Live · Baar ZG · Sat 17.10.2026, 14:00"
+        stamp="Live · Baar ZG · Sat 17 October 2026, 14:00"
         title="Live scoring"
-        lead="Loop counts come straight from the timing system and refresh every thirty seconds. Until the 2026 race starts you can run the same board on the real data from the 2024 team championship."
+        lead="One loop is one point, so the loop count is the score. It comes straight from the timing system and refreshes every thirty seconds. Until the 2026 race starts you can run the same board on the real data from 2024."
       />
       <section data-hour="nacht" data-stamp="Live" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem]">
           <LiveBoard />
+          <p className="mt-10 max-w-xl text-xs leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            One note on the 2024 replay: the timing feed adds up to 502 loops, while the
+            official Swiss total for that year is 501. We show the feed as it answers and
+            keep 501 where the result is quoted.
+          </p>
         </div>
       </section>
     </>

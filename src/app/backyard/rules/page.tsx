@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
-import { RULES } from "@/app/backyard/_data/event";
+import { LOOP_M, RULES } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
   title: "Rules",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const BLOCKS = [
   { stamp: "Scoring", title: "One loop, one point.", items: RULES.scoring, accent: true },
   { stamp: "Backyard", title: "The same everywhere in the world.", items: RULES.backyard },
-  { stamp: "Teamwork", title: "Help each other get far.", items: RULES.teamwork },
+  { stamp: "Teamwork", title: "Helping is allowed. Pacing is not.", items: RULES.teamwork },
 ];
 
 export default function RulesPage() {
@@ -19,7 +19,7 @@ export default function RulesPage() {
     <>
       <PageHead
         hour="tief"
-        stamp="Rules · 6706 m · on the hour · last one standing"
+        stamp={`Rules · ${LOOP_M} m · on the hour · one loop, one point`}
         title="Two ways out: the bell, or the hour."
         lead="At the bell the whole field is in the corral. Not in it, you are out. Loop not finished inside sixty minutes, you are out. There is not much more to it."
       />
@@ -53,11 +53,10 @@ export default function RulesPage() {
           ))}
 
           <Reveal>
-            <div className="border-y py-14 text-center rule">
-              <p className="display text-[1.6rem] sm:text-3xl">
-                &laquo;If we have fun, we will run longer.&raquo;
+            <div className="border-y py-14 rule">
+              <p className="display max-w-3xl text-[1.6rem] sm:text-3xl">
+                Nobody in this squad has run 48 hours. In 2024 all fifteen Belgians did.
               </p>
-              <p className="stamp mt-5">From the team briefing</p>
             </div>
           </Reveal>
         </div>

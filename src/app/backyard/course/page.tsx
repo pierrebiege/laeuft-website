@@ -3,7 +3,7 @@ import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
 import CourseScroll from "@/app/backyard/_components/CourseScroll";
 import CourseProfile from "@/app/backyard/_components/CourseProfile";
-import { COURSE } from "@/app/backyard/_data/event";
+import { COURSE, LOOP_M } from "@/app/backyard/_data/event";
 import { COURSE_BBOX, COURSE_ELE, COURSE_START } from "@/app/backyard/_data/course-path";
 
 export const metadata: Metadata = {
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 const NUMBERS = [
-  ["Loop length", "6706 m"],
+  [`Loop length`, `${LOOP_M} m`],
   ["Down, then up", `${COURSE_ELE.drop} m`],
-  ["Surface", "Gravel / concrete"],
+  ["Surface", COURSE.surface],
   ["Road crossings", String(COURSE.crossings.length)],
 ];
 
@@ -25,7 +25,7 @@ export default function CoursePage() {
       <PageHead
         hour="tag"
         stamp="Course · Vereinshaus SV Baar · Canton Zug"
-        title="6706 metres, out and back."
+        title={`${LOOP_M} metres, out and back.`}
         lead="From the clubhouse along the Lorze to the turnaround and back. Shaded, hard underfoot — and tilted: down on the way out, up on the way home."
       />
 
@@ -100,9 +100,8 @@ export default function CoursePage() {
               />
             </div>
             <p className="mt-4 text-xs" style={{ color: "var(--byd-mute)" }}>
-              Start and finish at Vereinshaus SV Baar, marked. The frame follows the
-              recorded course. Map data OpenStreetMap. The loop above is Doron De
-              Wolf&rsquo;s GPX, one recorded lap.
+              Start and finish at {COURSE.start}, marked. Map data OpenStreetMap. The
+              loop above is Doron De Wolf&rsquo;s GPX of one recorded loop.
             </p>
           </Reveal>
         </div>

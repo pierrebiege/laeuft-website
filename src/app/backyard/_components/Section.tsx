@@ -2,20 +2,22 @@ import type { ReactNode } from "react";
 import type { Hour } from "./useSectionTheme";
 
 /**
- * Eine Sektion ist eine Rennstunde. Sie trägt ihre Tageszeit
- * und ihren Zeitstempel – oben Samstagnachmittag, unten Sonntagmorgen.
+ * Eine Sektion ist eine Rennstunde. Sie trägt ihre Tageszeit und ihren
+ * Zeitstempel – oben Samstagnachmittag, unten Sonntagmittag.
+ *
+ * Bewusst nur eine Kleinbeschriftung: vorher standen Stundenstempel und
+ * ein zweiter Mini-Titel nebeneinander, dann kam erst die Überschrift.
+ * Drei Beschriftungen für einen Abschnitt, zwei davon ohne Aussage.
  */
 export default function Section({
   hour,
   stamp,
-  title,
   id,
   children,
   wide = false,
 }: {
   hour: Hour;
   stamp: string;
-  title?: string;
   id?: string;
   children: ReactNode;
   wide?: boolean;
@@ -23,9 +25,8 @@ export default function Section({
   return (
     <section id={id} data-hour={hour} data-stamp={stamp} className="px-5 py-24 sm:py-32">
       <div className={`mx-auto ${wide ? "max-w-[86rem]" : "max-w-[76rem]"}`}>
-        <div className="mb-12 flex items-baseline justify-between gap-6 border-b pb-4 rule">
+        <div className="mb-12 border-b pb-4 rule">
           <span className="stamp">{stamp}</span>
-          {title && <span className="stamp text-right">{title}</span>}
         </div>
         {children}
       </div>
@@ -35,7 +36,7 @@ export default function Section({
 
 /** Der Streifen zwischen zwei Tageszeiten. */
 export function Dawn({ from, to }: { from: string; to: string }) {
-  return <div className="dawn" style={{ "--byd-from": from, "--byd-to": to } as React.CSSProperties} />;
+  return <div className="dawn" style={{ "--from": from, "--to": to } as React.CSSProperties} />;
 }
 
 export const TONE = {

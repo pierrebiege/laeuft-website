@@ -1,5 +1,3 @@
-"use client";
-
 import { COURSE_ELE, COURSE_PROFILE, COURSE_TOTAL_M, COURSE_TURN } from "@/app/backyard/_data/course-path";
 
 const W = 1000;

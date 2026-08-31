@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRaceClock } from "@/app/backyard/_lib/clock";
-import { COURSE } from "@/app/backyard/_data/event";
+import { COURSE, LOOP_M } from "@/app/backyard/_data/event";
 
-const LOOP_M = 6706;
-const HALF = LOOP_M / 2; // 3353 m bis zum Wendepunkt
+const HALF = LOOP_M / 2;
 
 /**
  * Die Runde als Schema: hin oben, zurück unten, Wendepunkt rechts.
@@ -13,7 +13,18 @@ const HALF = LOOP_M / 2; // 3353 m bis zum Wendepunkt
  * Das ist das Format, keine Positionsangabe.
  */
 export default function LoopStrip({ startISO }: { startISO: string }) {
-  const c = useRaceClock(startISO, 100);
+  const c = useRaceClock(startISO, 1000);
+  const [calm, setCalm] = useState(false);
+
+  // Eine endlose Bewegung, die sich nicht abschalten liess. Sie kommt aus
+  // React-State, deshalb greift der CSS-Block für reduzierte Bewegung nicht.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setCalm(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   const W = 1000;
   const H = 150;
@@ -26,8 +37,9 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
 
   const x = (m: number) => L + (Math.min(m, HALF) / HALF) * span;
 
-  // Runde im Stundentakt: 0 → 1 über 60 Minuten
-  const p = c.ready ? c.intoHour / 3_600_000 : 0;
+  // Runde im Stundentakt: 0 → 1 über 60 Minuten. Vor dem Start ist das ein
+  // Schema, kein Standort – der Punkt bleibt dann am Start stehen.
+  const p = c.ready && c.running && !calm ? c.intoHour / 3_600_000 : 0;
   const dist = p * LOOP_M;
   const arcLen = Math.PI * r;
   const total = 2 * span + arcLen;
@@ -85,7 +97,7 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
 
         {/* Wendepunkt */}
         <text x={R + r + 10} y={yOut + r + 4} fontSize={10} fontFamily="var(--font-mono)" fill="currentColor" opacity={0.6}>
-          3353 m
+          {HALF} m
         </text>
 
         {/* Start/Ziel-Label */}
@@ -107,7 +119,7 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
           ))}
         </span>
         <span className="stamp tnum">
-          {c.ready ? `${Math.round(dist).toLocaleString("en-GB")} m into the hour` : ""}
+          {c.running ? `${Math.round(dist).toLocaleString("en-GB")} m into the hour` : "The dot starts moving at the bell"}
         </span>
       </div>
     </div>

@@ -52,6 +52,7 @@ async function rr<T>(path: string, revalidate: number): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { Accept: "application/json" },
     next: { revalidate },
+    signal: AbortSignal.timeout(5000),
   });
   if (!res.ok) throw new Error(`race|result ${res.status} für ${path}`);
   return (await res.json()) as T;
@@ -64,11 +65,18 @@ export function getConfig(eventId: string, revalidate = 300) {
 /**
  * Bevorzugt eine Live-Rangliste. Detail-Listen (eine Zeile je Runde) sind
  * für den Gesamtstand unbrauchbar und fliegen raus.
+ *
+ * Ist das Rennen vorbei, ist die Endliste die richtige – nicht die
+ * Live-Fassung. Belgien 2024 heisst «Online|Final» und «Online|Final LIVE»;
+ * ohne diese Unterscheidung greift man nach dem Rennen ins Leere.
  */
 export function pickList(cfg: RRConfig): string | null {
   const usable = (cfg.lists ?? []).filter((l) => !/detail|split/i.test(l.Name));
   if (!usable.length) return null;
-  return (usable.find((l) => /live/i.test(l.Name) || l.Live === 1) ?? usable[0]).Name;
+  const over = Boolean(cfg.EventOver);
+  const final = usable.find((l) => /final|result|ergebnis/i.test(l.Name) && !/live/i.test(l.Name));
+  const live = usable.find((l) => /live/i.test(l.Name) || l.Live === 1);
+  return ((over ? final ?? live : live ?? final) ?? usable[0]).Name;
 }
 
 type RawList = {
@@ -103,7 +111,9 @@ function toRunner(row: unknown[], labels: string[]): Runner | null {
     ? clean.split(",").map((s) => s.trim())
     : [clean.split(" ").slice(-1)[0], clean.split(" ").slice(0, -1).join(" ")];
 
-  const lapsRaw = String(v(lapsIndex(labels)) ?? "").trim();
+  const li = lapsIndex(labels);
+  if (li < 0) throw new Error(`Keine Rundenspalte in [${labels.join(", ")}]`);
+  const lapsRaw = String(v(li) ?? "").trim();
   const laps = /^\d{1,3}$/.test(lapsRaw) ? Number(lapsRaw) : 0;
 
   const natRaw = v(idx(labels, /nat|land|country/i)) ?? "";

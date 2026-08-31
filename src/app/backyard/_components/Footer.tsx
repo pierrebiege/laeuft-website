@@ -2,13 +2,13 @@ import Link from "next/link";
 
 const COLS = [
   [
-    ["Live", "/backyard/live"],
-    ["World", "/backyard/world"],
-    ["Squad", "/backyard/squad"],
+    ["Live", "/live"],
+    ["World", "/world"],
+    ["Squad", "/squad"],
   ],
   [
-    ["Course", "/backyard/course"],
-    ["Rules", "/backyard/rules"],
+    ["Course", "/course"],
+    ["Rules", "/rules"],
   ],
 ];
 
@@ -44,9 +44,14 @@ export default function Footer() {
             </div>
           ))}
         </div>
-        <p className="mt-10 text-xs" style={{ color: "var(--byd-mute)" }}>
-          Live data comes from each nation&rsquo;s public race|result feed. Unofficial page,
-          made by and for the team.
+        <p className="mt-10 max-w-2xl text-xs leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+          Unofficial page, made by and for the team — not by the organisers. Live data
+          comes from each nation&rsquo;s public race|result feed. Something wrong on here,
+          or want to help on race day?{" "}
+          <a href="mailto:info@laeuft.ch" className="underline underline-offset-4">
+            info@laeuft.ch
+          </a>
+          .
         </p>
       </div>
     </footer>

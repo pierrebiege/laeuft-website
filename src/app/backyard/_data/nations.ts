@@ -24,8 +24,6 @@ export const NATIONS: NationSource[] = [
   { slug: "se", nation: "Sweden", cc: "SE", id2024: "309311", id2026: process.env.RR_SE_2026 },
 ];
 
-export const HOME = NATIONS[0];
-
 export function sourcesFor(year: "2024" | "2026") {
   return NATIONS.map((n) => ({ ...n, eventId: year === "2024" ? n.id2024 : n.id2026 })).filter(
     (n): n is NationSource & { eventId: string } => Boolean(n.eventId),

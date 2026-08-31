@@ -11,8 +11,6 @@ export const EVENT = {
   venue: "Vereinshaus SV Baar",
   town: "Baar",
   canton: "ZG",
-  loopMeters: 6706,
-  loopYards: "1 Yard = 6,7056 km",
   teamSize: 15,
 } as const;
 
@@ -73,12 +71,6 @@ export const RESERVE: Athlete[] = [];
  * Beispiel: /squad/javaheri.jpg. Die Karten greifen automatisch darauf zu.
  */
 export const PHOTO_BASE = "/backyard/squad";
-
-export const slug = (a: Athlete) =>
-  a.name
-    .toLowerCase()
-    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
-    .replace(/[^a-z]/g, "");
 
 /**
  * Team-Schweiz-Einzelresultate der bisherigen Team-WMs, aus dem Briefing
@@ -193,8 +185,7 @@ export const COURSE = {
   notes: [
     "Mostly shaded",
     "Turnaround just past 3.3 km, back the same way",
-    "Limited space, crews are shared",
-    "X-Bionic will be there to help",
+    "Limited space, so crews are shared",
   ],
 } as const;
 
@@ -227,10 +218,3 @@ export const RACE_DAY = {
   bigs: "https://bigsbackyardultra.com/world-team-championship-2026/",
 } as const;
 
-/** Interne Termine – nicht öffentlich. */
-export const SESSIONS = [
-  { date: "26.08.2026", time: "18:00", what: "Witiker Backyard Course" },
-  { date: "29.08.2026", time: "20:00", what: "Training auf der WM-Strecke in Baar" },
-  { date: "09./10.09.2026", time: "", what: "Mit X-Bionic – noch zu bestätigen" },
-  { date: "22.09.2026", time: "", what: "Training auf der WM-Strecke in Baar" },
-] as const;

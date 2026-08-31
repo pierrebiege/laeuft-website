@@ -10,10 +10,8 @@ import { TEAM, BENCH_2024, HISTORY, pastResults } from "@/app/backyard/_data/eve
 export default function OnPaper() {
   const quals = [...TEAM].map((a) => a.qual).sort((a, b) => b - a);
   const sumQual = quals.reduce((s, q) => s + q, 0);
-  const sumPb = TEAM.reduce((s, a) => s + a.pb, 0);
   const last = HISTORY[HISTORY.length - 1].ch;
   const returning = TEAM.filter((a) => pastResults(a).length > 0).length;
-  const debut = TEAM.length - returning;
   const max = Math.max(...quals, ...BENCH_2024);
 
   return (
@@ -29,11 +27,10 @@ export default function OnPaper() {
       </Reveal>
 
       <Reveal>
-        <div className="mt-12 grid border-y sm:grid-cols-4 rule">
+        <div className="mt-12 grid border-y sm:grid-cols-3 rule">
           <Stat label="Qualifying total" value={sumQual} accent />
           <Stat label="Scored in 2024" value={last} />
-          <Stat label="Personal bests added up" value={sumPb} />
-          <Stat label="Returning · first time" text={`${returning} · ${debut}`} />
+          <Stat label="Been here before" text={`${returning} of ${TEAM.length}`} />
         </div>
       </Reveal>
 
@@ -46,7 +43,7 @@ export default function OnPaper() {
                 <span className="h-2 w-5" style={{ background: "var(--byd-accent)" }} /> 2026 qualifying
               </span>
               <span className="flex items-center gap-2">
-                <span className="h-2 w-5" style={{ background: "var(--byd-rule)" }} /> 2024 result
+                <span className="h-2 w-5" style={{ background: "var(--bar)" }} /> 2024 result
               </span>
             </span>
           </div>
@@ -61,7 +58,7 @@ export default function OnPaper() {
                   <div className="relative h-5">
                     <span
                       className="absolute inset-y-0 left-0"
-                      style={{ width: `${(b / max) * 100}%`, background: "var(--byd-rule)" }}
+                      style={{ width: `${(b / max) * 100}%`, background: "var(--bar)" }}
                     />
                     <span
                       className="absolute left-0 top-1/2 h-2 -translate-y-1/2"

@@ -15,6 +15,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
   const [updated, setUpdated] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    setData(null);
     try {
       const res = await fetch(`/api/live?year=${year}&nation=ch`, { cache: "no-store" });
       const json = await res.json();
@@ -35,19 +36,31 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
     }
   }, [year]);
 
+  const over = Boolean(data?.over);
+
   useEffect(() => {
-    setData(null);
+    // Daten holen, sobald die Komponente steht oder das Jahr wechselt. Der
+    // Server kann das nicht vorbereiten, die Anzeige hängt am Zeitmesssystem.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-    const id = setInterval(load, 30_000);
-    return () => clearInterval(id);
   }, [load]);
+
+  // Ein beendetes Rennen ändert sich nicht mehr, und ein Telefon in der
+  // Tasche muss die Zeitmessung nicht alle dreissig Sekunden fragen.
+  useEffect(() => {
+    if (over) return;
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") load();
+    }, 30_000);
+    return () => clearInterval(id);
+  }, [load, over]);
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4 rule">
         <span className="stamp flex items-center gap-2.5">
           <span
-            className={`h-1.5 w-1.5 ${data && !data.over ? "blink" : ""}`}
+            className={`h-1.5 w-1.5 ${data && !over ? "blink" : ""}`}
             style={{ background: data && !data.over ? "var(--byd-accent)" : "var(--byd-mute)" }}
           />
           {data ? (data.over ? "Race finished" : "Live") : "Connecting"}
@@ -101,9 +114,9 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
       {data && (
         <>
           <div className="grid border-b sm:grid-cols-4 rule">
-            <Stat label="Loops total" value={data.laps} accent />
-            <Stat label="Current loop" value={data.currentLap} />
-            <Stat label="Still running" value={data.standing} />
+            <Stat label="Loops = points" value={data.laps} accent />
+            <Stat label={over ? "Last loop" : "Current loop"} value={data.currentLap} />
+            <Stat label={over ? "Went the distance" : "Still running"} value={data.standing} />
             <Stat label="Kilometres" value={Math.round(data.laps * LOOP_M / 1000)} />
           </div>
 
@@ -146,7 +159,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
                           className="text-[15px] uppercase tracking-tight"
                           style={{ color: out ? "var(--byd-mute)" : "var(--byd-fg)" }}
                         >
-                          {r.name}
+                          {r.first ? `${r.first} ${r.last}` : r.name}
                         </span>
                       </Td>
                       <Td mono mute>{r.nat ?? "–"}</Td>
@@ -163,7 +176,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
           </div>
 
           <p className="mt-6 text-xs" style={{ color: "var(--byd-mute)" }}>
-            Source: {data.eventName} · race|result #{data.eventId} · list &ldquo;{data.listName}&rdquo;
+            Source: {data.eventName} · race|result #{data.eventId}
           </p>
         </>
       )}

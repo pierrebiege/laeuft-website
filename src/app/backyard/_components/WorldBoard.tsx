@@ -14,19 +14,34 @@ type Payload = { year: string; nations: NationLive[]; failed: string[]; fetchedA
 export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Year }) {
   const [year, setYear] = useState<Year>(initialYear);
   const [data, setData] = useState<Payload | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Ohne res.ok und ohne catch endete eine 504 oder eine HTML-Antwort in
+  // einer stillen Rejection: die Seite zeigte dann weder Fehler noch
+  // Leerzustand, nur den Kopfbalken.
   const load = useCallback(async () => {
+    setData(null);
+    if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/backyard/world?year=${year}`, { cache: "no-store" });
-      setData(await res.json());
+      const res = await fetch(`/api/world?year=${year}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Feed answered ${res.status}`);
+      const json = (await res.json()) as Payload & { error?: string };
+      if (json.error) throw new Error(json.error);
+      setData(json);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setLoading(false);
     }
   }, [year]);
 
   useEffect(() => {
+    // Daten holen, sobald die Komponente steht oder das Jahr wechselt. Der
+    // Server kann das nicht vorbereiten, die Anzeige hängt am Zeitmesssystem.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     const id = setInterval(load, 60_000);
     return () => clearInterval(id);
@@ -38,7 +53,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4 rule">
         <span className="stamp">
-          {loading ? "Querying nations" : `${data?.nations.length ?? 0} nations connected`}
+          {loading ? "Checking the feeds" : `${data?.nations.length ?? 0} nations reporting`}
         </span>
         <div className="flex gap-px">
           {(["2026", "2024"] as Year[]).map((y) => (
@@ -58,7 +73,16 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
         </div>
       </div>
 
-      {data && data.nations.length === 0 && !loading && (
+      {error && !loading && (
+        <div className="border-b py-16 rule">
+          <h2 className="display max-w-xl text-[1.8rem] sm:text-4xl">The feeds are not answering.</h2>
+          <p className="mt-5 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            {error}. This page keeps trying every minute.
+          </p>
+        </div>
+      )}
+
+      {!error && data && data.nations.length === 0 && !loading && (
         <div className="border-b py-16 rule">
           <h2 className="display max-w-xl text-[1.8rem] sm:text-4xl">No nation online yet.</h2>
           <p className="mt-5 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
@@ -81,7 +105,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
           <div key={n.slug} className="relative border-b py-6 rule">
             <div
               className="absolute inset-y-0 left-0 transition-[width] duration-700"
-              style={{ width: lead ? `${(n.laps / lead) * 100}%` : "0%", background: "var(--byd-rule)" }}
+              style={{ width: lead ? `${(n.laps / lead) * 100}%` : "0%", background: "var(--bar)" }}
             />
             <div className="relative flex items-center gap-5">
               <span className="w-8 shrink-0 font-mono text-xs tnum" style={{ color: "var(--byd-mute)" }}>

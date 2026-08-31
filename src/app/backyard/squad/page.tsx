@@ -3,7 +3,6 @@ import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import Rail from "@/app/backyard/_components/Rail";
-import OnPaper from "@/app/backyard/_components/OnPaper";
 import { TEAM, RESERVE, STAFF, pastResults } from "@/app/backyard/_data/event";
 
 export const metadata: Metadata = {
@@ -20,24 +19,23 @@ export default function SquadPage() {
         hour="tag"
         stamp="Squad · as of 19 August 2026 · qualifying closed"
         title="The fifteen"
-        lead="Qualifying ran from 16 August 2024 to 15 August 2026. Two places came from Silver Ticket wins, thirteen from the At Large list."
+        lead="Qualifying ran from 16 August 2024 to 15 August 2026. Two of the fifteen got in by winning a qualifying race outright — a Silver Ticket. The other thirteen came off the At Large list, ranked by their best loop count in that window."
       />
 
       {/* Porträts: auf dem Handy eine Bahn zum Wischen, ab Tablet ein Raster */}
       <section data-hour="tag" data-stamp="Squad" className="px-5 pb-24">
         <div className="mx-auto max-w-[76rem]">
-          <div className="sm:hidden">
-            <Rail label="15 runners · swipe">
-              {TEAM.map((a) => (
-                <RunnerCard key={a.name} a={a} />
-              ))}
-            </Rail>
-          </div>
-          <div className="hidden grid-cols-3 gap-px border-y sm:grid lg:grid-cols-5 rule">
+          {/* Eine Liste, zwei Darstellungen: auf dem Handy eine Bahn zum
+              Wischen, ab Tablet ein Raster. Vorher standen fünfzehn Karten
+              zweimal im DOM. */}
+          <Rail
+            label={`${TEAM.length} runners · swipe`}
+            grid="sm:grid-cols-3 sm:border-y lg:grid-cols-5 rule"
+          >
             {TEAM.map((a) => (
               <RunnerCard key={a.name} a={a} compact />
             ))}
-          </div>
+          </Rail>
         </div>
       </section>
 
@@ -52,7 +50,7 @@ export default function SquadPage() {
               <div className="grid grid-cols-[3rem_minmax(11rem,1fr)_8rem_4.5rem_4.5rem_12rem_8rem] items-baseline gap-4 border-b py-3 rule">
                 <span className="stamp">Pos</span>
                 <span className="stamp">Name</span>
-                <span className="stamp">Route in</span>
+                <span className="stamp">How they got in</span>
                 <span className="stamp text-right">Qual</span>
                 <span className="stamp text-right">Best</span>
                 <span className="stamp">Team championships</span>
@@ -125,12 +123,6 @@ export default function SquadPage() {
           </div>
         </section>
       )}
-
-      <section data-hour="nacht" data-stamp="What the numbers say" className="px-5 py-24">
-        <div className="mx-auto max-w-[76rem]">
-          <OnPaper />
-        </div>
-      </section>
 
       <section data-hour="daemmerung" data-stamp="Race organisation" className="px-5 py-24">
         <div className="mx-auto max-w-[76rem]">

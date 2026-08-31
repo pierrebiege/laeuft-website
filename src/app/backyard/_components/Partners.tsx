@@ -80,8 +80,11 @@ export default function Partners() {
         <div className="mt-16 grid items-baseline gap-4 border-t pt-8 sm:grid-cols-[12rem_1fr] rule">
           <p className="stamp">Become a partner</p>
           <p className="max-w-xl text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            The team is grateful for any support on its longest day of the year.
-            Want to be part of race day in Baar? Talk to the team.
+            The team pays for this weekend itself. If your company wants in, write to{" "}
+            <a href="mailto:info@laeuft.ch" className="underline underline-offset-4">
+              info@laeuft.ch
+            </a>
+            .
           </p>
         </div>
       </div>

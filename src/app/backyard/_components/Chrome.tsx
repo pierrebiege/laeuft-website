@@ -21,6 +21,8 @@ export default function Chrome() {
   const [open, setOpen] = useState(false);
   const clock = useRaceClock(EVENT.startISO, 1000);
 
+  // Nach einem Seitenwechsel schliesst sich das Menü.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setOpen(false), [path]);
 
   return (
@@ -68,7 +70,10 @@ export default function Chrome() {
             className="ml-auto hidden shrink-0 items-center gap-2.5 border px-3 py-1.5 sm:flex md:ml-0"
             style={{ borderColor: "var(--byd-rule)" }}
           >
-            <span className="h-1.5 w-1.5 shrink-0 blink" style={{ background: "var(--byd-accent)" }} />
+            <span
+              className={`h-1.5 w-1.5 shrink-0 ${clock.running ? "blink" : ""}`}
+              style={{ background: clock.running ? "var(--byd-accent)" : "var(--bar)" }}
+            />
             <span className="font-mono text-[11px] tnum leading-none">
               {clock.running ? `LOOP ${clock.lap}` : countdownText(clock)}
             </span>
@@ -101,7 +106,10 @@ export default function Chrome() {
             ))}
             {/* Die Uhr, die unter sm aus der Leiste genommen ist. */}
             <Link href="/live" className="mt-4 flex items-center gap-2.5 sm:hidden">
-              <span className="h-1.5 w-1.5 shrink-0" style={{ background: "var(--byd-accent)" }} />
+              <span
+                className="h-1.5 w-1.5 shrink-0"
+                style={{ background: clock.running ? "var(--byd-accent)" : "var(--bar)" }}
+              />
               <span className="font-mono text-[11px] tnum leading-none">
                 {clock.running ? `LOOP ${clock.lap}` : countdownText(clock)}
               </span>
@@ -115,7 +123,7 @@ export default function Chrome() {
       {label && (
         <div
           data-hour={hour}
-          className="pointer-events-none fixed left-0 top-1/2 z-40 hidden -translate-y-1/2 lg:block"
+          className="pointer-events-none fixed left-0 top-1/2 z-40 hidden -translate-y-1/2 xl:block"
           style={{ color: "var(--byd-fg)" }}
         >
           <div

@@ -24,6 +24,7 @@
   --byd-bg: #e9e5dd;
   --byd-fg: #0b0b0b;
   --byd-rule: rgba(11, 11, 11, 0.16);
+  --byd-bar: rgba(11, 11, 11, 0.42);
   --byd-mute: rgba(11, 11, 11, 0.62);
   --byd-accent: #d8000e;
   color-scheme: light;
@@ -35,6 +36,7 @@
   --byd-bg: #e9e5dd;
   --byd-fg: #0b0b0b;
   --byd-rule: rgba(11, 11, 11, 0.16);
+  --byd-bar: rgba(11, 11, 11, 0.42);
   --byd-mute: rgba(11, 11, 11, 0.62);
   color-scheme: light;
 }
@@ -43,6 +45,7 @@
   --byd-bg: #1b1613;
   --byd-fg: #e7ded1;
   --byd-rule: rgba(231, 222, 209, 0.18);
+  --byd-bar: rgba(231, 222, 209, 0.45);
   --byd-mute: rgba(231, 222, 209, 0.62);
   color-scheme: dark;
 }
@@ -51,6 +54,7 @@
   --byd-bg: #070709;
   --byd-fg: #e8e8ec;
   --byd-rule: rgba(232, 232, 236, 0.16);
+  --byd-bar: rgba(232, 232, 236, 0.42);
   --byd-mute: rgba(232, 232, 236, 0.6);
   color-scheme: dark;
 }
@@ -59,6 +63,7 @@
   --byd-bg: #000000;
   --byd-fg: #e8e8ec;
   --byd-rule: rgba(232, 232, 236, 0.14);
+  --byd-bar: rgba(232, 232, 236, 0.4);
   --byd-mute: rgba(232, 232, 236, 0.58);
   color-scheme: dark;
 }
@@ -117,27 +122,27 @@
 
 /* ---------------- Reveal ---------------- */
 
-.byd .reveal > * {
+.byd .reveal-armed > * {
   opacity: 0;
   transform: translateY(14px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.byd .reveal.is-in > * {
+.byd .reveal-armed.is-in > * {
   opacity: 1;
   transform: none;
 }
-.byd .reveal.is-in > *:nth-child(2) { transition-delay: 70ms; }
-.byd .reveal.is-in > *:nth-child(3) { transition-delay: 140ms; }
-.byd .reveal.is-in > *:nth-child(4) { transition-delay: 210ms; }
-.byd .reveal.is-in > *:nth-child(5) { transition-delay: 280ms; }
+.byd .reveal-armed.is-in > *:nth-child(2) { transition-delay: 70ms; }
+.byd .reveal-armed.is-in > *:nth-child(3) { transition-delay: 140ms; }
+.byd .reveal-armed.is-in > *:nth-child(4) { transition-delay: 210ms; }
+.byd .reveal-armed.is-in > *:nth-child(5) { transition-delay: 280ms; }
 
 /* Ohne JavaScript feuert der IntersectionObserver nie – dann stand das
    HTML zwar da, aber auf opacity 0. Wer keine Bewegung will, bekommt
    den Inhalt aus demselben Grund sofort. */
 @media (prefers-reduced-motion: reduce) {
-  .byd .reveal > * {
+  .byd .reveal-armed > * {
     opacity: 1;
     transform: none;
     transition: none;
@@ -159,6 +164,20 @@
 }
 .byd .rail::-webkit-scrollbar { display: none; }
 .byd .rail > * { scroll-snap-align: start; }
+
+/* Ab Tablet wird aus der Bahn ein Raster: dieselbe Liste, ein DOM.
+   grid-auto-flow und grid-auto-columns müssen dafür zurückgesetzt werden,
+   sonst laufen die Karten weiter in implizite Spalten. */
+@media (min-width: 640px) {
+  .byd .rail-grid {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
 
 /* ---------------- Glocke ---------------- */
 

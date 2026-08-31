@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Das Rundenraster: jede Runde jedes Läufers ein Quadrat.
  * Volles Team ist eine volle Spalte. Wer raus ist, dessen Zeile hört auf.
@@ -16,7 +14,9 @@ export default function LapGrid({
   const cell = cols > 44 ? 6 : cols > 28 ? 8 : 11;
 
   return (
-    <div className="overflow-x-auto">
+    // Rein dekorativ: dieselbe Information steht daneben als Text, und ohne
+    // aria-hidden liefert das Raster über 900 leere Felder an den Screenreader.
+    <div className="overflow-x-auto" aria-hidden>
       <div className="min-w-max">
         {runners.map((r) => {
           const out = r.laps < max;
@@ -38,7 +38,7 @@ export default function LapGrid({
                       style={{
                         width: cell,
                         height: cell,
-                        background: done ? (out ? "var(--byd-mute)" : "var(--byd-accent)") : "var(--byd-rule)",
+                        background: done ? (out ? "var(--byd-mute)" : "var(--byd-accent)") : "var(--bar)",
                       }}
                     />
                   );

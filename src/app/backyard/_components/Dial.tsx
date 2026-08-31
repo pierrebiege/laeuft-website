@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRaceClock, countdownText, pad } from "@/app/backyard/_lib/clock";
 
 /**
@@ -29,20 +29,23 @@ function Split({ text }: { text: string }) {
 }
 
 export default function Dial({ startISO, size = 380 }: { startISO: string; size?: number }) {
-  const c = useRaceClock(startISO, 250);
+  const c = useRaceClock(startISO, 1000);
   const [ringing, setRinging] = useState(false);
-  const [lastLap, setLastLap] = useState(-1);
+  const lastLap = useRef(-1);
 
   useEffect(() => {
-    if (!c.running || c.lap === lastLap) return;
-    setLastLap(c.lap);
-    if (lastLap === -1) return;
+    if (!c.running || c.lap === lastLap.current) return;
+    const first = lastLap.current === -1;
+    lastLap.current = c.lap;
+    if (first) return;
     setRinging(true);
     const id = setTimeout(() => setRinging(false), 1200);
     return () => clearTimeout(id);
-  }, [c.running, c.lap, lastLap]);
+  }, [c.running, c.lap]);
 
-  const progress = c.ready ? c.intoHour / 3_600_000 : 0;
+  // Der Fortschritt ist die Minute in der laufenden Runde. Vor dem Start
+  // gibt es keine laufende Runde, also auch keinen Bogen.
+  const progress = c.ready && c.running ? c.intoHour / 3_600_000 : 0;
   const r = size / 2 - 16;
   const circ = 2 * Math.PI * r;
 
@@ -98,7 +101,7 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
           <>
             <p className="stamp mb-4">Bell in</p>
             <Split text={countdownText(c)} />
-            <p className="stamp mt-4">17.10.2026 · 14:00</p>
+            <p className="stamp mt-4">17 October 2026 · 14:00</p>
           </>
         )}
       </div>
