@@ -1,6 +1,7 @@
 "use client";
 
 import { useRaceClock } from "@/app/backyard/_lib/clock";
+import { COURSE } from "@/app/backyard/_data/event";
 
 const LOOP_M = 6706;
 const HALF = LOOP_M / 2; // 3353 m bis zum Wendepunkt
@@ -41,10 +42,7 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
   } else dot = { x: R - (along - span - arcLen), y: yBack };
 
   const kms = [1, 2, 3];
-  const crossings = [
-    { m: 450, n: 1 },
-    { m: 1950, n: 2 },
-  ];
+  const crossings = COURSE.crossings.map((c, i) => ({ m: c.m, n: i + 1, short: c.short }));
 
   return (
     <div>
@@ -76,7 +74,7 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
 
         {/* Querungen */}
         {crossings.map((cr) => (
-          <g key={cr.n}>
+          <g key={cr.m}>
             <line x1={x(cr.m)} y1={yOut - 9} x2={x(cr.m)} y2={yOut + 9} stroke="var(--byd-accent)" strokeWidth={2} />
             <line x1={x(cr.m)} y1={yBack - 9} x2={x(cr.m)} y2={yBack + 9} stroke="var(--byd-accent)" strokeWidth={2} />
             <text x={x(cr.m)} y={yOut + r + 4} textAnchor="middle" fontSize={11} fontFamily="var(--font-mono)" fill="var(--byd-accent)">
@@ -101,8 +99,12 @@ export default function LoopStrip({ startISO }: { startISO: string }) {
 
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <span className="stamp">
-          <span style={{ color: "var(--byd-accent)" }}>1</span> no zebra crossing, quiet street ·{" "}
-          <span style={{ color: "var(--byd-accent)" }}>2</span> just before 2 km, with an island
+          {crossings.map((cr, i) => (
+            <span key={cr.m}>
+              {i > 0 ? " · " : ""}
+              <span style={{ color: "var(--byd-accent)" }}>{cr.n}</span> {cr.short}
+            </span>
+          ))}
         </span>
         <span className="stamp tnum">
           {c.ready ? `${Math.round(dist).toLocaleString("en-GB")} m into the hour` : ""}

@@ -1,6 +1,8 @@
 // Alle harten Fakten zum Rennen an einem Ort.
 // Quelle: «Team Schweiz Briefing» (Stand 19.08.2026) + bigsbackyardultra.com
 
+export const LOOP_M = 6706;
+
 export const EVENT = {
   name: "Backyard Ultra World Team Championship",
   nation: "Schweiz",
@@ -177,14 +179,15 @@ export const COURSE = {
   start: "Vereinshaus SV Baar",
   shape: "Out and back along the Lorze",
   surface: "Gravel and concrete",
-  elevation: "About 30 metres",
+  elevation: "19 metres down, 19 metres back up",
+  /** Meter ab Start, wie im Briefing beschrieben. Setzt die Marken im Grundriss. */
   crossings: [
-    "The first has no zebra crossing and is a less used street.",
-    "The second is just before 2 km and has an island.",
+    { m: 450, short: "no zebra crossing, quiet street", text: "The first has no zebra crossing and is a less used street." },
+    { m: 1950, short: "just before 2 km, with an island", text: "The second is just before 2 km and has an island." },
   ],
   notes: [
     "Mostly shaded",
-    "Turn around at a Wendepunkt",
+    "Turnaround just past 3.3 km, back the same way",
     "Limited space, crews are shared",
     "X-Bionic will be there to help",
   ],
@@ -214,6 +217,8 @@ export const PARTNERS: { name: string; url?: string; logo?: string; note?: strin
 export const RACE_DAY = {
   timing: null as string | null,
   youtube: null as string | null,
+  /** Der Stream ist angekündigt, der Link existiert noch nicht. */
+  streamAnnounced: true,
   bigs: "https://bigsbackyardultra.com/world-team-championship-2026/",
 } as const;
 

@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
-import LoopStrip from "@/app/backyard/_components/LoopStrip";
-import { COURSE, EVENT } from "@/app/backyard/_data/event";
+import CourseScroll from "@/app/backyard/_components/CourseScroll";
+import CourseProfile from "@/app/backyard/_components/CourseProfile";
+import { COURSE } from "@/app/backyard/_data/event";
+import { COURSE_BBOX, COURSE_ELE, COURSE_START } from "@/app/backyard/_data/course-path";
 
 export const metadata: Metadata = {
   title: "Course",
-  description: "The championship loop in Baar ZG: 6706 metres out and back along the Lorze.",
+  description:
+    "The championship loop in Baar ZG: 6706 metres out and back along the Lorze — downhill to the turnaround, uphill all the way home.",
 };
 
 const NUMBERS = [
   ["Loop length", "6706 m"],
-  ["Climb", "≈ 30 m"],
+  ["Down, then up", `${COURSE_ELE.drop} m`],
   ["Surface", "Gravel / concrete"],
-  ["Road crossings", "2"],
+  ["Road crossings", String(COURSE.crossings.length)],
 ];
 
 export default function CoursePage() {
@@ -23,10 +26,10 @@ export default function CoursePage() {
         hour="tag"
         stamp="Course · Vereinshaus SV Baar · Canton Zug"
         title="6706 metres, out and back."
-        lead="From the clubhouse along the Lorze to the turnaround and back. Flat, shaded, hard underfoot."
+        lead="From the clubhouse along the Lorze to the turnaround and back. Shaded, hard underfoot — and tilted: down on the way out, up on the way home."
       />
 
-      <section data-hour="tag" data-stamp="Course" className="px-5 pb-24">
+      <section data-hour="tag" data-stamp="Course" className="px-5">
         <div className="mx-auto max-w-[76rem]">
           <div className="grid border-y sm:grid-cols-4 rule">
             {NUMBERS.map(([k, v]) => (
@@ -36,27 +39,34 @@ export default function CoursePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
+      {/* Die echte Runde, aus Dorons GPX – Scrollen läuft sie ab. */}
+      <section data-hour="tag" data-stamp="Course · the loop">
+        <CourseScroll />
+      </section>
+
+      <section data-hour="tag" data-stamp="Course" className="px-5 pb-24">
+        <div className="mx-auto max-w-[76rem]">
           <Reveal>
-            <div className="mt-16">
-              <div className="mb-5 flex items-baseline justify-between gap-6">
-                <span className="stamp">The loop, to scale</span>
-                <span className="stamp">One loop per hour, on the clock</span>
-              </div>
-              <LoopStrip startISO={EVENT.startISO} />
+            <div className="mb-5 flex flex-wrap items-baseline justify-between gap-4">
+              <span className="stamp">Elevation, as recorded</span>
+              <span className="stamp">{COURSE.elevation}</span>
             </div>
+            <CourseProfile />
           </Reveal>
 
-          <div className="mt-16 grid gap-x-16 gap-y-14 lg:grid-cols-2">
+          <div className="mt-20 grid gap-x-16 gap-y-14 lg:grid-cols-2">
             <Reveal>
               <p className="stamp mb-6">The two crossings</p>
               <ol className="border-t rule">
                 {COURSE.crossings.map((c, i) => (
-                  <li key={c} className="flex gap-6 border-b py-5 rule">
+                  <li key={c.m} className="flex gap-6 border-b py-5 rule">
                     <span className="display text-2xl" style={{ color: "var(--byd-accent)" }}>
                       {i + 1}
                     </span>
-                    <p className="pt-1 text-[15px] leading-relaxed">{c}</p>
+                    <p className="pt-1 text-[15px] leading-relaxed">{c.text}</p>
                   </li>
                 ))}
               </ol>
@@ -80,12 +90,13 @@ export default function CoursePage() {
                 title="Course map, Baar"
                 className="h-[440px] w-full"
                 loading="lazy"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=8.505%2C47.190%2C8.545%2C47.215&layer=mapnik&marker=47.1993%2C8.5237"
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${COURSE_BBOX.join("%2C")}&layer=mapnik&marker=${COURSE_START.lat}%2C${COURSE_START.lon}`}
               />
             </div>
             <p className="mt-4 text-xs" style={{ color: "var(--byd-mute)" }}>
-              Baar, start and finish at Vereinshaus SV Baar. Map data OpenStreetMap.
-              The exact route follows once the GPX is available.
+              Start and finish at Vereinshaus SV Baar, marked. The frame follows the
+              recorded course. Map data OpenStreetMap. The loop above is Doron De
+              Wolf&rsquo;s GPX, one recorded lap.
             </p>
           </Reveal>
         </div>
