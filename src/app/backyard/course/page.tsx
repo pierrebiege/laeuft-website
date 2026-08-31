@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
-import CourseScroll from "@/app/backyard/_components/CourseScroll";
+import CourseTerrain from "@/app/backyard/_components/CourseTerrain";
 import CourseProfile from "@/app/backyard/_components/CourseProfile";
 import { COURSE, LOOP_M } from "@/app/backyard/_data/event";
 import { COURSE_BBOX, COURSE_ELE, COURSE_START } from "@/app/backyard/_data/course-path";
@@ -43,8 +43,8 @@ export default function CoursePage() {
       </section>
 
       {/* Die echte Runde, aus Dorons GPX – Scrollen läuft sie ab. */}
-      <section data-hour="tag" data-stamp="Course · the loop">
-        <CourseScroll />
+      <section data-hour="tag" data-stamp="Course · the loop in its valley">
+        <CourseTerrain />
       </section>
 
       <section data-hour="tag" data-stamp="Course" className="px-5 pb-24">

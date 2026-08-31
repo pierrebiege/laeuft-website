@@ -4,11 +4,13 @@ import Reveal from "@/app/backyard/_components/Reveal";
 import Rail from "@/app/backyard/_components/Rail";
 import PinnedTally from "@/app/backyard/_components/PinnedTally";
 import Section, { Dawn, TONE } from "@/app/backyard/_components/Section";
+import CourseProfile from "@/app/backyard/_components/CourseProfile";
 import LoopStrip from "@/app/backyard/_components/LoopStrip";
 import OnPaper from "@/app/backyard/_components/OnPaper";
 import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
+import { COURSE_ELE } from "@/app/backyard/_data/course-path";
 
 /**
  * Die Startseite läuft die Rennuhr mit: oben Samstag 14:00, unten
@@ -23,12 +25,13 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Course />
+      <Squad />
       <Format />
       <Satellite />
       <Dawn from={TONE.tag} to={TONE.daemmerung} />
       <Nightfall />
-      <Dawn from={TONE.daemmerung} to={TONE.nacht} />
-      <Squad />
+      <Dawn from={TONE.daemmerung} to={TONE.tief} />
       <Together />
       <Dawn from={TONE.tief} to={TONE.tag} />
       <Scoring />
@@ -123,7 +126,7 @@ function Format() {
   ];
 
   return (
-    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
+    <Section hour="tag" stamp="Hour 03 · Sat 17:00">
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">No finish line. A bell every hour.</h2>
         <div className="mt-14 grid border-t rule sm:grid-cols-3">
@@ -153,11 +156,61 @@ function Format() {
 }
 
 
-/* ═══════════════════════════════════ Hour 02 · Saturday 16:00 */
+
+/* ═══════════════════════════════════ Hour 01 · Saturday 15:00 */
+
+function Course() {
+  const numbers = [
+    ["Loop length", `${LOOP_M} m`],
+    ["Down, then up", `${COURSE_ELE.drop} m`],
+    ["Surface", COURSE.surface],
+    ["Road crossings", String(COURSE.crossings.length)],
+  ];
+  return (
+    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
+      <Reveal>
+        <h2 className="display max-w-3xl text-[2rem] sm:text-5xl">
+          The same {LOOP_M} metres, sixty times over.
+        </h2>
+        <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+          Out from the clubhouse along the Lorze, round the cone at 3.3 km and back the
+          same way. Shaded, hard underfoot — and not flat: it runs downhill on the way
+          out and uphill all the way home.
+        </p>
+      </Reveal>
+
+      <Reveal>
+        <div className="mt-12 grid border-y sm:grid-cols-4 rule">
+          {numbers.map(([k, v]) => (
+            <div key={k} className="border-b py-8 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 rule">
+              <p className="stamp mb-3">{k}</p>
+              <p className="display text-[1.8rem] sm:text-[2.2rem]">{v}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="mt-14">
+          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-4">
+            <span className="stamp">Elevation, as recorded</span>
+            <span className="stamp">{COURSE.elevation}</span>
+          </div>
+          <CourseProfile />
+        </div>
+        <Link href="/course" className="stamp mt-10 inline-block underline underline-offset-4">
+          The loop in its valley →
+        </Link>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════ Hour 04 · Saturday 18:00 */
 
 function Satellite() {
   return (
-    <Section hour="tag" stamp="Hour 02 · Sat 16:00">
+    <Section hour="tag" stamp="Hour 04 · Sat 18:00">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">
@@ -263,7 +316,7 @@ function Squad() {
   const all = [...TEAM, ...RESERVE];
   const best = Math.max(...TEAM.map((a) => a.pb));
   return (
-    <Section hour="nacht" stamp="Hour 10 · Sun 00:00" wide>
+    <Section hour="tag" stamp="Hour 02 · Sat 16:00" wide>
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
           Nobody in this squad has gone past {best} loops.
@@ -378,21 +431,12 @@ function RaceDay() {
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Baar, along the Lorze.</h2>
-          <dl className="mt-10 border-t rule">
-            {[
-              ["Start and finish", COURSE.start],
-              ["Shape", COURSE.shape],
-              ["Surface", COURSE.surface],
-              ["Climb", COURSE.elevation],
-            ].map(([k, v]) => (
-              <div key={k} className="flex items-baseline justify-between gap-6 border-b py-4 rule">
-                <dt className="stamp shrink-0">{k}</dt>
-                <dd className="text-right text-[15px]">{v}</dd>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-8 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+            {COURSE.start}, {COURSE.shape.toLowerCase()}. Two road crossings, both on
+            the way out, both marshalled.
+          </p>
           <Link href="/course" className="stamp mt-8 inline-block underline underline-offset-4">
-            Course detail →
+            The course in detail →
           </Link>
         </Reveal>
 

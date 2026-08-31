@@ -2,6 +2,12 @@
 // Neu erzeugen: python3 scripts/course-from-gpx.py <pfad.gpx> > src/data/course-path.ts
 // Grundriss und Marken als [x, y, Meter ab Start].
 
+/**
+ * Wo Geländeszene, Satellitenbild und Höhenkarte liegen. In laeuft-website
+ * steht alles unter /backyard/ – das Portierskript setzt den Pfad um.
+ */
+export const COURSE_ASSETS = "/backyard/course";
+
 /** Gemessene Laenge von Runde 1 der Aufzeichnung. Offiziell sind es 6706 m. */
 export const COURSE_TOTAL_M = 6517;
 export const COURSE_TURN: [number, number, number] = [1000.0, 43.0, 3236];

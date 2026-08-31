@@ -168,7 +168,7 @@ export default function CourseProfile({
             <text x={0} y={y(hi) - 7} fontSize={12} fontFamily="var(--font-mono)" fill="currentColor" opacity={0.55}>
               {Math.round(hi)} m
             </text>
-            <text x={0} y={y(lo) + 4} fontSize={12} fontFamily="var(--font-mono)" fill="currentColor" opacity={0.55}>
+            <text x={0} y={y(lo) - 3} fontSize={12} fontFamily="var(--font-mono)" fill="currentColor" opacity={0.55}>
               {Math.round(lo)} m
             </text>
           </>

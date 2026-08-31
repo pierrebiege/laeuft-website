@@ -69,13 +69,18 @@ const nextConfig: NextConfig = {
     ];
     return [
       {
-        // 3D-Goms-Szene darf same-origin in die /goms-Seite eingebettet werden
+        // Die 3D-Szenen dürfen same-origin in ihre eigene Seite eingebettet
+        // werden: Goms in /goms, die WM-Strecke in /backyard/course.
         source: "/goms/scene.html",
         headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
       },
       {
+        source: "/backyard/course/scene.html",
+        headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
+      },
+      {
         // Rest der Seite: kein Framing erlaubt
-        source: "/((?!goms/scene\\.html).*)",
+        source: "/((?!goms/scene\\.html|backyard/course/scene\\.html).*)",
         headers: [...base, { key: "X-Frame-Options", value: "DENY" }],
       },
     ];
