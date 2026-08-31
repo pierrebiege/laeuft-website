@@ -46,7 +46,7 @@ export const TEAM: Athlete[] = [
   { pos: 2, first: "Matteo", name: "Tenchio", status: "atlarge", qual: 58, pb: 62, photo: "tenchio" },
   { pos: 3, first: "Ismael", name: "Röthlisberger", status: "atlarge", qual: 40, pb: 40, photo: "roethlisberger" },
   { pos: 4, first: "Marc", name: "Schneider", status: "atlarge", qual: 40, pb: 40, photo: "schneider" },
-  { pos: 5, first: "Nicolas", name: "Lehmann", status: "atlarge", qual: 38, pb: 38 },
+  { pos: 5, first: "Nicolas", name: "Lehmann", status: "atlarge", qual: 38, pb: 38, photo: "lehmann" },
   { pos: 6, first: "Felix", name: "Stamm", status: "silver", qual: 37, pb: 37, photo: "stamm" },
   { pos: 7, first: "Mona", name: "Winter", status: "atlarge", qual: 35, pb: 35, photo: "winter" },
   { pos: 8, first: "Doron", name: "De Wolf", status: "atlarge", qual: 33, pb: 33, photo: "dewolf" },

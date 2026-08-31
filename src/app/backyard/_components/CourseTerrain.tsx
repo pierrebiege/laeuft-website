@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import CoursePlan from "@/app/backyard/_components/CoursePlan";
-import CourseProfile from "@/app/backyard/_components/CourseProfile";
 import { COURSE_ASSETS, COURSE_TOTAL_M, COURSE_TURN } from "@/app/backyard/_data/course-path";
 import { COURSE, LOOP_M } from "@/app/backyard/_data/event";
 
@@ -59,6 +58,7 @@ export default function CourseTerrain() {
   const iframe = useRef<HTMLIFrameElement>(null);
   const raf = useRef(0);
   const [rev, setRev] = useState(0);
+  const latest = useRef(0);
   const [vert, setVert] = useState(false);
   const [still, setStill] = useState(false);
   const [near, setNear] = useState(false);
@@ -89,6 +89,19 @@ export default function CourseTerrain() {
   }, []);
 
   useEffect(() => {
+    // Die Szene meldet sich, sobald sie steht, und bekommt dann den Stand,
+    // den sie verpasst hat – sonst bliebe sie bei null, wenn jemand mitten
+    // in den Abschnitt springt und danach nicht mehr scrollt.
+    const onReady = (e: MessageEvent) => {
+      if ((e.data as { sceneReady?: boolean })?.sceneReady) {
+        iframe.current?.contentWindow?.postMessage({ rev: latest.current }, "*");
+      }
+    };
+    window.addEventListener("message", onReady);
+    return () => window.removeEventListener("message", onReady);
+  }, []);
+
+  useEffect(() => {
     const el = wrap.current;
     if (!el) return;
     // Erst laden, wenn der Abschnitt in Reichweite ist, und die Bildschleife
@@ -114,6 +127,7 @@ export default function CourseTerrain() {
       const raw = total <= 0 ? 0 : -r.top / total;
       const eased = (raw - LEAD_IN) / (1 - LEAD_IN - LEAD_OUT);
       const v = Math.min(1, Math.max(0, eased));
+      latest.current = v;
       iframe.current?.contentWindow?.postMessage({ rev: v }, "*");
       // Für React gerastert – das SVG darunter braucht keine 60 Zustände.
       setRev(Math.round(v * 400) / 400);
@@ -150,12 +164,12 @@ export default function CourseTerrain() {
               rev={rev}
               vert={vert}
               still={still}
-              className={vert ? "max-h-[46vh] w-auto" : "max-h-[42vh] w-full"}
+              className={vert ? "max-h-[56vh] w-auto" : "max-h-[52vh] w-full"}
             />
           ) : (
             <div
               className="relative w-full overflow-hidden"
-              style={{ aspectRatio: vert ? "4 / 5" : "16 / 9", maxHeight: "50vh" }}
+              style={{ aspectRatio: vert ? "4 / 5" : "16 / 9", maxHeight: "58vh" }}
             >
               {near && (
                 <iframe
@@ -170,11 +184,6 @@ export default function CourseTerrain() {
             </div>
           )}
 
-          {/* Dasselbe Rennen von der Seite: das Profil läuft mit. */}
-          <div className="mt-3">
-            <CourseProfile at={dist} height={vert ? 92 : 112} axis={false} />
-          </div>
-
           <div className="mt-4 grid gap-3 border-t pt-4 rule md:grid-cols-[1fr_auto_1fr] md:items-baseline md:gap-8">
             <p className="order-2 max-w-[42ch] text-[15px] leading-relaxed md:order-none">
               <span className="stamp mr-2">{ACTS[act].title}</span>
@@ -185,7 +194,10 @@ export default function CourseTerrain() {
               <span className="stamp ml-2">of {LOOP_M} m</span>
             </span>
             <span className="stamp order-3 md:order-none md:text-right">
-              GPX: Doron De Wolf{gl === false ? "" : " · relief 1.8× · Esri imagery"}
+              {COURSE.elevation}
+              <br className="hidden md:block" />
+              <span className="md:hidden"> · </span>
+              GPX: Doron De Wolf{gl === false ? "" : " · relief 1.8×"}
             </span>
           </div>
         </div>

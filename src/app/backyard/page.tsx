@@ -4,13 +4,11 @@ import Reveal from "@/app/backyard/_components/Reveal";
 import Rail from "@/app/backyard/_components/Rail";
 import PinnedTally from "@/app/backyard/_components/PinnedTally";
 import Section, { Dawn, TONE } from "@/app/backyard/_components/Section";
-import CourseProfile from "@/app/backyard/_components/CourseProfile";
-import LoopStrip from "@/app/backyard/_components/LoopStrip";
+import CourseTerrain from "@/app/backyard/_components/CourseTerrain";
 import OnPaper from "@/app/backyard/_components/OnPaper";
 import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
-import { COURSE_ELE } from "@/app/backyard/_data/course-path";
 
 /**
  * Die Startseite läuft die Rennuhr mit: oben Samstag 14:00, unten
@@ -25,9 +23,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Course />
-      <Squad />
       <Format />
+      <Valley />
+      <Squad />
       <Satellite />
       <Dawn from={TONE.tag} to={TONE.daemmerung} />
       <Nightfall />
@@ -111,7 +109,7 @@ function Format() {
     {
       n: String(LOOP_M),
       u: "Metres",
-      t: "The loop. Out and back along the Lorze, gravel and concrete, 19 metres down and 19 back up. The same one every time.",
+      t: `The loop. Out from the clubhouse along the Lorze, round the cone at 3.3 km and back the same way. ${COURSE.surface}, ${COURSE.elevation}. The same one every time.`,
     },
     {
       n: "60",
@@ -126,7 +124,7 @@ function Format() {
   ];
 
   return (
-    <Section hour="tag" stamp="Hour 03 · Sat 17:00">
+    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">No finish line. A bell every hour.</h2>
         <div className="mt-14 grid border-t rule sm:grid-cols-3">
@@ -142,67 +140,28 @@ function Format() {
         </div>
       </Reveal>
 
-      <Reveal>
-        <div className="mt-16">
-          <div className="mb-5 flex items-baseline justify-between gap-6">
-            <span className="stamp">The loop, to scale</span>
-            <span className="stamp">One loop per hour, on the clock</span>
-          </div>
-          <LoopStrip startISO={EVENT.startISO} />
-        </div>
-      </Reveal>
     </Section>
   );
 }
 
 
 
-/* ═══════════════════════════════════ Hour 01 · Saturday 15:00 */
+/* ═══════════════════════════════════ Hour 01 · Saturday 15:00, weiter */
 
-function Course() {
-  const numbers = [
-    ["Loop length", `${LOOP_M} m`],
-    ["Down, then up", `${COURSE_ELE.drop} m`],
-    ["Surface", COURSE.surface],
-    ["Road crossings", String(COURSE.crossings.length)],
-  ];
+function Valley() {
   return (
-    <Section hour="tag" stamp="Hour 01 · Sat 15:00">
-      <Reveal>
-        <h2 className="display max-w-3xl text-[2rem] sm:text-5xl">
-          The same {LOOP_M} metres, sixty times over.
-        </h2>
-        <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Out from the clubhouse along the Lorze, round the cone at 3.3 km and back the
-          same way. Shaded, hard underfoot — and not flat: it runs downhill on the way
-          out and uphill all the way home.
-        </p>
-      </Reveal>
-
-      <Reveal>
-        <div className="mt-12 grid border-y sm:grid-cols-4 rule">
-          {numbers.map(([k, v]) => (
-            <div key={k} className="border-b py-8 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 rule">
-              <p className="stamp mb-3">{k}</p>
-              <p className="display text-[1.8rem] sm:text-[2.2rem]">{v}</p>
-            </div>
-          ))}
+    <>
+      <section data-hour="tag" data-stamp="Hour 01 · the loop in its valley">
+        <CourseTerrain />
+      </section>
+      <section data-hour="tag" className="px-5 pb-24">
+        <div className="mx-auto max-w-[76rem]">
+          <Link href="/course" className="stamp inline-block underline underline-offset-4">
+            The course in detail — crossings, surface, what it is like on site →
+          </Link>
         </div>
-      </Reveal>
-
-      <Reveal>
-        <div className="mt-14">
-          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-4">
-            <span className="stamp">Elevation, as recorded</span>
-            <span className="stamp">{COURSE.elevation}</span>
-          </div>
-          <CourseProfile />
-        </div>
-        <Link href="/course" className="stamp mt-10 inline-block underline underline-offset-4">
-          The loop in its valley →
-        </Link>
-      </Reveal>
-    </Section>
+      </section>
+    </>
   );
 }
 

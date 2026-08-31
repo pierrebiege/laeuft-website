@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
 import CourseTerrain from "@/app/backyard/_components/CourseTerrain";
-import CourseProfile from "@/app/backyard/_components/CourseProfile";
 import { COURSE, LOOP_M } from "@/app/backyard/_data/event";
-import { COURSE_BBOX, COURSE_ELE, COURSE_START } from "@/app/backyard/_data/course-path";
+import { COURSE_ELE } from "@/app/backyard/_data/course-path";
 
 export const metadata: Metadata = {
   title: "Course",
@@ -49,21 +48,7 @@ export default function CoursePage() {
 
       <section data-hour="tag" data-stamp="Course" className="px-5 pb-24">
         <div className="mx-auto max-w-[76rem]">
-          <Reveal>
-            <div className="mb-5 flex flex-wrap items-baseline justify-between gap-4">
-              <span className="stamp">Elevation, as recorded</span>
-              <span className="stamp">{COURSE.elevation}</span>
-            </div>
-            <CourseProfile />
-            <p className="mt-6 max-w-[46ch] text-[15px] leading-relaxed">
-              The loop is not flat. It runs downhill to the turnaround and back up the whole
-              way home, so every single loop ends on the climb — with the bell already in
-              earshot. Nineteen metres is nothing in the first yard and something else
-              entirely in the thirtieth.
-            </p>
-          </Reveal>
-
-          <div className="mt-20 grid gap-x-16 gap-y-14 lg:grid-cols-2">
+          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
             <Reveal>
               <p className="stamp mb-6">The two crossings</p>
               <ol className="border-t rule">
@@ -90,20 +75,6 @@ export default function CoursePage() {
             </Reveal>
           </div>
 
-          <Reveal>
-            <div className="mt-16 border rule">
-              <iframe
-                title="Course map, Baar"
-                className="h-[440px] w-full"
-                loading="lazy"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${COURSE_BBOX.join("%2C")}&layer=mapnik&marker=${COURSE_START.lat}%2C${COURSE_START.lon}`}
-              />
-            </div>
-            <p className="mt-4 text-xs" style={{ color: "var(--byd-mute)" }}>
-              Start and finish at {COURSE.start}, marked. Map data OpenStreetMap. The
-              loop above is Doron De Wolf&rsquo;s GPX of one recorded loop.
-            </p>
-          </Reveal>
         </div>
       </section>
     </>
