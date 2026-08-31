@@ -62,14 +62,14 @@ function Hero() {
 
           <div className="mt-7 grid max-w-md grid-cols-2 gap-px sm:mt-9 sm:inline-grid">
             <Link
-              href="/backyard/live"
+              href="/live"
               className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:px-6 sm:text-[13px]"
               style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
             >
               Live scoring
             </Link>
             <Link
-              href="/backyard/squad"
+              href="/squad"
               className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:px-6 sm:text-[13px] rule"
             >
               The squad
@@ -98,7 +98,7 @@ function Format() {
     {
       n: "6706",
       u: "Metres",
-      t: "The loop. Out and back along the Lorze, gravel and concrete, about 30 metres of climb. The same one every time.",
+      t: "The loop. Out and back along the Lorze, gravel and concrete, 19 metres down and 19 back up. The same one every time.",
     },
     {
       n: "60",
@@ -190,7 +190,7 @@ function Squad() {
             ))}
           </div>
         </div>
-        <Link href="/backyard/squad" className="stamp mt-8 inline-block underline underline-offset-4">
+        <Link href="/squad" className="stamp mt-8 inline-block underline underline-offset-4">
           Full squad with personal bests →
         </Link>
       </Reveal>
@@ -246,7 +246,7 @@ function Rules() {
               </li>
             ))}
           </ol>
-          <Link href="/backyard/rules" className="stamp mt-8 inline-block underline underline-offset-4">
+          <Link href="/rules" className="stamp mt-8 inline-block underline underline-offset-4">
             All rules →
           </Link>
         </Reveal>
@@ -341,7 +341,7 @@ function RaceDay() {
               </div>
             ))}
           </dl>
-          <Link href="/backyard/course" className="stamp mt-8 inline-block underline underline-offset-4">
+          <Link href="/course" className="stamp mt-8 inline-block underline underline-offset-4">
             Course detail →
           </Link>
         </Reveal>
@@ -354,8 +354,8 @@ function RaceDay() {
             timing feed. Both already run on the real 2024 data.
           </p>
           <div className="mt-8 border-t rule">
-            <RaceLink href="/backyard/live" label="Live scoring" note="Team Switzerland, loop by loop" />
-            <RaceLink href="/backyard/world" label="World standings" note="All nations with a public feed" />
+            <RaceLink href="/live" label="Live scoring" note="Team Switzerland, loop by loop" />
+            <RaceLink href="/world" label="World standings" note="All nations with a public feed" />
             {RACE_DAY.timing && (
               <RaceLink href={RACE_DAY.timing} label="Official timing" note="race|result, Baar 2026" external />
             )}

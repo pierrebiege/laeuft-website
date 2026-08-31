@@ -55,6 +55,12 @@ export default function CoursePage() {
               <span className="stamp">{COURSE.elevation}</span>
             </div>
             <CourseProfile />
+            <p className="mt-6 max-w-[46ch] text-[15px] leading-relaxed">
+              The loop is not flat. It runs downhill to the turnaround and back up the whole
+              way home, so every single loop ends on the climb — with the bell already in
+              earshot. Nineteen metres is nothing in the first yard and something else
+              entirely in the thirtieth.
+            </p>
           </Reveal>
 
           <div className="mt-20 grid gap-x-16 gap-y-14 lg:grid-cols-2">

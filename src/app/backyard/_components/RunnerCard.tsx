@@ -1,4 +1,4 @@
-import { PHOTO_BASE, slug, pastResults, type Athlete } from "@/app/backyard/_data/event";
+import { PHOTO_BASE, type Athlete } from "@/app/backyard/_data/event";
 
 /**
  * Eine Läuferkarte. Oben das Porträt, unten Name und Zahl.
@@ -8,7 +8,10 @@ import { PHOTO_BASE, slug, pastResults, type Athlete } from "@/app/backyard/_dat
 export default function RunnerCard({ a, compact = false }: { a: Athlete; compact?: boolean }) {
   const src = a.photo ? `${PHOTO_BASE}/${a.photo}.jpg` : null;
   const initials = `${a.first[0]}${a.name[0]}`;
-  const past = pastResults(a);
+  // Bei den meisten ist die Bestleistung die Qualifikationsleistung. Dann
+  // steht dieselbe Zahl zweimal da und sagt nichts – sie tritt zurück.
+  // Wer darüber liegt, ist damit die interessante Ausnahme.
+  const beyond = a.pb > a.qual;
 
   return (
     <article className="flex h-full flex-col border-l rule" style={{ opacity: a.status === "reserve" ? 0.55 : 1 }}>
@@ -57,16 +60,22 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
             {a.role ? ` · ${a.role}` : ""}
           </p>
         </div>
-        <div className="mt-4 flex items-end justify-between border-t pt-3 rule">
-          <div>
-            <p className="stamp">Qualifying</p>
-            <p className={`display tnum mt-1 leading-none ${compact ? "text-2xl" : "text-3xl"}`}>{a.qual}</p>
-          </div>
-          <div className="text-right">
-            <p className="stamp">{past.length ? "Team champs" : "Debut"}</p>
-            <p className="mt-1 font-mono text-[11px] tnum" style={{ color: "var(--byd-mute)" }}>
-              {past.length ? past.map((r) => `${compact ? String(r.year).slice(2) : r.year}: ${r.laps}`).join(" · ") : "—"}
-            </p>
+        <div className="mt-4 border-t pt-3 rule">
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="stamp">Qualifying</p>
+              <p className={`display tnum mt-1 leading-none ${compact ? "text-2xl" : "text-3xl"}`}>{a.qual}</p>
+            </div>
+            <div className="text-right">
+              <p className="stamp">{compact ? "Best" : "Personal best"}</p>
+              <p
+                className={`display tnum mt-1 leading-none ${compact ? "text-2xl" : "text-3xl"}`}
+                style={beyond ? undefined : { color: "var(--byd-mute)" }}
+                title={beyond ? "Career best, set outside the qualifying window" : "Career best, set in qualifying"}
+              >
+                {a.pb}
+              </p>
+            </div>
           </div>
         </div>
       </div>

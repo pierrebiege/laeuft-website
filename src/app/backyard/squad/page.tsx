@@ -94,8 +94,10 @@ export default function SquadPage() {
           </div>
 
           <p className="mt-5 text-xs" style={{ color: "var(--byd-mute)" }}>
-            Where Best is higher than Qual, the runner&rsquo;s best race was before the
-            qualifying window. Team championship loop counts from the 2020, 2022 and 2024 Swiss results.
+            Qual is the best loop count inside the qualifying window, 16 August 2024 to
+            15 August 2026 — that is what selects the team. Best is the runner&rsquo;s career
+            best; where it is higher, that race fell outside the window. Team championship
+            loop counts from the 2020, 2022 and 2024 Swiss results.
           </p>
         </div>
       </section>

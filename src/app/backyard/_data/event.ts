@@ -27,7 +27,12 @@ export type Athlete = {
   photo?: string;
   /** beste Rundenzahl im Qualifikationsfenster 16.08.2024 – 15.08.2026 */
   qual: number;
-  /** persönliche Bestleistung in Runden */
+  /**
+   * Persönliche Bestleistung in Runden, über die ganze Laufbahn.
+   * Muss mindestens so hoch sein wie `qual` und wie jedes Resultat in
+   * WTC_RESULTS – sonst stimmt die Zahl nicht. Steht sie gleich `qual`,
+   * ist die Bestleistung im Qualifikationsfenster gefallen.
+   */
   pb: number;
   role?: string;
 };
@@ -40,7 +45,7 @@ export type Athlete = {
  */
 export const TEAM: Athlete[] = [
   { pos: 1, first: "Nima", name: "Javaheri", status: "silver", qual: 59, pb: 59, role: "Team Captain", photo: "javaheri" },
-  { pos: 2, first: "Matteo", name: "Tenchio", status: "atlarge", qual: 58, pb: 61, photo: "tenchio" },
+  { pos: 2, first: "Matteo", name: "Tenchio", status: "atlarge", qual: 58, pb: 62, photo: "tenchio" },
   { pos: 3, first: "Ismael", name: "Röthlisberger", status: "atlarge", qual: 40, pb: 40, photo: "roethlisberger" },
   { pos: 4, first: "Marc", name: "Schneider", status: "atlarge", qual: 40, pb: 40, photo: "schneider" },
   { pos: 5, first: "Nicolas", name: "Lehmann", status: "atlarge", qual: 38, pb: 38 },
@@ -48,11 +53,11 @@ export const TEAM: Athlete[] = [
   { pos: 7, first: "Mona", name: "Winter", status: "atlarge", qual: 35, pb: 35, photo: "winter" },
   { pos: 8, first: "Doron", name: "De Wolf", status: "atlarge", qual: 33, pb: 33, photo: "dewolf" },
   { pos: 9, first: "Pierre", name: "Biege", status: "atlarge", qual: 33, pb: 33, photo: "biege" },
-  { pos: 10, first: "Julian", name: "Schneckenburger", status: "atlarge", qual: 32, pb: 32, photo: "schneckenburger" },
+  { pos: 10, first: "Julian", name: "Schneckenburger", status: "atlarge", qual: 32, pb: 33, photo: "schneckenburger" },
   { pos: 11, first: "Andrea", name: "Pestoni", status: "atlarge", qual: 32, pb: 32, photo: "pestoni" },
   { pos: 12, first: "Francois", name: "Gervaix", status: "atlarge", qual: 30, pb: 30, photo: "gervaix" },
   { pos: 13, first: "Daniel", name: "Schwitter", status: "atlarge", qual: 30, pb: 30, photo: "schwitter" },
-  { pos: 14, first: "Jörg", name: "Desteffani", status: "atlarge", qual: 30, pb: 30, photo: "desteffani" },
+  { pos: 14, first: "Jörg", name: "Desteffani", status: "atlarge", qual: 30, pb: 34, photo: "desteffani" },
   { pos: 15, first: "Sebastian", name: "Kopp", status: "atlarge", qual: 30, pb: 30, photo: "kopp" },
 ];
 
