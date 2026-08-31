@@ -81,8 +81,8 @@ export default function Partners() {
           <p className="stamp">Become a partner</p>
           <p className="max-w-xl text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             The team pays for this weekend itself. If your company wants in, write to{" "}
-            <a href="mailto:info@laeuft.ch" className="underline underline-offset-4">
-              info@laeuft.ch
+            <a href="mailto:pierre@laeuft.ch" className="underline underline-offset-4">
+              pierre@laeuft.ch
             </a>
             .
           </p>

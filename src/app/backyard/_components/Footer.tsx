@@ -48,8 +48,8 @@ export default function Footer() {
           Unofficial page, made by and for the team — not by the organisers. Live data
           comes from each nation&rsquo;s public race|result feed. Something wrong on here,
           or want to help on race day?{" "}
-          <a href="mailto:info@laeuft.ch" className="underline underline-offset-4">
-            info@laeuft.ch
+          <a href="mailto:pierre@laeuft.ch" className="underline underline-offset-4">
+            pierre@laeuft.ch
           </a>
           .
         </p>
