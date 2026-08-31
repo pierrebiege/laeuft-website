@@ -27,7 +27,7 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
             src={src}
             alt={`${a.first} ${a.name}`}
             className="absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "grayscale(1) contrast(1.06)" }}
+            style={{ filter: "grayscale(1) contrast(1.06)", objectPosition: "50% 28%" }}
             loading="lazy"
           />
         ) : (

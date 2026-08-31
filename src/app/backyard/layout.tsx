@@ -11,6 +11,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://swiss-backyardultra.ch"),
   title: {
     default: "Team Switzerland · Backyard Ultra World Team Championship 2026",
     template: "%s · Team Switzerland Backyard",
@@ -18,10 +19,19 @@ export const metadata: Metadata = {
   description:
     "Fifteen runners, one 6706 metre loop every hour, until nobody can. 17 October 2026, Baar ZG. Live loop count and world standings.",
   openGraph: {
-    title: "Team Switzerland · Backyard Ultra World Team Championship 2026",
-    description: "17 October 2026, 14:00, Baar ZG. One loop every hour.",
+    title: "One loop. Every hour. Until nobody can.",
+    description:
+      "Team Switzerland at the Backyard Ultra World Team Championship. Sat 17 October 2026, 14:00, Baar ZG — live loop count straight from the timing system.",
+    url: "https://swiss-backyardultra.ch",
+    siteName: "Team Switzerland Backyard",
     locale: "en",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "One loop. Every hour. Until nobody can.",
+    description:
+      "Team Switzerland at the Backyard Ultra World Team Championship. Sat 17 October 2026, 14:00, Baar ZG.",
   },
 };
 
