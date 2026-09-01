@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   description: "Scoring, backyard rules and what teamwork means at the team championship.",
 };
 
-const BLOCKS = [
+const BLOCKS: { stamp: string; title: string; items: readonly string[]; accent?: boolean; quoted?: boolean }[] = [
   { stamp: "Scoring", title: "One loop, one point.", items: RULES.scoring, accent: true },
-  { stamp: "Backyard", title: "The same everywhere in the world.", items: RULES.backyard },
+  { stamp: "Backyard", title: "The same everywhere in the world.", items: RULES.backyard, quoted: true },
   { stamp: "Teamwork", title: "Helping is allowed. Pacing is not.", items: RULES.teamwork },
 ];
 
@@ -37,6 +37,9 @@ export default function RulesPage() {
                   >
                     {b.title}
                   </h2>
+                  {b.quoted && (
+                    <p className="stamp mt-5">Quoted from Big&rsquo;s, word for word</p>
+                  )}
                 </div>
                 <ol>
                   {b.items.map((t, i) => (

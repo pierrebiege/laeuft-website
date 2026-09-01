@@ -166,6 +166,11 @@ export const RULES = {
     "The country with the most points wins.",
     "The longer we run with a full team, the more points we score.",
   ],
+  /**
+   * Wortlaut von Big's, unverändert – deshalb amerikanisches Englisch
+   * («restroom») mitten in einem sonst britischen Text. Das ist Absicht:
+   * an offiziellen Regeln formuliert man nicht herum, man zitiert sie.
+   */
   backyard: [
     "Participants must be inside the corral at the bell.",
     "All competitors must start at the bell. No late starts.",
@@ -175,11 +180,12 @@ export const RULES = {
     "No personal aid during a yard.",
     "Keeping lap times is optional.",
   ],
+  /** Aus dem Team-Briefing, ins Englische gebracht und geradegezogen. */
   teamwork: [
-    "When someone forgets their bib, remind them it is not important.",
-    "When someone can't continue, help them walk. We are allowed to help each other on the course, and each person completing one loop is one point.",
-    "When it appears someone gets paced, send the pacer away. Remind them the runner can get disqualified.",
-    "When someone forgets their headlamp, offer them to run with you or remind them they can use their phone.",
+    "If someone forgets their bib, tell them it does not matter.",
+    "If someone cannot go on, walk with them. Helping each other on the course is allowed, and every loop anyone finishes is a point.",
+    "If someone is being paced, send the pacer away — it gets the runner disqualified.",
+    "If someone forgets their headlamp, offer to run with them, or remind them their phone has a torch.",
   ],
 } as const;
 
@@ -190,7 +196,7 @@ export const COURSE = {
   elevation: "19 metres down, 19 metres back up",
   /** Meter ab Start, wie im Briefing beschrieben. Setzt die Marken im Grundriss. */
   crossings: [
-    { m: 450, short: "no zebra crossing, quiet street", text: "The first has no zebra crossing and is a less used street." },
+    { m: 450, short: "no zebra crossing, quiet street", text: "The first is a quiet side street with no zebra crossing." },
     { m: 1950, short: "just before 2 km, with an island", text: "The second is just before 2 km and has an island." },
   ],
   notes: [

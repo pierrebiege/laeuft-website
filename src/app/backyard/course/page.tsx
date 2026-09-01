@@ -25,7 +25,7 @@ export default function CoursePage() {
         hour="tag"
         stamp="Course · Vereinshaus SV Baar · Canton Zug"
         title={`${LOOP_M} metres, out and back.`}
-        lead="From the clubhouse along the Lorze to the turnaround and back. Shaded, hard underfoot — and tilted: down on the way out, up on the way home."
+        lead="From the clubhouse along the Lorze to the turnaround and back. Shaded, hard underfoot — and never flat: downhill on the way out, uphill all the way home."
       />
 
       <section data-hour="tag" data-stamp="Course" className="px-5">
