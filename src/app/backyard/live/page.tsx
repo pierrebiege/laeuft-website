@@ -15,7 +15,7 @@ export default function LivePage() {
         hour="nacht"
         stamp="Live · Baar ZG · Sat 17 October 2026, 14:00"
         title="Live scoring"
-        lead="One loop is one point, so the loop count is the score. It comes straight from the timing system and refreshes every thirty seconds. Until the 2026 race starts you can run the same board on the real data from 2024."
+        lead="One loop is one point, so the loop count is the score. It comes straight from the timing system and refreshes every thirty seconds. Further down you can write to the fifteen — the messages get read out at the tent."
       />
       <section data-hour="nacht" data-stamp="Live" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem]">

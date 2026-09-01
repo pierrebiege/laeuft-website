@@ -4,10 +4,15 @@
 export const LOOP_M = 6706;
 
 /**
- * Wo der Live-Feed liegt. In laeuft-website hängt die Route unter
- * /api/backyard/ – das Portierskript setzt den Pfad um.
+ * Wo die eigenen API-Routen liegen. In laeuft-website hängen sie unter
+ * /api/backyard/, hier unter /api/ – das Portierskript setzt den Pfad um.
+ *
+ * ⚠️ Jeder Aufruf muss über diese Konstante gehen. Ein hart geschriebener
+ * Pfad überlebt die Portierung nicht: genau so sind Live-Board und
+ * Weltstand am 31.08.2026 stillschweigend auf eine 404-Seite gelaufen.
  */
-export const FEED_API = "/api/backyard/feed";
+export const API_BASE = "/api/backyard";
+export const FEED_API = `${API_BASE}/feed`;
 
 export const EVENT = {
   name: "Backyard Ultra World Team Championship",

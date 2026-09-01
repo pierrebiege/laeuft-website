@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { API_BASE } from "@/app/backyard/_data/event";
 import type { NationLive } from "@/app/backyard/_lib/raceresult";
 
 type Year = "2026" | "2024";
@@ -25,7 +26,7 @@ export default function WorldBoard({ initialYear = "2026" }: { initialYear?: Yea
     if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/world?year=${year}`, { cache: "no-store" });
+      const res = await fetch(`${API_BASE}/world?year=${year}`, { cache: "no-store" });
       if (!res.ok) throw new Error(`Feed answered ${res.status}`);
       const json = (await res.json()) as Payload & { error?: string };
       if (json.error) throw new Error(json.error);

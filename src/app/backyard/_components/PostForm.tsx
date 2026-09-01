@@ -6,9 +6,12 @@ import { FEED_API } from "@/app/backyard/_data/event";
 const MAX = 240;
 
 /**
- * Das Schreibfeld. Der Schlüssel steht im Link (/post?key=…) und wird im
- * Browser behalten – am Renntag um vier Uhr morgens sucht niemand den Link
- * noch einmal heraus. Der Name ebenso.
+ * Das Schreibfeld. Offen für alle: wer anfeuern will, braucht nichts.
+ *
+ * Der Schlüssel aus /post?key=… ist optional und kennzeichnet die Crew –
+ * deren Meldungen von der Strecke stehen im selben Feed, aber als solche
+ * erkennbar. Er wird im Browser behalten, damit am Renntag um vier Uhr
+ * morgens niemand den Link noch einmal heraussuchen muss. Der Name auch.
  */
 export default function PostForm() {
   const [key, setKey] = useState<string | null>(null);
@@ -16,6 +19,8 @@ export default function PostForm() {
   const [body, setBody] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
+  /** Honigtopf: unsichtbar, und wenn hier etwas steht, war es kein Mensch. */
+  const [website, setWebsite] = useState("");
 
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get("key");
@@ -40,7 +45,7 @@ export default function PostForm() {
       const res = await fetch(FEED_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, author, body }),
+        body: JSON.stringify({ key: key ?? undefined, author, body, website }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Could not send.");
@@ -54,16 +59,10 @@ export default function PostForm() {
     }
   };
 
-  if (key === null) {
-    return (
-      <p className="mt-10 border-t pt-8 text-[15px] leading-relaxed rule">
-        You need the link with the key. Ask someone in the crew for it.
-      </p>
-    );
-  }
-
   return (
     <form onSubmit={send} className="mt-10 border-t pt-8 rule">
+      {key && <p className="stamp mb-6" style={{ color: "var(--byd-accent)" }}>Crew — your posts are marked as from the course</p>}
+
       <label className="stamp block">Your name</label>
       <input
         value={author}
@@ -75,7 +74,17 @@ export default function PostForm() {
         style={{ color: "var(--byd-fg)" }}
       />
 
-      <label className="stamp mt-8 block">What is happening</label>
+      {/* Für Menschen unsichtbar, für einfache Skripte verlockend. */}
+      <input
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1 }}
+      />
+
+      <label className="stamp mt-8 block">{key ? "What is happening" : "Your message"}</label>
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value.slice(0, MAX))}
@@ -95,7 +104,7 @@ export default function PostForm() {
         className="mt-8 w-full border px-6 py-4 text-[13px] font-semibold uppercase tracking-[0.08em] disabled:opacity-40"
         style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
       >
-        {state === "sending" ? "Sending…" : state === "sent" ? "It is up" : "Post it"}
+        {state === "sending" ? "Sending…" : state === "sent" ? "It is up — thank you" : "Send it"}
       </button>
     </form>
   );

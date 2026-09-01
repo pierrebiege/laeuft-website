@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { FEED_API } from "@/app/backyard/_data/event";
 
-type Post = { id: string; created_at: string; author: string; body: string; kind: "human" | "auto" };
+type Post = { id: string; created_at: string; author: string; body: string; kind: "cheer" | "crew" | "human" | "auto" };
 
 const since = (iso: string) => {
   const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -14,11 +15,11 @@ const since = (iso: string) => {
 };
 
 /**
- * Was die Leute vor Ort schreiben. Die Crew, das Team, wer den Link hat.
+ * Der Feed: Zurufe von aussen und Meldungen von der Strecke in einer
+ * Spalte. Die Crew liest ihn im Zelt vor – das war die Idee dahinter.
  *
- * Bewusst roh gehalten: Klartext, keine anklickbaren Links, keine Bilder.
- * Ein Feed, in den jeder mit dem Link schreiben kann, ist sonst innert
- * Stunden voll mit Werbung.
+ * Bewusst roh: Klartext, keine anklickbaren Links, keine Bilder. Ein offener
+ * Feed ist sonst innert Tagen voll mit Werbung.
  */
 export default function LiveFeed() {
   const [posts, setPosts] = useState<Post[] | null>(null);
@@ -73,9 +74,17 @@ export default function LiveFeed() {
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b pb-4 rule">
-        <span className="stamp">From the course</span>
+        <span className="stamp">
+          Messages{posts.length > 0 ? ` · ${posts.length}` : ""}
+        </span>
         <span className="stamp flex items-center gap-4">
-          {open ? "Crew, team and whoever has the link" : "Closed"}
+          {open ? (
+            <Link href="/post" className="underline underline-offset-4" style={{ color: "var(--byd-accent)" }}>
+              Write to them →
+            </Link>
+          ) : (
+            "Closed"
+          )}
           {adminKey && (
             <button
               onClick={() => moderate({ open: !open })}
@@ -90,16 +99,16 @@ export default function LiveFeed() {
 
       {posts.length === 0 ? (
         <p className="py-8 text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Nothing yet. On race day this fills up with whatever the crew shouts across
-          the tent.
+          Nothing yet. Be the first — it gets read out at the tent.
         </p>
       ) : (
         <ol>
           {posts.map((p) => (
             <li key={p.id} className="border-b py-5 rule">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <span className="stamp" style={p.kind === "auto" ? { color: "var(--byd-accent)" } : undefined}>
+                <span className="stamp" style={p.kind !== "cheer" ? { color: "var(--byd-accent)" } : undefined}>
                   {p.kind === "auto" ? "Timing" : p.author}
+                  {p.kind === "crew" ? " · from the course" : ""}
                 </span>
                 <span className="stamp tnum flex items-center gap-4">
                   {since(p.created_at)}

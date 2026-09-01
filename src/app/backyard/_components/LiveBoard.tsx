@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import LapGrid from "./LapGrid";
-import { LOOP_M } from "@/app/backyard/_data/event";
+import { API_BASE, LOOP_M } from "@/app/backyard/_data/event";
 import type { NationLive } from "@/app/backyard/_lib/raceresult";
 
 type Year = "2026" | "2024";
@@ -17,7 +17,7 @@ export default function LiveBoard({ initialYear = "2026" }: { initialYear?: Year
   const load = useCallback(async () => {
     setData(null);
     try {
-      const res = await fetch(`/api/live?year=${year}&nation=ch`, { cache: "no-store" });
+      const res = await fetch(`${API_BASE}/live?year=${year}&nation=ch`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) {
         setPending(Boolean(json.pending));
