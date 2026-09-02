@@ -42,7 +42,7 @@ export default function CoursePage() {
       </section>
 
       {/* Die echte Runde, aus Dorons GPX – Scrollen läuft sie ab. */}
-      <section data-hour="tag" data-stamp="Course · the loop in its valley">
+      <section data-hour="tag" data-stamp="Course · the loop from above">
         <CourseTerrain />
       </section>
 

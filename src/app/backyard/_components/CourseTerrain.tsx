@@ -18,7 +18,7 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: 0,
     title: "The bell",
-    text: "Every hour, on the hour. Everyone still in the race starts together, whether they are fresh or finished.",
+    text: "Every hour, on the hour. Everyone still in the race starts together — the ones who feel good and the ones who do not.",
   },
   {
     m: COURSE.crossings[0].m,
@@ -155,7 +155,7 @@ export default function CourseTerrain() {
       <div className="sticky top-0 flex h-dvh flex-col justify-center px-5 pt-20 md:pt-0">
         <div className="mx-auto w-full max-w-[76rem]">
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <span className="stamp">The loop, in its valley</span>
+            <span className="stamp">The loop from above</span>
             <span className="stamp">{rev < outFrac ? "Out" : "Back"} · scroll to run it</span>
           </div>
 

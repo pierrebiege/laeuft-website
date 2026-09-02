@@ -14,7 +14,7 @@ export default function WorldPage() {
         hour="tief"
         stamp="World standings · every nation with a public feed"
         title="World standings"
-        lead="Every nation runs its own race at home and times it itself, all starting at the same second. The totals are normally only added up afterwards. This page adds up the ones that are readable while the race is still on."
+        lead="Every nation runs its own race at home and times it itself, all starting at the same second. The totals are normally only added up afterwards. This page adds up the feeds that can be read while the race is still on."
       />
       <section data-hour="tief" data-stamp="World standings" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem]">

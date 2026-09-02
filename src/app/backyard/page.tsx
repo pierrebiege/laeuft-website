@@ -145,7 +145,7 @@ function Format() {
 function Valley() {
   return (
     <>
-      <section data-hour="tag" data-stamp="The loop in its valley">
+      <section data-hour="tag" data-stamp="The loop from above">
         <CourseTerrain />
       </section>
       <section data-hour="tag" className="px-5 pb-24">
@@ -165,7 +165,7 @@ function Satellite() {
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-2">
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">
-            Everyone started at the same second.
+            Everyone starts at the same second.
           </h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             The world team championship is a satellite race. Every nation runs it at
@@ -177,8 +177,8 @@ function Satellite() {
         <Reveal>
           <p className="stamp mb-6">What that means for this page</p>
           <p className="max-w-md text-[15px] leading-relaxed">
-            Every nation that publishes its timing feed can be read while the race is
-            still on. So we pull them together and add them up ourselves, live. Not
+            Where a nation publishes its timing feed, the numbers can be read while the
+            race is still on. So we pull them together and add them up ourselves, live. Not
             every nation publishes one — a missing country is not a statement.
           </p>
           <Link href="/world" className="stamp mt-8 inline-block underline underline-offset-4">
@@ -223,7 +223,7 @@ function Together() {
           <h2 className="display text-[2rem] sm:text-5xl">Nobody here runs for themselves.</h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             In a normal backyard you are on your own and everybody but one loses. Here
-            your loop is his loop: every loop any of the fifteen finishes is one point,
+            your loop counts for all of them: every loop any of the fifteen finishes is a point,
             and the points belong to the country. Somebody dropping out does not just
             end their race — it costs a point an hour for the rest of the weekend.
           </p>
@@ -380,7 +380,7 @@ function RaceDay() {
         </Reveal>
 
         <Reveal>
-          <p className="stamp mb-6">Come and stand there</p>
+          <p className="stamp mb-6">Come and watch</p>
           <p className="max-w-md text-[15px] leading-relaxed">
             Anyone can watch. It costs nothing, there is nothing to book, and the whole
             thing happens at {COURSE.start}. The bell goes on the hour, every hour —
