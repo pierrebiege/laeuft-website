@@ -7,6 +7,12 @@ import { useRaceClock, countdownText, pad } from "@/app/backyard/_lib/clock";
  * Die Uhr des Rennens, gezeichnet wie ein Zifferblatt auf Papier:
  * sechzig Striche, ein roter Bogen für die verstrichene Stunde.
  * Vor dem Start läuft sie rückwärts auf den Glockenschlag zu.
+ *
+ * Zwei Zeiger, beide nur im äusseren Ring: in der Mitte steht die Zahl,
+ * ein Zeiger von der Achse aus liefe mitten durch die Schrift. Der dünne
+ * rote springt jede Sekunde, die kräftige Marke steht auf der Minute der
+ * laufenden Stunde. Beide gehen vor dem Start genauso wie im Rennen –
+ * die Stunden sind ja schon auf den Glockenschlag ausgerichtet.
  */
 function Split({ text }: { text: string }) {
   const m = /^(\d+) D (.+)$/.exec(text);
@@ -48,6 +54,26 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
   const progress = c.ready && c.running ? c.intoHour / 3_600_000 : 0;
   const r = size / 2 - 16;
   const circ = 2 * Math.PI * r;
+  const cx = size / 2;
+
+  // Gerundet, weil Node und der Browser das letzte Bit von Math.cos
+  // verschieden schreiben – ungerundet meldet React eine Hydratationsdifferenz.
+  const px = (n: number) => Math.round(n * 1000) / 1000;
+
+  // Zeigerwinkel, gemessen wie die Striche: 0 ist rechts, das SVG ist um
+  // 90 Grad zurückgedreht, damit oben oben ist.
+  const hand = (fraction: number, from: number, to: number) => {
+    const a = fraction * 2 * Math.PI;
+    return {
+      x1: px(cx + Math.cos(a) * r * from),
+      y1: px(cx + Math.sin(a) * r * from),
+      x2: px(cx + Math.cos(a) * r * to),
+      y2: px(cx + Math.sin(a) * r * to),
+    };
+  };
+
+  const seconds = hand(Math.floor((c.intoHour % 60_000) / 1000) / 60, 0.6, 0.99);
+  const minutes = hand(Math.floor(c.intoHour / 60_000) / 60, 0.82, 1);
 
   return (
     <div className="relative mx-auto aspect-square" style={{ width: `min(${size}px, 66vw)` }}>
@@ -56,14 +82,13 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
           const a = (i / 60) * 2 * Math.PI;
           const major = i % 5 === 0;
           const inner = r - (major ? 14 : 7);
-          const cx = size / 2;
           return (
             <line
               key={i}
-              x1={cx + Math.cos(a) * inner}
-              y1={cx + Math.sin(a) * inner}
-              x2={cx + Math.cos(a) * r}
-              y2={cx + Math.sin(a) * r}
+              x1={px(cx + Math.cos(a) * inner)}
+              y1={px(cx + Math.sin(a) * inner)}
+              x2={px(cx + Math.cos(a) * r)}
+              y2={px(cx + Math.sin(a) * r)}
               stroke="currentColor"
               strokeWidth={major ? 1.6 : 0.8}
               opacity={i / 60 <= progress ? 0.9 : 0.28}
@@ -81,6 +106,24 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
           strokeDashoffset={circ * (1 - progress)}
           style={{ transition: "stroke-dashoffset 240ms linear" }}
         />
+
+        {c.ready && (
+          <>
+            <line
+              {...minutes}
+              stroke="currentColor"
+              strokeWidth={3}
+              strokeLinecap="butt"
+              opacity={0.85}
+            />
+            <line
+              {...seconds}
+              stroke="var(--byd-accent)"
+              strokeWidth={1.25}
+              strokeLinecap="round"
+            />
+          </>
+        )}
       </svg>
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">

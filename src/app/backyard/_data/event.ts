@@ -83,6 +83,9 @@ export const RESERVE: Athlete[] = [];
  */
 export const PHOTO_BASE = "/backyard/squad";
 
+/** Teambilder vom X-Bionic-Tag. Liegen unter public/team/. */
+export const TEAM_PHOTOS = "/backyard/team";
+
 /**
  * Team-Schweiz-Einzelresultate der bisherigen Team-WMs, aus dem Briefing
  * (Folie «Individual Goal»). Nachname, Runden.

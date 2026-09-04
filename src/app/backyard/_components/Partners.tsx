@@ -1,4 +1,5 @@
 import { PARTNERS, LOGO_BASE } from "@/app/backyard/_data/event";
+import Photo from "./Photo";
 
 /**
  * Der Hauptsponsor bekommt eine richtige Sektion: Logo in Originalfarben
@@ -55,6 +56,15 @@ export default function Partners() {
             )}
           </div>
         </div>
+
+        <Photo
+          className="mt-16"
+          src="x-bionic-day.jpg"
+          width={1200}
+          height={800}
+          alt="The squad at the X-Bionic showroom during the kit handover"
+          caption="Kit handover at X-Bionic"
+        />
 
         {rest.length > 0 && (
           <div className="mt-16 grid gap-px border-y sm:grid-cols-3 lg:grid-cols-4 rule">

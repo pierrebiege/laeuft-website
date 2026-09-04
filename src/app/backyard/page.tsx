@@ -8,6 +8,7 @@ import CourseTerrain from "@/app/backyard/_components/CourseTerrain";
 import OnPaper from "@/app/backyard/_components/OnPaper";
 import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
+import Photo from "@/app/backyard/_components/Photo";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
 
 /**
@@ -241,6 +242,17 @@ function Together() {
           </Link>
         </Reveal>
       </div>
+
+      <Reveal>
+        <Photo
+          className="mt-16"
+          src="on-the-loop.jpg"
+          width={1200}
+          height={720}
+          alt="Six runners of the squad on a gravel path in the woods"
+          caption="Out on a run together, in the race kit"
+        />
+      </Reveal>
     </Section>
   );
 }
@@ -277,6 +289,17 @@ function Squad() {
           ))}
         </Rail>
       </div>
+
+      <Reveal>
+        <Photo
+          className="mt-14"
+          src="squad-together.jpg"
+          width={1600}
+          height={739}
+          alt="The Team Switzerland squad together in their race kit"
+          caption="The squad at the X-Bionic team day"
+        />
+      </Reveal>
 
       <Reveal>
         <Link href="/squad" className="stamp mt-14 inline-block underline underline-offset-4">
@@ -362,6 +385,9 @@ function PastResults() {
   );
 }
 
+/** Satzanfang kleinschreiben, ohne Eigennamen wie «Lorze» mitzunehmen. */
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+
 function RaceDay() {
   return (
     <Section hour="tag" stamp="Race day">
@@ -369,8 +395,7 @@ function RaceDay() {
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Baar, along the Lorze.</h2>
           <p className="mt-8 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            {COURSE.start}, {COURSE.shape.toLowerCase()}. {COURSE.surface.toLowerCase()},
-            mostly shaded.
+            {COURSE.start}, {lower(COURSE.shape)}. {lower(COURSE.surface)}, mostly shaded.
           </p>
           <Link href="/course" className="stamp mt-8 inline-block underline underline-offset-4">
             The course in detail →
