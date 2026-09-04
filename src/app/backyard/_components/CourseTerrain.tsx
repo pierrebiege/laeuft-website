@@ -18,7 +18,7 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: 0,
     title: "The bell",
-    text: "Every hour, on the hour. Everyone still in the race starts together — the ones who feel good and the ones who do not.",
+    text: "Every hour, on the hour. Everyone still in the race starts again.",
   },
   {
     m: COURSE.crossings[0].m,
@@ -28,12 +28,12 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: COURSE.crossings[1].m,
     title: "Second crossing",
-    text: "Just before 2 km, with an island in the middle. From here the gravel runs along the Lorze and the trees close over the path.",
+    text: "Just before 2 km, with an island in the middle. From here the gravel runs along the Lorze and the trees give cover.",
   },
   {
     m: COURSE_TURN[2],
     title: "Turnaround",
-    text: "3.3 km out and 19 metres lower than the clubhouse. Everything from this cone onwards is uphill.",
+    text: "3.3 km out and 19 metres lower than the clubhouse. Everything from this point onwards is uphill.",
   },
   {
     m: 5600,
