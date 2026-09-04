@@ -29,9 +29,9 @@ export default function OG() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", fontSize: 82, fontWeight: 700, letterSpacing: -3, lineHeight: 1.03 }}>
-          <div>One loop.</div>
-          <div style={{ color: "#8b8b96" }}>Every hour.</div>
-          <div>Until nobody can.</div>
+          <div>Last one standing.</div>
+          <div style={{ color: "#8b8b96" }}>One loop.</div>
+          <div>Every hour.</div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, color: "#8b8b96" }}>

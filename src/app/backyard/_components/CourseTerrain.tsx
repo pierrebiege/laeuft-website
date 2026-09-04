@@ -38,7 +38,7 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: 5600,
     title: "The way back",
-    text: "The climb home, with the bell already in earshot. Whatever is left of the hour is the rest — and then it rings again.",
+    text: "The climb home, with the bell already in earshot. Whatever is left of the hour is the rest — and then it is the same again on the next hour.",
   },
 ];
 

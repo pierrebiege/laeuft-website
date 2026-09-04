@@ -22,7 +22,7 @@ export default function OnPaper() {
           Add up the fifteen qualifying results and you get {sumQual} loops. The 2024 team
           scored {last}. At every one of the fifteen positions, this year&rsquo;s qualifying
           number is equal to or higher than the 2024 result at the same position.
-          A qualifying result is not a race day. It is still the only evidence there is.
+          A qualifying result is not a race day, but it is an indication of our potential.
         </p>
       </Reveal>
 

@@ -56,15 +56,15 @@ function Hero() {
           </div>
 
           <h1 className="display text-[2.05rem] leading-[0.92] sm:text-[3.6rem] lg:text-[4.8rem]">
+            <span style={{ color: "var(--byd-accent)" }}>Last one standing.</span>
+            <br />
             One loop.
             <br />
             Every hour.
-            <br />
-            <span style={{ color: "var(--byd-accent)" }}>Until nobody can.</span>
           </h1>
 
           <p className="mt-6 max-w-md text-sm leading-relaxed sm:mt-8 sm:text-[15px]" style={{ color: "var(--byd-mute)" }}>
-            {TEAM.length} runners for Switzerland, {LOOP_M} metres, on the hour. Not in the
+            {TEAM.length} runners for Switzerland, {LOOP_M} metres, every hour. Not in the
             corral at the bell and you are out. Loop not finished inside sixty
             minutes and you are out. The country with the most completed loops wins.
           </p>
@@ -105,17 +105,17 @@ function Format() {
     {
       n: String(LOOP_M),
       u: "Metres",
-      t: `The loop. Out from the clubhouse along the Lorze, round the cone at 3.3 km and back the same way. ${COURSE.surface}, ${COURSE.elevation}. The same one every time.`,
+      t: `The loop. Out from the clubhouse along the Lorze, round the cone at 3.3 km and back the same way. ${COURSE.surface}, ${COURSE.elevation}. The same loop every hour.`,
     },
     {
       n: "60",
       u: "Minutes",
-      t: "That is all there is. Run the loop in fifty and you get ten minutes to eat, change and sit down.",
+      t: "That is all there is. Run the loop in less and you get time to eat, change, sleep and recover.",
     },
     {
       n: "15",
       u: "Runners",
-      t: "No categories, no age groups, no separate fields. Everyone starts the same loop at the same second.",
+      t: "No categories, no age groups, no separate fields. Every country starts fifteen runners at the same time, wherever in the world they are.",
     },
   ];
 
@@ -169,9 +169,8 @@ function Satellite() {
           </h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             The world team championship is a satellite race. Every nation runs it at
-            home, on its own loop, and the clocks start together. Nobody sees anybody
-            else run. Each nation times its own race, and the totals are normally only
-            added up afterwards.
+            the same time, in its own yard. Nobody sees anybody else run. Each nation
+            times its own race and its results go into a shared sheet as they come in.
           </p>
         </Reveal>
         <Reveal>
@@ -225,17 +224,17 @@ function Together() {
             In a normal backyard you are on your own and everybody but one loses. Here
             your loop counts for all of them: every loop any of the fifteen finishes is a point,
             and the points belong to the country. Somebody dropping out does not just
-            end their race — it costs a point an hour for the rest of the weekend.
+            end their race — it costs a point an hour for the rest of the race.
           </p>
         </Reveal>
         <Reveal>
           <p className="stamp mb-6">So this is allowed, and this is not</p>
           <ul className="border-t rule">
             <li className="border-b py-4 text-[15px] leading-relaxed rule">
-              Walking the last kilometre next to someone who is falling apart. Allowed.
+              Walking the last kilometre next to a team mate who is suffering. Allowed.
             </li>
             <li className="border-b py-4 text-[15px] leading-relaxed rule">
-              Running a loop as somebody&rsquo;s pacer. Not allowed — it disqualifies them.
+              An outsider pacing someone from the team. Not allowed — they get disqualified.
             </li>
           </ul>
           <Link href="/rules" className="stamp mt-8 inline-block underline underline-offset-4">
@@ -382,11 +381,11 @@ function RaceDay() {
         <Reveal>
           <p className="stamp mb-6">Come and watch</p>
           <p className="max-w-md text-[15px] leading-relaxed">
-            Anyone can watch. It costs nothing, there is nothing to book, and the whole
-            thing happens at {COURSE.start}. The bell goes on the hour, every hour —
-            that is the minute worth being there for, and it comes back until the race
-            is over. Saturday evening is when it gets good. Sunday morning is when it
-            gets serious.
+            Come and cheer the team on — every voice at the corral helps. It costs
+            nothing, there is nothing to book, and the whole thing happens at{" "}
+            {COURSE.start}. The bell goes every hour, and that is the minute worth
+            being there for. Saturday evening is when it gets good. Sunday morning is
+            when it gets serious.
           </p>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             Loop counts on this page come straight from the timing system in Baar and

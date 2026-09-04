@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     template: "%s · Team Switzerland Backyard",
   },
   description:
-    "Fifteen runners, one 6706 metre loop every hour, until nobody can. 17 October 2026, Baar ZG. Live loop count and world standings.",
+    "Fifteen runners, one 6706 metre loop every hour, last one standing. 17 October 2026, Baar ZG. Live loop count and world standings.",
   openGraph: {
-    title: "One loop. Every hour. Until nobody can.",
+    title: "Last one standing. One loop. Every hour.",
     description:
       "Team Switzerland at the Backyard Ultra World Team Championship. Sat 17 October 2026, 14:00, Baar ZG — live loop count straight from the timing system.",
     url: "https://swiss-backyardultra.ch",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "One loop. Every hour. Until nobody can.",
+    title: "Last one standing. One loop. Every hour.",
     description:
       "Team Switzerland at the Backyard Ultra World Team Championship. Sat 17 October 2026, 14:00, Baar ZG.",
   },
