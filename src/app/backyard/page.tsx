@@ -369,8 +369,8 @@ function RaceDay() {
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Baar, along the Lorze.</h2>
           <p className="mt-8 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            {COURSE.start}, {COURSE.shape.toLowerCase()}. Two road crossings, both on
-            the way out, both marshalled.
+            {COURSE.start}, {COURSE.shape.toLowerCase()}. {COURSE.surface.toLowerCase()},
+            mostly shaded.
           </p>
           <Link href="/course" className="stamp mt-8 inline-block underline underline-offset-4">
             The course in detail →
@@ -380,8 +380,9 @@ function RaceDay() {
         <Reveal>
           <p className="stamp mb-6">Come and watch</p>
           <p className="max-w-md text-[15px] leading-relaxed">
-            Come and cheer the team on, we need any support we can get. Saturday
-            evening is when it gets good. Sunday morning is when it gets serious.
+            Come and cheer the team on, we need any support we can get. The first
+            twenty-four hours are just the warm-up — drop in whenever it suits you,
+            day or night.
           </p>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             Loop counts on this page come straight from the timing system in Baar and
