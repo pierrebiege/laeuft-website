@@ -23,7 +23,7 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: COURSE.crossings[0].m,
     title: "First crossing",
-    text: "A quiet street with no zebra crossing. You look, then you go — at four in the morning as much as at two in the afternoon.",
+    text: "A quiet street with no zebra crossing.",
   },
   {
     m: COURSE.crossings[1].m,

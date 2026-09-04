@@ -115,7 +115,7 @@ function Format() {
     {
       n: "15",
       u: "Runners",
-      t: "No categories, no age groups, no separate fields. Every country starts fifteen runners at the same time, wherever in the world they are.",
+      t: "All countries start with 15 runners locally, at the same time, wherever they are in the world.",
     },
   ];
 
@@ -169,8 +169,8 @@ function Satellite() {
           </h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             The world team championship is a satellite race. Every nation runs it at
-            the same time, in its own yard. Nobody sees anybody else run. Each nation
-            times its own race and its results go into a shared sheet as they come in.
+            the same time, in its own yard. Nobody sees anybody else run, and each
+            nation times its own race.
           </p>
         </Reveal>
         <Reveal>
@@ -381,11 +381,8 @@ function RaceDay() {
         <Reveal>
           <p className="stamp mb-6">Come and watch</p>
           <p className="max-w-md text-[15px] leading-relaxed">
-            Come and cheer the team on — every voice at the corral helps. It costs
-            nothing, there is nothing to book, and the whole thing happens at{" "}
-            {COURSE.start}. The bell goes every hour, and that is the minute worth
-            being there for. Saturday evening is when it gets good. Sunday morning is
-            when it gets serious.
+            Come and cheer the team on, we need any support we can get. Saturday
+            evening is when it gets good. Sunday morning is when it gets serious.
           </p>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
             Loop counts on this page come straight from the timing system in Baar and
