@@ -58,7 +58,7 @@ export default function RulesPage() {
           <Reveal>
             <div className="border-y py-14 rule">
               <p className="display max-w-3xl text-[1.6rem] sm:text-3xl">
-                Nobody in this squad has run 48 hours. In 2024 all fifteen Belgians did.
+                In 2024 all fifteen Belgians went 48 hours. That is the mark to aim at.
               </p>
             </div>
           </Reveal>

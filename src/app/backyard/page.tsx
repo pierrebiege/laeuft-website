@@ -168,9 +168,9 @@ function Satellite() {
             Everyone starts at the same second.
           </h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            The world team championship is a satellite race. Every nation runs it at
-            the same time, in its own yard. Nobody sees anybody else run, and each
-            nation times its own race.
+            The world team championship is a satellite race. Nobody sees anybody else
+            run: every nation starts in its own yard, at the same time, and times its
+            own race.
           </p>
         </Reveal>
         <Reveal>
@@ -221,10 +221,9 @@ function Together() {
         <Reveal>
           <h2 className="display text-[2rem] sm:text-5xl">Nobody here runs for themselves.</h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-            In a normal backyard you are on your own and everybody but one loses. Here
-            your loop counts for all of them: every loop any of the fifteen finishes is a point,
-            and the points belong to the country. Somebody dropping out does not just
-            end their race — it costs a point an hour for the rest of the race.
+            In a normal backyard you are on your own, and only one runner wins. Here
+            your loop counts for all of them: every loop any of the fifteen finishes is
+            a point, and the points belong to the country.
           </p>
         </Reveal>
         <Reveal>
@@ -261,7 +260,7 @@ function Squad() {
     <Section hour="tag" stamp="The squad" wide>
       <Reveal>
         <h2 className="display max-w-2xl text-[2rem] sm:text-5xl">
-          Nobody in this squad has gone past {best} loops.
+          This squad has already run {best} loops.
         </h2>
         <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
           The number on each card is the runner&rsquo;s best loop count between 16 August
@@ -307,7 +306,7 @@ function PastResults() {
           {HISTORY.map((h) => `${h.year}: ${h.ch}.`).join(" ")}
         </h2>
         <p className="mt-6 max-w-lg text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Germany has finished ahead of Switzerland every time, Austria behind every time.
+          Switzerland has been ahead of Austria every time, and 2024 was the best year yet — 128 loops more than 2020.
         </p>
       </Reveal>
 
