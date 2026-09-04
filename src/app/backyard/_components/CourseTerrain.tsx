@@ -33,7 +33,7 @@ const ACTS: { m: number; title: string; text: string }[] = [
   {
     m: COURSE_TURN[2],
     title: "Turnaround",
-    text: "3.3 km out and 19 metres lower than the clubhouse. Everything from this point onwards is uphill.",
+    text: "3.3 km out and 19 metres lower than the clubhouse.",
   },
   {
     m: 5600,
