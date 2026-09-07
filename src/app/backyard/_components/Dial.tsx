@@ -72,7 +72,10 @@ export default function Dial({ startISO, size = 380 }: { startISO: string; size?
     };
   };
 
-  const seconds = hand(Math.floor((c.intoHour % 60_000) / 1000) / 60, 0.6, 0.99);
+  // Aufgerundet, nicht abgerundet: die Zahl in der Mitte zählt rückwärts,
+  // Zeiger und Zahl ergeben zusammen immer sechzig. Abgerundet stünde der
+  // Zeiger auf 59, während die Zahl schon :00 zeigt.
+  const seconds = hand(Math.ceil((c.intoHour % 60_000) / 1000) / 60, 0.6, 0.99);
   const minutes = hand(Math.floor(c.intoHour / 60_000) / 60, 0.82, 1);
 
   return (
