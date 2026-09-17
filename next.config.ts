@@ -2,6 +2,16 @@ import type { NextConfig } from "next";
 
 const TEAM_HOSTS = ["swiss-backyardultra.ch", "www.swiss-backyardultra.ch"];
 
+// Die eigene Domain des Community-Ultras. Sie liefert /brig-ultra aus, ohne
+// dass der Pfad je sichtbar wird — der Name der Seite ist die Adresse.
+const BRIG_HOSTS = ["50kmbrig.ch", "www.50kmbrig.ch"];
+
+// Auf true stellen, sobald 50kmbrig.ch im Vercel-Projekt hängt und die DNS
+// greift. Dann schickt laeuft.ch/brig-ultra alle alten Links auf die Domain,
+// und die Seite ist nur noch unter ihrem eigenen Namen zu sehen. Vorher muss
+// es false bleiben — sonst zeigt der Redirect ins Leere.
+const BRIG_DOMAIN_LIVE = false;
+
 const nextConfig: NextConfig = {
   async rewrites() {
     // Die Team-Domain liefert die Backyard-Seite selbst aus: jeder Pfad ohne
@@ -9,18 +19,28 @@ const nextConfig: NextConfig = {
     // beforeFiles, damit «/» auf der Team-Domain nicht die laeuft.ch-Startseite
     // trifft. /api bleibt unberührt, damit das Live-Board seine Daten holt.
     return {
-      beforeFiles: TEAM_HOSTS.flatMap((host) => [
-        {
+      beforeFiles: [
+        ...TEAM_HOSTS.flatMap((host) => [
+          {
+            source: "/",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/backyard",
+          },
+          {
+            source: "/:path((?!api/|backyard|_next/)[^.]+)",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/backyard/:path",
+          },
+        ]),
+        // 50kmbrig.ch: die Startseite ist die Eventseite. Die Seite hat nur
+        // eine URL, deshalb reicht die eine Regel — /api und /_next bleiben
+        // unberührt, damit das Anmeldeformular seine Route erreicht.
+        ...BRIG_HOSTS.map((host) => ({
           source: "/",
           has: [{ type: "host" as const, value: host }],
-          destination: "/backyard",
-        },
-        {
-          source: "/:path((?!api/|backyard|_next/)[^.]+)",
-          has: [{ type: "host" as const, value: host }],
-          destination: "/backyard/:path",
-        },
-      ]),
+          destination: "/brig-ultra",
+        })),
+      ],
     };
   },
   async redirects() {
@@ -57,7 +77,59 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
     ]);
-    return [...renamed, ...toTeam, ...strip];
+    // 50kmbrig.ch/anmelden ist die Adresse, die sich im Video sagen lässt.
+    // Sie springt auf derselben Seite zum Formular.
+    const anmeldung = [
+      ...BRIG_HOSTS.map((host) => ({
+        source: "/anmelden",
+        has: [{ type: "host" as const, value: host }],
+        destination: "/#anmelden",
+        permanent: false,
+      })),
+      // Auf der Domain soll der interne Pfad nicht erreichbar bleiben.
+      // Wie bei der Team-Domain sind das Vorschaubild und das Icon
+      // ausgenommen: Share-Scraper folgen Redirects auf og:image oft nicht.
+      ...BRIG_HOSTS.flatMap((host) => [
+        {
+          source: "/brig-ultra",
+          has: [{ type: "host" as const, value: host }],
+          destination: "/",
+          permanent: false,
+        },
+        {
+          source: "/brig-ultra/:pfad((?!opengraph-image|icon)[^.]+)",
+          has: [{ type: "host" as const, value: host }],
+          destination: "/",
+          permanent: false,
+        },
+      ]),
+      // Alte Links aus Chats und Stories.
+      {
+        source: "/brig-ultra/anmelden",
+        destination: BRIG_DOMAIN_LIVE ? "https://50kmbrig.ch/#anmelden" : "/brig-ultra#anmelden",
+        permanent: false,
+      },
+      // Sobald die Domain steht: laeuft.ch/brig-ultra gibt es nicht mehr,
+      // alles läuft über 50kmbrig.ch. Das Vorschaubild bleibt ausgenommen,
+      // damit geteilte Links in WhatsApp weiter ein Bild zeigen.
+      ...(BRIG_DOMAIN_LIVE
+        ? ["laeuft.ch", "www.laeuft.ch"].flatMap((host) => [
+            {
+              source: "/brig-ultra",
+              has: [{ type: "host" as const, value: host }],
+              destination: "https://50kmbrig.ch/",
+              permanent: false,
+            },
+            {
+              source: "/brig-ultra/:pfad((?!opengraph-image|icon)[^.]+)",
+              has: [{ type: "host" as const, value: host }],
+              destination: "https://50kmbrig.ch/",
+              permanent: false,
+            },
+          ])
+        : []),
+    ];
+    return [...renamed, ...toTeam, ...strip, ...anmeldung];
   },
   async headers() {
     const base = [
@@ -79,8 +151,14 @@ const nextConfig: NextConfig = {
         headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
       },
       {
+        // Die Entwurfsvorschau für Keller ImmoVermarktung zeigt Webseite,
+        // Bautafel und Posts in iframes derselben Herkunft.
+        source: "/keller/:pfad*",
+        headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
+      },
+      {
         // Rest der Seite: kein Framing erlaubt
-        source: "/((?!goms/scene\\.html|backyard/course/scene\\.html).*)",
+        source: "/((?!goms/scene\\.html|backyard/course/scene\\.html|keller/).*)",
         headers: [...base, { key: "X-Frame-Options", value: "DENY" }],
       },
     ];
