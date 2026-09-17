@@ -1,14 +1,33 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { EVENT } from "./event";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = `${EVENT.nameLaut} — ${EVENT.gattung}`;
+export const alt = `${EVENT.nameLaut} — ${EVENT.gattung}, ${EVENT.zeile}`;
 
-/* Das Vorschaubild für WhatsApp, Instagram und Google. Bewusst nur Typo:
-   der Name, das Datum, die Zahlen. Der Name ist gleichzeitig die Adresse —
-   wer das Bild sieht, weiss, was er tippen muss. */
-export default function OgImage() {
+/* Das Bild, das in WhatsApp, Signal, Instagram-DM und Google auftaucht.
+   Es benutzt Pierres eigenes Lettering und sein Foto, damit die Vorschau
+   genauso aussieht wie seine Story — wer den Link bekommt, erkennt den
+   Anlass, bevor er die Überschrift liest.
+
+   Die Dateien werden direkt vom Datenträger gelesen und als Data-URI
+   eingebettet: der Bildgenerator hat keinen Netzzugriff auf die eigene
+   Domain, solange die Seite noch gebaut wird. */
+
+async function dataUri(pfad: string, typ: string) {
+  const bytes = await readFile(join(process.cwd(), "public", "brig-ultra", pfad));
+  return `data:${typ};base64,${bytes.toString("base64")}`;
+}
+
+export default async function OgImage() {
+  const [foto, lockup, absender] = await Promise.all([
+    dataUri("brig-strasse-quer.jpg", "image/jpeg"),
+    dataUri("lockup-50km.png", "image/png"),
+    dataUri("lockup-pierre-x-stadtfitness.png", "image/png"),
+  ]);
+
   return new ImageResponse(
     (
       <div
@@ -16,57 +35,97 @@ export default function OgImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "#000000",
-          color: "#f7f4f1",
-          padding: "60px 72px",
+          position: "relative",
+          background: "#000",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 24, letterSpacing: 6, color: "rgba(247,244,241,0.6)" }}>
-          PIERRE × STADTFITNESS BRIG
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "baseline" }}>
-            <div style={{ display: "flex", fontSize: 168, fontWeight: 800, lineHeight: 1, letterSpacing: -8 }}>
-              50
-            </div>
-            <div style={{ display: "flex", fontSize: 62, fontWeight: 800, letterSpacing: -2, color: "#d07050" }}>
-              km
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 168,
-                fontWeight: 800,
-                lineHeight: 1,
-                letterSpacing: -8,
-                marginLeft: 28,
-              }}
-            >
-              BRIG
-            </div>
-          </div>
-          <div style={{ display: "flex", fontSize: 44, marginTop: 20, letterSpacing: -1 }}>
-            {EVENT.claim} <span style={{ color: "#d07050", marginLeft: 12 }}>{EVENT.claimZwei}</span>
-          </div>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={foto}
+          alt=""
+          width={1200}
+          height={630}
+          style={{ position: "absolute", inset: 0, width: 1200, height: 630, objectFit: "cover" }}
+        />
+        {/* Abdunklung, damit weisse Schrift auf jedem Bildteil hält.
+            Der Bildgenerator rechnet keine prozentualen Masse aus `inset` —
+            Breite und Höhe müssen in Pixeln dastehen, sonst fällt die Fläche
+            auf null zusammen und das Foto bleibt hell. */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 1200,
+            height: 630,
+            display: "flex",
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.95) 8%, rgba(0,0,0,0.82) 34%, rgba(0,0,0,0.55) 62%, rgba(0,0,0,0.45) 100%)",
+          }}
+        />
 
         <div
           style={{
+            position: "relative",
             display: "flex",
-            gap: 44,
-            fontSize: 28,
-            borderTop: "1px solid rgba(247,244,241,0.2)",
-            paddingTop: 26,
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%",
+            padding: "52px 60px",
           }}
         >
-          <div style={{ display: "flex" }}>{EVENT.datumKurz}</div>
-          <div style={{ display: "flex" }}>8–18 UHR</div>
-          <div style={{ display: "flex" }}>10 STUNDEN</div>
-          <div style={{ display: "flex", color: "#d07050" }}>KOSTENLOS</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={absender} alt="" width={340} height={23} style={{ width: 340, height: 23 }} />
+
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={lockup} alt="" width={720} height={296} style={{ width: 720, height: 296 }} />
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 22,
+                marginTop: 26,
+                fontSize: 30,
+                color: "#f5f3f0",
+                letterSpacing: 0.5,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  background: "#f5f3f0",
+                  color: "#000",
+                  fontSize: 30,
+                  fontWeight: 700,
+                  letterSpacing: 2,
+                  padding: "10px 20px",
+                }}
+              >
+                {EVENT.domain.toUpperCase()}
+              </div>
+              <div style={{ display: "flex" }}>{EVENT.zeile}</div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 30,
+                marginTop: 22,
+                fontSize: 24,
+                color: "rgba(245,243,240,0.8)",
+              }}
+            >
+              <div style={{ display: "flex" }}>20 Runden à 2,5 km</div>
+              <div style={{ display: "flex" }}>·</div>
+              <div style={{ display: "flex" }}>Eine Runde reicht</div>
+              <div style={{ display: "flex" }}>·</div>
+              <div style={{ display: "flex" }}>Kostenlos</div>
+            </div>
+          </div>
         </div>
       </div>
     ),

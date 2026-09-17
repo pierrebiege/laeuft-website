@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
-import { EVENT } from "./event";
+import { Anton, Archivo } from "next/font/google";
+import { EVENT, FOTO } from "./event";
 import "./brig-ultra.css";
 
 const archivo = Archivo({
@@ -9,46 +9,105 @@ const archivo = Archivo({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const beschreibung = `${EVENT.datumKurz} in ${EVENT.ort}: 50 Kilometer in zehn Stunden. Alle 30 Minuten eine Runde von 2,5 km, jede Stunde eine Challenge im Stadtfitness. Kostenlos, für alle — eine Runde reicht.`;
+/* Anton als Display-Schrift: schmal, fett, versal — dieselbe Familie von
+   Formen wie Pierres eigenes Lettering auf den Bildern. */
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
-/* Die Seite lebt auf der eigenen Domain. laeuft.ch/brig-ultra bleibt als
-   alter Link erreichbar, zeigt aber auf 50kmbrig.ch als Original. */
+const titel = `50 km Brig — Ultra Community Run am 4. Oktober 2026`;
+
+const beschreibung =
+  "50 km Brig am Sonntag, 4. Oktober 2026: 50 Kilometer in zehn Stunden, aufgeteilt auf 20 Runden à 2,5 km durch Brig. Alle 30 Minuten ein Start, dazwischen eine Challenge im Stadtfitness Brig. Kostenlos, ohne Lauferfahrung — eine Runde reicht. Jetzt gratis anmelden.";
+
+/* Die Seite lebt auf der eigenen Domain. */
 const HEIMAT = `https://${EVENT.domain}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(HEIMAT),
-  title: `${EVENT.nameLaut} — ${EVENT.gattung}`,
-  authors: [{ name: EVENT.absender }],
+  title: {
+    default: titel,
+    template: "%s · 50 km Brig",
+  },
   description: beschreibung,
+  applicationName: EVENT.nameLaut,
+  authors: [
+    { name: "Pierre Biege", url: "https://laeuft.ch" },
+    { name: "Stadtfitness Brig", url: "https://www.stadtfitness.ch" },
+  ],
+  creator: "Pierre Biege",
+  publisher: "Pierre Biege",
+  category: "Sport",
   keywords: [
     "50 km Brig",
-    "Ultramarathon Wallis",
+    "Ultra Community Run",
     "Laufevent Brig",
-    "Community Lauf Oberwallis",
+    "Laufevent Wallis",
+    "Ultramarathon Wallis",
+    "Ultralauf Oberwallis",
+    "Community Run Brig",
     "Stadtfitness Brig",
-    "erster Ultra",
+    "erster Ultramarathon",
+    "50 Kilometer laufen",
+    "Laufen Brig-Glis",
     "Pierre Biege",
+    "Natural Athletics Brig",
+    "Lauftreff Oberwallis",
+    "Event Brig Oktober 2026",
   ],
-  alternates: { canonical: "/" },
-  /* Solange Teilnehmerzahl und DRYLL-Stand nicht bestätigt sind, soll die
-     Seite nicht in der Suche auftauchen. Vor dem offiziellen Start diesen
-     Block löschen — dann indexiert Google sie normal. */
-  robots: { index: false, follow: false },
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: `${EVENT.nameLaut} — ${EVENT.claim} ${EVENT.claimZwei}`,
-    description: beschreibung,
+    type: "website",
+    locale: "de_CH",
     url: HEIMAT,
     siteName: EVENT.nameLaut,
-    locale: "de_CH",
-    type: "website",
+    title: `50 KM BRIG — Ultra Community Run · ${EVENT.datumKurz}`,
+    description: beschreibung,
+    images: [
+      {
+        url: "/brig-ultra/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `50 KM BRIG — Ultra Community Run, ${EVENT.zeile}`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${EVENT.nameLaut} — ${EVENT.gattung}`,
+    title: `50 KM BRIG — Ultra Community Run · ${EVENT.datumKurz}`,
     description: beschreibung,
+    images: ["/brig-ultra/opengraph-image"],
+  },
+  other: {
+    /* WhatsApp und Signal lesen diese beiden mit, wenn sie die Vorschau
+       bauen — ohne sie schneiden manche Clients den Titel hart ab. */
+    "og:image:type": "image/png",
+    "theme-color": "#000000",
   },
 };
 
 export default function BrigUltraLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`bru ${archivo.variable}`}>{children}</div>;
+  return (
+    <div className={`bru ${archivo.variable} ${anton.variable}`}>
+      {/* Das Hero-Foto ist das grösste Element der Seite und entscheidet über
+          den gefühlten Ladezeitpunkt. */}
+      <link rel="preload" as="image" href={FOTO.hero.src} fetchPriority="high" />
+      {children}
+    </div>
+  );
 }

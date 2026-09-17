@@ -32,14 +32,28 @@ const nextConfig: NextConfig = {
             destination: "/backyard/:path",
           },
         ]),
-        // 50kmbrig.ch: die Startseite ist die Eventseite. Die Seite hat nur
-        // eine URL, deshalb reicht die eine Regel — /api und /_next bleiben
-        // unberührt, damit das Anmeldeformular seine Route erreicht.
-        ...BRIG_HOSTS.map((host) => ({
-          source: "/",
-          has: [{ type: "host" as const, value: host }],
-          destination: "/brig-ultra",
-        })),
+        // 50kmbrig.ch: die Startseite ist die Eventseite. /api und /_next
+        // bleiben unberührt, damit das Anmeldeformular seine Route erreicht.
+        // robots.txt und sitemap.xml haben eigene Handler unterhalb von
+        // /brig-ultra — so bekommt die Domain ihre eigenen, ohne dass
+        // laeuft.ch welche aufgedrängt bekommt.
+        ...BRIG_HOSTS.flatMap((host) => [
+          {
+            source: "/",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/brig-ultra",
+          },
+          {
+            source: "/robots.txt",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/brig-ultra/robots",
+          },
+          {
+            source: "/sitemap.xml",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/brig-ultra/sitemap",
+          },
+        ]),
       ],
     };
   },

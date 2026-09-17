@@ -4,9 +4,13 @@ import { useState } from "react";
 import { EVENT, WAHL } from "./event";
 
 /* Die Anmeldung. Bewusst wenige Felder und kein Konto: Name, E-Mail, wie
-   lange, wie viele. Alles andere klärt sich vor Ort. Das Formular schickt an
-   /api/brig-ultra/anmeldung — die Route legt die Anmeldung in Supabase ab,
-   meldet sie Pierre und bestätigt dem Anmelder. */
+   lange. Das Formular schickt an /api/brig-ultra/anmeldung — die Route legt
+   die Anmeldung in Supabase ab, meldet sie Pierre und bestätigt dem Anmelder.
+
+   Jede Person meldet sich einzeln an. Es gibt bewusst kein «wir kommen zu
+   dritt»-Feld: eine Anmeldung ist eine Adresse, und die Adressen sind das,
+   was nach dem Tag übrig bleibt. Wer zu mehreren kommt, schreibt es ins
+   freie Feld. */
 
 const UMFANG = WAHL.map((w) => w.was);
 
@@ -44,11 +48,11 @@ export default function Anmeldung() {
         <h2>
           Sag einfach,
           <br />
-          <span className="cu">dass du kommst.</span>
+          dass du kommst.
         </h2>
         <p className="lead">
-          Kostenlos. Zwei Pflichtfelder. Eine Woche vorher bekommst du eine
-          Mail mit allem, was du wissen musst.
+          Kostenlos, zwei Felder. Eine Woche vorher bekommst du eine Mail mit
+          allem, was du wissen musst.
         </p>
 
         {status === "fertig" ? (
@@ -83,11 +87,6 @@ export default function Anmeldung() {
               </select>
             </label>
 
-            <label className="feld">
-              <span>Wie viele kommt ihr?</span>
-              <input type="number" name="anzahl" min={1} max={20} defaultValue={1} inputMode="numeric" />
-            </label>
-
             <label className="feld feld-breit">
               <span>
                 Etwas, das wir wissen sollten? <i>Freiwillig</i>
@@ -95,7 +94,7 @@ export default function Anmeldung() {
               <textarea
                 name="notiz"
                 rows={3}
-                placeholder="Erste Laufschuhe seit zehn Jahren, Kinderwagen dabei, komme erst am Mittag …"
+                placeholder="Komme zu zweit, Kinderwagen dabei, erste Laufschuhe seit zehn Jahren …"
               />
             </label>
 
@@ -112,8 +111,8 @@ export default function Anmeldung() {
                 {status === "sendet" ? "Moment …" : "Ich bin dabei"}
               </button>
               <p className="cta-note">
-                Kein Startgeld, keine Verpflichtung. Wenn du doch nicht kannst,
-                schreib an {EVENT.postfach}.
+                Kein Startgeld, keine Verpflichtung. Kommt ihr zu mehreren,
+                meldet sich jede Person einzeln an.
               </p>
             </div>
 

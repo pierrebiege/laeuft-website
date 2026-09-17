@@ -1,18 +1,22 @@
-/* Brig Ultra Challenge.
+/* 50 KM BRIG.
    Alles unter .bru gekapselt — der Rest von laeuft.ch bleibt unberührt.
 
-   Gestaltungsprinzip: schwarz, laut, wenig Text.
-   Die Seite soll nicht erklären, sondern ziehen. Deshalb tragen grosse
-   Zahlen und kurze Zeilen die Aussage, nicht Absätze. Kupfer ist die
-   Akzentfarbe, weil sie aus dem Logo des Stadtfitness kommt. */
+   Gestaltungsprinzip: Schwarz, Weiss, Fotos. Keine dritte Farbe.
+   Die Kupfernote des Stadtfitness ist bewusst raus — die Seite gehört
+   Pierre und dem Studio gemeinsam, also trägt keine der beiden Marken ihre
+   Hausfarbe hinein. Farbe kommt aus den Bildern.
+
+   Die Überschriften sind Anton, weil Pierres eigenes Lettering schmal,
+   fett und versalgesetzt ist. Wo er selbst gesetzt hat (50 KM, PIERRE ×
+   STADTFITNESS, 1 RUNDE ODER 50 KM), steht sein PNG statt einer Webfont-
+   Annäherung. */
 
 .bru {
   --bg: #000000;
-  --fg: #f7f4f1;
-  --cu: #d07050;
-  --cu-hell: #e79471;
-  --rule: rgba(247, 244, 241, 0.14);
-  --mute: rgba(247, 244, 241, 0.55);
+  --fg: #f5f3f0;
+  --rule: rgba(245, 243, 240, 0.16);
+  --mute: rgba(245, 243, 240, 0.52);
+  --flaeche: rgba(245, 243, 240, 0.055);
 
   font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -23,145 +27,157 @@
   color-scheme: dark;
 }
 
-/* Der eine helle Abschnitt der Seite. Er sitzt dort, wo es praktisch wird,
-   damit der Bruch die Aufmerksamkeit trägt. */
-.bru [data-ton="hell"] {
-  --bg: #f7f4f1;
-  --fg: #000000;
-  --rule: rgba(0, 0, 0, 0.16);
-  --mute: rgba(0, 0, 0, 0.6);
-  color-scheme: light;
-}
-
-.bru section { background: var(--bg); color: var(--fg); }
+.bru section,
+.bru header,
+.bru footer { background: var(--bg); color: var(--fg); }
 
 /* ---------------- Raster ---------------- */
 
-.bru .wrap { max-width: 76rem; margin: 0 auto; padding-inline: 1.25rem; }
+.bru .wrap { max-width: 78rem; margin: 0 auto; padding-inline: 1.25rem; }
 @media (min-width: 48rem) { .bru .wrap { padding-inline: 2.5rem; } }
 
-.bru .band { padding-block: 4rem; }
-@media (min-width: 48rem) { .bru .band { padding-block: 6.5rem; } }
+.bru .band { padding-block: 4.5rem; }
+@media (min-width: 48rem) { .bru .band { padding-block: 7rem; } }
+
+.bru .band-eng { padding-block: 3rem; }
+@media (min-width: 48rem) { .bru .band-eng { padding-block: 4rem; } }
 
 /* ---------------- Typografie ---------------- */
 
 .bru h1, .bru h2 {
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.86;
+  font-family: var(--font-anton), var(--font-archivo), sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 0.88;
   text-transform: uppercase;
   text-wrap: balance;
   margin: 0;
 }
 
-.bru h2 { font-size: clamp(2.25rem, 1rem + 6vw, 5.5rem); }
+.bru h2 { font-size: clamp(2.75rem, 1rem + 8vw, 7rem); }
 
 .bru h3 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  font-size: 1.125rem;
-  line-height: 1.15;
+  font-family: var(--font-anton), var(--font-archivo), sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: 1.25rem;
+  line-height: 1.05;
   text-transform: uppercase;
   margin: 0;
 }
 
+/* Die Stempelzeile über jeder Überschrift. Sie ersetzt den Einleitungssatz,
+   den die Seite vorher hatte. */
 .bru .stamp {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--cu);
-  margin: 0 0 1.5rem;
+  color: var(--mute);
+  margin: 0 0 1.25rem;
 }
 
 .bru .lead {
-  font-size: clamp(1.375rem, 1rem + 1.6vw, 2.125rem);
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
   font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-  max-width: 24ch;
-  margin: 2rem 0 0;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  max-width: 26ch;
+  margin: 1.75rem 0 0;
   text-wrap: balance;
 }
 
-/* Der ruhige Nachsatz unter einem Block. Er trägt das Kleingedruckte, das
-   trotzdem jemand lesen soll. */
+/* Der ruhige Nachsatz unter einem Block — das Kleingedruckte, das trotzdem
+   jemand lesen soll. */
 .bru .nachsatz {
-  margin: 2.5rem 0 0;
-  font-size: 1.0625rem;
+  margin: 2.25rem 0 0;
+  font-size: 1rem;
   line-height: 1.55;
-  max-width: 52ch;
+  max-width: 48ch;
   color: var(--mute);
 }
 
 .bru p { text-wrap: pretty; }
 .bru .tnum { font-variant-numeric: tabular-nums; }
-.bru .cu { color: var(--cu); }
+
+/* Pierres Lettering als Überschrift. Nie über die native Breite hinaus —
+   die kleinen Exporte sind 240 px breit und würden hochskaliert weich. */
+.bru .wort-gross {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin-bottom: 2.5rem;
+}
 
 /* ---------------- Kopf ---------------- */
 
-.bru .hero { padding-block: 2.5rem 3.5rem; }
-@media (min-width: 48rem) { .bru .hero { padding-block: 3.5rem 5rem; } }
-
-/* Absenderzeile: das Logo des Studios neben Pierres Namen. Beide gleich
-   gross gesetzt, weil das Event beiden gehört. */
-.bru .von {
+/* Das Bild füllt den ersten Bildschirm, das Lettering sitzt darauf. Deshalb
+   braucht der Kopf keinen Satz Text: Ort, Anlass und Ton stehen im Foto. */
+.bru .hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(92svh, 56rem);
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding-bottom: 2.5rem;
+  align-items: flex-end;
+  padding-block: 3rem 3.5rem;
+  overflow: hidden;
 }
 
-.bru .von img { height: 4.5rem; width: auto; display: block; }
-@media (min-width: 48rem) { .bru .von img { height: 6.5rem; } }
+.bru .hero-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  z-index: -2;
+}
 
-.bru .von .x { color: var(--mute); font-size: 1.25rem; font-weight: 300; }
+/* Zwei Verläufe statt eines flachen Schleiers: unten dunkel genug für die
+   Schrift, in der Mitte bleibt das Bild lesbar. */
+.bru .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.16) 30%, rgba(0, 0, 0, 0.62) 58%, rgba(0, 0, 0, 0.92) 84%, #000 100%);
+}
 
-.bru .von b {
-  font-size: clamp(1rem, 0.85rem + 0.5vw, 1.375rem);
-  font-weight: 700;
+.bru .hero-inhalt { width: 100%; }
+
+.bru .hero-absender {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(72vw, 22rem);
+  margin-bottom: 1.25rem;
+}
+
+.bru .hero-lockup {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 46rem);
+}
+
+.bru .hero-zeile {
+  margin: 1.5rem 0 0;
+  font-size: clamp(0.9375rem, 0.85rem + 0.5vw, 1.25rem);
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  color: rgba(245, 243, 240, 0.85);
 }
 
-.bru .hero h1 { font-size: clamp(3rem, 0.5rem + 13vw, 11rem); }
-
-.bru .hero-claim {
-  font-size: clamp(1.5rem, 1rem + 2.6vw, 3.25rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
-  text-transform: uppercase;
-  margin: 1.75rem 0 0;
-}
-
-.bru .hero-sub {
-  font-size: clamp(1.125rem, 1rem + 0.9vw, 1.75rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0.875rem 0 0;
-  max-width: 26ch;
-  text-wrap: balance;
-}
-
-.bru .hero-datum {
-  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
-  font-weight: 600;
-  margin: 2.25rem 0 0;
-  letter-spacing: -0.01em;
-  color: var(--mute);
-}
+.bru .hero-cta { margin: 2.25rem 0 0; }
+.bru .hero-klein { margin: 1rem 0 0; font-size: 0.9375rem; color: rgba(245, 243, 240, 0.72); }
 
 /* ---------------- Laufband ---------------- */
 
-/* Die vier Kennzahlen als Endlosband. Es ersetzt einen Absatz Text und
-   gibt der Seite die Bewegung, die sonst fehlen würde. */
 .bru .marquee {
   border-block: 1px solid var(--rule);
-  padding-block: 1.125rem;
+  padding-block: 1rem;
   overflow: hidden;
   white-space: nowrap;
   user-select: none;
@@ -171,19 +187,19 @@
   display: inline-flex;
   gap: 2.5rem;
   padding-right: 2.5rem;
-  animation: bru-scroll 32s linear infinite;
+  animation: bru-scroll 34s linear infinite;
   will-change: transform;
 }
 
 .bru .marquee span {
-  font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.5rem, 1rem + 2.4vw, 2.75rem);
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   line-height: 1;
 }
 
-.bru .marquee span:nth-child(even) { color: var(--cu); }
+.bru .marquee span:nth-child(even) { color: var(--mute); }
 
 @keyframes bru-scroll {
   from { transform: translateX(0); }
@@ -196,30 +212,176 @@
 
 /* ---------------- Knopf ---------------- */
 
+/* Weiss auf Schwarz. Der einzige gefüllte Block der Seite, deshalb findet
+   man ihn ohne Farbe. */
 .bru .cta {
   display: inline-flex;
   align-items: center;
-  background: var(--cu);
+  background: var(--fg);
   color: #000;
   text-decoration: none;
   font-weight: 800;
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
-  letter-spacing: 0.01em;
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.1875rem);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 1.25rem 2rem;
-  transition: background 0.15s ease, transform 0.15s ease;
+  padding: 1.25rem 2.25rem;
+  border: 1px solid var(--fg);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-.bru .cta:hover { background: var(--cu-hell); transform: translateY(-2px); }
+.bru .cta:hover { background: transparent; color: var(--fg); transform: translateY(-2px); }
 
 .bru .cta-note { font-size: 0.9375rem; color: var(--mute); margin: 1rem 0 0; }
 
-/* ---------------- Die Stunde als Balken ---------------- */
+/* ---------------- Die vier Zahlen ---------------- */
+
+.bru .zahlen-reihe {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 48rem) { .bru .zahlen-reihe { grid-template-columns: repeat(4, 1fr); } }
+
+.bru .zahlen-reihe b {
+  display: block;
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 1.5rem + 6vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.bru .zahlen-reihe b i {
+  font-style: normal;
+  font-size: 0.3em;
+  letter-spacing: 0.06em;
+  margin-left: 0.3em;
+  vertical-align: baseline;
+  color: var(--mute);
+}
+
+.bru .zahlen-reihe span {
+  display: block;
+  margin-top: 0.625rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+/* ---------------- Bildbänder ---------------- */
+
+/* Ein Foto über die ganze Breite, zwei Zeilen darauf. Sie ersetzen den
+   Absatz, der vorher dasselbe gesagt hat. */
+.bru .bildband {
+  position: relative;
+  margin: 0;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.bru .bildband img {
+  display: block;
+  width: 100%;
+  height: clamp(20rem, 52vw, 34rem);
+  object-fit: cover;
+}
+
+.bru .bildband::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.1) 55%);
+}
+
+.bru .bildband figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 1.5rem 1.25rem 1.75rem;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 48rem) {
+  .bru .bildband figcaption { padding: 2rem 2.5rem 2.5rem; }
+}
+
+.bru .bildband figcaption b {
+  display: block;
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1rem + 3.2vw, 3.5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.bru .bildband figcaption span {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: rgba(245, 243, 240, 0.72);
+}
+
+/* ---------------- Die Wahl ---------------- */
+
+.bru .wahl {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 56rem) { .bru .wahl { grid-template-columns: repeat(4, 1fr); } }
+
+.bru .wahl li {
+  background: var(--bg);
+  padding: 1.75rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.bru .wahl .was {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.625rem, 1rem + 2vw, 2.5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  text-wrap: nowrap;
+}
+
+.bru .wahl .viel {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  color: var(--fg);
+}
+
+.bru .wahl .wer {
+  margin-top: 0.875rem;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--mute);
+}
+
+/* ---------------- Der Takt ---------------- */
 
 .bru .hour-bar {
   display: flex;
   width: 100%;
-  height: 5.5rem;
+  height: 4.5rem;
   margin-top: 2.5rem;
   border: 1px solid var(--rule);
 }
@@ -228,80 +390,84 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.625rem;
   min-width: 0;
   overflow: hidden;
 }
 
 .bru .hour-seg + .hour-seg { border-left: 1px solid var(--rule); }
-.bru .hour-seg[data-art="lauf"] { background: var(--fg); color: var(--bg); }
-.bru .hour-seg[data-art="kraft"] { background: var(--cu); color: #000; }
+.bru .hour-seg[data-art="lauf"] { background: var(--fg); color: #000; }
+.bru .hour-seg[data-art="kraft"] { background: var(--flaeche); }
 .bru .hour-seg[data-art="pause"] { background: transparent; }
 
-.bru .hour-seg b { font-size: 0.875rem; font-weight: 800; white-space: nowrap; }
+.bru .hour-seg b {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1;
+}
 
 .bru .hour-seg span {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   letter-spacing: 0.1em;
-  opacity: 0.8;
+  text-transform: uppercase;
+  opacity: 0.75;
   white-space: nowrap;
 }
 
-/* Quer sind die beiden 5-Minuten-Felder zu schmal für ihre Beschriftung —
-   der Text lief über die Kante ins Nachbarfeld. Auf dem Handy kippt der
-   Balken deshalb in die Senkrechte und liest sich als Zeitstrahl. */
+/* Quer sind die 5-Minuten-Felder zu schmal für ihre Beschriftung. Auf dem
+   Handy kippt der Balken deshalb in die Senkrechte und liest sich als
+   Zeitstrahl. */
 @media (max-width: 52rem) {
-  .bru .hour-bar { flex-direction: column; height: 22rem; }
+  .bru .hour-bar { flex-direction: column; height: 24rem; }
   .bru .hour-seg {
     flex-direction: row;
     align-items: baseline;
     justify-content: flex-start;
-    gap: 0.625rem;
-    padding: 0.625rem 0.875rem;
-    min-height: 2.5rem;
+    gap: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    min-height: 2.25rem;
   }
   .bru .hour-seg + .hour-seg { border-left: none; border-top: 1px solid var(--rule); }
 }
 
-/* ---------------- Die Runde ---------------- */
-
-/* Die Stationen als Kette. Sie ersetzt eine Karte: ohne GPX-Spur wäre jede
-   gezeichnete Route nur behauptet genau. */
-.bru .kette {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
+.bru .takt {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-top: none;
   list-style: none;
   padding: 0;
-  margin: 2.5rem 0 0;
+  margin: 0;
 }
 
-.bru .kette li {
-  font-size: clamp(1.125rem, 0.9rem + 1.2vw, 2rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  line-height: 1;
+.bru .takt li {
+  background: var(--bg);
+  padding: 1rem 1.125rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.875rem;
 }
 
-.bru .kette li[data-pfeil]::after {
-  content: "→";
-  color: var(--cu);
-  margin-left: 1rem;
+.bru .takt b {
+  font-family: var(--font-anton), sans-serif;
   font-weight: 400;
+  font-size: 1.375rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.bru .kette li:first-child, .bru .kette li:last-child { color: var(--cu); }
+.bru .takt span { font-size: 0.9375rem; color: var(--mute); }
 
 /* ---------------- Zahlen nebeneinander ---------------- */
 
 .bru .zahlen {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem 1.5rem;
-  margin-top: 3rem;
+  gap: 1.75rem 1.5rem;
+  margin: 3rem 0 0;
   list-style: none;
   padding: 0;
 }
@@ -319,12 +485,41 @@
 
 .bru .zahlen dd {
   margin: 0;
-  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------------- Die Stationen als Kette ---------------- */
+
+.bru .kette {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem 0.875rem;
+  list-style: none;
+  padding: 0;
+  margin: 3rem 0 0;
+}
+
+.bru .kette li {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1rem, 0.85rem + 0.9vw, 1.625rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bru .kette li[data-pfeil]::after {
+  content: "→";
+  color: var(--mute);
+  margin-left: 0.875rem;
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 400;
+}
+
+.bru .kette li:first-child,
+.bru .kette li:last-child { color: var(--mute); }
 
 /* ---------------- Challenges ---------------- */
 
@@ -346,7 +541,7 @@
   padding: 1.25rem 1rem 1.125rem;
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.5rem;
   min-height: 6.5rem;
 }
 
@@ -354,58 +549,147 @@
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.16em;
-  color: var(--cu);
+  color: var(--mute);
 }
 
-.bru .chal .teil {
+.bru .chal .dosis {
   margin-top: auto;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+
+/* Die zehnte ist die leichte am Ende des Durchgangs — eine Verschnaufpause,
+   kein Höhepunkt. Deshalb nur ein Strich, keine Fläche. */
+.bru .chal li[data-leicht] { box-shadow: inset 3px 0 0 var(--fg); }
+
+/* Das Finale steht nicht in der Liste, weil es keine elfte Übung ist,
+   sondern der Moment, in dem der Tag aufhört. */
+.bru .finale {
+  margin-top: 2.5rem;
+  background: var(--fg);
+  color: #000;
+  padding: 2rem 1.75rem 1.75rem;
+}
+
+@media (min-width: 48rem) { .bru .finale { padding: 2.5rem; } }
+
+.bru .finale .stamp { color: rgba(0, 0, 0, 0.6); margin-bottom: 0.875rem; }
+
+.bru .finale h3 {
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem);
+  line-height: 1;
+}
+
+.bru .finale p { margin: 0.75rem 0 0; font-size: 1.0625rem; }
+
+.bru .finale .finale-zahl {
+  margin-top: 1.25rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: rgba(0, 0, 0, 0.65);
 }
 
 /* ---------------- Stundenplan ---------------- */
 
-.bru .plan { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-
-.bru .plan td {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--rule);
+.bru .plan {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2.5rem;
 }
 
-.bru .plan .nr {
-  font-weight: 800;
-  font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
-  letter-spacing: -0.04em;
-  line-height: 1;
-  width: 4rem;
-}
+.bru .plan td { padding: 0.8125rem 0; border-bottom: 1px solid var(--rule); }
 
 .bru .plan .zeit {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.8125rem;
+  width: 1%;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.25rem, 0.9rem + 1.1vw, 1.75rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bru .plan .tat {
+  width: 100%;
+  padding-left: 1.25rem;
+  font-size: 0.9375rem;
   color: var(--mute);
 }
 
 .bru .plan .km {
   text-align: right;
-  font-weight: 800;
-  font-size: clamp(1.125rem, 0.9rem + 1vw, 1.75rem);
-  letter-spacing: -0.03em;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.25rem, 0.9rem + 1.1vw, 1.75rem);
+  line-height: 1;
   white-space: nowrap;
+}
+
+.bru .plan .km::after {
+  content: " km";
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.16em;
+  color: var(--mute);
 }
 
 /* Die Marathon-Marke: ab hier ist der Tag ein Ultra. */
 .bru .plan .marker td {
   border-bottom: none;
-  padding: 1.25rem 0 0.5rem;
-  color: var(--cu);
+  padding: 1.125rem 0 0.375rem;
+  color: var(--mute);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+/* Die letzte Zeile ist das Ziel, nicht die elfte Stunde. */
+.bru .plan .schluss td {
+  border-bottom: none;
+  border-top: 2px solid var(--fg);
+  padding-top: 1.125rem;
+}
+
+/* ---------------- Pierre ---------------- */
+
+.bru .pierre { display: grid; gap: 2.5rem; }
+
+@media (min-width: 56rem) {
+  .bru .pierre { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 4rem; align-items: center; }
+}
+
+.bru .pierre-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.05);
+}
+
+.bru .vita { list-style: none; padding: 0; margin: 2.5rem 0 0; }
+
+.bru .vita li { padding: 0.9375rem 0; border-bottom: 1px solid var(--rule); }
+.bru .vita li:first-child { border-top: 1px solid var(--rule); }
+
+.bru .vita b {
+  display: block;
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.bru .vita span {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
 }
 
 /* ---------------- Faktenzeilen ---------------- */
@@ -423,316 +707,25 @@
 }
 
 .bru .rows li:first-child { border-top: 1px solid var(--rule); }
-.bru .rows b { font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
-.bru .rows span { color: var(--mute); text-align: right; }
 
-/* ---------------- Offene Punkte ---------------- */
-
-/* Sichtbarer Platzhalter — muss vor dem Livegang restlos verschwinden,
-   deshalb bewusst hässlich. */
-.bru .todo {
-  display: inline-block;
-  background: repeating-linear-gradient(45deg, #ffd400, #ffd400 8px, #000 8px, #000 16px);
-  color: #000;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.5625rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.5rem;
-  box-shadow: inset 0 0 0 2px var(--bg);
-}
-
-/* ---------------- Fuss ---------------- */
-
-.bru footer { padding-block: 3rem 4rem; border-top: 1px solid var(--rule); }
-
-.bru footer .von { padding-bottom: 1.5rem; }
-.bru footer p { margin: 0; font-size: 0.875rem; color: var(--mute); }
-.bru footer a { color: var(--cu); }
-
-.bru :focus-visible { outline: 2px solid var(--cu); outline-offset: 3px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .bru *, .bru *::before, .bru *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ---------------- Die Wahl ---------------- */
-
-/* Vier gleichwertige Arten mitzumachen. Bewusst gleich gross gesetzt:
-   sobald eine davon grösser wäre, würde sie zur eigentlichen Aufgabe und
-   die anderen zum Trostpreis. Genau das soll die Seite nicht tun. */
-.bru .wahl {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  list-style: none;
-  padding: 0;
-  margin: 2.5rem 0 0;
-}
-
-@media (min-width: 56rem) { .bru .wahl { grid-template-columns: repeat(4, 1fr); } }
-
-.bru .wahl li {
-  background: var(--bg);
-  padding: 1.5rem 1.25rem 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.bru .wahl .was {
-  font-size: clamp(1.375rem, 1rem + 1.6vw, 2.25rem);
-  text-wrap: nowrap;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.bru .wahl .viel {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.8125rem;
-  letter-spacing: 0.12em;
-  color: var(--cu);
-}
-
-.bru .wahl .wer {
-  margin-top: 0.75rem;
-  font-size: 0.9375rem;
-  line-height: 1.4;
-  color: var(--mute);
-}
-
-/* ---------------- Pierre ---------------- */
-
-.bru .pierre {
-  display: grid;
-  gap: 2.5rem;
-  margin-top: 2.5rem;
-}
-
-@media (min-width: 56rem) {
-  .bru .pierre { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 4rem; }
-}
-
-.bru .pierre p {
-  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
-  line-height: 1.55;
-  margin: 0 0 1.25rem;
-  max-width: 46ch;
-}
-
-.bru .pierre p:last-child { margin-bottom: 0; }
-
-.bru .vita { list-style: none; padding: 0; margin: 0; }
-
-.bru .vita li {
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--rule);
-}
-
-.bru .vita li:first-child { border-top: 1px solid var(--rule); }
-
-.bru .vita b {
-  display: block;
-  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.bru .vita span {
-  display: block;
-  margin-top: 0.375rem;
+.bru .rows b {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--mute);
+  align-self: center;
 }
 
-/* ===========================================================================
-   50 KM BRIG — Stand 17.09.2026
-   Der Name ist jetzt die Domain, der Absender heisst Pierre × Stadtfitness,
-   die Anmeldung findet auf der Seite statt. Was unten steht, gehört zu
-   diesen drei Änderungen.
-   =========================================================================== */
+.bru .rows span { text-align: right; }
 
-/* ---------------- Kopf: die Zahl ist der Name ---------------- */
-
-/* «50km» soll als ein Wort gelesen werden, deshalb hängt die Einheit direkt
-   an der Zahl und ist kleiner — sonst liest man «fünfzig Kilometer Brig»
-   statt der Marke. */
-.bru .hero h1 .km {
-  font-size: 0.36em;
-  letter-spacing: -0.02em;
-  margin-left: 0.06em;
-  vertical-align: baseline;
-  color: var(--cu);
-}
-
-.bru .hero-gattung {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin: 1.25rem 0 0;
-}
-
-.bru .hero-cta { margin: 2.5rem 0 0; }
-
-/* ---------------- Zwei Spalten: Text links, Zahlen rechts ---------------- */
-
-.bru .zweispalt {
-  display: grid;
-  gap: 2.5rem;
-  margin-top: 2.5rem;
-}
-
-@media (min-width: 56rem) {
-  .bru .zweispalt { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 4rem; }
-}
-
-.bru .zweispalt p {
-  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
-  line-height: 1.55;
-  margin: 0 0 1.25rem;
-  max-width: 46ch;
-}
-
-.bru .zweispalt p:last-child { margin-bottom: 0; }
-
-.bru .zahlen-block { list-style: none; padding: 0; margin: 0; }
-
-.bru .zahlen-block li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem 1.5rem;
-  padding: 0.9rem 0;
-  border-bottom: 1px solid var(--rule);
-}
-
-.bru .zahlen-block li:first-child { border-top: 1px solid var(--rule); }
-
-.bru .zahlen-block b {
-  font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.bru .zahlen-block span {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--mute);
-  text-align: right;
-}
-
-/* ---------------- Der Takt der Stunde ---------------- */
-
-/* Der Balken zeigt die Verhältnisse, diese drei Zeilen die Uhrzeiten. Beides
-   zusammen erspart den Absatz, der sonst erklären müsste, wann was startet. */
-.bru .takt {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-}
-
-.bru .takt li {
-  background: var(--bg);
-  padding: 1.125rem 1.25rem;
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-}
-
-.bru .takt b {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--cu);
-  font-variant-numeric: tabular-nums;
-}
-
-.bru .takt span { font-size: 0.9375rem; color: var(--mute); }
-
-/* ---------------- Challenges ---------------- */
-
-/* Die Liste ist jetzt eine ol — die Reihenfolge ist der Tagesablauf. Die
-   eigene Nummer bleibt sichtbar, die des Browsers nicht. */
-.bru .chal { list-style: none; }
-
-.bru .chal .dosis {
-  font-size: 0.8125rem;
-  line-height: 1.3;
-  color: var(--fg);
-  opacity: 0.75;
-}
-
-/* Die zehnte ist keine Übung, sondern das Ende des Tages. Sie bekommt als
-   einzige Fläche, damit man beim Überfliegen sieht, wo der Tag aufhört. */
-.bru .chal li[data-finale] { background: var(--cu); color: #000; }
-.bru .chal li[data-finale] .nr,
-.bru .chal li[data-finale] .teil { color: rgba(0, 0, 0, 0.7); }
-.bru .chal li[data-finale] .dosis { opacity: 0.8; }
-
-/* ---------------- Stundenplan ---------------- */
-
-.bru .plan { margin-top: 2.5rem; }
-
-.bru .plan .tat {
-  padding-left: 1rem;
-  font-size: 0.9375rem;
-  color: var(--mute);
-  width: 100%;
-}
-
-.bru .plan .zeit {
-  width: 1%;
-  font-size: clamp(1.125rem, 0.9rem + 0.9vw, 1.5rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--fg);
-  font-family: inherit;
-  white-space: nowrap;
-}
-
-/* Die letzte Zeile ist das Ziel, nicht die elfte Stunde. */
-.bru .plan .schluss td {
-  border-bottom: none;
-  border-top: 2px solid var(--cu);
-  padding-top: 1.125rem;
-}
-
-.bru .plan .schluss .zeit,
-.bru .plan .schluss .km { color: var(--cu); }
-
-/* ---------------- Faktenzeilen ---------------- */
-
-/* «kostenlos» ist die Zeile, die den Absprung verhindert — sie darf nicht
-   grau sein wie der Rest. */
+/* «keines» ist die Zeile, die den Absprung verhindert — sie darf nicht
+   aussehen wie der Rest. */
 .bru .rows .frei {
-  color: var(--cu);
-  font-weight: 800;
+  font-family: var(--font-anton), sans-serif;
+  font-size: 1.375rem;
+  line-height: 1;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
 }
 
 /* ---------------- Anmeldung ---------------- */
@@ -744,7 +737,7 @@
   grid-template-columns: 1fr;
   gap: 1.25rem;
   margin-top: 2.5rem;
-  max-width: 46rem;
+  max-width: 44rem;
 }
 
 @media (min-width: 40rem) {
@@ -785,15 +778,15 @@
 
 .bru .feld select {
   /* Der Pfeil als Hintergrundbild, weil appearance:none ihn entfernt. */
-  background-image: linear-gradient(45deg, transparent 50%, var(--cu) 50%),
-    linear-gradient(135deg, var(--cu) 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg) 50%),
+    linear-gradient(135deg, var(--fg) 50%, transparent 50%);
   background-position: calc(100% - 1.25rem) 55%, calc(100% - 0.9rem) 55%;
   background-size: 0.375rem 0.375rem, 0.375rem 0.375rem;
   background-repeat: no-repeat;
   padding-right: 2.75rem;
 }
 
-.bru .feld option { background: #000; color: #f7f4f1; }
+.bru .feld option { background: #000; color: #f5f3f0; }
 
 .bru .feld input::placeholder,
 .bru .feld textarea::placeholder { color: var(--mute); opacity: 1; }
@@ -804,7 +797,7 @@
 
 .bru .feld input:focus-visible,
 .bru .feld select:focus-visible,
-.bru .feld textarea:focus-visible { outline: 2px solid var(--cu); outline-offset: 0; border-color: transparent; }
+.bru .feld textarea:focus-visible { outline: 2px solid var(--fg); outline-offset: 0; border-color: transparent; }
 
 /* Spamfalle. Nicht display:none — manche Bots erkennen das und lassen das
    Feld dann leer. */
@@ -828,95 +821,40 @@
 
 .bru .formular-fuss .cta-note { margin: 0; max-width: 34ch; }
 
-.bru button.cta { border: none; cursor: pointer; font-family: inherit; }
+.bru button.cta { border: 1px solid var(--fg); cursor: pointer; font-family: inherit; }
 .bru button.cta:disabled { opacity: 0.55; cursor: progress; transform: none; }
 
 .bru .fehler {
   grid-column: 1 / -1;
   margin: 0;
   font-size: 0.9375rem;
-  color: var(--cu-hell);
+  color: var(--fg);
+  border-left: 3px solid var(--fg);
+  padding-left: 0.875rem;
 }
 
 .bru .fehler a { color: inherit; }
 
 .bru .danke {
   margin-top: 2.5rem;
-  border-top: 2px solid var(--cu);
+  border-top: 2px solid var(--fg);
   padding-top: 2rem;
-  max-width: 42ch;
+  max-width: 44ch;
 }
 
 .bru .danke-gross {
-  font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(2.5rem, 1.2rem + 4vw, 4.5rem);
+  line-height: 0.95;
   text-transform: uppercase;
-  color: var(--cu);
   margin: 0 0 1.25rem;
 }
 
 .bru .danke p:last-child { margin: 0; font-size: 1.0625rem; line-height: 1.55; color: var(--mute); }
 
-/* ---------------- Fuss ---------------- */
+/* ---------------- Weitertrainieren ---------------- */
 
-/* Die Zeile aus dem Video, an der Stelle, wo der Tag zu Ende ist. */
-.bru .schlusszeile {
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  text-transform: uppercase;
-  color: var(--cu);
-  margin: 0 0 2.5rem;
-}
-
-/* ---------------- Nachtrag 17.09.2026 ---------------- */
-
-/* Die zehnte Challenge ist die leichte am Ende des Durchgangs. Sie bekommt
-   nur einen Kupferrand, keine Fläche — sie ist eine Verschnaufpause, kein
-   Höhepunkt. */
-.bru .chal li[data-leicht] { box-shadow: inset 2px 0 0 var(--cu); }
-
-/* Das Finale steht nicht in der Liste, weil es keine elfte Übung ist,
-   sondern der Moment, in dem der Tag aufhört. */
-.bru .finale {
-  margin-top: 2.5rem;
-  background: var(--cu);
-  color: #000;
-  padding: 2rem 1.75rem 1.75rem;
-}
-
-@media (min-width: 48rem) { .bru .finale { padding: 2.5rem 2.5rem 2.25rem; } }
-
-.bru .finale .stamp { color: rgba(0, 0, 0, 0.65); margin-bottom: 1rem; }
-
-.bru .finale h3 {
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  margin: 0;
-}
-
-.bru .finale p { margin: 0.75rem 0 0; font-size: 1.0625rem; }
-
-.bru .finale .finale-zahl {
-  margin-top: 1.25rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-/* ---------------- Der Partnerblock ---------------- */
-
-/* Zwei gleich grosse Karten: der Ort und das, was danach kommt. Bewusst
-   keine Logos — die stehen schon im Kopf und im Fuss. Hier zählen die
-   Angaben, mit denen jemand etwas anfangen kann. */
-.bru .partner {
+.bru .weiter {
   display: grid;
   gap: 1px;
   background: var(--rule);
@@ -926,63 +864,157 @@
   margin: 2.5rem 0 0;
 }
 
-@media (min-width: 52rem) { .bru .partner { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 52rem) { .bru .weiter { grid-template-columns: repeat(2, 1fr); } }
 
-.bru .partner > li {
+.bru .weiter > li {
   background: var(--bg);
   padding: 2rem 1.75rem 1.75rem;
   display: flex;
   flex-direction: column;
 }
 
-.bru .partner .kicker {
+.bru .weiter .kicker {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--cu);
+  color: var(--mute);
 }
 
-.bru .partner h3 {
+.bru .weiter h3 {
   margin: 0.875rem 0 0;
-  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.5rem);
   line-height: 1;
 }
 
-.bru .partner > li > p {
+.bru .weiter > li > p {
   margin: 1rem 0 0;
   font-size: 1.0625rem;
   line-height: 1.5;
   max-width: 38ch;
-}
-
-.bru .partner-fakten {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-}
-
-.bru .partner-fakten li {
-  padding: 0.625rem 0;
-  border-bottom: 1px solid var(--rule);
-  font-size: 0.9375rem;
   color: var(--mute);
 }
 
-.bru .partner-fakten li:first-child { border-top: 1px solid var(--rule); }
+.bru .weiter-fakten { list-style: none; padding: 0; margin: 1.5rem 0 0; }
 
-.bru .partner > li > a {
+.bru .weiter-fakten li {
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.9375rem;
+}
+
+.bru .weiter-fakten li:first-child { border-top: 1px solid var(--rule); }
+
+.bru .weiter > li > a {
   margin-top: auto;
   padding-top: 1.75rem;
-  color: var(--cu);
-  font-weight: 800;
+  color: var(--fg);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
   text-decoration: none;
   align-self: flex-start;
 }
 
-.bru .partner > li > a::after { content: " →"; }
-.bru .partner > li > a:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+.bru .weiter > li > a::after { content: " →"; }
+.bru .weiter > li > a:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+
+/* ---------------- Fuss ---------------- */
+
+.bru footer { padding-block: 4rem 4.5rem; border-top: 1px solid var(--rule); }
+
+.bru .schlusszeile {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(2rem, 1.2rem + 4vw, 4.5rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  margin: 0 0 3rem;
+}
+
+.bru .fuss-absender {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(72vw, 20rem);
+  margin-bottom: 1.5rem;
+}
+
+.bru .fuss-zeile {
+  margin: 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.bru .fuss-klein { margin: 1.25rem 0 0; font-size: 0.9375rem; color: var(--mute); max-width: 52ch; }
+.bru .fuss-klein a { color: var(--fg); }
+
+.bru :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bru *, .bru *::before, .bru *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------- Pierres Adressen ---------------- */
+
+/* Er steht auf seiner eigenen Seite mit seinen eigenen Adressen — nicht nur
+   als Zugpferd für den Anlass. */
+.bru .pierre-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin: 1.75rem 0 0;
+}
+
+.bru .pierre-links a {
+  color: var(--fg);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.25rem;
+}
+
+.bru .pierre-links a:hover { border-color: var(--fg); }
+
+/* ---------------- Fragen ---------------- */
+
+/* Kurze Frage, kurze Antwort. Steht so auch als FAQPage im Quelltext, damit
+   Google die Fragen direkt im Suchergebnis zeigen kann. */
+.bru .faq {
+  list-style: none;
+  padding: 0;
+  margin: 2.5rem 0 0;
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border-block: 1px solid var(--rule);
+}
+
+@media (min-width: 52rem) {
+  .bru .faq { grid-template-columns: repeat(2, 1fr); border: 1px solid var(--rule); }
+}
+
+.bru .faq li { background: var(--bg); padding: 1.75rem 1.5rem; }
+
+.bru .faq h3 {
+  font-size: 1.125rem;
+  line-height: 1.15;
+  max-width: 30ch;
+}
+
+.bru .faq p {
+  margin: 0.875rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--mute);
+  max-width: 44ch;
+}
