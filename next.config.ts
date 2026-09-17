@@ -10,7 +10,7 @@ const BRIG_HOSTS = ["50kmbrig.ch", "www.50kmbrig.ch"];
 // greift. Dann schickt laeuft.ch/brig-ultra alle alten Links auf die Domain,
 // und die Seite ist nur noch unter ihrem eigenen Namen zu sehen. Vorher muss
 // es false bleiben — sonst zeigt der Redirect ins Leere.
-const BRIG_DOMAIN_LIVE = false;
+const BRIG_DOMAIN_LIVE = true;
 
 const nextConfig: NextConfig = {
   async rewrites() {
