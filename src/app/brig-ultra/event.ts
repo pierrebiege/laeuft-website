@@ -37,6 +37,27 @@ export const EVENT = {
   postfach: "pierre@natural-athletics.ch",
 } as const;
 
+/* Pierres Laufstreak.
+   Er weiss die Zahl selbst nicht mehr auswendig, deshalb steht hier ein
+   Anker statt einer Behauptung: sein Instagram-Post vom 31.07.2026 nennt
+   «Laufentag 824». Daraus ergibt sich der 29.04.2024 als erster Tag — und
+   damit jede spätere Zahl, ohne dass jemand nachzählen muss.
+   ⚠️ Wenn Pierre eine andere Zahl kennt, hier den Anker korrigieren, nicht
+   das Ergebnis. */
+export const STREAK = {
+  ankerTag: 824,
+  ankerDatum: "2026-07-31",
+} as const;
+
+function tagAm(datumISO: string) {
+  const tagMs = 86_400_000;
+  const diff = (Date.parse(datumISO) - Date.parse(STREAK.ankerDatum)) / tagMs;
+  return STREAK.ankerTag + Math.round(diff);
+}
+
+/* Der wievielte Lauftag der 4. Oktober ist. */
+export const LAUFTAG_AM_EVENT = tagAm("2026-10-04");
+
 /* Pierres Lettering, aus seinen eigenen Entwürfen exportiert: weisse Schrift
    auf Transparenz. Die Seite setzt sie auf Schwarz oder über Fotos. Sie
    ersetzt Überschriften — was er selbst gesetzt hat, wird nicht nachgebaut. */

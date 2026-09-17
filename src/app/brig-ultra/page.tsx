@@ -15,6 +15,7 @@ import {
   FAKTEN,
   WEITER,
   FAQ,
+  LAUFTAG_AM_EVENT,
 } from "./event";
 import Anmeldung from "./Anmeldung";
 
@@ -88,7 +89,12 @@ export default function BrigUltraPage() {
       address: { "@type": "PostalAddress", addressLocality: EVENT.ort, addressCountry: "CH" },
     },
     organizer: [
-      { "@type": "Person", name: "Pierre Biege", url: "https://laeuft.ch" },
+      {
+        "@type": "Person",
+        name: "Pierre Biege",
+        url: "https://www.natural-athletics.ch",
+        sameAs: ["https://www.instagram.com/pierrebiege/", "https://laeuft.ch"],
+      },
       { "@type": "Organization", name: EVENT.partner.studio },
     ],
   };
@@ -326,44 +332,49 @@ export default function BrigUltraPage() {
               />
             </div>
             <div className="pierre-text">
-              <p className="stamp">Wer neben dir läuft</p>
+              <p className="stamp">Wer das hier macht</p>
               <h2>
                 Pierre
                 <br />
                 Biege.
               </h2>
-              <p className="lead">
-                Zehn Stunden neben dir. Frag ihn alles oder lauf einfach mit.
-              </p>
+              {/* Erste Person, weil er es selbst sagt. Kein Lebenslauf und
+                  keine Leistungsschau — er ist der Initiator, nicht die
+                  Hauptattraktion. */}
+              <div className="pierre-wort">
+                <p>
+                  Ich wohne in Albinen und laufe jeden Tag. Am 4. Oktober ist
+                  es Tag {LAUFTAG_AM_EVENT}.
+                </p>
+                <p>
+                  Diesen Tag habe ich zusammen mit dem Stadtfitness Brig auf
+                  die Beine gestellt, weil ich einmal nicht allein laufen
+                  wollte.
+                </p>
+                <p>
+                  Ich bin die ganzen zehn Stunden dabei. Frag mich alles oder
+                  lauf einfach mit und sag nichts.
+                </p>
+              </div>
+              <ul className="vita">
+                <li>
+                  <b>{LAUFTAG_AM_EVENT} Tage</b>
+                  <span>jeden Tag gelaufen</span>
+                </li>
+                <li>
+                  <b>40 Stunden</b>
+                  <span>268 km — längster Lauf am Stück</span>
+                </li>
+              </ul>
               <p className="pierre-links">
+                <span>Mehr von mir</span>
+                <a href="https://www.instagram.com/pierrebiege/" target="_blank" rel="noopener">
+                  Instagram
+                </a>
                 <a href="https://www.natural-athletics.ch" target="_blank" rel="noopener">
                   Natural Athletics
                 </a>
-                <a href="https://laeuft.ch" target="_blank" rel="noopener">
-                  laeuft.ch
-                </a>
-                <a href="https://www.instagram.com/pierrebiege/" target="_blank" rel="noopener">
-                  @pierrebiege
-                </a>
               </p>
-              <ul className="vita">
-                <li>
-                  <b>33 Stunden</b>
-                  <span>längster Lauf am Stück</span>
-                </li>
-                <li>
-                  <b>Jeden Tag</b>
-                  <span>seit Jahren</span>
-                </li>
-                <li>
-                  <b>17. Oktober</b>
-                  <span>Backyard-WM, Team Schweiz</span>
-                </li>
-                <li>
-                  <b>Albinen VS</b>
-                  <span>zuhause im Wallis</span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>

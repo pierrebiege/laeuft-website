@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   description: beschreibung,
   applicationName: EVENT.nameLaut,
   authors: [
-    { name: "Pierre Biege", url: "https://laeuft.ch" },
+    { name: "Pierre Biege", url: "https://www.natural-athletics.ch" },
     { name: "Stadtfitness Brig", url: "https://www.stadtfitness.ch" },
   ],
   creator: "Pierre Biege",
