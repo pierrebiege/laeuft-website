@@ -1,8 +1,6 @@
 import { EVENT } from "../event";
 
-/* sitemap.xml für 50kmbrig.ch. Eine einzige URL — aber Google will sie
-   angemeldet sehen, und das Änderungsdatum hilft beim Neu-Einlesen, wenn
-   sich vor dem Event noch etwas ändert. */
+/* sitemap.xml für 50kmbrig.ch. Die Eventseite plus die zwei Rechtsseiten. */
 
 export const dynamic = "force-static";
 
@@ -20,6 +18,18 @@ export function GET() {
       <image:loc>https://${EVENT.domain}/brig-ultra/brig-strasse-quer.jpg</image:loc>
       <image:title>50 km Brig — Ultra Community Run</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://${EVENT.domain}/impressum</loc>
+    <lastmod>${heute}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://${EVENT.domain}/datenschutz</loc>
+    <lastmod>${heute}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
   </url>
 </urlset>
 `;

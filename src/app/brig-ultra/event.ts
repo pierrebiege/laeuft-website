@@ -79,6 +79,18 @@ export const LETTERING = {
   },
 } as const;
 
+/* Die Marke des Studios. Bewusst die weisse Fassung: der Kupferton des
+   Stadtfitness soll nicht als Seitenfarbe zurückkommen, als Partnerlogo in
+   Weiss steht die Marke aber sichtbar auf der Seite. */
+export const LOGO = {
+  studio: {
+    src: "/brig-ultra/stadtfitness-brig-weiss.png",
+    w: 2319,
+    h: 1136,
+    alt: "Stadtfitness Brig",
+  },
+} as const;
+
 export const FOTO = {
   hero: { src: "/brig-ultra/brig-strasse-hoch.jpg", w: 1122, h: 1402 },
   strasse: { src: "/brig-ultra/brig-strasse-quer.jpg", w: 1536, h: 1024 },
@@ -173,6 +185,10 @@ export const WAHL = [
   { was: "Halber Tag", viel: "25 km", wer: "Morgen oder Nachmittag." },
   { was: "Alles", viel: "50 km", wer: "Am Abend hast du einen Ultra gelaufen." },
 ] as const;
+
+/* Das Stadtfitness verschenkt T-Shirts an die Teilnehmenden, deshalb fragt
+   das Formular die Grösse ab — freiwillig, damit die Anmeldung leicht bleibt. */
+export const SHIRTS = ["XS", "S", "M", "L", "XL", "XXL"] as const;
 
 /* Was man wissen muss, ohne Fliesstext. */
 export const FAKTEN = [

@@ -755,7 +755,21 @@
   color: var(--mute);
 }
 
-.bru .feld > span i { font-style: normal; opacity: 0.6; }
+/* Der Hinweis steht auf einer eigenen Zeile, und jede Beschriftung ist zwei
+   Zeilen hoch — sonst rutschen die Felder einer Reihe gegeneinander, sobald
+   nur eines davon einen Hinweis trägt. */
+.bru .feld > span {
+  display: block;
+  min-height: 2.6em;
+}
+
+.bru .feld > span i {
+  display: block;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  opacity: 0.6;
+}
 
 .bru .feld input,
 .bru .feld select,
@@ -1038,3 +1052,251 @@
   color: var(--mute);
   max-width: 44ch;
 }
+
+/* ---------------- Anmelden, überall ---------------- */
+
+/* Der Zwischenruf. Er sitzt dreimal im Seitenfluss, jeweils nach dem
+   Abschnitt, der die offene Frage beantwortet hat — wer sich beim Lesen
+   entscheidet, soll nicht ans Ende scrollen müssen. Heller Block, damit er
+   sich vom schwarzen Rest löst. */
+.bru .zuruf {
+  background: var(--fg);
+  color: #000;
+  padding-block: 2.25rem;
+}
+
+.bru .zuruf .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+}
+
+.bru .zuruf p {
+  margin: 0;
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(1.25rem, 0.9rem + 1.4vw, 2rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  max-width: 24ch;
+}
+
+/* Im hellen Block dreht der Knopf die Farben um. */
+.bru .zuruf .cta {
+  background: #000;
+  color: var(--fg);
+  border-color: #000;
+  flex: none;
+}
+
+.bru .zuruf .cta:hover { background: transparent; color: #000; }
+
+/* Das Laufband ist jetzt ein Link. */
+.bru a.marquee {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bru a.marquee:hover span { color: var(--fg); }
+
+/* ---------------- Die mitlaufende Leiste ---------------- */
+
+/* Sitzt unten, weil dort der Daumen ist. Sie kommt erst, wenn der Kopf weg
+   ist, und geht wieder, sobald das Formular im Bild steht. */
+.bru .leiste {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--rule);
+  transform: translateY(110%);
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Auf dem iPhone sitzt unten der Home-Indikator. */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  pointer-events: none;
+}
+
+.bru .leiste[data-an] { transform: translateY(0); pointer-events: auto; }
+
+.bru .leiste-inhalt {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+@media (min-width: 48rem) { .bru .leiste-inhalt { padding-inline: 2.5rem; } }
+
+.bru .leiste-text { margin: 0; min-width: 0; }
+
+.bru .leiste-text b {
+  display: block;
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.bru .leiste-text span {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--mute);
+  /* Auf schmalen Geräten lieber kürzen als umbrechen. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bru .leiste .cta {
+  flex: none;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.9375rem;
+}
+
+/* Solange die Leiste steht, darf sie den Seitenfuss nicht überdecken. */
+.bru footer { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bru .leiste { transition: none; }
+}
+
+/* ---------------- Logo des Studios ---------------- */
+
+.bru .weiter-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 11rem;
+  margin: 1.25rem 0 0;
+  opacity: 0.9;
+}
+
+.bru .fuss-paar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.bru .fuss-absender { margin-bottom: 0; }
+
+.bru .fuss-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 8.5rem;
+  opacity: 0.85;
+}
+
+/* ---------------- Pflicht und Freiwilliges ---------------- */
+
+/* Die Trennzeile im Formular. Sie steht da, bevor jemand die Felder zählt
+   und abspringt: ab hier muss nichts mehr ausgefüllt werden. */
+.bru .feld-trenner {
+  grid-column: 1 / -1;
+  margin: 0.75rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+@media (min-width: 40rem) {
+  .bru .feld-halb { grid-column: span 1; }
+}
+
+/* ---------------- Rechtsseiten ---------------- */
+
+/* Impressum und Datenschutz: dieselbe Schrift und dasselbe Schwarz wie der
+   Rest, aber lesbare Zeilenlänge und ruhige Abstände. Wer hier landet, sucht
+   eine Auskunft und keine Gestaltung. */
+.bru .rechts h1 {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 1.2rem + 6vw, 5rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.bru .rechts .stamp a { color: inherit; text-decoration: none; }
+.bru .rechts .stamp a:hover { color: var(--fg); }
+
+.bru .rechts .lead { max-width: 34ch; }
+
+.bru .rechts section { margin-top: 3rem; max-width: 62ch; }
+
+.bru .rechts h2 {
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.625rem);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.bru .rechts p { margin: 0 0 1rem; font-size: 1.0625rem; line-height: 1.6; color: var(--mute); }
+.bru .rechts p:last-child { margin-bottom: 0; }
+.bru .rechts b { color: var(--fg); font-weight: 700; }
+.bru .rechts a { color: var(--fg); text-underline-offset: 0.25em; }
+
+.bru .rechts ul { margin: 0 0 1rem; padding-left: 1.125rem; }
+
+.bru .rechts li {
+  margin-bottom: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--mute);
+}
+
+.bru .rechts-stand {
+  margin-top: 3rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.bru .rechts-zurueck { margin-top: 3rem; }
+
+/* ---------------- Rechtslinks im Fuss ---------------- */
+
+.bru .fuss-rechts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin: 1.75rem 0 0;
+}
+
+.bru .fuss-rechts a {
+  color: var(--mute);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.bru .fuss-rechts a:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 0.3em; }
+
+/* Nachtrag: auf den Rechtsseiten färbt `.rechts a` alle Links weiss — der
+   Knopf steht aber auf weissem Grund und war dadurch unsichtbar. Und die
+   Standzeile verlor ihren Abstand an die allgemeine Absatzregel. */
+.bru .rechts a.cta { color: #000; }
+.bru .rechts a.cta:hover { color: var(--fg); }
+.bru .rechts p.rechts-stand { margin: 3rem 0 0; color: var(--mute); }
+.bru .rechts p.rechts-zurueck { margin: 3rem 0 0; }

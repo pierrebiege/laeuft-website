@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { EVENT, WAHL } from "./event";
+import Link from "next/link";
+import { EVENT, WAHL, SHIRTS } from "./event";
 
-/* Die Anmeldung. Bewusst wenige Felder und kein Konto: Name, E-Mail, wie
-   lange. Das Formular schickt an /api/brig-ultra/anmeldung — die Route legt
-   die Anmeldung in Supabase ab, meldet sie Pierre und bestätigt dem Anmelder.
+/* Die Anmeldung. Das Formular schickt an /api/brig-ultra/anmeldung — die
+   Route legt die Anmeldung in Supabase ab, meldet sie Pierre und bestätigt
+   dem Anmelder.
 
    Jede Person meldet sich einzeln an. Es gibt bewusst kein «wir kommen zu
    dritt»-Feld: eine Anmeldung ist eine Adresse, und die Adressen sind das,
-   was nach dem Tag übrig bleibt. Wer zu mehreren kommt, schreibt es ins
-   freie Feld. */
+   was nach dem Tag übrig bleibt.
+
+   Pflicht sind nur Name und E-Mail. Alles Weitere — Telefon, Shirtgrösse,
+   Umfang, Notiz — steht unter einer eigenen Zwischenzeile als freiwillig
+   markiert. Das ist der ganze Trick gegen die Abschreckung: nicht weniger
+   fragen, sondern sichtbar machen, wie wenig man ausfüllen muss. */
 
 const UMFANG = WAHL.map((w) => w.was);
 
@@ -44,16 +49,13 @@ export default function Anmeldung() {
   return (
     <section className="band anmeldung" id="anmelden">
       <div className="wrap">
-        <p className="stamp">Anmeldung</p>
+        <p className="stamp">Anmeldung · kostenlos</p>
         <h2>
           Sag einfach,
           <br />
           dass du kommst.
         </h2>
-        <p className="lead">
-          Kostenlos, zwei Felder. Eine Woche vorher bekommst du eine Mail mit
-          allem, was du wissen musst.
-        </p>
+        <p className="lead">Name und E-Mail genügen. Der Rest ist freiwillig.</p>
 
         {status === "fertig" ? (
           <div className="danke" role="status">
@@ -65,36 +67,77 @@ export default function Anmeldung() {
           </div>
         ) : (
           <form className="formular" onSubmit={absenden}>
-            <label className="feld">
-              <span>Name</span>
-              <input type="text" name="name" required autoComplete="name" placeholder="Vor- und Nachname" />
+            <label className="feld feld-halb">
+              <span>Vorname</span>
+              <input type="text" name="vorname" required autoComplete="given-name" placeholder="Pierre" />
             </label>
 
-            <label className="feld">
+            <label className="feld feld-halb">
+              <span>Name</span>
+              <input type="text" name="nachname" required autoComplete="family-name" placeholder="Biege" />
+            </label>
+
+            <label className="feld feld-breit">
               <span>E-Mail</span>
               <input type="email" name="email" required autoComplete="email" placeholder="du@beispiel.ch" />
             </label>
 
+            {/* Ab hier ist nichts mehr Pflicht. Die Zeile sagt das, bevor
+                jemand die Felder zählt und abspringt. */}
+            <p className="feld-trenner">
+              Ab hier freiwillig — hilft uns und dem Stadtfitness bei der Planung
+            </p>
+
             <label className="feld">
-              <span>Wie viel nimmst du dir vor?</span>
-              <select name="umfang" defaultValue={UMFANG[0]}>
+              <span>
+                WhatsApp-Nummer <i>für die Infos am Renntag</i>
+              </span>
+              <input
+                type="tel"
+                name="telefon"
+                autoComplete="tel"
+                inputMode="tel"
+                placeholder="079 000 00 00"
+              />
+            </label>
+
+            <label className="feld">
+              <span>
+                T-Shirt-Grösse <i>das Stadtfitness verschenkt Shirts</i>
+              </span>
+              <select name="shirt" defaultValue="">
+                <option value="">Keine Angabe</option>
+                {SHIRTS.map((g) => (
+                  <option key={g} value={g}>
+                    {g}
+                  </option>
+                ))}
+                <option value="Kein Shirt">Ich brauche keins</option>
+              </select>
+            </label>
+
+            <label className="feld">
+              <span>
+                Wie viel nimmst du dir vor? <i>kannst du jederzeit ändern</i>
+              </span>
+              <select name="umfang" defaultValue="Weiss ich noch nicht">
+                <option value="Weiss ich noch nicht">Weiss ich noch nicht</option>
                 {UMFANG.map((u) => (
                   <option key={u} value={u}>
                     {u}
                   </option>
                 ))}
-                <option value="Weiss ich noch nicht">Weiss ich noch nicht</option>
               </select>
             </label>
 
-            <label className="feld feld-breit">
+            <label className="feld">
               <span>
-                Etwas, das wir wissen sollten? <i>Freiwillig</i>
+                Sonst noch etwas? <i>ein Satz genügt</i>
               </span>
-              <textarea
+              <input
+                type="text"
                 name="notiz"
-                rows={3}
-                placeholder="Komme zu zweit, Kinderwagen dabei, erste Laufschuhe seit zehn Jahren …"
+                placeholder="Komme zu zweit, Kinderwagen dabei …"
               />
             </label>
 
@@ -112,7 +155,9 @@ export default function Anmeldung() {
               </button>
               <p className="cta-note">
                 Kein Startgeld, keine Verpflichtung. Kommt ihr zu mehreren,
-                meldet sich jede Person einzeln an.
+                meldet sich jede Person einzeln an. Deine Angaben sehen Pierre
+                und das Stadtfitness Brig —{" "}
+                <Link href="/datenschutz">Datenschutz</Link>.
               </p>
             </div>
 

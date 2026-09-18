@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   EVENT,
   LETTERING,
@@ -16,8 +17,10 @@ import {
   WEITER,
   FAQ,
   LAUFTAG_AM_EVENT,
+  LOGO,
 } from "./event";
 import Anmeldung from "./Anmeldung";
+import AnmeldeLeiste from "./AnmeldeLeiste";
 
 /* Pierres Lettering statt einer nachgebauten Überschrift. Es steht immer auf
    Schwarz oder über einem abgedunkelten Foto, deshalb reicht das PNG mit
@@ -40,6 +43,22 @@ function Wort({
       height={bild.h}
       priority={priority}
     />
+  );
+}
+
+/* Der Aufruf zwischendurch. Wer sich beim Lesen entscheidet, soll nicht
+   erst ans Seitenende scrollen müssen — deshalb steht er dreimal im Fluss,
+   jeweils direkt nach dem Abschnitt, der die Frage beantwortet hat. */
+function Zuruf({ zeile, knopf = "Kostenlos anmelden" }: { zeile: string; knopf?: string }) {
+  return (
+    <aside className="zuruf">
+      <div className="wrap">
+        <p>{zeile}</p>
+        <a className="cta" href="#anmelden">
+          {knopf}
+        </a>
+      </div>
+    </aside>
   );
 }
 
@@ -116,6 +135,8 @@ export default function BrigUltraPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
+      <AnmeldeLeiste />
+
       {/* ---------------- Kopf: das Bild trägt, nicht der Text ---------------- */}
       <header className="hero">
         <Image
@@ -141,13 +162,15 @@ export default function BrigUltraPage() {
       </header>
 
       {/* ---------------- Laufband ---------------- */}
-      <div className="marquee">
+      {/* Das Band führt zum Formular: es ist das breiteste Element der Seite
+          und wird ohnehin angetippt. */}
+      <a className="marquee" href="#anmelden" aria-label="Kostenlos anmelden">
         <div className="marquee-track" aria-hidden="true">
           {[...band, ...band, ...band, ...band].map((t, i) => (
             <span key={i}>{t} —</span>
           ))}
         </div>
-      </div>
+      </a>
 
       {/* ---------------- Die vier Zahlen ---------------- */}
       <section className="band band-eng">
@@ -186,6 +209,8 @@ export default function BrigUltraPage() {
           </ul>
         </div>
       </section>
+
+      <Zuruf zeile="Such dir aus, wie weit — und sag uns, dass du kommst." />
 
       {/* ---------------- Bildband: die Strecke ---------------- */}
       <figure className="bildband">
@@ -289,6 +314,8 @@ export default function BrigUltraPage() {
           </div>
         </div>
       </section>
+
+      <Zuruf zeile="Kein Startgeld, keine Verpflichtung. Zwei Felder genügen." knopf="Ich bin dabei" />
 
       {/* ---------------- Der Tag ---------------- */}
       <section className="band">
@@ -419,6 +446,8 @@ export default function BrigUltraPage() {
         </div>
       </section>
 
+      <Zuruf zeile="Noch Fragen offen? Melde dich trotzdem an, absagen geht jederzeit." />
+
       {/* ---------------- Weitertrainieren ---------------- */}
       {/* Steht nach der Anmeldung: wer sich eingetragen hat, ist genau die
           Person, für die beide Angebote gemacht sind. */}
@@ -453,13 +482,26 @@ export default function BrigUltraPage() {
             <br />
             {EVENT.claimZwei}
           </p>
-          <Wort bild={LETTERING.absender} className="fuss-absender" />
+          <div className="fuss-paar">
+            <Wort bild={LETTERING.absender} className="fuss-absender" />
+            <Image
+              className="fuss-logo"
+              src={LOGO.studio.src}
+              alt={LOGO.studio.alt}
+              width={LOGO.studio.w}
+              height={LOGO.studio.h}
+            />
+          </div>
           <p className="fuss-zeile">
             {EVENT.domain} · {EVENT.zeile}
           </p>
           <p className="fuss-klein">
             Ein Tag von Pierre Biege und dem {EVENT.partner.studio}. Fragen an{" "}
             <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>. {EVENT.schluss}
+          </p>
+          <p className="fuss-rechts">
+            <Link href="/impressum">Impressum</Link>
+            <Link href="/datenschutz">Datenschutz</Link>
           </p>
         </div>
       </footer>

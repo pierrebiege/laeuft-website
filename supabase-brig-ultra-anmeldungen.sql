@@ -7,8 +7,12 @@
 create table if not exists public.brig_ultra_anmeldungen (
   id            uuid primary key default gen_random_uuid(),
   erstellt_am   timestamptz not null default now(),
-  name          text not null,
+  name          text not null,   -- zusammengesetzt, fuer Anrede und Betreff
+  vorname       text,
+  nachname      text,
   email         text not null,
+  telefon       text,            -- WhatsApp-Nummer, freiwillig
+  shirt         text,            -- T-Shirt-Groesse; das Studio verschenkt Shirts
   umfang        text,
   anzahl        int  not null default 1,
   notiz         text,

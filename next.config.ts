@@ -53,6 +53,18 @@ const nextConfig: NextConfig = {
             has: [{ type: "host" as const, value: host }],
             destination: "/brig-ultra/sitemap",
           },
+          // Impressum und Datenschutz gehören zum Anlass, nicht zu laeuft.ch:
+          // der Anlass hat zwei Veranstalter und eine eigene Datenbearbeitung.
+          {
+            source: "/impressum",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/brig-ultra/impressum",
+          },
+          {
+            source: "/datenschutz",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/brig-ultra/datenschutz",
+          },
         ]),
       ],
     };
