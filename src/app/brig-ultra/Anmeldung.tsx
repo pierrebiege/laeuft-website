@@ -44,6 +44,11 @@ export default function Anmeldung() {
     } catch (fehler) {
       setStatus("fehler");
       setMeldung(fehler instanceof Error ? fehler.message : "Das hat nicht geklappt.");
+      /* Der Knopf steht am Ende des Formulars; ohne das springt niemand
+         zurück zur Meldung und hält die Anmeldung für kaputt. */
+      requestAnimationFrame(() => {
+        document.querySelector(".fehler")?.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
     }
   }
 
@@ -145,12 +150,19 @@ export default function Anmeldung() {
               />
             </label>
 
-            {/* Spamfalle: für Menschen unsichtbar, Bots füllen sie aus. */}
+            {/* Spamfalle: für Menschen unsichtbar, Bots füllen sie aus.
+                Das Feld hiess einmal «website» — genau so ein Name, den iOS
+                und Passwortmanager selbst ausfüllen. Dann galt eine echte
+                Anmeldung als Bot und verschwand lautlos. Deshalb jetzt ein
+                bedeutungsloser Name und Autofill ausdrücklich aus. */}
             <div className="honig" aria-hidden="true">
-              <label>
-                Website
-                <input type="text" name="website" tabIndex={-1} autoComplete="off" />
-              </label>
+              <input
+                type="text"
+                name="bru_feld"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
             </div>
 
             {/* Das Häkchen statt eines Hinweises am Rand: die Angaben gehen

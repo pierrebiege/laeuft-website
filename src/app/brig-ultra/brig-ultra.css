@@ -1354,3 +1354,99 @@
 }
 
 .bru .haken a { color: var(--fg); text-underline-offset: 0.25em; }
+
+/* ===========================================================================
+   Der Anmeldeknopf in Bronze
+   Die Seite bleibt schwarzweiss, der Knopf nicht: er ist die einzige Farbe
+   und damit unübersehbar. Der Ton ist der dominante Wert aus dem Logo des
+   Stadtfitness (#d07050), also gehört er zum Anlass und ist nicht erfunden.
+   =========================================================================== */
+
+.bru {
+  --bronze: #d07050;
+  --bronze-hell: #f0906a;
+  --bronze-dunkel: #a04828;
+}
+
+.bru .cta {
+  position: relative;
+  overflow: hidden;
+  background: var(--bronze);
+  color: #000;
+  border-color: var(--bronze);
+  /* Der Ring ums Leuchten wird unten angetrieben. */
+  box-shadow: 0 0 0 0 rgba(208, 112, 80, 0.55);
+  animation: bru-puls 2.8s ease-out infinite;
+}
+
+.bru .cta:hover {
+  background: var(--bronze-hell);
+  border-color: var(--bronze-hell);
+  color: #000;
+  animation-play-state: paused;
+}
+
+/* Der Glanzstreifen: ein schräges helles Band, das alle paar Sekunden über
+   den Knopf läuft. Es liegt über der Fläche, aber unter der Schrift. */
+.bru .cta::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -40%;
+  width: 40%;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-18deg);
+  animation: bru-glanz 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bru-puls {
+  0% { box-shadow: 0 0 0 0 rgba(208, 112, 80, 0.55); }
+  70% { box-shadow: 0 0 0 1.1rem rgba(208, 112, 80, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(208, 112, 80, 0); }
+}
+
+@keyframes bru-glanz {
+  0%, 62% { left: -45%; }
+  92%, 100% { left: 125%; }
+}
+
+/* Im hellen Zwischenruf-Block bleibt der Knopf bronzen — sonst hätte die
+   Seite zwei verschiedene Anmeldeknöpfe, und man müsste zweimal lernen,
+   worauf man tippt. */
+.bru .zuruf .cta {
+  background: var(--bronze);
+  color: #000;
+  border-color: var(--bronze-dunkel);
+}
+
+.bru .zuruf .cta:hover { background: var(--bronze-hell); color: #000; }
+
+/* In der mitlaufenden Leiste pulst der Knopf nicht: dort bewegt sich schon
+   die Leiste selbst, und ein Dauerpuls über dem Daumen nervt. */
+.bru .leiste .cta { animation: none; box-shadow: none; }
+.bru .leiste { border-top-color: var(--bronze); }
+
+/* Der Knopf auf den Rechtsseiten braucht kein Blinken. */
+.bru .rechts a.cta { animation: none; box-shadow: none; color: #000; }
+.bru .rechts a.cta::after { animation: none; display: none; }
+.bru .rechts a.cta:hover { color: #000; }
+
+/* Das Häkchen nimmt die Farbe mit: wer es setzt, sieht dieselbe Bronze wie
+   auf dem Knopf, den er gleich drückt. */
+.bru .haken input:checked { background-color: var(--bronze); border-color: var(--bronze); }
+
+/* Der abgeschaltete Knopf soll nicht weiterblinken. */
+.bru button.cta:disabled { animation: none; box-shadow: none; }
+.bru button.cta:disabled::after { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bru .cta { animation: none; box-shadow: none; }
+  .bru .cta::after { display: none; }
+}
