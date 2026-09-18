@@ -49,10 +49,43 @@ export async function POST(request: NextRequest) {
        damit der Bot nichts daraus lernt. */
     if (sauber(koerper.website)) return NextResponse.json({ ok: true });
 
-    const name = sauber(koerper.name, 120);
+    /* Vor- und Nachname kommen getrennt; `name` bleibt die zusammengesetzte
+       Fassung, weil Anrede und Betreff sie so brauchen. Ältere Aufrufe mit
+       einem einzelnen `name`-Feld funktionieren weiter. */
+    const vorname = sauber(koerper.vorname, 80);
+    const nachname = sauber(koerper.nachname, 80);
+    const name = [vorname, nachname].filter(Boolean).join(" ") || sauber(koerper.name, 160);
+
     const email = sauber(koerper.email, 160).toLowerCase();
     const umfang = sauber(koerper.umfang, 60) || "Weiss ich noch nicht";
     const notiz = sauber(koerper.notiz, 1000);
+
+    /* WhatsApp-Nummer: alles ausser Ziffern, Pluszeichen und Leerzeichen
+       fliegt raus, damit aus «079 000 00 00 (mobil)» eine Nummer wird. */
+    const telefon = sauber(koerper.telefon, 40).replace(/[^\d+ ]/g, "").replace(/\s+/g, " ").trim();
+
+    const shirt = sauber(koerper.shirt, 20);
+
+    /* Ohne Häkchen keine Anmeldung: die Angaben gehen an zwei Stellen, also
+       muss die Zustimmung nachweisbar sein. Der Zeitpunkt wird gespeichert. */
+    const einwilligung = sauber(koerper.einwilligung, 10) === "ja";
+    if (!einwilligung) {
+      return NextResponse.json(
+        { error: "Bitte bestätige noch, dass wir deine Angaben verwenden dürfen." },
+        { status: 400 }
+      );
+    }
+
+    if (!telefon || telefon.replace(/\D/g, "").length < 9) {
+      return NextResponse.json(
+        { error: "Bitte trag deine WhatsApp-Nummer ein." },
+        { status: 400 }
+      );
+    }
+
+    if (!shirt) {
+      return NextResponse.json({ error: "Bitte wähle eine T-Shirt-Grösse." }, { status: 400 });
+    }
 
     if (name.length < 2) {
       return NextResponse.json({ error: "Bitte trag deinen Namen ein." }, { status: 400 });
@@ -76,11 +109,16 @@ export async function POST(request: NextRequest) {
       .upsert(
         {
           name,
+          vorname: vorname || null,
+          nachname: nachname || null,
           email,
+          telefon: telefon || null,
+          shirt: shirt || null,
           umfang,
           notiz: notiz || null,
           quelle: EVENT.domain,
           ip_hash: ipHash,
+          einwilligung_am: new Date().toISOString(),
           storniert_am: null,
         },
         { onConflict: "email" }
@@ -103,6 +141,8 @@ export async function POST(request: NextRequest) {
     const zeilen: [string, string][] = [
       ["Name", name],
       ["E-Mail", email],
+      ["WhatsApp", telefon || "—"],
+      ["T-Shirt", shirt || "—"],
       ["Umfang", umfang],
       ["Notiz", notiz || "—"],
       ["Angemeldet total", count != null ? String(count) : "—"],
@@ -138,7 +178,7 @@ ${zeilen
         replyTo: EVENT.postfach,
         subject: `Du bist dabei — 50 km Brig, ${EVENT.datumKurz}`,
         text: [
-          `Hallo ${name}`,
+          `Hallo ${vorname || name}`,
           "",
           "Schön, bist du dabei.",
           "",
@@ -156,6 +196,10 @@ ${zeilen
           "",
           "Mitbringen: Laufschuhe, Wechselshirt, Trinkflasche.",
           "Startgeld gibt es keines.",
+          ...(shirt && shirt !== "Kein Shirt"
+            ? ["", `Deine Shirtgrösse (${shirt}) haben wir notiert — das`,
+               "Stadtfitness Brig verschenkt T-Shirts am Anlass."]
+            : []),
           "",
           "Eine Woche vorher melden wir uns nochmal mit den letzten Details.",
           `Wenn du doch nicht kannst, schreib einfach an ${EVENT.postfach}.`,

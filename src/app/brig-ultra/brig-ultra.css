@@ -1300,3 +1300,57 @@
 .bru .rechts a.cta:hover { color: var(--fg); }
 .bru .rechts p.rechts-stand { margin: 3rem 0 0; color: var(--mute); }
 .bru .rechts p.rechts-zurueck { margin: 3rem 0 0; }
+
+/* ---------------- Einwilligung ---------------- */
+
+/* Das Häkchen. Es steht über dem Knopf, nicht daneben: man soll es lesen,
+   bevor man abschickt, nicht danach suchen. */
+.bru .haken {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-top: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  cursor: pointer;
+}
+
+/* Eigenes Kästchen statt des systemeigenen: das native ist auf Schwarz je
+   nach Betriebssystem kaum zu sehen. */
+.bru .haken input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: 0.0625rem 0 0;
+  border: 1px solid var(--mute);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.bru .haken input:hover { border-color: var(--fg); }
+
+.bru .haken input:checked {
+  background: var(--fg);
+  border-color: var(--fg);
+  /* Der Haken als zwei Striche — kein Bild, keine Schriftart nötig. */
+  background-image: linear-gradient(45deg, transparent 44%, #000 44%, #000 56%, transparent 56%),
+    linear-gradient(-45deg, transparent 44%, #000 44%, #000 56%, transparent 56%);
+  background-size: 0.55rem 0.55rem, 0.55rem 0.55rem;
+  background-position: 0.28rem 0.5rem, 0.55rem 0.5rem;
+  background-repeat: no-repeat;
+}
+
+.bru .haken input:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+.bru .haken > span {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--mute);
+  max-width: 54ch;
+}
+
+.bru .haken a { color: var(--fg); text-underline-offset: 0.25em; }

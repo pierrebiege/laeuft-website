@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EVENT } from "../event";
 
-/* Impressum für 50 km Brig. Der Anlass hat zwei Veranstalter, also stehen
-   auch zwei drin — die Seite gehört beiden. */
+/* Impressum für 50 km Brig. Die Website gehört Pierre — sie läuft unter
+   Natural Athletics, seiner Bewegungsschule. Das Stadtfitness ist Partner
+   des Anlasses, aber nicht Herausgeber dieser Seite; deshalb steht es hier
+   als Partner und nicht als Verantwortlicher. */
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -21,43 +23,42 @@ export default function Impressum() {
         </p>
         <h1>Impressum.</h1>
         <p className="lead">
-          {EVENT.nameLaut} ist ein gemeinsamer Anlass von Pierre Biege und dem
-          Stadtfitness Brig.
+          Diese Website betreibt Pierre Biege. Den Anlass organisiert er
+          zusammen mit dem Stadtfitness Brig.
         </p>
 
         <section>
-          <h2>Veranstalter</h2>
-          <ul>
-            <li>
-              <b>Pierre Biege</b>
-              <br />
-              Tschangaladongastrasse 3
-              <br />
-              3955 Albinen, Schweiz
-              <br />
-              <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>
-            </li>
-            <li>
-              <b>Stadtfitness Brig</b>
-              <br />
-              Sennereigasse 8
-              <br />
-              3900 Brig-Glis, Schweiz
-              <br />
-              <a href="mailto:info@stadtfitness.ch">info@stadtfitness.ch</a> ·{" "}
-              <a href="https://www.stadtfitness.ch" target="_blank" rel="noopener">
-                stadtfitness.ch
-              </a>
-            </li>
-          </ul>
+          <h2>Verantwortlich für diese Website</h2>
+          <p>
+            <b>Natural Athletics — Pierre Biege</b>
+            <br />
+            Tschangaladongastrasse 3
+            <br />
+            3955 Albinen, Schweiz
+            <br />
+            <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>
+            <br />
+            <a href="https://www.natural-athletics.ch" target="_blank" rel="noopener">
+              natural-athletics.ch
+            </a>
+          </p>
+          <p>
+            Inhalt, Gestaltung und Betrieb von {EVENT.domain} sowie die
+            Anmeldung liegen bei ihm. Fragen zur Website und zur Anmeldung gehen
+            an dieselbe Adresse.
+          </p>
         </section>
 
         <section>
-          <h2>Für diese Website</h2>
+          <h2>Partner des Anlasses</h2>
           <p>
-            Inhalt, Gestaltung und Betrieb von {EVENT.domain}: Pierre Biege,
-            Adresse wie oben. Anfragen zur Website und zur Anmeldung gehen an{" "}
-            <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>.
+            <b>Stadtfitness Brig</b>, Sennereigasse 8, 3900 Brig-Glis —{" "}
+            <a href="https://www.stadtfitness.ch" target="_blank" rel="noopener">
+              stadtfitness.ch
+            </a>
+            . Das Studio stellt Start, Ziel und Garderobe, verschenkt die
+            T-Shirts und organisiert den Tag mit. Für diese Website ist es nicht
+            verantwortlich.
           </p>
         </section>
 
@@ -82,8 +83,7 @@ export default function Impressum() {
         <section>
           <h2>Bilder</h2>
           <p>
-            Die Aufnahmen aus dem Stadtfitness Brig sowie das Porträt stammen von
-            Pierre Biege. Die Strassenansichten von Brig sind digital erzeugte
+            Die Aufnahmen aus dem Stadtfitness Brig stammen von Pierre Biege. Die Strassenansichten von Brig sind digital erzeugte
             Darstellungen und zeigen keine tatsächliche Szene. Das Logo des
             Stadtfitness Brig gehört dem Studio und wird mit dessen Einverständnis
             verwendet.

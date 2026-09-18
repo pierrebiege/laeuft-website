@@ -34,22 +34,16 @@ export default function Datenschutz() {
         <section>
           <h2>Wer verantwortlich ist</h2>
           <p>
-            Für die Anmeldedaten sind zwei Stellen gemeinsam verantwortlich,
-            weil der Anlass beiden gehört:
+            <b>Natural Athletics — Pierre Biege</b>
+            <br />
+            Tschangaladongastrasse 3, 3955 Albinen, Schweiz
+            <br />
+            <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>
           </p>
-          <ul>
-            <li>
-              <b>Pierre Biege</b>, Tschangaladongastrasse 3, 3955 Albinen,
-              Schweiz — <a href={`mailto:${EVENT.postfach}`}>{EVENT.postfach}</a>
-            </li>
-            <li>
-              <b>Stadtfitness Brig</b>, {STUDIO_ADRESSE}, Schweiz —{" "}
-              <a href="mailto:info@stadtfitness.ch">info@stadtfitness.ch</a>
-            </li>
-          </ul>
           <p>
-            Für Auskunft, Berichtigung oder Löschung genügt eine Nachricht an
-            eine der beiden Adressen. Wir leiten sie einander weiter.
+            Er betreibt diese Website und die Anmeldung. Das{" "}
+            <b>Stadtfitness Brig</b>, {STUDIO_ADRESSE}, organisiert den Anlass
+            mit und erhält die Anmeldedaten für die Vorbereitung — siehe unten.
           </p>
         </section>
 
@@ -58,13 +52,30 @@ export default function Datenschutz() {
           <p>Über das Anmeldeformular:</p>
           <ul>
             <li>
-              <b>Pflicht:</b> Vorname, Name, E-Mail-Adresse
+              <b>Vorname und Name</b> — damit wir wissen, wer kommt
             </li>
             <li>
-              <b>Freiwillig:</b> WhatsApp-Nummer, T-Shirt-Grösse, geplanter
-              Umfang, deine Notiz
+              <b>E-Mail-Adresse</b> — für die Bestätigung und die Infos vorher
+            </li>
+            <li>
+              <b>WhatsApp-Nummer</b> — für die Infos am Renntag selbst
+            </li>
+            <li>
+              <b>T-Shirt-Grösse</b> — das Stadtfitness Brig verschenkt Shirts
+            </li>
+            <li>
+              <b>Geplanter Umfang</b> — damit wir die Verpflegung und die Runden
+              planen können
+            </li>
+            <li>
+              <b>Notiz</b> — freiwillig, das einzige Feld ohne Pflicht
             </li>
           </ul>
+          <p>
+            Beim Absenden bestätigst du mit einem Häkchen, dass wir diese
+            Angaben dafür verwenden dürfen. Den Zeitpunkt dieser Bestätigung
+            speichern wir mit.
+          </p>
           <p>
             Technisch speichern wir zusätzlich den Zeitpunkt der Anmeldung und
             einen <b>Hashwert deiner IP-Adresse</b>. Der Hash lässt sich nicht
@@ -82,13 +93,18 @@ export default function Datenschutz() {
               welcher Grösse braucht — die Shirts sind ein Geschenk des Studios
             </li>
             <li>
+              Um dich am Renntag über WhatsApp zu erreichen, wenn sich etwas
+              kurzfristig ändert
+            </li>
+            <li>
               Um dich später zu fragen, ob du bei einer Neuauflage wieder dabei
               sein willst
             </li>
           </ul>
           <p>
-            Wir verkaufen keine Adressen und geben sie an niemanden weiter
-            ausser an die beiden oben genannten Stellen.
+            Die Anmeldeliste geht an das Stadtfitness Brig, weil das Studio den
+            Anlass mitorganisiert und die Shirts verschenkt. Darüber hinaus
+            geben wir nichts weiter und verkaufen keine Adressen.
           </p>
         </section>
 

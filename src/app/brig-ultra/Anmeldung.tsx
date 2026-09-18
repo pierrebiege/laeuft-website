@@ -12,10 +12,11 @@ import { EVENT, WAHL, SHIRTS } from "./event";
    dritt»-Feld: eine Anmeldung ist eine Adresse, und die Adressen sind das,
    was nach dem Tag übrig bleibt.
 
-   Pflicht sind nur Name und E-Mail. Alles Weitere — Telefon, Shirtgrösse,
-   Umfang, Notiz — steht unter einer eigenen Zwischenzeile als freiwillig
-   markiert. Das ist der ganze Trick gegen die Abschreckung: nicht weniger
-   fragen, sondern sichtbar machen, wie wenig man ausfüllen muss. */
+   Bis auf die Notiz wird alles gebraucht: die Nummer für die Infos am
+   Renntag, die Shirtgrösse für das Geschenk des Stadtfitness, der Umfang für
+   die Planung. Statt Felder als freiwillig zu markieren, steht über ihnen,
+   wozu sie dienen — eine Frage, deren Zweck man sieht, schreckt weniger ab
+   als eine, die man für Datensammelei hält. */
 
 const UMFANG = WAHL.map((w) => w.was);
 
@@ -55,7 +56,7 @@ export default function Anmeldung() {
           <br />
           dass du kommst.
         </h2>
-        <p className="lead">Name und E-Mail genügen. Der Rest ist freiwillig.</p>
+        <p className="lead">Fünf Felder, eine Minute. Dann bist du dabei.</p>
 
         {status === "fertig" ? (
           <div className="danke" role="status">
@@ -82,19 +83,20 @@ export default function Anmeldung() {
               <input type="email" name="email" required autoComplete="email" placeholder="du@beispiel.ch" />
             </label>
 
-            {/* Ab hier ist nichts mehr Pflicht. Die Zeile sagt das, bevor
-                jemand die Felder zählt und abspringt. */}
+            {/* Die Zeile begründet die nächsten Felder, bevor jemand sie
+                zählt: wer den Zweck sieht, füllt sie aus. */}
             <p className="feld-trenner">
-              Ab hier freiwillig — hilft uns und dem Stadtfitness bei der Planung
+              Das brauchen wir für die Organisation
             </p>
 
             <label className="feld">
               <span>
-                WhatsApp-Nummer <i>für die Infos am Renntag</i>
+                WhatsApp-Nummer <i>hier kommen die Infos am Renntag</i>
               </span>
               <input
                 type="tel"
                 name="telefon"
+                required
                 autoComplete="tel"
                 inputMode="tel"
                 placeholder="079 000 00 00"
@@ -103,10 +105,12 @@ export default function Anmeldung() {
 
             <label className="feld">
               <span>
-                T-Shirt-Grösse <i>das Stadtfitness verschenkt Shirts</i>
+                T-Shirt-Grösse <i>dein Shirt vom Stadtfitness</i>
               </span>
-              <select name="shirt" defaultValue="">
-                <option value="">Keine Angabe</option>
+              <select name="shirt" required defaultValue="">
+                <option value="" disabled>
+                  Bitte wählen
+                </option>
                 {SHIRTS.map((g) => (
                   <option key={g} value={g}>
                     {g}
@@ -118,7 +122,7 @@ export default function Anmeldung() {
 
             <label className="feld">
               <span>
-                Wie viel nimmst du dir vor? <i>kannst du jederzeit ändern</i>
+                Wie viel nimmst du dir vor? <i>nur zur Planung, nicht verbindlich</i>
               </span>
               <select name="umfang" defaultValue="Weiss ich noch nicht">
                 <option value="Weiss ich noch nicht">Weiss ich noch nicht</option>
@@ -132,7 +136,7 @@ export default function Anmeldung() {
 
             <label className="feld">
               <span>
-                Sonst noch etwas? <i>ein Satz genügt</i>
+                Sonst noch etwas? <i>freiwillig, ein Satz genügt</i>
               </span>
               <input
                 type="text"
@@ -149,15 +153,26 @@ export default function Anmeldung() {
               </label>
             </div>
 
+            {/* Das Häkchen statt eines Hinweises am Rand: die Angaben gehen
+                an zwei Stellen, und wer zustimmt, soll das auch getan haben.
+                Der Zeitpunkt wird mitgespeichert. */}
+            <label className="haken">
+              <input type="checkbox" name="einwilligung" required value="ja" />
+              <span>
+                Ich bin einverstanden, dass Pierre Biege und das Stadtfitness
+                Brig meine Angaben für die Organisation dieses Anlasses
+                verwenden und mich dazu kontaktieren.{" "}
+                <Link href="/datenschutz">Datenschutz</Link>
+              </span>
+            </label>
+
             <div className="formular-fuss">
               <button className="cta" type="submit" disabled={status === "sendet"}>
                 {status === "sendet" ? "Moment …" : "Ich bin dabei"}
               </button>
               <p className="cta-note">
                 Kein Startgeld, keine Verpflichtung. Kommt ihr zu mehreren,
-                meldet sich jede Person einzeln an. Deine Angaben sehen Pierre
-                und das Stadtfitness Brig —{" "}
-                <Link href="/datenschutz">Datenschutz</Link>.
+                meldet sich jede Person einzeln an.
               </p>
             </div>
 
