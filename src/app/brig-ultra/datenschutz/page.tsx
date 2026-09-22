@@ -70,7 +70,19 @@ export default function Datenschutz() {
             <li>
               <b>Notiz</b> — freiwillig, das einzige Feld ohne Pflicht
             </li>
+            <li>
+              <b>Ob du 18 oder älter bist</b> — wer jünger ist, nimmt nur mit
+              Einverständnis der Eltern teil
+            </li>
           </ul>
+          <p>
+            Bei Teilnehmenden unter 18 zusätzlich: <b>Alter</b>, <b>Name,
+            Telefonnummer und E-Mail-Adresse eines Elternteils</b> sowie der
+            Zeitpunkt, zu dem das Einverständnis bestätigt wurde. Die Nummer
+            brauchen wir, um die Eltern am Anlasstag im Notfall zu erreichen;
+            an die E-Mail-Adresse geht eine Kopie der Anmeldung. Für nichts
+            anderes.
+          </p>
           <p>
             Beim Absenden bestätigst du mit einem Häkchen, dass wir diese
             Angaben dafür verwenden dürfen. Den Zeitpunkt dieser Bestätigung

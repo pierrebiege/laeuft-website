@@ -23,6 +23,9 @@ const UMFANG = WAHL.map((w) => w.was);
 export default function Anmeldung() {
   const [status, setStatus] = useState<"bereit" | "sendet" | "fertig" | "fehler">("bereit");
   const [meldung, setMeldung] = useState("");
+  /* Leer, bis jemand antwortet — dann erst erscheint der Elternblock oder
+     eben nicht. Kein Vorschlag, damit niemand die Frage überspringt. */
+  const [volljaehrig, setVolljaehrig] = useState<"" | "ja" | "nein">("");
 
   async function absenden(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -87,6 +90,102 @@ export default function Anmeldung() {
               <span>E-Mail</span>
               <input type="email" name="email" required autoComplete="email" placeholder="du@beispiel.ch" />
             </label>
+
+            {/* Die Altersfrage steht vor allem anderen Organisatorischen:
+                wer unter 18 ist, braucht das Einverständnis eines Elternteils,
+                und dessen Nummer ist am Anlasstag die wichtigste im Formular. */}
+            <fieldset className="feld feld-breit alter-wahl">
+              <legend>
+                Bist du am {EVENT.tagImSatz} 18 oder älter?
+              </legend>
+              <div className="alter-knoepfe">
+                <label>
+                  <input
+                    type="radio"
+                    name="volljaehrig"
+                    value="ja"
+                    required
+                    checked={volljaehrig === "ja"}
+                    onChange={() => setVolljaehrig("ja")}
+                  />
+                  <span>Ja, 18 oder älter</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="volljaehrig"
+                    value="nein"
+                    checked={volljaehrig === "nein"}
+                    onChange={() => setVolljaehrig("nein")}
+                  />
+                  <span>Nein, jünger</span>
+                </label>
+              </div>
+            </fieldset>
+
+            {volljaehrig === "nein" && (
+              <>
+                <p className="feld-trenner">
+                  Unter 18: dafür brauchen wir einen Elternteil
+                </p>
+
+                <label className="feld feld-halb">
+                  <span>
+                    Dein Alter <i>am {EVENT.tagImSatz}</i>
+                  </span>
+                  <input
+                    type="number"
+                    name="alter_jahre"
+                    required
+                    min={6}
+                    max={17}
+                    inputMode="numeric"
+                    placeholder="15"
+                  />
+                </label>
+
+                <label className="feld feld-halb">
+                  <span>
+                    Name Mutter oder Vater <i>Vor- und Nachname</i>
+                  </span>
+                  <input type="text" name="eltern_name" required autoComplete="off" placeholder="Anna Muster" />
+                </label>
+
+                <label className="feld feld-halb">
+                  <span>
+                    Telefon Elternteil <i>am Anlasstag im Notfall erreichbar</i>
+                  </span>
+                  <input
+                    type="tel"
+                    name="eltern_telefon"
+                    required
+                    autoComplete="off"
+                    inputMode="tel"
+                    placeholder="079 000 00 00"
+                  />
+                </label>
+
+                <label className="feld feld-halb">
+                  <span>
+                    E-Mail Elternteil <i>bekommt eine Kopie der Anmeldung</i>
+                  </span>
+                  <input type="email" name="eltern_email" required autoComplete="off" placeholder="mama@beispiel.ch" />
+                </label>
+
+                {/* Das Häkchen setzt der Elternteil — oder bestätigt, dass er
+                    gefragt wurde. Deshalb geht die Kopie an seine Adresse:
+                    stimmt etwas nicht, meldet er sich. */}
+                <label className="haken">
+                  <input type="checkbox" name="eltern_einwilligung" required value="ja" />
+                  <span>
+                    Ich bin Mutter oder Vater (bzw. erziehungsberechtigt) und
+                    einverstanden, dass mein Kind an {EVENT.nameLaut} teilnimmt.
+                    Es läuft auf eigene Verantwortung mit, und ich bin am{" "}
+                    {EVENT.tagImSatz} unter der Nummer oben erreichbar.
+                  </span>
+                </label>
+              </>
+            )}
 
             {/* Die Zeile begründet die nächsten Felder, bevor jemand sie
                 zählt: wer den Zweck sieht, füllt sie aus. */}

@@ -20,6 +20,8 @@ export const EVENT = {
 
   datum: "Sonntag, 4. Oktober 2026",
   datumKurz: "So 4.10.2026",
+  /* Für Sätze wie «Bist du am 4. Oktober 18 oder älter?» */
+  tagImSatz: "4. Oktober",
   datumISO: "2026-10-04",
   /* Die Zeile, die auf jedem seiner Bilder steht. Genau so, mit Pipes. */
   zeile: "04. Oktober 2026 | 08:00 – 18:00 | BRIG",

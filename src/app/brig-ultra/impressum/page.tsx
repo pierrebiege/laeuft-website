@@ -75,8 +75,14 @@ export default function Impressum() {
             Wer mitläuft, tut das auf eigene Verantwortung und schätzt selbst
             ein, wie viel er sich zumutet. Eine Unfallversicherung ist Sache der
             Teilnehmenden. Die Veranstalter haften nicht für Personen- oder
-            Sachschäden, soweit das Gesetz das zulässt. Für Kinder sind die
-            begleitenden Erwachsenen verantwortlich.
+            Sachschäden, soweit das Gesetz das zulässt.
+          </p>
+          <p>
+            Wer am Anlasstag unter 18 ist, nimmt nur mit dem Einverständnis
+            eines Elternteils teil, das bei der Anmeldung bestätigt wird. Die
+            Eltern bekommen eine Kopie der Anmeldung und sind am Tag als
+            Notfallkontakt hinterlegt. Für Kinder, die mit Erwachsenen kommen,
+            sind die begleitenden Erwachsenen verantwortlich.
           </p>
         </section>
 

@@ -34,3 +34,16 @@ alter table public.brig_ultra_anmeldungen enable row level security;
 -- Die Liste zum Abarbeiten:
 --   select name, email, umfang, anzahl, notiz, erstellt_am
 --   from brig_ultra_anmeldungen where storniert_am is null order by erstellt_am;
+
+-- 22.09.2026: Alter. Wer am Anlasstag unter 18 ist, meldet sich nur mit
+-- Einverständnis eines Elternteils an; dessen Name, Telefon und E-Mail stehen
+-- hier, der Zeitpunkt des Häkchens in eltern_einwilligung_am. Die Anmeldungen
+-- vor diesem Datum haben volljaehrig = null (nie gefragt).
+alter table public.brig_ultra_anmeldungen
+  add column if not exists einwilligung_am        timestamptz,
+  add column if not exists volljaehrig            boolean,
+  add column if not exists alter_jahre            int,
+  add column if not exists eltern_name            text,
+  add column if not exists eltern_telefon         text,
+  add column if not exists eltern_email           text,
+  add column if not exists eltern_einwilligung_am timestamptz;

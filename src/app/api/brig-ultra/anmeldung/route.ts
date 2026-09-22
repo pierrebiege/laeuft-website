@@ -38,6 +38,17 @@ const ENTITAETEN: Record<string, string> = {
   '"': "&quot;",
 };
 
+/* Telefonnummer: alles ausser Ziffern, Pluszeichen und Leerzeichen fliegt
+   raus, damit aus «079 000 00 00 (mobil)» eine Nummer wird. */
+function nummer(text: string) {
+  return text
+    .replace(/[^\d+ ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const EMAIL_MUSTER = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 function escape(text: string) {
   return text.replace(/[&<>"]/g, (z) => ENTITAETEN[z]);
 }
@@ -71,12 +82,8 @@ export async function POST(request: NextRequest) {
     const umfang = sauber(koerper.umfang, 60) || "Weiss ich noch nicht";
     const notiz = sauber(koerper.notiz, 1000);
 
-    /* WhatsApp-Nummer: alles ausser Ziffern, Pluszeichen und Leerzeichen
-       fliegt raus, damit aus «079 000 00 00 (mobil)» eine Nummer wird. */
-    const telefon = sauber(koerper.telefon, 40)
-      .replace(/[^\d+ ]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    /* WhatsApp-Nummer, bereinigt wie jede Nummer hier. */
+    const telefon = nummer(sauber(koerper.telefon, 40));
 
     const shirt = sauber(koerper.shirt, 20);
 
@@ -91,6 +98,63 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 },
       );
+    }
+
+    /* Alter: wer am Anlasstag unter 18 ist, meldet sich nur mit einem
+       Elternteil an — Name, Telefon für den Notfall, E-Mail für die Kopie
+       und das Häkchen. Ohne Antwort auf die Frage keine Anmeldung. */
+    const volljaehrigWahl = sauber(koerper.volljaehrig, 10);
+    if (volljaehrigWahl !== "ja" && volljaehrigWahl !== "nein") {
+      return NextResponse.json(
+        { error: "Bitte sag uns noch, ob du 18 oder älter bist." },
+        { status: 400 },
+      );
+    }
+    const volljaehrig = volljaehrigWahl === "ja";
+
+    let alterJahre: number | null = null;
+    let elternName = "";
+    let elternTelefon = "";
+    let elternEmail = "";
+    if (!volljaehrig) {
+      alterJahre = Number.parseInt(sauber(koerper.alter_jahre, 3), 10);
+      elternName = sauber(koerper.eltern_name, 160);
+      elternTelefon = nummer(sauber(koerper.eltern_telefon, 40));
+      elternEmail = sauber(koerper.eltern_email, 160).toLowerCase();
+
+      if (!Number.isFinite(alterJahre) || alterJahre < 1 || alterJahre > 17) {
+        return NextResponse.json(
+          { error: "Bitte trag dein Alter ein." },
+          { status: 400 },
+        );
+      }
+      if (elternName.length < 3) {
+        return NextResponse.json(
+          { error: "Bitte trag den Namen deiner Mutter oder deines Vaters ein." },
+          { status: 400 },
+        );
+      }
+      if (elternTelefon.replace(/\D/g, "").length < 9) {
+        return NextResponse.json(
+          { error: "Bitte trag die Telefonnummer deiner Eltern ein." },
+          { status: 400 },
+        );
+      }
+      if (!EMAIL_MUSTER.test(elternEmail)) {
+        return NextResponse.json(
+          { error: "Die E-Mail-Adresse deiner Eltern sieht nicht richtig aus." },
+          { status: 400 },
+        );
+      }
+      if (sauber(koerper.eltern_einwilligung, 10) !== "ja") {
+        return NextResponse.json(
+          {
+            error:
+              "Unter 18 geht es nur mit dem Häkchen deiner Eltern — bitte frag sie kurz.",
+          },
+          { status: 400 },
+        );
+      }
     }
 
     if (!telefon || telefon.replace(/\D/g, "").length < 9) {
@@ -113,7 +177,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    if (!EMAIL_MUSTER.test(email)) {
       return NextResponse.json(
         { error: "Diese E-Mail-Adresse sieht nicht richtig aus." },
         { status: 400 },
@@ -145,6 +209,14 @@ export async function POST(request: NextRequest) {
           quelle: EVENT.domain,
           ip_hash: ipHash,
           einwilligung_am: new Date().toISOString(),
+          /* Bei einer Korrektur als Volljährige:r werden die Elternfelder
+             bewusst geleert — sonst bliebe ein alter Elternteil stehen. */
+          volljaehrig,
+          alter_jahre: alterJahre,
+          eltern_name: elternName || null,
+          eltern_telefon: elternTelefon || null,
+          eltern_email: elternEmail || null,
+          eltern_einwilligung_am: volljaehrig ? null : new Date().toISOString(),
           storniert_am: null,
         },
         { onConflict: "email" },
@@ -169,6 +241,15 @@ export async function POST(request: NextRequest) {
 
     const zeilen: [string, string][] = [
       ["Name", name],
+      ["Alter", volljaehrig ? "18 oder älter" : `${alterJahre} — MINDERJÄHRIG`],
+      ...(volljaehrig
+        ? []
+        : ([
+            ["Elternteil", elternName],
+            ["Telefon Eltern", elternTelefon],
+            ["E-Mail Eltern", elternEmail],
+            ["Einverständnis", "Häkchen gesetzt, Kopie an Eltern verschickt"],
+          ] as [string, string][])),
       ["E-Mail", email],
       ["WhatsApp", telefon || "—"],
       ["T-Shirt", shirt || "—"],
@@ -190,7 +271,9 @@ export async function POST(request: NextRequest) {
           from: absender,
           to: ZIEL,
           replyTo: `"${name.replace(/"/g, "")}" <${email}>`,
-          subject: `50 km Brig — Anmeldung: ${name}`,
+          subject: `50 km Brig — Anmeldung: ${name}${
+            volljaehrig ? "" : ` (U18, ${alterJahre} J.)`
+          }`,
           text: zeilen.map(([k, v]) => `${k}: ${v}`).join("\n"),
           html: `<h2 style="font-family:sans-serif">Neue Anmeldung — 50 km Brig</h2>
 <table style="font-family:sans-serif;font-size:15px;border-collapse:collapse">
@@ -246,6 +329,49 @@ ${zeilen
             EVENT.domain,
           ].join("\n"),
         });
+
+        /* Die Kopie an die Eltern ist der eigentliche Schutz: das Häkchen
+           kann auch das Kind setzen, die Mail landet aber bei den Eltern.
+           Stimmt etwas nicht, antworten sie — Reply-To ist das Postfach. */
+        if (!volljaehrig) {
+          await transporter.sendMail({
+            from: absender,
+            to: elternEmail,
+            replyTo: EVENT.postfach,
+            subject: `${vorname || name} hat sich für 50 km Brig angemeldet`,
+            text: [
+              `Hallo ${elternName}`,
+              "",
+              `${name} (${alterJahre}) hat sich für ${EVENT.nameLaut} angemeldet und`,
+              "dabei angegeben, dass du einverstanden bist. Du bist als",
+              `Notfallkontakt für den Tag eingetragen: ${elternTelefon}.`,
+              "",
+              EVENT.datum,
+              `${EVENT.start} bis ${EVENT.ende} Uhr`,
+              `${EVENT.treffpunkt}, ${EVENT.ort}`,
+              "",
+              "Kurz, worum es geht: ein gemeinsames Training, kein Rennen, ohne",
+              "Zeitmessung. Alle 30 Minuten startet eine Runde von 2,5 km durch",
+              "Brig auf öffentlichen Wegen, danach eine kurze Übung im Studio.",
+              "Jede:r läuft so viele Runden, wie es sich gut anfühlt, und kann",
+              "jederzeit aufhören. Die Strecke ist nicht abgesperrt, der Verkehr",
+              "läuft normal. Die Teilnahme ist auf eigene Verantwortung, eine",
+              "Unfallversicherung ist Sache der Teilnehmenden.",
+              "",
+              "Bitte sorg dafür, dass du am Tag unter der Nummer oben erreichbar",
+              "bist.",
+              "",
+              "Wenn du NICHT einverstanden bist oder davon nichts wusstest,",
+              "antworte einfach auf diese Mail — dann streichen wir die",
+              "Anmeldung.",
+              "",
+              "Liebe Grüsse",
+              "Pierre",
+              "",
+              EVENT.domain,
+            ].join("\n"),
+          });
+        }
       } catch (mailFehler) {
         console.error("[brig-ultra/anmeldung] Mail:", mailFehler);
       }
