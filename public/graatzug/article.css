@@ -55,4 +55,4 @@ ul.check li::before { content: "☐"; position: absolute; left: 0; color: var(--
 .foot-links li { margin: 0 0 8px; }
 .foot-links a { color: var(--fg-2); text-decoration: none; font-size: 14px; }
 .foot-links a:hover { color: #fff; }
-.article .foot-bottom a { color: var(--fg-2); }
+.article .foot-bottom a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
