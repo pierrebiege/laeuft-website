@@ -372,3 +372,15 @@ a { color: inherit; text-decoration: none; }
   .hud-v { font-size: 15px; white-space: nowrap; }
   .chip { display: none; }
 }
+
+/* Gemeinsam */
+.together { background: var(--paper); color: var(--ink); }
+.together .lead { color: #3a3833; }
+.together .fine { color: #7a766d; }
+.tg-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 56px; border-top: 2px solid var(--ink); }
+.tg { padding: 24px 24px 30px 0; border-bottom: 1px solid rgba(11,13,16,.15); }
+.tg .mono { font-size: 12px; color: var(--sig); }
+.tg h3 { margin: 18px 0 0; font-weight: 800; font-stretch: 112%; font-size: 22px; text-transform: uppercase; line-height: 1.05; }
+.tg p { margin: 10px 0 0; font-size: 15px; color: #3a3833; }
+@media (max-width: 900px) { .tg-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .tg-grid { grid-template-columns: 1fr; } }
