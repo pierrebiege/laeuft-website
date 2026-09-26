@@ -31,7 +31,88 @@
 <meta name="twitter:image" content="https://laeuft.ch/graatzug/img/og.jpg">
 <link rel="preload" as="image" href="img/s-spittel-barral-valley-1600.webp" imagesrcset="img/s-spittel-barral-valley-640.webp 640w, img/s-spittel-barral-valley-1024.webp 1024w, img/s-spittel-barral-valley-1600.webp 1600w, img/s-spittel-barral-valley-2000.webp 2000w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="fonts/Archivo-normal-1.woff2" crossorigin>
-<link rel="stylesheet" href="fonts.css">
+<style>@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url(fonts/Archivo-normal-0.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url(fonts/Archivo-normal-1.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/InstrumentSerif-italic-2.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/InstrumentSerif-italic-3.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/InstrumentSerif-normal-4.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/InstrumentSerif-normal-5.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/JetBrainsMono-normal-6.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/JetBrainsMono-normal-7.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/JetBrainsMono-normal-8.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/JetBrainsMono-normal-9.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}</style>
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M8 44 L22 22 L30 32 L38 18 L56 44' fill='none' stroke='%23f2efe8' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='14' y='49' width='36' height='4' fill='%23ff5a1f'/%3E%3C/svg%3E">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SportsEvent", "name": "Graatzug Backyard Ultra Simplon", "alternateName": ["Graatzug", "Backyard Ultra Simplon"], "description": "Backyard Ultra am Simplonpass im Wallis. Jede volle Stunde startet eine Runde von 6'706 Metern um den Alten Spittel, bis nur noch eine Person eine Runde vollendet.", "sport": "Backyard Ultra", "startDate": "2027-06-19T12:00:00+02:00", "endDate": "2027-06-21T23:59:00+02:00", "eventStatus": "https://schema.org/EventScheduled", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode", "url": "https://laeuft.ch/graatzug", "image": ["https://laeuft.ch/graatzug/img/og.jpg", "https://laeuft.ch/graatzug/img/s-barral-spittel.jpg"], "inLanguage": "de-CH", "maximumAttendeeCapacity": 130, "location": {"@type": "Place", "name": "Barralhaus, Simplonpass", "address": {"@type": "PostalAddress", "addressLocality": "Simplon", "postalCode": "3907", "addressRegion": "VS", "addressCountry": "CH"}, "geo": {"@type": "GeoCoordinates", "latitude": 46.2349, "longitude": 8.0137, "elevation": 1844}}, "organizer": [{"@type": "Person", "name": "Pierre Biege", "url": "https://pierrebiege.ch"}, {"@type": "Person", "name": "Daniel Keller"}, {"@type": "Person", "name": "Anes Gracic"}], "offers": {"@type": "Offer", "url": "https://laeuft.ch/graatzug#lotterie", "price": "0", "priceCurrency": "CHF", "availability": "https://schema.org/PreOrder", "validFrom": "2026-09-26", "description": "Eintrag in den Lostopf, kostenlos"}}</script>
