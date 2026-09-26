@@ -8,7 +8,7 @@
   --paper-2: #e7e2d7;
   --fg: #f2efe8;
   --fg-2: #b8b4ab;
-  --muted: #7f7b73;
+  --muted: #9a968d;
   --line: rgba(242, 239, 232, .12);
   --line-2: rgba(242, 239, 232, .24);
   --sig: #ff5a1f;
@@ -395,3 +395,7 @@ a { color: inherit; text-decoration: none; }
 .format .mono, .pass .h-year, .care .mono, .together .mono, .lottery .mono, .kaution .mono, .lot-form legend, .rules li .mono, .tg .mono { color: var(--sig-ink); }
 .wildcard .mono, .rules li.win .mono, .rules li.win h3 { color: var(--sig); }
 .tale > .mono, .tale cite { color: #9a968d; }
+
+.fine { color: #9a968d; }
+.together .fine, .format .fine, .pass .fine, .lottery .fine, .faq .fine { color: #5f5b54; }
+.lot-form .fine, .lot-form label em { color: #6b675f; }

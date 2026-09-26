@@ -70,6 +70,14 @@
 
   /* ---------- 3D-Runde: Scrollfortschritt an die Szene ---------- */
   const stage = $('#courseStage'), frame = $('#terrain'), hudKm = $('#hudKm');
+  // Die 3D-Szene (Gelände, Satellitenbild, three.js) erst laden, wenn man
+  // in ihre Nähe scrollt. Sonst bremst sie den Seitenaufbau.
+  if (frame?.dataset.src) {
+    new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting) return;
+      frame.src = frame.dataset.src; o.disconnect();
+    }, { rootMargin: '600px 0px' }).observe(frame);
+  }
   let rev = 0;
   const mobile = () => matchMedia('(max-width: 700px)').matches;
   const post = (v) => {
