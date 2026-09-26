@@ -365,3 +365,10 @@ a { color: inherit; text-decoration: none; }
 .wildcard .mono { display: block; color: var(--sig); font-size: 12px; text-transform: uppercase; margin-bottom: 8px; }
 .wildcard p { margin: 0; font-size: 15px; color: var(--fg-2); }
 .wildcard b { color: #fff; }
+
+@media (max-width: 700px) {
+  .terrain-card { height: 62vh; }
+  .hud-l { padding: 8px 12px; }
+  .hud-v { font-size: 15px; white-space: nowrap; }
+  .chip { display: none; }
+}

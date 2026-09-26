@@ -71,27 +71,53 @@
   /* ---------- 3D-Runde: Scrollfortschritt an die Szene ---------- */
   const stage = $('#courseStage'), frame = $('#terrain'), hudKm = $('#hudKm');
   let rev = 0;
+  const mobile = () => matchMedia('(max-width: 700px)').matches;
+  const post = (v) => {
+    rev = v;
+    frame?.contentWindow?.postMessage({ rev: v }, '*');
+    if (hudKm) hudKm.textContent = (v * 6.7056).toFixed(2).replace('.', ',');
+  };
+  // Desktop: die Runde zeichnet sich mit dem Scrollen.
   const sendRev = () => {
-    if (!stage || !frame) return;
+    if (!stage || !frame || mobile()) return;
     const r = stage.getBoundingClientRect();
     const total = r.height - innerHeight * 0.6;
     const p = total > 0 ? Math.min(1, Math.max(0, (innerHeight * 0.35 - r.top) / total)) : 1;
-    const eff = matchMedia('(max-width: 700px)').matches ? 1 : p;
-    if (Math.abs(eff - rev) > 0.001 || eff === 1 || eff === 0) {
-      rev = eff;
-      frame.contentWindow?.postMessage({ rev }, '*');
-      hudKm.textContent = (rev * 6.7056).toFixed(2).replace('.', ',');
-    }
+    if (Math.abs(p - rev) > 0.001 || p === 1 || p === 0) post(p);
   };
   addEventListener('scroll', sendRev, { passive: true });
-  addEventListener('message', (e) => { if (e.data?.sceneReady) sendRev(); });
+  // Handy: kein Sticky-Scrollen, also spielt die Runde von selbst ab,
+  // sobald die Karte sichtbar ist, und beginnt beim nächsten Mal von vorn.
+  let ready = false, inView = false, anim = 0;
+  const play = () => {
+    cancelAnimationFrame(anim);
+    if (calm) { post(1); return; }
+    const t0 = performance.now(), dur = 9000;
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / dur);
+      post(k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
+      if (k < 1 && inView) anim = requestAnimationFrame(step);
+    };
+    post(0);
+    anim = requestAnimationFrame(step);
+  };
+  // Die Szene meldet sich per Nachricht. Kommt die vor diesem Skript an,
+  // geht sie verloren, deshalb wird zusätzlich nachgefragt.
+  const onReady = () => {
+    if (ready) return;
+    ready = true;
+    if (mobile()) { if (inView) play(); else post(0); } else sendRev();
+  };
+  addEventListener('message', (e) => { if (e.data?.sceneReady) onReady(); });
+  const poll = setInterval(() => {
+    try { if (frame?.contentWindow?.sceneState?.().ready) { clearInterval(poll); onReady(); } } catch (_) {}
+  }, 300);
   if (frame) {
-    new IntersectionObserver(([e]) => frame.contentWindow?.postMessage({ visible: e.isIntersecting }, '*'))
-      .observe(frame);
-  }
-  // Auf dem Handy wird die Runde beim ersten Sichtkontakt einmal gezeichnet.
-  if (matchMedia('(max-width: 700px)').matches && frame) {
-    new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sendRev(); o.disconnect(); } }, { threshold: 0.4 }).observe(frame);
+    new IntersectionObserver(([e]) => {
+      frame.contentWindow?.postMessage({ visible: e.isIntersecting }, '*');
+      const was = inView; inView = e.intersectionRatio >= 0.35;
+      if (mobile() && ready && inView && !was) play();
+    }, { threshold: [0, 0.35] }).observe(frame);
   }
 
   /* ---------- Höhenprofil ---------- */
