@@ -401,3 +401,13 @@ a { color: inherit; text-decoration: none; }
 .lot-form .fine, .lot-form label em { color: #6b675f; }
 
 .tale.hi > .mono, .tale.hi p, .tale.hi cite, .ti.hi .ti-d, .ti.hi p { color: #fff; }
+
+/* Wissen */
+.wissen { background: var(--ink); }
+.wz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; background: var(--line); border-radius: var(--r); overflow: hidden; }
+.wz { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 24px; background: var(--ink-2); transition: background .2s; }
+.wz:hover { background: #1c2027; }
+.wz b { font-weight: 700; font-size: 16px; }
+.wz span { color: var(--sig); font-size: 18px; }
+@media (max-width: 900px) { .wz-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .wz-grid { grid-template-columns: 1fr; } }

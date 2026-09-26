@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url>
-    <loc>https://laeuft.ch/graatzug</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <image:image><image:loc>https://laeuft.ch/graatzug/img/og.jpg</image:loc></image:image>
-    <image:image><image:loc>https://laeuft.ch/graatzug/img/s-barral-spittel.jpg</image:loc></image:image>
-  </url>
+  <url><loc>https://laeuft.ch/graatzug</loc><lastmod>2026-09-26</lastmod><changefreq>weekly</changefreq><priority>1.0</priority><image:image><image:loc>https://laeuft.ch/graatzug/img/og.jpg</image:loc></image:image></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-ultra-schweiz</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-ultra-wallis</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/was-ist-ein-backyard-ultra</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-ultra-regeln</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/soul-race</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-ultra-training</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-ultra-packliste</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/backyard-crew</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/simplonpass-laufen</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/alter-spittel-barralhaus</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/graatzug-sage</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laeuft.ch/graatzug/anreise-simplon</loc><lastmod>2026-09-26</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

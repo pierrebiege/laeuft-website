@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
         // Die Seite setzt <base href="/graatzug/">, damit Bilder und Skripte
         // auch ohne Schrägstrich am Ende gefunden werden.
         { source: "/graatzug", destination: "/graatzug/index.html" },
+        // Themenseiten: /graatzug/<slug> → public/graatzug/<slug>/index.html
+        { source: "/graatzug/:slug([a-z0-9-]+)", destination: "/graatzug/:slug/index.html" },
         ...TEAM_HOSTS.flatMap((host) => [
           {
             source: "/",
