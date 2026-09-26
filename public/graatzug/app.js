@@ -87,7 +87,7 @@
   };
   // Desktop: die Runde zeichnet sich mit dem Scrollen.
   const sendRev = () => {
-    if (!stage || !frame || mobile()) return;
+    if (!stage || !frame) return;
     const r = stage.getBoundingClientRect();
     const total = r.height - innerHeight * 0.6;
     const p = total > 0 ? Math.min(1, Math.max(0, (innerHeight * 0.35 - r.top) / total)) : 1;
@@ -114,7 +114,7 @@
   const onReady = () => {
     if (ready) return;
     ready = true;
-    if (mobile()) { if (inView) play(); else post(0); } else sendRev();
+    sendRev();
   };
   addEventListener('message', (e) => { if (e.data?.sceneReady) onReady(); });
   const poll = setInterval(() => {
@@ -124,7 +124,7 @@
     new IntersectionObserver(([e]) => {
       frame.contentWindow?.postMessage({ visible: e.isIntersecting }, '*');
       const was = inView; inView = e.intersectionRatio >= 0.35;
-      if (mobile() && ready && inView && !was) play();
+
     }, { threshold: [0, 0.35] }).observe(frame);
   }
 
@@ -208,4 +208,84 @@
       btn.disabled = false; btn.textContent = 'In den Lostopf';
     }
   });
+})();
+
+/* ---------- Anmelde-Wizard ---------- */
+(() => {
+  const back = document.getElementById('wizard');
+  if (!back) return;
+  const form = document.getElementById('wzForm');
+  const steps = [...form.querySelectorAll('.wz-s')];
+  const bar = document.getElementById('wzBar'), err = document.getElementById('wzErr');
+  const next = document.getElementById('wzNext'), prev = document.getElementById('wzBack'), nav = document.getElementById('wzNav');
+  const chips = [...back.querySelectorAll('.wz-steps li')];
+  const LAST = 3;
+  let cur = 0, busy = false;
+
+  const show = (i) => {
+    cur = i;
+    steps.forEach((s, j) => (s.hidden = j !== i));
+    chips.forEach((c, j) => { c.classList.toggle('on', j === i); c.classList.toggle('done', j < i); });
+    bar.style.width = `${Math.min(100, (i / LAST) * 100)}%`;
+    prev.style.visibility = i === 0 ? 'hidden' : 'visible';
+    next.textContent = i === LAST ? 'In den Lostopf' : 'Weiter';
+    nav.hidden = i > LAST;
+    err.textContent = '';
+    if (i === LAST) summary();
+    steps[i].querySelector('input:not([type=hidden]):not([tabindex="-1"]), select, textarea')?.focus({ preventScroll: true });
+  };
+  const open = () => { back.hidden = false; document.body.style.overflow = 'hidden'; if (cur > LAST) { form.reset(); show(0); } else show(cur); };
+  const close = () => { back.hidden = true; document.body.style.overflow = ''; if (location.hash === '#anmelden') history.replaceState(null, '', location.pathname); };
+
+  document.querySelectorAll('[data-open-wizard]').forEach((b) => b.addEventListener('click', open));
+  back.querySelectorAll('[data-close-wizard]').forEach((b) => b.addEventListener('click', close));
+  back.addEventListener('click', (e) => { if (e.target === back) close(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !back.hidden) close(); });
+  if (location.hash === '#anmelden' || location.hash === '#lotterie') open();
+  addEventListener('hashchange', () => { if (location.hash === '#anmelden') open(); });
+
+  const valid = (i) => {
+    const s = steps[i];
+    s.querySelectorAll('.bad').forEach((el) => el.classList.remove('bad'));
+    const miss = [...s.querySelectorAll('[required]')].filter((el) =>
+      el.type === 'radio' ? !form.querySelector(`[name="${el.name}"]:checked`) : el.type === 'checkbox' ? !el.checked : !el.value.trim());
+    const email = s.querySelector('[name=email]');
+    if (email && email.value && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.value.trim())) miss.push(email);
+    const num = (n, a, b) => { const el = s.querySelector(`[name=${n}]`); if (el && el.value.trim() && !(+el.value >= a && +el.value <= b)) miss.push(el); };
+    num('geburtsjahr', 1930, 2009); num('bestleistung', 0, 200); num('zielrunden', 1, 200);
+    if (!miss.length) return true;
+    miss.forEach((el) => (el.type === 'radio' ? el.closest('.chips') : el.type === 'checkbox' ? el.closest('.check') : el).classList.add('bad'));
+    err.textContent = 'Bitte prüf die markierten Felder.';
+    return false;
+  };
+  const summary = () => {
+    const d = Object.fromEntries(new FormData(form));
+    const esc = (t) => String(t || '–').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    const anz = d.anzahl_backyards === '0' ? 'noch keins' : d.anzahl_backyards;
+    document.getElementById('wzSum').innerHTML = `<dl>
+      <div><dt>Name</dt><dd>${esc(d.vorname)} ${esc(d.nachname)}</dd></div>
+      <div><dt>Kontakt</dt><dd>${esc(d.email)} · ${esc(d.telefon)}</dd></div>
+      <div><dt>Jahrgang, Wohnort</dt><dd>${esc(d.geburtsjahr)} · ${esc(d.wohnort)}, ${esc(d.land)}</dd></div>
+      <div><dt>Backyards bisher</dt><dd>${esc(anz)}, längstes ${esc(d.bestleistung)} Runden</dd></div>
+      <div><dt>Ziel</dt><dd>${esc(d.zielrunden)} Runden</dd></div></dl>`;
+  };
+  prev.addEventListener('click', () => show(Math.max(0, cur - 1)));
+  next.addEventListener('click', async () => {
+    if (!valid(cur)) return;
+    if (cur < LAST) return show(cur + 1);
+    if (busy) return;
+    busy = true; next.disabled = true; next.textContent = 'Moment …';
+    const data = Object.fromEntries(new FormData(form));
+    try {
+      const r = await fetch('/api/graatzug/lotterie', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || 'Das hat nicht geklappt. Versuch es nochmal.');
+      document.getElementById('wzDoneText').textContent = `Danke, ${data.vorname}. Die Bestätigung ist unterwegs an ${data.email}. Nach Anmeldeschluss losen wir die Startplätze aus und melden uns bei allen.`;
+      show(LAST + 1);
+    } catch (e) {
+      err.textContent = e.message;
+      next.textContent = 'In den Lostopf';
+    } finally { busy = false; next.disabled = false; }
+  });
+  form.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); next.click(); } });
 })();

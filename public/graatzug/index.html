@@ -128,69 +128,79 @@
     <span>Graatzug</span>
   </a>
   <nav class="nav-links" aria-label="Hauptnavigation">
-    <a href="#gemeinsam">Gemeinsam</a>
+    <a href="#infos">Infos</a>
     <a href="#runde">Runde</a>
-    <a href="#format">Format</a>
-    <a href="#pass">Pass</a>
-    <a href="#sage">Sagen</a>
-    <a href="#team">Team</a>
-    <a href="#wissen">Wissen</a>
+    <a href="#ablauf">Ablauf</a>
+    <a href="#anmeldung">Anmeldung</a>
+    <a href="/graatzug/geschichte">Geschichte</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn-sm btn-accent" href="#lotterie">Zur Lotterie</a>
+  <button class="btn btn-sm btn-accent" type="button" data-open-wizard>Anmelden</button>
 </header>
 
 <main id="top">
 
-<!-- ============ HERO: 1910 → 2027 ============ -->
-<section class="hero" id="hero">
-  <div class="hero-sticky">
-    <div class="hero-img now" aria-hidden="true"><img srcset="img/s-spittel-barral-valley-640.webp 640w, img/s-spittel-barral-valley-1024.webp 1024w, img/s-spittel-barral-valley-1600.webp 1600w, img/s-spittel-barral-valley-2000.webp 2000w" sizes="100vw" width="2000" height="1299" decoding="async" src="img/s-spittel-barral-valley.jpg" alt="" fetchpriority="high"></div>
-    <div class="hero-img then" aria-hidden="true"><img srcset="img/h-1910-640.webp 640w, img/h-1910-1024.webp 1024w, img/h-1910-1600.webp 1600w, img/h-1910-1632.webp 1632w" sizes="100vw" width="1632" height="1303" decoding="async" src="img/h-1910.jpg" alt=""></div>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-year mono" aria-hidden="true"><span id="heroYear">1910</span></div>
-    <div class="wrap hero-inner">
-      <div class="hero-top">
-        <span class="tag mono">Simplonpass · Barralhaus · 1'870 m</span>
-        <span class="tag mono">46.2349° N · 8.0137° E</span>
-      </div>
-      <h1 class="hero-title">
-        <span class="t1">Graatzug</span>
-        <span class="t2"><em>Backyard Ultra</em> Simplon</span>
-      </h1>
-      <div class="hero-bottom">
-        <div class="hero-left">
-          <p class="hero-sub">Jede volle Stunde eine Runde von 6'706 Metern um Stockalpers Alten Spittel. Zusammen in die Nacht.</p>
-          <a class="btn btn-accent btn-lg" href="#lotterie">In den Lostopf <span aria-hidden="true" style="margin-left:10px">→</span></a>
-          <p class="hero-note mono">130 Startplätze · Vergabe per Lotterie</p>
-        </div>
-        <div class="hero-date">
-          <span class="mono">Samstag</span>
-          <b>19.06.2027</b>
-          <span class="mono">Erste Runde 12:00</span>
-        </div>
-      </div>
+<!-- ============ HERO ============ -->
+<section class="hero2">
+  <div class="hero2-img" aria-hidden="true"><img srcset="img/s-spittel-barral-valley-640.webp 640w, img/s-spittel-barral-valley-1024.webp 1024w, img/s-spittel-barral-valley-1600.webp 1600w, img/s-spittel-barral-valley-2000.webp 2000w" sizes="100vw" src="img/s-spittel-barral-valley.jpg" alt="" width="2000" height="1299" fetchpriority="high"></div>
+  <div class="wrap hero2-in">
+    <p class="tag mono">Backyard Ultra · Simplonpass, Wallis</p>
+    <h1 class="hero2-title">Graatzug<span>Backyard Ultra Simplon</span></h1>
+    <p class="hero2-sub">Jede volle Stunde startet eine Runde von 6,706 km. Wer rechtzeitig zurück ist, läuft die nächste. Das Rennen endet, wenn nur noch eine Person läuft.</p>
+    <div class="hero2-facts">
+      <div><span class="mono">Start</span><b>Sa 19.06.2027, 12:00</b></div>
+      <div><span class="mono">Ort</span><b>Barralhaus, Simplonpass</b></div>
+      <div><span class="mono">Startplätze</span><b>130, per Lotterie</b></div>
     </div>
-    <p class="hero-cap mono" id="heroCap">Barralhaus und Alter Spittel, 1910 · Glasdia Leo Wehrli, ETH-Bibliothek</p>
+    <div class="hero2-cta">
+      <button class="btn btn-accent btn-lg" type="button" data-open-wizard>Jetzt anmelden</button>
+      <a class="btn btn-ghost btn-lg" href="#infos">Alle Infos</a>
+    </div>
   </div>
 </section>
 
-<!-- ============ GEMEINSAM ============ -->
-<section class="sec together" id="gemeinsam">
+<!-- ============ INFOS ============ -->
+<section class="sec infos" id="infos">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">01 / Gemeinsam</span>
-      <h2 class="h2 reveal">Miteinander<br>gegen die Nacht.</h2>
-      <p class="lead reveal">Der Graatzug ist ein Backyard ohne Preisgeld und ohne Podest. Es geht um eine gute Zeit am Pass, zusammen mit anderen, die gerne lange laufen. Ob du 3 Runden läufst oder 30, du bist dabei.</p>
-    </div>
+    <span class="idx mono">01 / Das Wichtigste</span>
+    <h2 class="h2">Alle Infos<br>auf einen Blick.</h2>
+    <dl class="facts">
+      <div><dt>Datum</dt><dd>Samstag, 19. Juni 2027<br><small>Ausweichdatum 26. Juni 2027</small></dd></div>
+      <div><dt>Erste Runde</dt><dd>12:00 Uhr<br><small>Check-in ab 07:30, Briefing 10:30</small></dd></div>
+      <div><dt>Ende</dt><dd>Offen<br><small>wenn nur noch eine Person eine Runde läuft</small></dd></div>
+      <div><dt>Ort</dt><dd>Barralhaus, 3907 Simplon<br><small>1'844 m ü. M., Wallis</small></dd></div>
+      <div><dt>Runde</dt><dd>6,706 km, ~186 Hm<br><small>Wander- und Alpwege, keine Strassenquerung</small></dd></div>
+      <div><dt>Startplätze</dt><dd>130<br><small>Lotterie, dazu einige Wildcards</small></dd></div>
+      <div><dt>Mindestalter</dt><dd>18 Jahre<br><small>am Renntag</small></dd></div>
+      <div><dt>Startgeld</dt><dd>folgt<br><small>zahlbar erst nach der Auslosung</small></dd></div>
+      <div><dt>Kaution</dt><dd>CHF 50<br><small>zurück beim Verlassen des Camps</small></dd></div>
+      <div><dt>Base Camp</dt><dd>3 × 3 m pro Person<br><small>auf Kies und Asphalt beim Barralhaus</small></dd></div>
+      <div><dt>Crew</dt><dd>bis 4 registriert<br><small>3 gleichzeitig vor Ort, Anmeldung nach der Auslosung</small></dd></div>
+      <div><dt>Regeln</dt><dd>Big's Backyard Ultra<br><small>offizielles Backyard, kein Preisgeld</small></dd></div>
+    </dl>
+    <p class="note">Stand: Affiliierung bei Big's Backyard Ultra in Vorbereitung, Soul Race des Last Soul Ultra in Abklärung, Anfragen bei Gemeinde Simplon und VBS laufen. Die Auslosung findet erst nach der Zusage statt. <a href="/graatzug/geschichte">Wer dahinter steht und warum es Graatzug heisst</a></p>
   </div>
 </section>
 
+<!-- ============ SO FUNKTIONIERT'S ============ -->
+<section class="sec how" id="format">
+  <div class="wrap">
+    <span class="idx mono">02 / So funktioniert's</span>
+    <h2 class="h2">Eine Runde<br>pro Stunde.</h2>
+    <ol class="how-steps">
+      <li><span class="mono">:57</span><h3>Signal</h3><p>Drei, zwei und eine Minute vor der vollen Stunde gibt es ein Signal. Alle stellen sich in den Startbereich.</p></li>
+      <li><span class="mono">:00</span><h3>Start</h3><p>Alle starten gemeinsam auf die Runde von 6,706 km. Unterwegs ist keine Hilfe erlaubt, auch keine Stöcke.</p></li>
+      <li><span class="mono">~:50</span><h3>Zurück</h3><p>Die meisten brauchen 45 bis 55 Minuten. Die restliche Zeit gehört dir: essen, trinken, schlafen, Füsse pflegen.</p></li>
+      <li><span class="mono">:00</span><h3>Nächste Runde</h3><p>Wer beim nächsten Signal nicht im Startbereich steht, scheidet aus. Wer bis zum Schluss eine Runde mehr läuft als alle anderen, beendet das Rennen.</p></li>
+    </ol>
+    <p class="note">24 Runden sind 100 Meilen (160,9 km). Jede Runde zählt für die Weltrangliste von Big's Backyard Ultra. <a href="/graatzug/was-ist-ein-backyard-ultra">Mehr zum Format</a> · <a href="/graatzug/backyard-ultra-regeln">Alle Regeln</a></p>
+  </div>
+</section>
 <!-- ============ RUNDE ============ -->
 <section class="sec course" id="runde">
   <div class="wrap">
     <div class="sec-head">
-      <span class="idx mono">02 / Runde</span>
+      <span class="idx mono">03 / Die Runde</span>
       <h2 class="h2 reveal">Einmal um<br>den Spittel.</h2>
       <p class="lead reveal">Start und Ziel beim Barralhaus. Hinunter zur Niederalp, am Alten Spittel vorbei, hinauf nach Hopsche und über Gampisch zurück. Grosse Teile verlaufen auf Stockalpers Saumweg. Die Passstrasse wird nie gequert.</p>
     </div>
@@ -238,271 +248,60 @@
   </div>
 </section>
 
-<!-- ============ FORMAT ============ -->
-<section class="sec format" id="format">
+
+<!-- ============ ABLAUF ============ -->
+<section class="sec ablauf" id="ablauf">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">03 / Format</span>
-      <h2 class="h2 reveal"><em>Nomaal.</em></h2>
-      <p class="lead reveal">Walliserdeutsch für «noch einmal». Ein offizielles Backyard nach den Regeln von Big's Backyard Ultra, im Rahmen des Last Soul Ultra.</p>
+    <span class="idx mono">04 / Ablauf</span>
+    <h2 class="h2">Das Wochenende.</h2>
+    <table class="plan">
+      <tr><td class="mono">Fr 18.06.</td><td>ab 18:00</td><td>Wer will, bezieht das Quadrat schon am Vorabend</td></tr>
+      <tr><td class="mono">Sa 19.06.</td><td>07:30</td><td>Check-in, Startnummer, Kontrolle Pflichtausrüstung</td></tr>
+      <tr><td class="mono"></td><td>10:30</td><td>Briefing für alle Läufer:innen und Crews</td></tr>
+      <tr class="hi"><td class="mono"></td><td>12:00</td><td>Erste Runde</td></tr>
+      <tr><td class="mono"></td><td>ca. 21:30</td><td>Ab Einbruch der Dunkelheit Stirnlampe</td></tr>
+      <tr><td class="mono">So 20.06.</td><td>12:00</td><td>Start Runde 25, nach 160,9 km</td></tr>
+      <tr><td class="mono">offen</td><td></td><td>Letzte Runde, erfahrungsgemäss nach 30 bis 60 Stunden</td></tr>
+      <tr><td class="mono">danach</td><td></td><td>Quadrat räumen, Abnahme, Kaution zurück</td></tr>
+    </table>
+    <div class="cols3">
+      <div><h3>Pflichtausrüstung</h3><p>Stirnlampe mit Ersatz, warme Schicht, wasserdichte Jacke, Mobiltelefon. Wird beim Check-in kontrolliert.</p><a href="/graatzug/backyard-ultra-packliste">Ganze Packliste</a></div>
+      <div><h3>Dein Quadrat</h3><p>Zelt oder Pavillon bis 3 × 3 m, beschwert mit vier Sandsäcken von mindestens 15 kg. Strom gibt es keinen, bring Powerbanks mit.</p><a href="/graatzug/backyard-crew">Infos für die Crew</a></div>
+      <div><h3>Anreise</h3><p>Zug bis Brig, dann Postauto auf den Simplonpass, 10 Minuten zu Fuss zum Barralhaus. Parkplätze beim Alten Spittel und beim Hospiz.</p><a href="/graatzug/anreise-simplon">Anreise im Detail</a></div>
     </div>
-    <ol class="rules">
-      <li class="reveal"><span class="mono">01</span><h3>6'706 Meter</h3><p>Vier Meilen und 880 Fuss. Die Distanz jedes Backyards auf der Welt.</p></li>
-      <li class="reveal"><span class="mono">02</span><h3>Jede volle Stunde</h3><p>Die Glocke läutet drei, zwei und eine Minute vor dem Start.</p></li>
-      <li class="reveal"><span class="mono">03</span><h3>Kein später Start</h3><p>Wer beim Läuten nicht im Startbereich steht, ist raus.</p></li>
-      <li class="reveal"><span class="mono">04</span><h3>Allein auf der Runde</h3><p>Keine Begleitung, keine persönliche Verpflegung, keine Stöcke.</p></li>
-      <li class="reveal"><span class="mono">05</span><h3>3 × 3 Meter</h3><p>Dein Quadrat im Base Camp. Nur dort hilft die Crew.</p></li>
-      <li class="reveal"><span class="mono">06</span><h3>Bei jedem Wetter</h3><p>Stirnlampe nach Einbruch der Dunkelheit. Behördliche Anordnungen gehen vor.</p></li>
-      <li class="reveal win"><span class="mono">07</span><h3>Die letzte Runde</h3><p>Das Rennen endet, wenn jemand eine Runde mehr läuft als alle anderen.</p></li>
-    </ol>
+    <p class="note">Sicherheit: Sanität an allen Tagen rund um die Uhr vor Ort, elektronische Zeitnahme, Spital Brig in 31 Minuten. Gelaufen wird bei jedem Wetter, amtliche Unwetterwarnungen der Stufen 4 und 5 gehen vor.</p>
   </div>
 </section>
 
-<!-- ============ PASS / GESCHICHTE ============ -->
-<section class="sec pass" id="pass">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">04 / Pass</span>
-      <h2 class="h2 reveal">Immer denselben Weg.</h2>
-      <p class="lead reveal">Die Säumer trugen Waren über den Simplon, hin und zurück, Woche für Woche, auf demselben Weg. Ein Backyard macht nichts anderes.</p>
-    </div>
-  </div>
-  <div class="history" id="history">
-    <div class="history-track">
-      <article class="h-card reveal"><div class="h-img"><img srcset="img/s-spittel-640.webp 640w, img/s-spittel-1024.webp 1024w, img/s-spittel-1600.webp 1600w, img/s-spittel-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/s-spittel.jpg" alt="Der Alte Spittel" loading="lazy"></div><span class="h-year mono">1666</span><h3>Der Alte Spittel</h3><p>Kaspar Stockalper lässt ihn als Unterkunft bauen, gratis für Säumer, Waren und Saumtiere.</p></article>
-      <article class="h-card reveal"><div class="h-img"><img srcset="img/h-1900-640.webp 640w, img/h-1900-1024.webp 1024w, img/h-1900-1600.webp 1600w, img/h-1900-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1480" decoding="async" src="img/h-1900.jpg" alt="Das Simplon Hospiz um 1900" loading="lazy"></div><span class="h-year mono">1805</span><h3>Napoleons Strasse</h3><p>Die Passstrasse ist offen. Das neue Hospiz beziehen 1831 die Chorherren vom Grossen St. Bernhard.</p></article>
-      <article class="h-card reveal"><div class="h-img bw"><img srcset="img/h-1910-640.webp 640w, img/h-1910-1024.webp 1024w, img/h-1910-1600.webp 1600w, img/h-1910-1632.webp 1632w" sizes="(max-width: 700px) 100vw, 50vw" width="1632" height="1303" decoding="async" src="img/h-1910.jpg" alt="Barralhaus und Alter Spittel 1910" loading="lazy"></div><span class="h-year mono">1910</span><h3>Barralhaus und Spittel</h3><p>Leo Wehrli fotografiert beide Häuser auf Glas. Genau hier steht 2027 das Base Camp.</p></article>
-      <article class="h-card reveal"><div class="h-img"><img srcset="img/s-adler-640.webp 640w, img/s-adler-1024.webp 1024w, img/s-adler-1600.webp 1600w, img/s-adler-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/s-adler.jpg" alt="Der Simplon-Adler" loading="lazy"></div><span class="h-year mono">1944</span><h3>Der Adler</h3><p>Die Gebirgsbrigade 11 baut ihn während der Grenzbesetzung, über neun Meter hoch, aus Granit.</p></article>
-      <article class="h-card now reveal"><div class="h-img"><img srcset="img/s-barral-spittel-640.webp 640w, img/s-barral-spittel-1024.webp 1024w, img/s-barral-spittel-1600.webp 1600w, img/s-barral-spittel-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/s-barral-spittel.jpg" alt="Barralhaus und Alter Spittel heute" loading="lazy"></div><span class="h-year mono">2027</span><h3>Der Graatzug</h3><p>Samstag, 19. Juni, 12:00. Die erste Glocke am Barralhaus.</p></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SAGEN ============ -->
-<section class="sec tales-sec" id="sage">
-  <div class="wrap tales-head">
-    <div class="sec-head">
-      <span class="idx mono">05 / Sagen</span>
-      <h2 class="h2 reveal">Im Wallis laufen<br>die Seelen nachts.</h2>
-    </div>
-    <div class="tales-nav">
-      <button class="tn" data-dir="-1" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <button class="tn" data-dir="1" aria-label="Weiter"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
-    </div>
-  </div>
-  <div class="tales" id="tales">
-    <div class="tales-track">
-      <article class="tale hi"><span class="mono">01</span><h3>Der Graatzug</h3><p>Nachts ziehen die armen Seelen in langen Zügen über Grate und Pässe. Wer sie hört, stellt sich oberhalb des Weges. Wer im Weg steht, «kommt in den Gratzug».</p><cite class="mono">Tscheinen/Ruppen, Walliser Sagen 1872</cite></article>
-      <article class="tale"><span class="mono">02</span><h3>Drei Glockenstunden</h3><p>Ab Mitternacht zieht der Zug an einem Mann vorbei, drei lange Glockenstunden, bis zum Betläuten um drei Uhr.</p><cite class="mono">Tscheinen/Ruppen 1872</cite></article>
-      <article class="tale"><span class="mono">03</span><h3>Der Letzte im Zug</h3><p>Der Sigrist von Ulrichen erkennt jedes Gesicht im Graatzug, nur das des Letzten nicht. Der Letzte ist er selbst.</p><cite class="mono">«Unpaar Strümpfe», Josef Guntern</cite></article>
-      <article class="tale"><span class="mono">04</span><h3>Neun Gräte</h3><p>In Bellwald heisst es, die Seelen müssten jede Nacht über neun Gräte und neunundneunzig Friedhöfe wandern.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
-      <article class="tale"><span class="mono">05</span><h3>Der Wirt von Gondo</h3><p>Um 1630 ermordet der Wirt Pera am Simplon einen Reisenden. Die Witwe erkennt den Sattel ihres Mannes unter vierzehn. Pera geht danach als schwarzer Hund um.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
-      <article class="tale"><span class="mono">06</span><h3>Pfarrer Sulzgi</h3><p>In Albinen betet ein Pfarrer nachts im Graben. Wer über seine linke Schulter schaut, sieht den Graben voll armer Seelen.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
-      <article class="tale"><span class="mono">07</span><h3>Die Seelen im Gletscher</h3><p>Ein Jäger findet zwei Seelen im Eis. Die eine steckt bis zu den Schultern darin und singt, weil ihre Erlösung naht.</p><cite class="mono">Johann Jegerlehner, Walliser Sagen</cite></article>
-    </div>
-  </div>
-  <div class="wrap"><p class="fine reveal">Der Graatzug gehört dem ganzen Oberwallis, am Simplon selbst ist er nicht überliefert. Wir bringen ihn für ein Wochenende auf den Pass.</p></div>
-</section>
-
-<!-- ============ NACHT ============ -->
-<section class="sec night" id="nacht">
-  <div class="wrap">
-    <span class="idx mono">06 / Nacht</span>
-    <h2 class="h2 reveal">Drei lange<br>Glockenstunden.</h2>
-    <div class="night-grid">
-      <p class="lead reveal">Zwischen Mitternacht und drei Uhr zieht in der Sage der Zug vorbei. Im Rennen sind das die Runden 13 bis 15. Der Spittel ist nur noch ein Umriss, und über dem Pass stehen so viele Sterne, wie man sie im Tal nie sieht.</p>
-      <div class="clock reveal">
-        <div class="c-row"><span class="mono">12:00</span><b>Runde 1</b></div>
-        <div class="c-row"><span class="mono">21:30</span><b>Stirnlampe an</b></div>
-        <div class="c-row hi"><span class="mono">00:00</span><b>Der Zug beginnt</b></div>
-        <div class="c-row"><span class="mono">03:00</span><b>Betläuten</b></div>
-        <div class="c-row"><span class="mono">05:30</span><b>Erstes Licht über dem Pass</b></div>
-        <div class="c-row"><span class="mono">12:00</span><b>Runde 25 · 160,9 km</b></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TEAM ============ -->
-<section class="sec team" id="team">
-  <div class="wrap story-grid">
-    <figure class="story-photo reveal">
-      <img srcset="img/swiss-flag-640.webp 640w, img/swiss-flag-1024.webp 1024w, img/swiss-flag-1500.webp 1500w" sizes="(max-width: 700px) 100vw, 50vw" width="1500" height="2000" decoding="async" src="img/swiss-flag.jpg" alt="Pierre und seine Crew mit der Schweizer Fahne unter dem Zielbogen des Last Soul Ultra" loading="lazy">
-      <figcaption class="mono">Last Soul Ultra 2025, nach 40 Stunden</figcaption>
-    </figure>
+<!-- ============ ANMELDUNG ============ -->
+<section class="sec signup" id="anmeldung">
+  <div class="wrap signup-grid">
     <div>
-      <span class="idx mono">07 / Team</span>
-      <h2 class="h2 reveal">Die Crew wird<br>zum Rennen.</h2>
-      <div class="prose reveal">
-        <p>Ich bin das Last Soul zweimal gelaufen, 40 und 33 Stunden. Allein läuft man so etwas nicht. 2026 standen Daniel und Anes in meinem Zelt und haben mich Runde für Runde zurück an die Linie gebracht.</p>
-        <p>Danach war die Frage da, warum es so etwas bei uns nicht gibt. In den Bergen, im Wallis, auf einem Pass mit 360 Jahren Säumergeschichte.</p>
-        <p class="sig">Pierre Biege</p>
-      </div>
-    </div>
-  </div>
-  <div class="wrap">
-    <div class="team-grid">
-      <article class="person reveal"><span class="mono role">Race Director</span><h3>Daniel Keller</h3><p>Wettkampftechnik, Zeitnahme, Strecke und Sicherheitskonzept.</p></article>
-      <article class="person reveal"><span class="mono role">Organisation</span><h3>Anes Gracic</h3><p>Sponsoring, Verpflegung und Übernachtung fürs Team.</p></article>
-      <article class="person reveal"><span class="mono role">IT und Marketing</span><h3>Pierre Biege</h3><p>Webseite, Anmeldung, Kommunikation. Läuft selbst mit.</p></article>
-    </div>
-  </div>
-  <div class="gallery" aria-label="Bilder vom Last Soul Ultra">
-    <div class="gallery-track">
-      <figure><img srcset="img/start-blur-640.webp 640w, img/start-blur-1024.webp 1024w, img/start-blur-1600.webp 1600w, img/start-blur-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/start-blur.jpg" alt="Start einer Runde in der Nacht" loading="lazy"></figure>
-      <figure class="tall"><img srcset="img/lap2-640.webp 640w, img/lap2-1024.webp 1024w, img/lap2-1333.webp 1333w" sizes="(max-width: 700px) 100vw, 50vw" width="1333" height="2000" decoding="async" src="img/lap2.jpg" alt="Pierre unter der Rundenanzeige" loading="lazy"></figure>
-      <figure><img srcset="img/hands-640.webp 640w, img/hands-1024.webp 1024w, img/hands-1600.webp 1600w, img/hands-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/hands.jpg" alt="Pierre mit dem Gesicht in den Händen im Base Camp" loading="lazy"></figure>
-      <figure class="tall"><img srcset="img/towel-640.webp 640w, img/towel-1024.webp 1024w, img/towel-1333.webp 1333w" sizes="(max-width: 700px) 100vw, 50vw" width="1333" height="2000" decoding="async" src="img/towel.jpg" alt="Pierre mit Tuch gegen die Sonne" loading="lazy"></figure>
-      <figure><img srcset="img/tent-night-640.webp 640w, img/tent-night-1024.webp 1024w, img/tent-night-1600.webp 1600w, img/tent-night-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/tent-night.jpg" alt="Das Base Camp in der Nacht" loading="lazy"></figure>
-      <figure class="tall"><img srcset="img/bw-run-640.webp 640w, img/bw-run-1024.webp 1024w, img/bw-run-1333.webp 1333w" sizes="(max-width: 700px) 100vw, 50vw" width="1333" height="2000" decoding="async" src="img/bw-run.jpg" alt="Pierre läuft im Regen" loading="lazy"></figure>
-      <figure><img srcset="img/tired-640.webp 640w, img/tired-1024.webp 1024w, img/tired-1600.webp 1600w, img/tired-2000.webp 2000w" sizes="(max-width: 700px) 100vw, 50vw" width="2000" height="1333" decoding="async" src="img/tired.jpg" alt="Pierre liegt erschöpft in der Pause" loading="lazy"></figure>
-    </div>
-  </div>
-</section>
-
-<!-- ============ OFFIZIELL ============ -->
-<section class="sec official" id="offiziell">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">08 / Offiziell</span>
-      <h2 class="h2 reveal">Jede Runde zählt.</h2>
-      <p class="lead reveal">Der Graatzug läuft als offiziell affiliertes Backyard von Big's Backyard Ultra und als Soul Race des Last Soul Ultra.</p>
-    </div>
-    <div class="off-grid">
-      <article class="off reveal">
-        <span class="mono off-k">Big's Backyard Ultra</span>
-        <h3>Weltrangliste</h3>
-        <p>Deine Runden fliessen in die Weltrangliste und in die At-Large-Liste des Schweizer Nationalteams. Die Resultate vom Juni 2027 zählen noch für das Qualifikationsfenster bis 15. August 2027.</p>
-        <span class="status mono"><i></i>Affiliierung in Vorbereitung</span>
-      </article>
-      <article class="off reveal">
-        <span class="mono off-k">Last Soul Ultra</span>
-        <h3>Soul Race</h3>
-        <p>Das Last Soul Ultra vergibt Startplätze über unabhängige Soul Races. Der Graatzug soll das erste der Schweiz werden.</p>
-        <span class="status mono"><i></i>In Abklärung mit Kim Gottwald</span>
-      </article>
-      <article class="off reveal">
-        <span class="mono off-k">Wallis</span>
-        <h3>Das dritte ohne Limit</h3>
-        <p>Nach Varen und Saillon das dritte Backyard ohne Zeitlimit im Wallis und das erste auf einem Alpenpass.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ AM PASS ============ -->
-<section class="sec care" id="berg">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">09 / Am Pass</span>
-      <h2 class="h2 reveal">Wir verlassen den Pass sauberer, als wir ihn finden.</h2>
-    </div>
-    <div class="care-grid">
-      <article class="reveal"><span class="mono">Camp</span><p>Quadrate von 3 × 3 m auf Kies und Asphalt beim Barralhaus, die Wiesen bleiben frei. Heringe halten dort nicht: jedes Zelt mit vier Sandsäcken oder Gewichten von mindestens 15 kg beschweren.</p></article>
-      <article class="reveal"><span class="mono">Aufräumen</span><p>Abfalltrennung, Mehrweg, Kaution für jedes Quadrat. Danach gehen wir die ganze Runde ab.</p></article>
-      <article class="reveal"><span class="mono">Sicherheit</span><p>Sanität an allen drei Tagen rund um die Uhr, nachts zusätzlich auf der Strecke. Elektronische Zeitnahme, Rettungskette mit Spital Brig und Helikopter.</p></article>
-      <article class="reveal"><span class="mono">Wetter</span><p>Wir laufen bei jedem Wetter. Behördliche Anordnungen und Unwetterwarnungen gehen vor.</p></article>
-      <article class="reveal"><span class="mono">Strom</span><p>Strom gibt es nur für die Organisation. Du und deine Crew versorgt euch selbst, zum Beispiel mit Powerbanks.</p></article>
-      <article class="reveal"><span class="mono">Übernachten</span><p>Läufer:innen und Crews im Camp, Familien und Zuschauer:innen im Hospiz und in den Hotels.</p></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ WOCHENENDE ============ -->
-<section class="sec weekend">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="idx mono">10 / Wochenende</span>
-      <h2 class="h2 reveal">So läuft es ab.</h2>
-    </div>
-  </div>
-  <div class="timeline">
-    <div class="timeline-track">
-      <article class="ti reveal"><span class="mono ti-d">Sa 19.06.</span><span class="mono ti-t">07:30</span><h3>Check-in</h3><p>Anreise mit dem Postauto oder Auto. Quadrat beim Barralhaus beziehen. Wer will, kommt schon Freitagabend.</p></article>
-      <article class="ti reveal"><span class="mono ti-d">Sa 19.06.</span><span class="mono ti-t">10:30</span><h3>Briefing</h3><p>Runde, Regeln, Sicherheit, Wetter. Pflicht für alle.</p></article>
-      <article class="ti hi reveal"><span class="mono ti-d">Sa 19.06.</span><span class="mono ti-t">12:00</span><h3>Erste Glocke</h3><p>Runde 1. Ab jetzt zählt nur die nächste Stunde.</p></article>
-      <article class="ti reveal"><span class="mono ti-d">So 20.06.</span><span class="mono ti-t">00:00</span><h3>Der Zug</h3><p>Runde 13. Drei Glockenstunden bis zum Betläuten.</p></article>
-      <article class="ti reveal"><span class="mono ti-d">So 20.06.</span><span class="mono ti-t">12:00</span><h3>Runde 25</h3><p>160,9 Kilometer. Wer noch steht, geht in den zweiten Tag.</p></article>
-      <article class="ti end reveal"><span class="mono ti-d">Irgendwann</span><span class="mono ti-t">??:00</span><h3>Die letzte Runde</h3><p>Wann, weiss niemand.</p></article>
-    </div>
-  </div>
-  <div class="wrap"><p class="fine">Ausweichdatum 26. Juni 2027. Vorbehaltlich der Bewilligungen.</p></div>
-</section>
-
-<!-- ============ LOTTERIE ============ -->
-<section class="lottery" id="lotterie">
-  <div class="wrap lot-grid">
-    <div class="lot-info">
-      <span class="idx mono">Anmeldung · Lotterie</span>
-      <h2 class="h2">Kommst du mit<br>in den Zug?</h2>
-      <p class="lead">Wir vergeben rund <b>130 Startplätze</b> per Lotterie und einige Wildcards. Trag dich jetzt in den Lostopf ein. Nach Anmeldeschluss ziehen wir die Startplätze und melden uns bei allen per Mail.</p>
-      <ol class="lot-steps">
-        <li><span class="mono">01</span><div><b>Lostopf</b>Du trägst dich hier ein. Kostenlos und unverbindlich.</div></li>
-        <li><span class="mono">02</span><div><b>Auslosung</b>Nach Anmeldeschluss losen wir rund 130 Plätze aus. Das Datum geben wir bekannt.</div></li>
-        <li><span class="mono">03</span><div><b>Bestätigen</b>Wer gezogen wird, bezahlt Startgeld und Kaution und meldet dann seine Crew an.</div></li>
+      <span class="idx mono">05 / Anmeldung</span>
+      <h2 class="h2">In drei Schritten<br>am Start.</h2>
+      <ol class="sg-steps">
+        <li><b>1 · Lostopf</b><span>Jetzt anmelden. Kostenlos und unverbindlich, dauert zwei Minuten.</span></li>
+        <li><b>2 · Auslosung</b><span>Nach Anmeldeschluss losen wir 130 Startplätze aus. Alle bekommen Bescheid per Mail.</span></li>
+        <li><b>3 · Bestätigen</b><span>Wer gezogen wird, bezahlt Startgeld und Kaution und meldet danach die Crew an. Alle anderen kommen auf die Warteliste.</span></li>
       </ol>
-      <div class="wildcard">
-        <span class="mono">Wildcards</span>
-        <p><b>Zusätzlich vergeben wir Wildcards.</b> Poste ein Video auf Social Media, in dem du erzählst, warum du in den Zug willst, und markiere uns. Die genauen Regeln folgen hier.</p>
+      <button class="btn btn-accent btn-lg" type="button" data-open-wizard>Jetzt anmelden</button>
+    </div>
+    <div class="sg-side">
+      <div class="box">
+        <span class="mono">Kaution CHF 50</span>
+        <p>Wir sind am Simplon zu Gast bei der Gemeinde und beim VBS. Die Kaution sorgt dafür, dass jedes Quadrat sauber zurückgegeben wird. Du bekommst sie direkt zurück, wenn du nach dem Rennen das Camp verlässt und dein Quadrat leer ist.</p>
       </div>
-      <div class="kaution">
-        <span class="mono">Kaution CHF 50 pro Quadrat</span>
-        <p><b>Warum?</b> Wir sind am Simplon zu Gast. Die Gemeinde und das VBS stellen uns den Platz beim Barralhaus zur Verfügung, und wir wollen ihn sauberer hinterlassen, als wir ihn übernehmen.</p>
-        <p><b>Zurück bekommst du sie</b> nach dem Rennen, wenn du das Camp verlässt: Dein Quadrat ist leer, der Abfall getrennt entsorgt, und jemand vom Team hat es abgenommen. Du bekommst das Geld dann direkt zurück.</p>
+      <div class="box dark">
+        <span class="mono">Wildcards</span>
+        <p>Neben der Lotterie vergeben wir einige Wildcards. Poste ein Video auf Social Media, in dem du erzählst, warum du dabei sein willst, und markiere uns. Die genauen Regeln folgen.</p>
       </div>
     </div>
-    <form class="lot-form" id="lottery" novalidate>
-      <fieldset>
-        <legend class="mono">Wer bist du?</legend>
-        <div class="row2">
-          <label>Vorname<input name="vorname" autocomplete="given-name" required></label>
-          <label>Nachname<input name="nachname" autocomplete="family-name" required></label>
-        </div>
-        <div class="row2">
-          <label>E-Mail<input name="email" type="email" autocomplete="email" required></label>
-          <label>Telefon<input name="telefon" type="tel" autocomplete="tel" placeholder="+41 79 …" required></label>
-        </div>
-        <div class="row3">
-          <label>Jahrgang<input name="geburtsjahr" inputmode="numeric" placeholder="1990" required></label>
-          <label>Kategorie<select name="geschlecht" required><option value="">Wählen</option><option>weiblich</option><option>männlich</option><option>divers</option></select></label>
-          <label>Land<input name="land" autocomplete="country-name" value="Schweiz" required></label>
-        </div>
-        <label>Wohnort<input name="wohnort" autocomplete="address-level2" required></label>
-      </fieldset>
-      <fieldset>
-        <legend class="mono">Deine Backyard-Erfahrung</legend>
-        <label>Wie viele Backyards bist du schon gelaufen?</label>
-        <div class="chips" role="radiogroup">
-          <label class="chipr"><input type="radio" name="anzahl_backyards" value="0" required><span>Noch keins</span></label>
-          <label class="chipr"><input type="radio" name="anzahl_backyards" value="1"><span>1</span></label>
-          <label class="chipr"><input type="radio" name="anzahl_backyards" value="2–3"><span>2–3</span></label>
-          <label class="chipr"><input type="radio" name="anzahl_backyards" value="4–6"><span>4–6</span></label>
-          <label class="chipr"><input type="radio" name="anzahl_backyards" value="7+"><span>7+</span></label>
-        </div>
-        <div class="row2">
-          <label>Längstes Backyard, in Runden<input name="bestleistung" inputmode="numeric" placeholder="0 wenn noch keins" required></label>
-          <label>Wo war das?<input name="bestleistung_wo" placeholder="z. B. Last Soul Ultra 2026"></label>
-        </div>
-        <label>Wie viele Runden möchtest du am Graatzug laufen?<input name="zielrunden" inputmode="numeric" placeholder="z. B. 24" required></label>
-        <label>Warum willst du dabei sein? <em>freiwillig</em><textarea name="motivation" rows="3"></textarea></label>
-      </fieldset>
-      <fieldset class="checks">
-        <label class="check"><input type="checkbox" name="volljaehrig" value="ja" required><span>Ich bin am 19. Juni 2027 mindestens 18 Jahre alt.</span></label>
-        <label class="check"><input type="checkbox" name="kaution" value="ja" required><span>Ich habe gelesen: Wenn ich gezogen werde, bezahle ich eine Kaution von CHF 50, die ich nach dem Rennen beim Verlassen des Camps zurückbekomme.</span></label>
-        <label class="check"><input type="checkbox" name="einwilligung" value="ja" required><span>Die Organisatoren dürfen meine Angaben für die Lotterie und die Organisation des Rennens verwenden.</span></label>
-      </fieldset>
-      <div class="hp" aria-hidden="true"><label>Nicht ausfüllen<input name="gz_feld" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn btn-accent btn-lg btn-full" type="submit">In den Lostopf</button>
-      <p class="form-msg" id="lotMsg" role="status"></p>
-      <p class="fine">Die Crew meldest du erst nach der Auslosung an. Wer sich mit derselben E-Mail-Adresse nochmals einträgt, korrigiert seine Angaben.</p>
-    </form>
   </div>
 </section>
-
 <!-- ============ WISSEN ============ -->
 <section class="sec wissen" id="wissen">
   <div class="wrap">
-    <div class="sec-head"><span class="idx mono">11 / Wissen</span><h2 class="h2 reveal">Rund ums Backyard.</h2></div>
+    <div class="sec-head"><span class="idx mono">06 / Wissen</span><h2 class="h2 reveal">Rund ums Backyard.</h2></div>
     <div class="wz-grid"><a class="wz" href="/graatzug/backyard-ultra-schweiz"><b>Backyard Ultras in der Schweiz</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/backyard-ultra-wallis"><b>Backyard Ultras im Wallis</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/was-ist-ein-backyard-ultra"><b>Was ist ein Backyard Ultra?</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/backyard-ultra-regeln"><b>Die Regeln eines Backyard Ultra</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/soul-race"><b>Soul Races und das Last Soul Ultra</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/backyard-ultra-training"><b>Training und Taktik für ein Backyard Ultra</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/backyard-ultra-packliste"><b>Packliste für ein Backyard Ultra</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/backyard-crew"><b>Crew beim Backyard Ultra</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/simplonpass-laufen"><b>Laufen am Simplonpass</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/alter-spittel-barralhaus"><b>Alter Spittel und Barralhaus</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/graatzug-sage"><b>Der Graatzug: die Walliser Sage</b><span aria-hidden="true">→</span></a><a class="wz" href="/graatzug/anreise-simplon"><b>Anreise zum Simplonpass</b><span aria-hidden="true">→</span></a></div>
   </div>
 </section>
@@ -510,7 +309,7 @@
 <!-- ============ FAQ ============ -->
 <section class="sec faq" id="faq">
   <div class="wrap faq-wrap">
-    <div class="sec-head"><span class="idx mono">12 / FAQ</span><h2 class="h2 reveal">Gut zu wissen.</h2></div>
+    <div class="sec-head"><span class="idx mono">07 / FAQ</span><h2 class="h2 reveal">Gut zu wissen.</h2></div>
     <div class="qa-list">
       <details class="qa reveal"><summary>Was ist ein Backyard Ultra?</summary><p>Ein Backyard Ultra ist ein Ultralauf ohne feste Distanz. Jede volle Stunde startet eine Runde von 6,706 Kilometern. Wer die Runde innerhalb der Stunde schafft, ruht sich bis zum nächsten Start aus. Wer nicht rechtzeitig an der Startlinie steht, scheidet aus. Das Rennen endet, wenn nur noch eine Person eine Runde läuft. Erfunden hat das Format Gary «Lazarus Lake» Cantrell in Tennessee.</p></details>
       <details class="qa reveal"><summary>Welche Backyard Ultras gibt es im Wallis und in der Schweiz?</summary><p>In der Schweiz finden jedes Jahr rund ein Dutzend Backyard Ultras statt, zum Beispiel in Zürich, im Aargau, in Bern, in Graubünden und im Wallis. Im Wallis laufen Backyards ohne Zeitlimit in Varen und Saillon. Der Graatzug am Simplonpass ist das erste Backyard der Schweiz auf einem Alpenpass, auf rund 1'850 Metern über Meer.</p></details>
@@ -529,6 +328,60 @@
 </section>
 
 </main>
+
+<!-- ============ ANMELDE-WIZARD ============ -->
+<div class="wz-back" id="wizard" hidden>
+  <div class="wzd" role="dialog" aria-modal="true" aria-labelledby="wzTitle">
+    <button class="wz-x" type="button" data-close-wizard aria-label="Schliessen">×</button>
+    <p class="mono wz-k">Anmeldung Lostopf · Graatzug 2027</p>
+    <h2 id="wzTitle" class="wz-t">In den Lostopf</h2>
+    <ol class="wz-steps" aria-hidden="true"><li>Über dich</li><li>Erfahrung</li><li>Motivation</li><li>Bestätigen</li></ol>
+    <div class="wz-bar"><span id="wzBar"></span></div>
+    <form id="wzForm" novalidate>
+      <section class="wz-s" data-step="0">
+        <div class="row2"><label>Vorname<input name="vorname" autocomplete="given-name" required></label><label>Nachname<input name="nachname" autocomplete="family-name" required></label></div>
+        <label>E-Mail<input name="email" type="email" autocomplete="email" required></label>
+        <label>Telefon<input name="telefon" type="tel" autocomplete="tel" placeholder="+41 79 …" required></label>
+        <div class="row3"><label>Jahrgang<input name="geburtsjahr" inputmode="numeric" placeholder="1990" required></label><label>Kategorie<select name="geschlecht" required><option value="">Wählen</option><option>weiblich</option><option>männlich</option><option>divers</option></select></label><label>Land<input name="land" value="Schweiz" autocomplete="country-name" required></label></div>
+        <label>Wohnort<input name="wohnort" autocomplete="address-level2" required></label>
+      </section>
+      <section class="wz-s" data-step="1" hidden>
+        <p class="wz-q">Wie viele Backyards bist du schon gelaufen?</p>
+        <div class="chips">
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="0" required><span>Noch keins</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="1"><span>1</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="2–3"><span>2–3</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="4–6"><span>4–6</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="7+"><span>7+</span></label>
+        </div>
+        <div class="row2"><label>Längstes Backyard in Runden<input name="bestleistung" inputmode="numeric" placeholder="0 wenn noch keins" required></label><label>Wo war das? <em>freiwillig</em><input name="bestleistung_wo" placeholder="z. B. Last Soul 2026"></label></div>
+        <label>Wie viele Runden möchtest du am Graatzug laufen?<input name="zielrunden" inputmode="numeric" placeholder="z. B. 24" required></label>
+      </section>
+      <section class="wz-s" data-step="2" hidden>
+        <label>Warum willst du dabei sein? <em>freiwillig</em><textarea name="motivation" rows="5" placeholder="Ein paar Sätze reichen."></textarea></label>
+        <div class="hp" aria-hidden="true"><label>Nicht ausfüllen<input name="gz_feld" tabindex="-1" autocomplete="off"></label></div>
+      </section>
+      <section class="wz-s" data-step="3" hidden>
+        <div class="wz-sum" id="wzSum"></div>
+        <label class="check"><input type="checkbox" name="volljaehrig" value="ja" required><span>Ich bin am 19. Juni 2027 mindestens 18 Jahre alt.</span></label>
+        <label class="check"><input type="checkbox" name="kaution" value="ja" required><span>Wenn ich gezogen werde, bezahle ich Startgeld und eine Kaution von CHF 50. Die Kaution bekomme ich beim Verlassen des Camps zurück.</span></label>
+        <label class="check"><input type="checkbox" name="einwilligung" value="ja" required><span>Die Organisatoren dürfen meine Angaben für die Lotterie und die Organisation des Rennens verwenden.</span></label>
+      </section>
+      <section class="wz-s wz-done" data-step="4" hidden>
+        <div class="wz-ok">✓</div>
+        <h3>Du bist im Lostopf.</h3>
+        <p id="wzDoneText">Eine Bestätigung ist per Mail unterwegs.</p>
+        <button class="btn btn-accent" type="button" data-close-wizard>Schliessen</button>
+      </section>
+      <p class="wz-err" id="wzErr" role="alert"></p>
+      <div class="wz-nav" id="wzNav">
+        <button class="btn btn-ghost" type="button" id="wzBack">Zurück</button>
+        <button class="btn btn-accent" type="button" id="wzNext">Weiter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 <footer class="foot">
   <div class="wrap">
