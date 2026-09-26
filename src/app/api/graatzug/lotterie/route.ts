@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
             .join("")}</table>`,
         });
         await transporter.sendMail({
-          from: absender, to: email, replyTo: ZIEL,
+          from: absender, to: email, replyTo: "pierre@natural-athletics.ch",
           subject: "Du bist im Lostopf — Graatzug Backyard Ultra Simplon",
           text: [
             `Hey ${vorname}`,
