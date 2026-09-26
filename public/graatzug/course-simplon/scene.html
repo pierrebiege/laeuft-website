@@ -1,0 +1,151 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemmi terrain</title>
+<style>
+  html{color-scheme:dark}
+  html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,#1a2a44 0%,#0a1220 45%,#05070b 100%)}
+  canvas{display:block;width:100%;height:100%;cursor:grab}
+  canvas:active{cursor:grabbing}
+</style>
+<canvas id="gl"></canvas>
+<script src="three.min.js"></script>
+<script>
+/**
+ * Die Runde um den Daubensee im echten Gelände (Terrarium-DEM + Esri-Satellit,
+ * gebaut von scripts/course-terrain.mjs). Kein Überhöhen: die Gemmi ist steil genug.
+ *
+ * Die Seite schickt per postMessage {rev: 0..1} (wie weit die Runde gezeichnet ist)
+ * und {visible}. Ziehen dreht die Kamera, danach driftet sie langsam weiter.
+ */
+const S = 120, EXAG = 1.0, HM = 512;
+
+let rev = 0, target = 0, visible = true, calm = false, needs = true, snap = true;
+let az = 1.35, azVel = 0, drag = null, lastInput = 0;
+addEventListener('message', (e) => {
+  if (typeof e.data?.rev === 'number') { target = Math.min(1, Math.max(0, e.data.rev)); needs = true; }
+  if (typeof e.data?.visible === 'boolean') visible = e.data.visible;
+});
+
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x070b12, 110, 230);
+const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 4000);
+
+scene.add(new THREE.DirectionalLight(0xfff1dc, 2.4).translateX(-80).translateY(120).translateZ(90));
+scene.add(new THREE.HemisphereLight(0xcfe2ff, 0x10131a, 0.8));
+scene.add(new THREE.AmbientLight(0x51617f, 0.35));
+
+function resize() {
+  const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  needs = true;
+}
+addEventListener('resize', resize);
+
+canvas.addEventListener('pointerdown', (e) => { drag = e.clientX; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', (e) => {
+  if (drag === null) return;
+  const dx = e.clientX - drag; drag = e.clientX;
+  az -= dx * 0.006; azVel = -dx * 0.006; lastInput = performance.now(); needs = true;
+});
+addEventListener('pointerup', () => { drag = null; });
+
+let curve, tube, glow, head, tubeCount = 0, ready = false, center = new THREE.Vector3();
+
+fetch('terrain.json').then((r) => r.json()).then((D) => {
+  const uPerM = (S / (D.half * 2)) * EXAG;
+  const wY = (e) => (e - D.demMin) * uPerM;
+  let grid;
+  const at = (x, y) => {
+    const fi = ((x + 1) / 2) * (HM - 1), fj = ((1 - y) / 2) * (HM - 1);
+    const i0 = Math.floor(fi), j0 = Math.floor(fj), fx = fi - i0, fy = fj - j0;
+    const i1 = Math.min(HM - 1, i0 + 1), j1 = Math.min(HM - 1, j0 + 1);
+    const g = (i, j) => grid[j * HM + i];
+    return g(i0, j0) * (1 - fx) * (1 - fy) + g(i1, j0) * fx * (1 - fy)
+      + g(i0, j1) * (1 - fx) * fy + g(i1, j1) * fx * fy;
+  };
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = c.height = HM;
+    const cx = c.getContext('2d', { willReadFrequently: true });
+    cx.drawImage(img, 0, 0, HM, HM);
+    const d = cx.getImageData(0, 0, HM, HM).data;
+    grid = new Float32Array(HM * HM);
+    for (let p = 0; p < HM * HM; p++) { const k = p * 4; grid[p] = d[k] * 256 + d[k + 1] + d[k + 2] / 256 - 32768; }
+    const geo = new THREE.PlaneGeometry(S, S, HM - 1, HM - 1);
+    geo.rotateX(-Math.PI / 2);
+    const pos = geo.attributes.position;
+    for (let i = 0; i < HM * HM; i++) pos.setY(i, wY(grid[i]));
+    pos.needsUpdate = true;
+    geo.computeVertexNormals();
+    const tex = new THREE.TextureLoader().load('sat.jpg', () => { buildRoute(D, wY, at); needs = true; });
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    scene.add(new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95 })));
+  };
+  img.src = 'height.png';
+});
+
+function buildRoute(D, wY, at) {
+  const raw = D.route.map(([x, y]) => wY(at(x, y)) + 0.3);
+  const sm = raw.map((_, i) => { let s = 0, n = 0; for (let k = -3; k <= 3; k++) { const j = i + k; if (j >= 0 && j < raw.length) { s += raw[j]; n++; } } return s / n; });
+  const pts = D.route.map(([x, y], i) => new THREE.Vector3((x * S) / 2, sm[i], (-y * S) / 2));
+  pts.forEach((p) => center.add(p)); center.divideScalar(pts.length);
+  curve = new THREE.CatmullRomCurve3(pts);
+  const t = new THREE.TubeGeometry(curve, pts.length * 3, 0.16, 8, false);
+  tube = new THREE.Mesh(t, new THREE.MeshBasicMaterial({ color: 0xfff4ec, depthTest: false }));
+  tube.renderOrder = 10; scene.add(tube);
+  const g = new THREE.TubeGeometry(curve, pts.length * 3, 0.55, 8, false);
+  glow = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0xff5a1f, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false }));
+  glow.renderOrder = 9; scene.add(glow);
+  tubeCount = t.index.count;
+  tube.geometry.setDrawRange(0, 0); glow.geometry.setDrawRange(0, 0);
+  const white = () => new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false });
+  const start = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), white());
+  start.position.copy(pts[0]); start.renderOrder = 11; scene.add(start);
+  head = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff5a1f, depthTest: false }));
+  head.renderOrder = 12; scene.add(head);
+  ready = true; resize();
+  parent.postMessage({ sceneReady: true }, '*');
+}
+
+const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!visible) return;
+  const next = calm || snap ? target : rev + (target - rev) * 0.1;
+  if (snap && ready) snap = false;
+  if (Math.abs(next - rev) > 0.0004) { rev = next; needs = true; }
+  // Leichtes Weiterdriften nach dem Ziehen, dann langsamer Eigenschwenk.
+  if (drag === null) {
+    if (Math.abs(azVel) > 0.0002) { az += azVel; azVel *= 0.94; needs = true; }
+    else if (!calm && now - lastInput > 2500) { az += 0.0009; needs = true; }
+  }
+  if (!needs) return;
+  needs = false;
+  const e = ease(rev);
+  const fit = Math.max(1, 1.45 / Math.max(0.4, camera.aspect));
+  const r = (62 - e * 10) * fit;
+  camera.position.set(center.x + r * Math.sin(az), center.y + (46 - e * 6) * fit, center.z + r * Math.cos(az));
+  camera.lookAt(center.x, center.y - 2, center.z);
+  if (ready) {
+    const dc = Math.floor(rev * tubeCount);
+    tube.geometry.setDrawRange(0, dc); glow.geometry.setDrawRange(0, dc);
+    head.position.copy(curve.getPointAt(Math.min(0.9999, Math.max(0.0001, rev))));
+    head.visible = rev > 0.002 && rev < 0.998;
+  }
+  renderer.render(scene, camera);
+}
+calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+Object.assign(window, { renderer, scene, camera, sceneState: () => ({ rev, target, ready, az }) });
+resize();
+requestAnimationFrame(frame);
+</script>

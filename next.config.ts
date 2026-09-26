@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
     // trifft. /api bleibt unberührt, damit das Live-Board seine Daten holt.
     return {
       beforeFiles: [
+        // Graatzug Backyard Ultra Simplon: statische Seite unter public/graatzug/.
+        // Die Seite setzt <base href="/graatzug/">, damit Bilder und Skripte
+        // auch ohne Schrägstrich am Ende gefunden werden.
+        { source: "/graatzug", destination: "/graatzug/index.html" },
         ...TEAM_HOSTS.flatMap((host) => [
           {
             source: "/",
@@ -183,8 +187,13 @@ const nextConfig: NextConfig = {
         headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
       },
       {
+        // Graatzug: die 3D-Runde am Simplon läuft in einem iframe derselben Herkunft.
+        source: "/graatzug/course-simplon/scene.html",
+        headers: [...base, { key: "X-Frame-Options", value: "SAMEORIGIN" }],
+      },
+      {
         // Rest der Seite: kein Framing erlaubt
-        source: "/((?!goms/scene\\.html|backyard/course/scene\\.html|keller/).*)",
+        source: "/((?!goms/scene\\.html|backyard/course/scene\\.html|keller/|graatzug/course-simplon/scene\\.html).*)",
         headers: [...base, { key: "X-Frame-Options", value: "DENY" }],
       },
     ];

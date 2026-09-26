@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<base href="/graatzug/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Graatzug Backyard Ultra Simplon</title>
+<meta name="description" content="Graatzug: ein Backyard Ultra am Simplonpass. Start beim Barralhaus, jede Stunde eine Runde von 6'706 Metern um Stockalpers Alten Spittel, bis nur noch jemand übrig ist. Samstag, 19. Juni 2027, 12 Uhr.">
+<meta name="theme-color" content="#0b0d10">
+<meta property="og:title" content="Graatzug Backyard Ultra Simplon">
+<meta property="og:description" content="Jede Stunde eine Runde um den Alten Spittel. Simplonpass, 19. Juni 2027, 12:00.">
+<meta property="og:image" content="img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M8 44 L22 22 L30 32 L38 18 L56 44' fill='none' stroke='%23f2efe8' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='14' y='49' width='36' height='4' fill='%23ff5a1f'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Graatzug">
+    <svg class="brand-mark" viewBox="0 0 40 26" aria-hidden="true"><path d="M1 19 L11 5 L17 12 L23 3 L39 19"/><rect x="6" y="23" width="28" height="2.4"/></svg>
+    <span>Graatzug</span>
+  </a>
+  <nav class="nav-links" aria-label="Hauptnavigation">
+    <a href="#runde">Runde</a>
+    <a href="#format">Format</a>
+    <a href="#pass">Pass</a>
+    <a href="#sage">Sagen</a>
+    <a href="#team">Team</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a class="btn btn-sm btn-accent" href="#lotterie">Zur Lotterie</a>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO: 1910 → 2027 ============ -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <div class="hero-img now" aria-hidden="true"><img src="img/s-spittel-barral-valley.jpg" alt="" fetchpriority="high"></div>
+    <div class="hero-img then" aria-hidden="true"><img src="img/h-1910.jpg" alt=""></div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-year mono" aria-hidden="true"><span id="heroYear">1910</span></div>
+    <div class="wrap hero-inner">
+      <div class="hero-top">
+        <span class="tag mono">Simplonpass · Barralhaus · 1'870 m</span>
+        <span class="tag mono">46.2349° N · 8.0137° E</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="t1">Graatzug</span>
+        <span class="t2"><em>Backyard Ultra</em> Simplon</span>
+      </h1>
+      <div class="hero-bottom">
+        <div class="hero-left">
+          <p class="hero-sub">Jede volle Stunde eine Runde von 6'706 Metern um Stockalpers Alten Spittel. Bis nur noch jemand übrig ist.</p>
+          <a class="btn btn-accent btn-lg" href="#lotterie">In den Lostopf <span aria-hidden="true" style="margin-left:10px">→</span></a>
+          <p class="hero-note mono">130 Startplätze · Vergabe per Lotterie</p>
+        </div>
+        <div class="hero-date">
+          <span class="mono">Samstag</span>
+          <b>19.06.2027</b>
+          <span class="mono">Erste Runde 12:00</span>
+        </div>
+      </div>
+    </div>
+    <p class="hero-cap mono" id="heroCap">Barralhaus und Alter Spittel, 1910 · Glasdia Leo Wehrli, ETH-Bibliothek</p>
+  </div>
+</section>
+
+<!-- ============ RUNDE ============ -->
+<section class="sec course" id="runde">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">01 / Runde</span>
+      <h2 class="h2 reveal">Einmal um<br>den Spittel.</h2>
+      <p class="lead reveal">Start und Ziel beim Barralhaus. Hinunter zur Niederalp, am Alten Spittel vorbei, hinauf nach Hopsche und über Gampisch zurück. Grosse Teile verlaufen auf Stockalpers Saumweg. Die Passstrasse wird nie gequert.</p>
+    </div>
+  </div>
+  <div class="course-stage" id="courseStage">
+    <div class="course-sticky">
+      <div class="wrap">
+        <div class="terrain-card">
+          <iframe id="terrain" src="course-simplon/scene.html" title="Die Runde am Simplonpass in 3D" loading="lazy"></iframe>
+          <div class="terrain-hud">
+            <div class="hud-l"><span class="hud-k mono">Distanz</span><span class="hud-v mono"><span id="hudKm">0,00</span> / 6,71 km</span></div>
+            <div class="hud-r"><span class="chip mono">Ziehen zum Drehen</span></div>
+          </div>
+          <div class="terrain-labels mono" aria-hidden="true">Esri World Imagery · Terrarium/AWS · OpenStreetMap</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat reveal"><span class="mono">Distanz</span><b>6'706<small>m</small></b></div>
+      <div class="stat reveal"><span class="mono">Höhenmeter</span><b>~186<small>Hm</small></b></div>
+      <div class="stat reveal"><span class="mono">Tiefster Punkt</span><b>1'813<small>m</small></b></div>
+      <div class="stat reveal"><span class="mono">Höchster Punkt</span><b>1'978<small>m</small></b></div>
+    </div>
+    <div class="profile-card reveal">
+      <div class="profile-head">
+        <span class="mono card-k">Höhenprofil</span>
+        <a class="btn btn-sm btn-ghost" href="barralhaus-loop.gpx" download>GPX laden</a>
+      </div>
+      <div class="profile-wrap">
+        <svg id="profile" viewBox="0 0 1000 240" preserveAspectRatio="none" aria-label="Höhenprofil der Runde"></svg>
+        <div class="profile-tip mono" id="profileTip" hidden></div>
+      </div>
+      <ol class="stations">
+        <li><span class="mono">0,0</span><b>Barralhaus</b><em>Start, Base Camp</em></li>
+        <li><span class="mono">1,4</span><b>Niederalp</b><em>tiefster Punkt</em></li>
+        <li><span class="mono">2,7</span><b>Alter Spittel</b><em>Stockalper, 1666</em></li>
+        <li><span class="mono">4,3</span><b>Hopsche</b><em>höchster Punkt</em></li>
+        <li><span class="mono">6,1</span><b>Gampisch</b><em>letzte Kurve</em></li>
+        <li><span class="mono">6,7</span><b>Barralhaus</b><em>nächste Runde</em></li>
+      </ol>
+      <p class="fine">Aus OpenStreetMap gerechnet, Höhen aus einem Geländemodell. Vor dem Rennen mit dem Messrad auf exakt 6'706 m vermessen. Kein Schutzgebiet von nationaler Bedeutung.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMAT ============ -->
+<section class="sec format" id="format">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">02 / Format</span>
+      <h2 class="h2 reveal"><em>Nomaal.</em></h2>
+      <p class="lead reveal">Walliserdeutsch für «noch einmal». Ein offizielles Backyard nach den Regeln von Big's Backyard Ultra, im Rahmen des Last Soul Ultra.</p>
+    </div>
+    <ol class="rules">
+      <li class="reveal"><span class="mono">01</span><h3>6'706 Meter</h3><p>Vier Meilen und 880 Fuss. Die Distanz jedes Backyards auf der Welt.</p></li>
+      <li class="reveal"><span class="mono">02</span><h3>Jede volle Stunde</h3><p>Die Glocke läutet drei, zwei und eine Minute vor dem Start.</p></li>
+      <li class="reveal"><span class="mono">03</span><h3>Kein später Start</h3><p>Wer beim Läuten nicht im Startbereich steht, ist raus.</p></li>
+      <li class="reveal"><span class="mono">04</span><h3>Allein auf der Runde</h3><p>Keine Begleitung, keine persönliche Verpflegung, keine Stöcke.</p></li>
+      <li class="reveal"><span class="mono">05</span><h3>3 × 3 Meter</h3><p>Dein Quadrat im Base Camp. Nur dort hilft die Crew.</p></li>
+      <li class="reveal"><span class="mono">06</span><h3>Bei jedem Wetter</h3><p>Stirnlampe nach Einbruch der Dunkelheit. Behördliche Anordnungen gehen vor.</p></li>
+      <li class="reveal win"><span class="mono">07</span><h3>Eine Runde mehr</h3><p>Gewonnen hat, wer eine Runde mehr läuft als alle anderen. Schafft das niemand, gewinnt niemand.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ PASS / GESCHICHTE ============ -->
+<section class="sec pass" id="pass">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">03 / Pass</span>
+      <h2 class="h2 reveal">Immer denselben Weg.</h2>
+      <p class="lead reveal">Die Säumer trugen Waren über den Simplon, hin und zurück, Woche für Woche, auf demselben Weg. Ein Backyard macht nichts anderes.</p>
+    </div>
+  </div>
+  <div class="history" id="history">
+    <div class="history-track">
+      <article class="h-card reveal"><div class="h-img"><img src="img/s-spittel.jpg" alt="Der Alte Spittel" loading="lazy"></div><span class="h-year mono">1666</span><h3>Der Alte Spittel</h3><p>Kaspar Stockalper lässt ihn als Unterkunft bauen, gratis für Säumer, Waren und Saumtiere.</p></article>
+      <article class="h-card reveal"><div class="h-img"><img src="img/h-1900.jpg" alt="Das Simplon Hospiz um 1900" loading="lazy"></div><span class="h-year mono">1805</span><h3>Napoleons Strasse</h3><p>Die Passstrasse ist offen. Das neue Hospiz beziehen 1831 die Chorherren vom Grossen St. Bernhard.</p></article>
+      <article class="h-card reveal"><div class="h-img bw"><img src="img/h-1910.jpg" alt="Barralhaus und Alter Spittel 1910" loading="lazy"></div><span class="h-year mono">1910</span><h3>Barralhaus und Spittel</h3><p>Leo Wehrli fotografiert beide Häuser auf Glas. Genau hier steht 2027 das Base Camp.</p></article>
+      <article class="h-card reveal"><div class="h-img"><img src="img/s-adler.jpg" alt="Der Simplon-Adler" loading="lazy"></div><span class="h-year mono">1944</span><h3>Der Adler</h3><p>Die Gebirgsbrigade 11 baut ihn während der Grenzbesetzung, über neun Meter hoch, aus Granit.</p></article>
+      <article class="h-card now reveal"><div class="h-img"><img src="img/s-barral-spittel.jpg" alt="Barralhaus und Alter Spittel heute" loading="lazy"></div><span class="h-year mono">2027</span><h3>Der Graatzug</h3><p>Samstag, 19. Juni, 12:00. Die erste Glocke am Barralhaus.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAGEN ============ -->
+<section class="sec tales-sec" id="sage">
+  <div class="wrap tales-head">
+    <div class="sec-head">
+      <span class="idx mono">04 / Sagen</span>
+      <h2 class="h2 reveal">Im Wallis laufen<br>die Seelen nachts.</h2>
+    </div>
+    <div class="tales-nav">
+      <button class="tn" data-dir="-1" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="tn" data-dir="1" aria-label="Weiter"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="tales" id="tales">
+    <div class="tales-track">
+      <article class="tale hi"><span class="mono">01</span><h3>Der Graatzug</h3><p>Nachts ziehen die armen Seelen in langen Zügen über Grate und Pässe. Wer sie hört, stellt sich oberhalb des Weges. Wer im Weg steht, «kommt in den Gratzug».</p><cite class="mono">Tscheinen/Ruppen, Walliser Sagen 1872</cite></article>
+      <article class="tale"><span class="mono">02</span><h3>Drei Glockenstunden</h3><p>Ab Mitternacht zieht der Zug an einem Mann vorbei, drei lange Glockenstunden, bis zum Betläuten um drei Uhr.</p><cite class="mono">Tscheinen/Ruppen 1872</cite></article>
+      <article class="tale"><span class="mono">03</span><h3>Der Letzte im Zug</h3><p>Der Sigrist von Ulrichen erkennt jedes Gesicht im Graatzug, nur das des Letzten nicht. Der Letzte ist er selbst.</p><cite class="mono">«Unpaar Strümpfe», Josef Guntern</cite></article>
+      <article class="tale"><span class="mono">04</span><h3>Neun Gräte</h3><p>In Bellwald heisst es, die Seelen müssten jede Nacht über neun Gräte und neunundneunzig Friedhöfe wandern.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
+      <article class="tale"><span class="mono">05</span><h3>Der Wirt von Gondo</h3><p>Um 1630 ermordet der Wirt Pera am Simplon einen Reisenden. Die Witwe erkennt den Sattel ihres Mannes unter vierzehn. Pera geht danach als schwarzer Hund um.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
+      <article class="tale"><span class="mono">06</span><h3>Pfarrer Sulzgi</h3><p>In Albinen betet ein Pfarrer nachts im Graben. Wer über seine linke Schulter schaut, sieht den Graben voll armer Seelen.</p><cite class="mono">Josef Guntern, Walliser Sagen 1963</cite></article>
+      <article class="tale"><span class="mono">07</span><h3>Die Seelen im Gletscher</h3><p>Ein Jäger findet zwei Seelen im Eis. Die eine steckt bis zu den Schultern darin und singt, weil ihre Erlösung naht.</p><cite class="mono">Johann Jegerlehner, Walliser Sagen</cite></article>
+    </div>
+  </div>
+  <div class="wrap"><p class="fine reveal">Der Graatzug gehört dem ganzen Oberwallis, am Simplon selbst ist er nicht überliefert. Wir bringen ihn für ein Wochenende auf den Pass.</p></div>
+</section>
+
+<!-- ============ NACHT ============ -->
+<section class="sec night" id="nacht">
+  <div class="wrap">
+    <span class="idx mono">05 / Nacht</span>
+    <h2 class="h2 reveal">Drei lange<br>Glockenstunden.</h2>
+    <div class="night-grid">
+      <p class="lead reveal">Zwischen Mitternacht und drei Uhr zieht in der Sage der Zug vorbei. Im Rennen sind das die Runden 13 bis 15. Der Spittel ist nur noch ein Umriss, und über dem Pass stehen so viele Sterne, wie man sie im Tal nie sieht.</p>
+      <div class="clock reveal">
+        <div class="c-row"><span class="mono">12:00</span><b>Runde 1</b></div>
+        <div class="c-row"><span class="mono">21:30</span><b>Stirnlampe an</b></div>
+        <div class="c-row hi"><span class="mono">00:00</span><b>Der Zug beginnt</b></div>
+        <div class="c-row"><span class="mono">03:00</span><b>Betläuten</b></div>
+        <div class="c-row"><span class="mono">05:30</span><b>Erstes Licht über dem Pass</b></div>
+        <div class="c-row"><span class="mono">12:00</span><b>Runde 25 · 160,9 km</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="sec team" id="team">
+  <div class="wrap story-grid">
+    <figure class="story-photo reveal">
+      <img src="img/swiss-flag.jpg" alt="Pierre und seine Crew mit der Schweizer Fahne unter dem Zielbogen des Last Soul Ultra" loading="lazy">
+      <figcaption class="mono">Last Soul Ultra 2025, nach 40 Stunden</figcaption>
+    </figure>
+    <div>
+      <span class="idx mono">06 / Team</span>
+      <h2 class="h2 reveal">Die Crew wird<br>zum Rennen.</h2>
+      <div class="prose reveal">
+        <p>Ich bin das Last Soul zweimal gelaufen, 40 und 33 Stunden. Allein läuft man so etwas nicht. 2026 standen Daniel und Anes in meinem Zelt und haben mich Runde für Runde zurück an die Linie gebracht.</p>
+        <p>Danach war die Frage da, warum es so etwas bei uns nicht gibt. In den Bergen, im Wallis, auf einem Pass mit 360 Jahren Säumergeschichte.</p>
+        <p class="sig">Pierre Biege</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="team-grid">
+      <article class="person reveal"><span class="mono role">Race Director</span><h3>Daniel Keller</h3><p>Strecke, Glocke, Zeitnahme und die Frage, ob jemand noch sicher auf die nächste Runde geht.</p></article>
+      <article class="person reveal"><span class="mono role">Organisation</span><h3>Anes Gracic</h3><p>Bewilligungen, Partner, Base Camp, Helfer:innen. Alles, was steht, bevor die erste Glocke läutet.</p></article>
+      <article class="person reveal"><span class="mono role">Mit dabei</span><h3>Pierre Biege</h3><p>Ultraläufer aus Albinen. Zweimal am Last Soul Ultra, 40 und 33 Stunden.</p></article>
+    </div>
+  </div>
+  <div class="gallery" aria-label="Bilder vom Last Soul Ultra">
+    <div class="gallery-track">
+      <figure><img src="img/start-blur.jpg" alt="Start einer Runde in der Nacht" loading="lazy"></figure>
+      <figure class="tall"><img src="img/lap2.jpg" alt="Pierre unter der Rundenanzeige" loading="lazy"></figure>
+      <figure><img src="img/hands.jpg" alt="Pierre mit dem Gesicht in den Händen im Base Camp" loading="lazy"></figure>
+      <figure class="tall"><img src="img/towel.jpg" alt="Pierre mit Tuch gegen die Sonne" loading="lazy"></figure>
+      <figure><img src="img/tent-night.jpg" alt="Das Base Camp in der Nacht" loading="lazy"></figure>
+      <figure class="tall"><img src="img/bw-run.jpg" alt="Pierre läuft im Regen" loading="lazy"></figure>
+      <figure><img src="img/tired.jpg" alt="Pierre liegt erschöpft in der Pause" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OFFIZIELL ============ -->
+<section class="sec official" id="offiziell">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">07 / Offiziell</span>
+      <h2 class="h2 reveal">Jede Runde zählt.</h2>
+      <p class="lead reveal">Der Graatzug läuft als offiziell affiliertes Backyard von Big's Backyard Ultra und als Soul Race des Last Soul Ultra.</p>
+    </div>
+    <div class="off-grid">
+      <article class="off reveal">
+        <span class="mono off-k">Big's Backyard Ultra</span>
+        <h3>Weltrangliste</h3>
+        <p>Deine Runden fliessen in die Weltrangliste und in die At-Large-Liste des Schweizer Nationalteams. Die Resultate vom Juni 2027 zählen noch für das Qualifikationsfenster bis 15. August 2027.</p>
+        <span class="status mono"><i></i>Affiliierung in Vorbereitung</span>
+      </article>
+      <article class="off reveal">
+        <span class="mono off-k">Last Soul Ultra</span>
+        <h3>Soul Race</h3>
+        <p>Das Last Soul Ultra vergibt Startplätze über unabhängige Soul Races. Der Graatzug soll das erste der Schweiz werden.</p>
+        <span class="status mono"><i></i>In Abklärung mit Kim Gottwald</span>
+      </article>
+      <article class="off reveal">
+        <span class="mono off-k">Wallis</span>
+        <h3>Das dritte ohne Limit</h3>
+        <p>Nach Varen und Saillon das dritte Backyard ohne Zeitlimit im Wallis und das erste auf einem Alpenpass.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AM PASS ============ -->
+<section class="sec care" id="berg">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">08 / Am Pass</span>
+      <h2 class="h2 reveal">Wir verlassen den Pass sauberer, als wir ihn finden.</h2>
+    </div>
+    <div class="care-grid">
+      <article class="reveal"><span class="mono">Camp</span><p>Zelte von 3 × 3 m auf den befestigten Flächen beim Barralhaus. Die Wiesen bleiben frei.</p></article>
+      <article class="reveal"><span class="mono">Aufräumen</span><p>Abfalltrennung, Mehrweg, Kaution für jedes Quadrat. Danach gehen wir die ganze Runde ab.</p></article>
+      <article class="reveal"><span class="mono">Sicherheit</span><p>Sanität rund um die Uhr, elektronische Zeitnahme, Rettungskette mit Spital Brig und Helikopter.</p></article>
+      <article class="reveal"><span class="mono">Wetter</span><p>Wir laufen bei jedem Wetter. Behördliche Anordnungen und Unwetterwarnungen gehen vor.</p></article>
+      <article class="reveal"><span class="mono">Live</span><p>Zeitnahme und Stream über das Mobilnetz am Pass. Die ganze Nacht, jede Runde.</p></article>
+      <article class="reveal"><span class="mono">Übernachten</span><p>Läufer:innen und Crews im Camp, Familien und Zuschauer:innen im Hospiz und in den Hotels.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WOCHENENDE ============ -->
+<section class="sec weekend">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="idx mono">09 / Wochenende</span>
+      <h2 class="h2 reveal">So läuft es ab.</h2>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-track">
+      <article class="ti reveal"><span class="mono ti-d">Fr 18.06.</span><span class="mono ti-t">16:00</span><h3>Anreise</h3><p>Postauto oder Auto auf den Simplon. Quadrat beim Barralhaus beziehen.</p></article>
+      <article class="ti reveal"><span class="mono ti-d">Fr 18.06.</span><span class="mono ti-t">19:00</span><h3>Briefing</h3><p>Runde, Regeln, Wetter. Danach schlafen, so gut es geht.</p></article>
+      <article class="ti hi reveal"><span class="mono ti-d">Sa 19.06.</span><span class="mono ti-t">12:00</span><h3>Erste Glocke</h3><p>Runde 1. Ab jetzt zählt nur die nächste Stunde.</p></article>
+      <article class="ti reveal"><span class="mono ti-d">So 20.06.</span><span class="mono ti-t">00:00</span><h3>Der Zug</h3><p>Runde 13. Drei Glockenstunden bis zum Betläuten.</p></article>
+      <article class="ti reveal"><span class="mono ti-d">So 20.06.</span><span class="mono ti-t">12:00</span><h3>Runde 25</h3><p>160,9 Kilometer. Wer noch steht, geht in den zweiten Tag.</p></article>
+      <article class="ti end reveal"><span class="mono ti-d">Irgendwann</span><span class="mono ti-t">??:00</span><h3>Der Letzte im Zug</h3><p>Eine Runde allein.</p></article>
+    </div>
+  </div>
+  <div class="wrap"><p class="fine">Ausweichdatum 26. Juni 2027. Vorbehaltlich der Bewilligungen.</p></div>
+</section>
+
+<!-- ============ LOTTERIE ============ -->
+<section class="lottery" id="lotterie">
+  <div class="wrap lot-grid">
+    <div class="lot-info">
+      <span class="idx mono">Anmeldung · Lotterie</span>
+      <h2 class="h2">Kommst du mit<br>in den Zug?</h2>
+      <p class="lead">Wir vergeben rund <b>130 Startplätze</b> per Lotterie. Trag dich jetzt in den Lostopf ein. Nach Anmeldeschluss ziehen wir die Startplätze und melden uns bei allen per Mail.</p>
+      <ol class="lot-steps">
+        <li><span class="mono">01</span><div><b>Lostopf</b>Du trägst dich hier ein. Kostenlos und unverbindlich.</div></li>
+        <li><span class="mono">02</span><div><b>Auslosung</b>Nach Anmeldeschluss losen wir rund 130 Plätze aus. Das Datum geben wir bekannt.</div></li>
+        <li><span class="mono">03</span><div><b>Bestätigen</b>Wer gezogen wird, bezahlt Startgeld und Kaution und meldet dann seine Crew an.</div></li>
+      </ol>
+      <div class="kaution">
+        <span class="mono">Kaution CHF 50 pro Quadrat</span>
+        <p><b>Warum?</b> Wir sind am Simplon zu Gast. Die Gemeinde und das VBS stellen uns den Platz beim Barralhaus zur Verfügung, und wir wollen ihn sauberer hinterlassen, als wir ihn übernehmen.</p>
+        <p><b>Zurück bekommst du sie</b> nach dem Rennen, wenn du das Camp verlässt: Dein Quadrat ist leer, der Abfall getrennt entsorgt, und jemand vom Team hat es abgenommen. Du bekommst das Geld dann direkt zurück.</p>
+      </div>
+    </div>
+    <form class="lot-form" id="lottery" novalidate>
+      <fieldset>
+        <legend class="mono">Wer bist du?</legend>
+        <div class="row2">
+          <label>Vorname<input name="vorname" autocomplete="given-name" required></label>
+          <label>Nachname<input name="nachname" autocomplete="family-name" required></label>
+        </div>
+        <div class="row2">
+          <label>E-Mail<input name="email" type="email" autocomplete="email" required></label>
+          <label>Telefon<input name="telefon" type="tel" autocomplete="tel" placeholder="+41 79 …" required></label>
+        </div>
+        <div class="row3">
+          <label>Jahrgang<input name="geburtsjahr" inputmode="numeric" placeholder="1990" required></label>
+          <label>Kategorie<select name="geschlecht" required><option value="">Wählen</option><option>weiblich</option><option>männlich</option><option>divers</option></select></label>
+          <label>Land<input name="land" autocomplete="country-name" value="Schweiz" required></label>
+        </div>
+        <label>Wohnort<input name="wohnort" autocomplete="address-level2" required></label>
+      </fieldset>
+      <fieldset>
+        <legend class="mono">Deine Backyard-Erfahrung</legend>
+        <label>Wie viele Backyards bist du schon gelaufen?</label>
+        <div class="chips" role="radiogroup">
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="0" required><span>Noch keins</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="1"><span>1</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="2–3"><span>2–3</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="4–6"><span>4–6</span></label>
+          <label class="chipr"><input type="radio" name="anzahl_backyards" value="7+"><span>7+</span></label>
+        </div>
+        <div class="row2">
+          <label>Längstes Backyard, in Runden<input name="bestleistung" inputmode="numeric" placeholder="0 wenn noch keins" required></label>
+          <label>Wo war das?<input name="bestleistung_wo" placeholder="z. B. Last Soul Ultra 2026"></label>
+        </div>
+        <label>Wie viele Runden möchtest du am Graatzug laufen?<input name="zielrunden" inputmode="numeric" placeholder="z. B. 24" required></label>
+        <label>Warum willst du dabei sein? <em>freiwillig</em><textarea name="motivation" rows="3"></textarea></label>
+      </fieldset>
+      <fieldset class="checks">
+        <label class="check"><input type="checkbox" name="volljaehrig" value="ja" required><span>Ich bin am 19. Juni 2027 mindestens 18 Jahre alt.</span></label>
+        <label class="check"><input type="checkbox" name="kaution" value="ja" required><span>Ich habe gelesen: Wenn ich gezogen werde, bezahle ich eine Kaution von CHF 50, die ich nach dem Rennen beim Verlassen des Camps zurückbekomme.</span></label>
+        <label class="check"><input type="checkbox" name="einwilligung" value="ja" required><span>Die Organisatoren dürfen meine Angaben für die Lotterie und die Organisation des Rennens verwenden.</span></label>
+      </fieldset>
+      <div class="hp" aria-hidden="true"><label>Nicht ausfüllen<input name="gz_feld" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn btn-accent btn-lg btn-full" type="submit">In den Lostopf</button>
+      <p class="form-msg" id="lotMsg" role="status"></p>
+      <p class="fine">Die Crew meldest du erst nach der Auslosung an. Wer sich mit derselben E-Mail-Adresse nochmals einträgt, korrigiert seine Angaben.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="sec faq" id="faq">
+  <div class="wrap faq-wrap">
+    <div class="sec-head"><span class="idx mono">10 / FAQ</span><h2 class="h2 reveal">Gut zu wissen.</h2></div>
+    <div class="qa-list">
+      <details class="qa reveal"><summary>Warum im Juni und warum am Simplon?</summary><p>Beim Simplon Hospiz ist es laut dem SLF seit 1997 im Median ab dem 13. Mai schneefrei, Mitte Juni ist schneesicher. Die Passstrasse ist das ganze Jahr offen, das Barralhaus bietet befestigte Flächen fürs Camp, und die Runde kommt ohne Strasse und ohne Schutzgebiet aus.</p></details>
+      <details class="qa reveal"><summary>Wie funktioniert die Lotterie?</summary><p>Du trägst dich kostenlos in den Lostopf ein. Nach Anmeldeschluss ziehen wir rund 130 Startplätze. Wer gezogen wird, bezahlt Startgeld und Kaution und meldet danach seine Crew an. Alle anderen kommen auf die Warteliste und rücken nach, wenn jemand absagt.</p></details>
+      <details class="qa reveal"><summary>Ist das ein offizielles Backyard?</summary><p>Ja. Wir laufen nach den Regeln von Big's Backyard Ultra und melden das Rennen als affiliiertes Backyard an. Deine Runden zählen damit für die Weltrangliste und die Schweizer Nationalteam-Selektion.</p></details>
+      <details class="qa reveal"><summary>Ist der Graatzug eine Sage vom Simplon?</summary><p>Nein. Der Graatzug gehört dem ganzen Oberwallis, am Simplon selbst ist er nicht überliefert. Quellen: Tscheinen/Ruppen, <em>Walliser Sagen</em> (1872), Josef Guntern und Johann Jegerlehner.</p></details>
+      <details class="qa reveal"><summary>Wie komme ich hin?</summary><p>Mit dem Postauto ab Brig bis zum Simplon Hospiz oder mit dem Auto über die Passstrasse. Parkplätze beim Alten Spittel und beim Hospiz. Bitte Fahrgemeinschaften bilden.</p></details>
+      <details class="qa reveal"><summary>Was passiert bei einem Gewitter?</summary><p>Ein Backyard läuft grundsätzlich bei jedem Wetter. Anordnungen der Behörden und Unwetterwarnungen von MeteoSchweiz der Stufen 4 und 5 gehen vor, dann unterbricht die Rennleitung. Die Regeln stehen im Reglement, bevor die Anmeldung öffnet.</p></details>
+      <details class="qa reveal"><summary>Wie viele Personen darf meine Crew haben?</summary><p>Wie beim Last Soul: bis zu vier registrierte Crew-Mitglieder, drei gleichzeitig vor Ort. Geholfen wird nur im Base Camp.</p></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-big" aria-hidden="true">Graatzug</p>
+    <div class="foot-row">
+      <p>Backyard Ultra am Simplonpass<br>Barralhaus, 3907 Simplon, Wallis</p>
+      <p class="mono">19.06.2027 · 12:00</p>
+    </div>
+    <div class="foot-bottom">
+      <p>Der Graatzug ist ein unabhängig organisiertes Backyard Ultra. Last Soul Ultra ist eine Marke der Last Soul IP GmbH. Regelwerk nach Big's Backyard Ultra.</p>
+      <p>Bilder via Wikimedia Commons: Barralhaus und Alter Spittel 1910, Leo Wehrli / ETH-Bibliothek Zürich (CC BY-SA 4.0) · Simplon Hospiz um 1900, Photochrom, Library of Congress (gemeinfrei) · Altes Hospiz und Barralhaus: Olga Ernst (CC BY-SA 4.0) · Ancien hospice du Simplon, Maison Barral: Christian David (CC BY-SA 4.0) · Winter, Simplon-Adler: Hp.Baumeler (CC BY-SA 4.0) · Last Soul Ultra 2025/2026: privat</p>
+      <p>Sagen nach Tscheinen/Ruppen, <em>Walliser Sagen</em> (Sitten 1872), Josef Guntern, <em>Walliser Sagen</em> (1963), Johann Jegerlehner. Kartendaten © OpenStreetMap-Mitwirkende · Satellit © Esri.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="profile.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
