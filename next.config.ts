@@ -17,7 +17,7 @@ const BRIG_DOMAIN_LIVE = true;
 // zeigt. Dann leitet laeuft.ch/graatzug auf die Domain um. Vorher false lassen,
 // sonst zeigt der Redirect ins Leere.
 const GRAATZUG_HOSTS = ["graatzug.ch", "www.graatzug.ch"];
-const GRAATZUG_DOMAIN_LIVE = false;
+const GRAATZUG_DOMAIN_LIVE = true;
 
 const nextConfig: NextConfig = {
   async rewrites() {

@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         anzahl_backyards: anzahl, bestleistung, bestleistung_wo: bestleistungWo || null,
         zielrunden, motivation: motivation || null, volljaehrig: true,
         einwilligung_am: jetzt, kaution_ok_am: jetzt, aktualisiert_am: jetzt,
-        ip_hash: ipHash, quelle: "laeuft.ch/graatzug",
+        ip_hash: ipHash, quelle: "graatzug.ch",
       },
       { onConflict: "email" },
     );
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
             "Liebe Grüsse",
             "Pierre, Daniel und Anes",
             "",
-            "laeuft.ch/graatzug",
+            "graatzug.ch",
           ].join("\n"),
         });
       } catch (e) {
