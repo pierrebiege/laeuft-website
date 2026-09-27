@@ -12,6 +12,13 @@ const BRIG_HOSTS = ["50kmbrig.ch", "www.50kmbrig.ch"];
 // es false bleiben — sonst zeigt der Redirect ins Leere.
 const BRIG_DOMAIN_LIVE = true;
 
+// Graatzug Backyard Ultra Simplon: eigene Domain, Inhalt liegt statisch unter
+// public/graatzug/. Auf true stellen, sobald graatzug.ch per DNS auf Vercel
+// zeigt. Dann leitet laeuft.ch/graatzug auf die Domain um. Vorher false lassen,
+// sonst zeigt der Redirect ins Leere.
+const GRAATZUG_HOSTS = ["graatzug.ch", "www.graatzug.ch"];
+const GRAATZUG_DOMAIN_LIVE = false;
+
 const nextConfig: NextConfig = {
   async rewrites() {
     // Die Team-Domain liefert die Backyard-Seite selbst aus: jeder Pfad ohne
@@ -26,6 +33,19 @@ const nextConfig: NextConfig = {
         { source: "/graatzug", destination: "/graatzug/index.html" },
         // Themenseiten: /graatzug/<slug> → public/graatzug/<slug>/index.html
         { source: "/graatzug/:slug([a-z0-9-]+)", destination: "/graatzug/:slug/index.html" },
+        // graatzug.ch: «/» ist die Startseite, /<slug> die Themenseiten. Dateien
+        // (Bilder, Skripte, 3D-Szene) bleiben unter /graatzug/… und brauchen
+        // keine Regel. /api und /_next bleiben unberührt.
+        ...GRAATZUG_HOSTS.flatMap((host) => [
+          { source: "/", has: [{ type: "host" as const, value: host }], destination: "/graatzug/index.html" },
+          { source: "/robots.txt", has: [{ type: "host" as const, value: host }], destination: "/graatzug/robots.txt" },
+          { source: "/sitemap.xml", has: [{ type: "host" as const, value: host }], destination: "/graatzug/sitemap.xml" },
+          {
+            source: "/:slug((?!api$|graatzug$|_next$)[a-z0-9-]+)",
+            has: [{ type: "host" as const, value: host }],
+            destination: "/graatzug/:slug/index.html",
+          },
+        ]),
         ...TEAM_HOSTS.flatMap((host) => [
           {
             source: "/",
@@ -161,7 +181,45 @@ const nextConfig: NextConfig = {
           ])
         : []),
     ];
-    return [...renamed, ...toTeam, ...strip, ...anmeldung];
+    // graatzug.ch: www auf die nackte Domain, und das interne /graatzug-Präfix
+    // aus Seiten-URLs streichen (Dateien mit Punkt bleiben erreichbar).
+    const graatzug = [
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: "www.graatzug.ch" }],
+        destination: "https://graatzug.ch/:path*",
+        permanent: true,
+      },
+      {
+        source: "/graatzug",
+        has: [{ type: "host" as const, value: "graatzug.ch" }],
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/graatzug/:slug([a-z0-9-]+)",
+        has: [{ type: "host" as const, value: "graatzug.ch" }],
+        destination: "/:slug",
+        permanent: true,
+      },
+      ...(GRAATZUG_DOMAIN_LIVE
+        ? ["laeuft.ch", "www.laeuft.ch"].flatMap((host) => [
+            {
+              source: "/graatzug",
+              has: [{ type: "host" as const, value: host }],
+              destination: "https://graatzug.ch/",
+              permanent: true,
+            },
+            {
+              source: "/graatzug/:slug([a-z0-9-]+)",
+              has: [{ type: "host" as const, value: host }],
+              destination: "https://graatzug.ch/:slug",
+              permanent: true,
+            },
+          ])
+        : []),
+    ];
+    return [...renamed, ...toTeam, ...strip, ...anmeldung, ...graatzug];
   },
   async headers() {
     const base = [
