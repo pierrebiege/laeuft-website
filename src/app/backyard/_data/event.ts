@@ -230,6 +230,19 @@ export const PARTNERS: { name: string; url?: string; logo?: string; note?: strin
   },
 ];
 
+/**
+ * Öffentliche Unterstützung (Swisslos-Sportfonds Kanton Zug, Zusage 10/2026).
+ * Gegenleistung: Kantonslogo + Swisslos-Logo auf der Website. Regeln aus dem
+ * CD Kanton Zug («Logo bei Unterstützung»): farbiges Kantonslogo auf weissem
+ * Grund mit Schutzraum X (in der SVG schon drin), Swisslos SEPARAT und in
+ * gleicher Gewichtung, nie zu einem Logo kombiniert, und klar als
+ * Unterstützer ausgewiesen, nicht als Veranstalter.
+ */
+export const SUPPORTERS: { name: string; url: string; logo: string }[] = [
+  { name: "Kanton Zug", url: "https://zg.ch", logo: "kanton-zug.svg" },
+  { name: "Swisslos", url: "https://www.swisslos.ch", logo: "swisslos.jpg" },
+];
+
 export const RACE_DAY = {
   timing: null as string | null,
   youtube: null as string | null,

@@ -1,4 +1,4 @@
-import { PARTNERS, LOGO_BASE } from "@/app/backyard/_data/event";
+import { PARTNERS, SUPPORTERS, LOGO_BASE } from "@/app/backyard/_data/event";
 import Photo from "./Photo";
 
 /**
@@ -65,6 +65,38 @@ export default function Partners() {
           alt="The squad at the X-Bionic showroom during the kit handover"
           caption="Kit handover at X-Bionic"
         />
+
+        {SUPPORTERS.length > 0 && (
+          <div className="mt-16 grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
+            <div>
+              <p className="stamp mb-4">Supported by</p>
+              <p className="max-w-md text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
+                The race in Baar is supported by the Canton of Zug with a contribution from the Swisslos Sport Fund.
+              </p>
+            </div>
+            {/* Zwei getrennte Felder in gleicher Grösse: Kanton und Swisslos werden nie kombiniert. */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              {SUPPORTERS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex aspect-[5/3] items-center justify-center bg-white transition-opacity hover:opacity-80"
+                  style={{ boxShadow: "0 20px 50px -35px rgba(11, 11, 11, 0.35)" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`${LOGO_BASE}/${s.logo}`}
+                    alt={s.name}
+                    className={s.logo.startsWith("kanton") ? "h-auto w-[92%]" : "h-auto w-[62%]"}
+                    loading="lazy"
+                  />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {rest.length > 0 && (
           <div className="mt-16 grid gap-px border-y sm:grid-cols-3 lg:grid-cols-4 rule">
