@@ -87,6 +87,17 @@ export const PHOTO_BASE = "/backyard/squad";
 export const TEAM_PHOTOS = "/backyard/team";
 
 /**
+ * Bildbibliothek des Post-Generators (/generator): Fotos, die die Läufer
+ * selbst für Instagram geschickt haben, auf 1440 px verkleinert.
+ * Dateiname <photo>-<n>.jpg, `photo` wie im TEAM-Eintrag.
+ */
+export const GEN_PHOTOS = "/backyard/generator";
+export const GEN_LIBRARY: Record<string, number> = {
+  javaheri: 2, stamm: 2, biege: 2, schneckenburger: 2, pestoni: 2,
+  gervaix: 3, schwitter: 2, desteffani: 2,
+};
+
+/**
  * Team-Schweiz-Einzelresultate der bisherigen Team-WMs, aus dem Briefing
  * (Folie «Individual Goal»). Nachname, Runden.
  */
