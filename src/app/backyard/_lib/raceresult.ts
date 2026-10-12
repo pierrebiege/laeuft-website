@@ -31,6 +31,10 @@ export type Runner = {
   km: number | null;
   time: string | null;
   pace: string | null;
+  /** Nur im neuen RRPublish: IN, DNF oder WINNER. Fehlt in älteren Listen. */
+  status: "in" | "out" | "winner" | null;
+  /** Dauer der letzten Runde, z. B. «42:26». Nur im neuen RRPublish. */
+  lastLap: string | null;
 };
 
 export type NationLive = {
@@ -58,8 +62,29 @@ async function rr<T>(path: string, revalidate: number): Promise<T> {
   return (await res.json()) as T;
 }
 
-export function getConfig(eventId: string, revalidate = 300) {
-  return rr<RRConfig>(`/${eventId}/RRPublish/data/config?page=results&noVisitor=1`, revalidate);
+/**
+ * Zwei Generationen von RRPublish:
+ * - alt: /{id}/RRPublish/data/config?page=results, Liste unter /{id}/results/list
+ * - neu (Gasser Timing, Team-WM 2026): jeder Reiter hat einen eigenen Pfad,
+ *   /{id}/live/config und /{id}/live/list. Der alte Pfad antwortet dort 404.
+ */
+export type RRSource = RRConfig & { page: string };
+
+export async function getConfig(eventId: string, revalidate = 300): Promise<RRSource> {
+  try {
+    const cfg = await rr<RRConfig>(`/${eventId}/RRPublish/data/config?page=results&noVisitor=1`, revalidate);
+    return { ...cfg, page: "results" };
+  } catch {
+    for (const page of ["live", "results"]) {
+      try {
+        const cfg = await rr<RRConfig>(`/${eventId}/${page}/config?lang=de`, revalidate);
+        if (cfg?.key && cfg.lists?.length) return { ...cfg, page };
+      } catch {
+        /* nächsten Reiter versuchen */
+      }
+    }
+    throw new Error(`race|result: keine öffentliche Liste für Event ${eventId}`);
+  }
 }
 
 /**
@@ -80,7 +105,7 @@ export function pickList(cfg: RRConfig): string | null {
 }
 
 type RawList = {
-  list: { Fields?: { Label: string }[] };
+  list: { Fields?: { Label: string }[]; DataFields?: string[] };
   data: Record<string, unknown[][]> | unknown[][];
 };
 
@@ -133,6 +158,51 @@ function toRunner(row: unknown[], labels: string[]): Runner | null {
     km,
     time: v(idx(labels, /zeit|time/i)),
     pace: v(idx(labels, /pace|schnitt|durch/i)),
+    status: null,
+    lastLap: null,
+  };
+}
+
+/** «TENCHIO» → «Tenchio», «DE WOLF» → «De Wolf», «RÖTHLISBERGER» → «Röthlisberger». */
+const titleCase = (s: string) =>
+  s.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (_, a: string, b: string) => a + b.toUpperCase());
+
+/**
+ * Neues RRPublish: Spalten stehen als Ausdrücke in DataFields, z. B.
+ * «#[BIB] - [AnzeigeName]», «[NumberOfYards]», «[MY_STATUS]». Die Zeile
+ * enthält genau einen Wert je DataField, ohne vorangestellte Record-ID.
+ */
+function toRunnerDF(row: unknown[], fields: string[]): Runner | null {
+  const off = row.length - fields.length;
+  const at = (re: RegExp) => {
+    const i = fields.findIndex((f) => re.test(f));
+    return i < 0 ? null : ((row[i + off] as string | undefined) ?? null);
+  };
+  const raw = at(/AnzeigeName|DisplayName|\[Name\]|LastName|Nachname/i);
+  if (!raw) return null;
+  const clean = String(raw).replace(/\[img:[^\]]*\]/g, "").replace(/^\s*\d+\s*-\s*/, "").trim();
+  // «TENCHIO Matteo»: Nachname in Versalien, dann Vorname
+  const m = /^([\p{Lu}][\p{Lu}\s'-]*?)\s+(\p{Lu}\p{Ll}.*)$/u.exec(clean);
+  const last = m ? titleCase(m[1].trim()) : clean.split(" ").slice(-1)[0];
+  const first = m ? m[2].trim() : clean.split(" ").slice(0, -1).join(" ");
+
+  const yards = String(at(/NumberOfYards|\[Yards\]|Runden|Laps/i) ?? "").trim();
+  const st = String(at(/MY_STATUS|\[Status\]/i) ?? "").trim().toUpperCase();
+  const nat = /flags\/([A-Z]{2})\.svg/.exec(String(at(/FLAG|NATION/i) ?? ""))?.[1] ?? null;
+
+  return {
+    rank: 0,
+    name: `${last}, ${first}`,
+    first,
+    last,
+    nat,
+    club: null,
+    laps: /^\d{1,3}$/.test(yards) ? Number(yards) : 0,
+    km: null,
+    time: null,
+    pace: null,
+    status: st === "DNF" ? "out" : st === "WINNER" ? "winner" : st ? "in" : null,
+    lastLap: at(/LastYardTime/i),
   };
 }
 
@@ -144,22 +214,28 @@ export async function fetchNation(
   const listName = pickList(cfg);
   if (!listName) throw new Error(`Keine Ergebnisliste für ${n.nation}`);
 
-  const contest = n.contest ?? Object.keys(cfg.contests ?? { "1": "" })[0] ?? "1";
+  const contest = n.contest ?? (cfg.page === "results" ? Object.keys(cfg.contests ?? { "1": "" })[0] ?? "1" : "0");
   const qs = new URLSearchParams({
     key: cfg.key,
     listname: listName,
-    page: "results",
+    page: cfg.page,
     contest,
     r: "all",
+    l: "0",
   });
-  const raw = await rr<RawList>(`/${n.eventId}/results/list?${qs}`, revalidate);
+  const raw = await rr<RawList>(`/${n.eventId}/${cfg.page}/list?${qs}`, revalidate);
 
   const labels = (raw.list?.Fields ?? []).map((f) => f.Label);
+  const fields = raw.list?.DataFields ?? [];
+  const useDF = fields.some((f) => /NumberOfYards|AnzeigeName/i.test(f));
   const groups = Array.isArray(raw.data) ? { all: raw.data } : (raw.data ?? {});
-  const rows = Object.values(groups).flat() as unknown[][];
+  // Gruppen können verschachtelt sein (Wettbewerb → Kategorie → Zeilen)
+  const flat = (v: unknown): unknown[][] =>
+    Array.isArray(v) ? (Array.isArray(v[0]) ? (v as unknown[][]) : []) : Object.values(v as object).flatMap(flat);
+  const rows = flat(groups);
 
   const runners = rows
-    .map((r) => toRunner(r, labels))
+    .map((r) => (useDF ? toRunnerDF(r, fields) : toRunner(r, labels)))
     .filter((r): r is Runner => r !== null)
     .sort((a, b) => b.laps - a.laps)
     .map((r, i) => ({ ...r, rank: i + 1 }));
@@ -177,7 +253,9 @@ export async function fetchNation(
     runners,
     laps,
     yards: laps,
-    standing: runners.filter((r) => r.laps >= currentLap && currentLap > 0).length,
+    standing: runners.some((r) => r.status)
+      ? runners.filter((r) => r.status === "in" || r.status === "winner").length
+      : runners.filter((r) => r.laps >= currentLap && currentLap > 0).length,
     currentLap,
     fetchedAt: new Date().toISOString(),
   };
