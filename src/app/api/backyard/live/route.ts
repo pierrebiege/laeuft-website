@@ -22,6 +22,11 @@ export async function GET(req: NextRequest) {
       headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate=120" },
     });
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+    const msg = (e as Error).message;
+    // Event-ID steht, aber der Zeitnehmer hat die Liste noch nicht freigegeben
+    if (/keine öffentliche Liste/.test(msg)) {
+      return NextResponse.json({ error: `No timing feed on file for ${slug} in ${year} yet.`, pending: true }, { status: 404 });
+    }
+    return NextResponse.json({ error: msg }, { status: 502 });
   }
 }

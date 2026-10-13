@@ -42,3 +42,29 @@
 .st-table > div { display: grid; grid-template-columns: 1fr 64px 70px; gap: 8px; align-items: center; font-size: 14px; }
 .st-table input:not([type]) , .st-table input[inputmode] { background: #1b1b1b; border: 1px solid #444; border-radius: 6px; padding: 6px 8px; width: 100%; font-size: 16px; }
 .st-table label { display: flex; gap: 4px; align-items: center; font-size: 13px; }
+
+/* Rundenwahl, Schalter, Runden-Log */
+.st-lap { display: flex; align-items: center; gap: 8px; max-width: 420px; margin: 0 auto 12px; }
+.st-lap button:not(.st-link) { width: 44px; height: 42px; border-radius: 8px; border: 1px solid #444; background: #1b1b1b; font-size: 22px; line-height: 1; }
+.st-lap select { flex: 1; height: 42px; background: #1b1b1b; border: 1px solid #444; border-radius: 8px; padding: 0 10px; font-size: 16px; font-weight: 700; }
+.st-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin: 14px auto 0; max-width: 420px; }
+.st-opts label:not(.st-check) { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #a9a6a0; }
+.st-opts select { background: #1b1b1b; border: 1px solid #444; border-radius: 8px; padding: 9px 10px; font-size: 16px; color: #f2f0eb; }
+.st-opts .st-check { grid-column: 1 / -1; margin: 0; }
+.st-fields textarea, .st-log textarea { background: #1b1b1b; border: 1px solid #444; border-radius: 8px; padding: 10px 12px; font-size: 16px; color: #f2f0eb; font-family: inherit; }
+.st-stage canvas.bare, .st-result img.bare { background: repeating-conic-gradient(#2a2a2a 0 25%, #1a1a1a 0 50%) 0 0 / 24px 24px; }
+.st-loghead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.st-h { margin: 0; font-size: 16px; font-weight: 800; text-decoration: none; }
+.st-small { font-size: 12px; color: #8d8a85; margin: 0; }
+.st-log { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+.st-log label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #a9a6a0; }
+.st-log label:last-of-type { grid-column: 1 / -1; }
+.st-log label > span { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; min-height: 18px; }
+.st-log em { font-style: normal; font-size: 11px; padding: 1px 6px; border-radius: 4px; background: #2a2a2a; color: #cfcbc4; }
+.st-log em.src-hand { background: #FC4C02; color: #fff; }
+.st-log .st-link { margin: 0; font-size: 12px; }
+.st-log input, .st-log select { background: #1b1b1b; border: 1px solid #444; border-radius: 8px; padding: 10px 12px; font-size: 16px; color: #f2f0eb; width: 100%; min-width: 0; }
+.st-log p { grid-column: 1 / -1; }
+.st-loglist { display: grid; gap: 4px; max-height: 320px; overflow-y: auto; }
+.st-loglist button { display: grid; grid-template-columns: 48px 70px 1fr 48px; gap: 8px; text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #2c2c2c; background: #171717; font-size: 14px; }
+.st-loglist button.on { border-color: #FC4C02; }

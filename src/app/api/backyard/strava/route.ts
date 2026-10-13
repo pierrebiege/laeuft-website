@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { studioAccess } from "@/app/backyard/_lib/studio-access";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 /**
  * Pierres Runden aus Strava fürs Studio. Jede Runde ist eine eigene
@@ -81,18 +82,37 @@ export async function GET(req: NextRequest) {
       maxHr: a.max_heartrate ? Math.round(a.max_heartrate) : null,
     }));
 
+    // kcal stehen nur in der Einzelansicht. Einmal holen, dann aus der Tabelle,
+    // sonst frisst das Studio im Minutentakt das Strava-Limit (100 je 15 min).
+    const kcal = new Map<number, number | null>();
+    try {
+      const ids = runs.map((a) => a.id);
+      if (ids.length) {
+        const { data } = await supabaseAdmin.from("backyard_strava_kcal").select("activity_id, kcal").in("activity_id", ids);
+        for (const d of data ?? []) kcal.set(Number(d.activity_id), d.kcal);
+      }
+      const missing = runs.filter((a) => !kcal.has(a.id)).slice(-4);
+      const fresh = await Promise.all(
+        missing.map(async (a) => ({ activity_id: a.id, kcal: (await strava<{ calories?: number }>(`/activities/${a.id}`, token)).calories ?? null })),
+      );
+      for (const f of fresh) kcal.set(f.activity_id, f.kcal ? Math.round(f.kcal) : null);
+      // erst cachen, wenn die Aktivität fertig hochgeladen ist (kcal > 0)
+      const keep = fresh.filter((f) => f.kcal).map((f) => ({ ...f, kcal: Math.round(f.kcal!) }));
+      if (keep.length) await supabaseAdmin.from("backyard_strava_kcal").upsert(keep, { onConflict: "activity_id" });
+    } catch {
+      /* kcal sind ein Extra */
+    }
+    laps.forEach((l) => Object.assign(l, { kcal: kcal.get(l.id) ?? null }));
+
     let last = null;
     const l = runs.at(-1);
     if (l) {
-      const [detail, streams] = await Promise.all([
-        strava<{ calories?: number }>(`/activities/${l.id}`, token),
-        strava<Record<string, { data: unknown[] }>>(`/activities/${l.id}/streams?keys=latlng,heartrate,time&key_by_type=true`, token),
-      ]);
+      const streams = await strava<Record<string, { data: unknown[] }>>(`/activities/${l.id}/streams?keys=latlng,heartrate,time&key_by_type=true`, token);
       const step = (n: number) => Math.max(1, Math.ceil(n / 500));
       const ll = (streams.latlng?.data ?? []) as [number, number][];
       const hr = (streams.heartrate?.data ?? []) as number[];
       last = {
-        kcal: detail.calories ? Math.round(detail.calories) : null,
+        kcal: kcal.get(l.id) ?? null,
         latlng: ll.filter((_, i) => i % step(ll.length) === 0),
         hr: hr.filter((_, i) => i % step(hr.length) === 0),
       };

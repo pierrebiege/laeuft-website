@@ -19,18 +19,35 @@ export const ORANGE = "#FC4C02";
 export const GREY = "#8e8e94";
 export const LOOP_KM = 6.706;
 export const START_HOUR = 14;
+/** Instagram: oben 250 px, unten 330 px frei (Antwortleiste). Nichts unter dieser Linie. */
+export const SAFE_T = 250;
+export const SAFE_B = H - 330;
 export const RECORD_2024 = 501;
 
+import type { LapRow, LogConfig } from "@/app/backyard/_lib/studio-log";
+
 export type Lang = "de" | "en";
-export type Shade = "b" | "t" | "tb" | "all" | "none";
+export type Shade = "b" | "t" | "tb" | "m" | "all" | "none";
 export type Cue = { at: number; kind: "pop" | "tick" | "whoosh" | "bell" };
 
 export type TeamRunner = { first: string; last: string; photo?: string; pb: number; laps: number; out: boolean };
-export type StravaLap = { lap: number; elapsed: number; distance: number; avgHr: number | null; maxHr: number | null };
+export type StravaLap = { lap: number; start: string; elapsed: number; distance: number; avgHr: number | null; maxHr: number | null; kcal?: number | null };
 export type Data = {
   lang: Lang;
   team: { lap: number; runners: TeamRunner[] };
-  pierre: { laps: StravaLap[]; kcal: number | null; latlng: [number, number][]; hr: number[]; temp: number | null; rrLaps: number };
+  pierre: {
+    laps: StravaLap[];
+    kcal: number | null;
+    latlng: [number, number][];
+    hr: number[];
+    temp: number | null;
+    rrLaps: number;
+    /** Runden-Log bis und mit der gewählten Runde */
+    log: LapRow[];
+    /** gewählte Runde (Standard: die letzte fertige) */
+    sel: number;
+    config: LogConfig;
+  };
 };
 export type Vals = Record<string, string>;
 export type Fonts = { inter: string; archivo: string; mono: string };
@@ -42,24 +59,29 @@ export type Env = {
   lang: Lang;
 };
 export type Field = { key: string; label: string; kind?: "runner" | "text" };
+/** Schalter und Auswahlen einer Vorlage. Bleiben pro Vorlage gespeichert. */
+export type Opt = { key: string; label: string; choices?: [string, string][]; def: string; when?: (o: Vals) => boolean };
 export type Format = {
   id: string;
   group: "team" | "pierre";
   name: string;
   shade: Shade;
+  /** Verlauf je nach Optionen (Position, Stärke). Fehlt es, gilt `shade`. */
+  shadeFor?: (o: Vals) => [Shade, number];
   /** Länge der Einblend-Animation in Sekunden */
   len: number;
-  fields: Field[];
-  prefill: (d: Data) => Vals;
-  draw: (e: Env, v: Vals, d: Data) => void;
-  cues: (v: Vals) => Cue[];
+  fields: Field[] | ((o: Vals) => Field[]);
+  opts?: Opt[];
+  prefill: (d: Data, o: Vals) => Vals;
+  draw: (e: Env, v: Vals, d: Data, o: Vals) => void;
+  cues: (v: Vals, o: Vals) => Cue[];
 };
 
 /* ---------- Hilfen ---------- */
 
-const clamp = (x: number) => Math.max(0, Math.min(1, x));
+export const clamp = (x: number) => Math.max(0, Math.min(1, x));
 const outCubic = (x: number) => 1 - Math.pow(1 - clamp(x), 3);
-const outBack = (x: number) => {
+export const outBack = (x: number) => {
   const c = 1.4;
   const y = clamp(x) - 1;
   return 1 + (c + 1) * y * y * y + c * y * y;
@@ -69,8 +91,8 @@ export const ease = (t: number, at: number, dur = 0.6) => outCubic((t - at) / du
 
 const th = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "’");
 export const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
-const hhmm = (h: number) => `${String(((h % 24) + 24) % 24).padStart(2, "0")}:00`;
-const kmStr = (laps: number, lang: Lang) => {
+export const hhmm = (h: number) => `${String(((h % 24) + 24) % 24).padStart(2, "0")}:00`;
+export const kmStr = (laps: number, lang: Lang) => {
   const s = (laps * LOOP_KM).toFixed(1);
   return lang === "de" ? s.replace(".", ",") : s;
 };
@@ -98,11 +120,11 @@ export function countStr(s: string, p: number): string {
 }
 
 /** Ticks während des Hochzählens */
-const ticks = (at: number, dur: number, n = 10): Cue[] =>
+export const ticks = (at: number, dur: number, n = 10): Cue[] =>
   Array.from({ length: n }, (_, i) => ({ at: at + (i / n) * dur, kind: "tick" as const }));
 
 type TextOpt = { font: string; color?: string; align?: CanvasTextAlign; alpha?: number; base?: CanvasTextBaseline; spacing?: number };
-function text(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, o: TextOpt) {
+export function text(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, o: TextOpt) {
   ctx.save();
   ctx.font = o.font;
   ctx.fillStyle = o.color ?? "#fff";
@@ -113,7 +135,7 @@ function text(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, o:
   ctx.fillText(s, x, y);
   ctx.restore();
 }
-function measure(ctx: CanvasRenderingContext2D, s: string, font: string, spacing?: number) {
+export function measure(ctx: CanvasRenderingContext2D, s: string, font: string, spacing?: number) {
   ctx.save();
   ctx.font = font;
   if (spacing !== undefined && "letterSpacing" in ctx) (ctx as unknown as { letterSpacing: string }).letterSpacing = `${spacing}px`;
@@ -131,7 +153,7 @@ export function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w
   ctx.arcTo(x, y, x + w, y, rr);
   ctx.closePath();
 }
-function shadowCard(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number, fill: string) {
+export function shadowCard(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number, fill: string) {
   ctx.save();
   ctx.shadowColor = "rgba(0,0,0,.35)";
   ctx.shadowBlur = 70;
@@ -189,7 +211,7 @@ export function projectRoute(ll: [number, number][], w: number, h: number, pad =
   const oy = (h - (mxy - mny) * k) / 2;
   return xs.map((x, i) => [ox + (x - mnx) * k, oy + (ys[i] - mny) * k]);
 }
-function polyline(ctx: CanvasRenderingContext2D, pts: [number, number][], p: number, dx = 0, dy = 0) {
+export function polyline(ctx: CanvasRenderingContext2D, pts: [number, number][], p: number, dx = 0, dy = 0) {
   const n = Math.max(2, Math.floor(pts.length * clamp(p)));
   ctx.beginPath();
   pts.slice(0, n).forEach(([x, y], i) => (i ? ctx.lineTo(x + dx, y + dy) : ctx.moveTo(x + dx, y + dy)));
@@ -198,229 +220,14 @@ function polyline(ctx: CanvasRenderingContext2D, pts: [number, number][], p: num
 
 /* ---------- Pierre: eine grosse Zahl ---------- */
 
-const I = (f: Fonts, w: number, s: number) => `${w} ${s}px ${f.inter}`;
+export const I = (f: Fonts, w: number, s: number) => `${w} ${s}px ${f.inter}`;
 const A = (f: Fonts, w: number, s: number) => `${w} ${s}px ${f.archivo}`;
 const M = (f: Fonts, s: number) => `500 ${s}px ${f.mono}`;
 
-/** Label oben, Zahl darunter, zentriert (Stil «Runde 17 gefinished in 53:20») */
-function bigTop(e: Env, label: string, num: string, sub?: string, size = 300) {
-  const { ctx, t, f } = e;
-  const a = ease(t, 0.15, 0.5);
-  const n = ease(t, 0.3, 1.1);
-  text(ctx, label, W / 2, 330 - (1 - a) * 20, { font: I(f, 700, 38), align: "center", alpha: a * 0.9 });
-  text(ctx, countStr(num, n), W / 2, 340 + size * 0.86, { font: I(f, 900, size), align: "center", alpha: ease(t, 0.3, 0.3), spacing: -size * 0.06 });
-  if (sub) text(ctx, sub, W / 2, 400 + size * 0.86 + 20, { font: I(f, 700, 36), align: "center", alpha: ease(t, 1.3, 0.5) * 0.9 });
-}
-/** Label, Zahl und Einheit unten links (Stil «Runde 18») */
-function bigBottom(e: Env, label: string, num: string, unit = "", size = 330) {
-  const { ctx, t, f } = e;
-  const a = ease(t, 0.15, 0.5);
-  const n = ease(t, 0.3, 1.1);
-  const base = H - 300;
-  text(ctx, label, 72, base - size * 0.86 - 22 - (1 - a) * 20, { font: I(f, 700, 38), alpha: a * 0.9 });
-  const s = countStr(num, n);
-  text(ctx, s, 66, base, { font: I(f, 900, size), alpha: ease(t, 0.3, 0.3), spacing: -size * 0.06 });
-  if (unit) {
-    const w = measure(ctx, num, I(f, 900, size), -size * 0.06);
-    text(ctx, unit, 66 + w + 18, base, { font: I(f, 700, 60), alpha: ease(t, 1.2, 0.4) });
-  }
-}
-
-const lastLap = (d: Data) => d.pierre.laps.at(-1);
-const lapNo = (d: Data) => Math.max(d.pierre.laps.length, d.pierre.rrLaps);
-const numCues = (): Cue[] => [{ at: 0.15, kind: "whoosh" }, ...ticks(0.3, 1.1, 12), { at: 1.4, kind: "pop" }];
-
-const P: Format[] = [
-  {
-    id: "p-runde", group: "pierre", name: "Runde", shade: "b", len: 1.6,
-    fields: [{ key: "runde", label: "Runde" }],
-    prefill: (d) => ({ runde: String(lapNo(d) || 1) }),
-    draw: (e, v) => bigBottom(e, "Runde", v.runde, "", 420),
-    cues: numCues,
-  },
-  {
-    id: "p-gefinished", group: "pierre", name: "Runde gefinished", shade: "t", len: 1.6,
-    fields: [{ key: "runde", label: "Runde" }, { key: "zeit", label: "Zeit (mm:ss)" }],
-    prefill: (d) => ({ runde: String(lapNo(d) || 1), zeit: lastLap(d) ? mmss(lastLap(d)!.elapsed) : "53:20" }),
-    draw: (e, v) => bigTop(e, `Runde ${v.runde} gefinished in`, v.zeit),
-    cues: numCues,
-  },
-  {
-    id: "p-strava", group: "pierre", name: "Strava-Karte", shade: "none", len: 2.2,
-    fields: [{ key: "km", label: "km" }, { key: "zeit", label: "Zeit" }, { key: "puls", label: "Puls Ø" }],
-    prefill: (d) => {
-      const l = lastLap(d);
-      return { km: l ? (l.distance / 1000).toFixed(2) : "6.71", zeit: l ? mmss(l.elapsed) : "53:20", puls: String(l?.avgHr ?? "") };
-    },
-    draw: (e, v, d) => {
-      const { ctx, t, f } = e;
-      const p = ease(t, 0.1, 0.7);
-      const ch = 420;
-      const y = H - 280 - ch + (1 - p) * 500;
-      ctx.save();
-      ctx.globalAlpha = clamp(p * 1.5);
-      shadowCard(ctx, 60, y, W - 120, ch, 30, "#fff");
-      const pts = projectRoute(d.pierre.latlng, 340, 340, 10);
-      if (pts.length) {
-        ctx.strokeStyle = ORANGE;
-        ctx.lineWidth = 8;
-        ctx.lineJoin = "round";
-        ctx.lineCap = "round";
-        polyline(ctx, pts, ease(t, 0.6, 1.4), 100, y + 40);
-      }
-      const rows: [string, string][] = [[v.km, "km"], [v.zeit, "Zeit"], [v.puls, "Puls Ø"]].filter((r) => r[0]) as [string, string][];
-      const x0 = pts.length ? 520 : 120;
-      rows.forEach(([val, lab], i) => {
-        const q = ease(t, 0.5 + i * 0.2, 0.9);
-        const yy = y + 100 + i * 120;
-        text(ctx, countStr(val, q), x0, yy, { font: I(f, 800, 80), color: "#0b0b0c", alpha: clamp(q * 2), spacing: -3 });
-        text(ctx, lab, x0, yy + 34, { font: I(f, 500, 26), color: GREY, alpha: clamp(q * 2) });
-      });
-      ctx.restore();
-    },
-    cues: () => [{ at: 0.1, kind: "whoosh" }, ...ticks(0.5, 1.2, 12), { at: 1.8, kind: "pop" }],
-  },
-  {
-    id: "p-puls", group: "pierre", name: "Pulslinie", shade: "b", len: 2.4,
-    fields: [{ key: "bpm", label: "Puls (bpm)" }],
-    prefill: (d) => ({ bpm: String(lastLap(d)?.maxHr ?? "") }),
-    draw: (e, v, d) => {
-      const { ctx, t, f } = e;
-      const hr = d.pierre.hr;
-      if (hr.length > 20) {
-        const a = Math.floor(hr.length * 0.25);
-        const seg = hr.slice(a, a + Math.min(160, hr.length - a));
-        const lo = Math.min(...seg) - 5;
-        const hi = Math.max(...seg) + 5;
-        const pts = seg.map((h, i) => [(i / (seg.length - 1)) * W, 1060 - ((h - lo) / (hi - lo)) * 420] as [number, number]);
-        ctx.save();
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 6;
-        ctx.lineJoin = "round";
-        polyline(ctx, pts, ease(t, 0, 2.2));
-        ctx.restore();
-      }
-      if (v.bpm) {
-        const n = ease(t, 0.4, 1.2);
-        const beat = 1 + 0.04 * Math.max(0, Math.sin(t * Math.PI * 2 * 1.6)) * (t > 1.6 ? 1 : 0);
-        ctx.save();
-        ctx.translate(66, H - 300);
-        ctx.scale(beat, beat);
-        text(ctx, countStr(v.bpm, n), 0, 0, { font: I(f, 900, 300), alpha: ease(t, 0.4, 0.3), spacing: -18 });
-        const w = measure(ctx, v.bpm, I(f, 900, 300), -18);
-        text(ctx, "bpm", w + 16, 0, { font: I(f, 700, 56), alpha: ease(t, 1.3, 0.4) });
-        ctx.restore();
-      }
-    },
-    cues: () => [...ticks(0.4, 1.2, 12), { at: 1.7, kind: "pop" }, { at: 2.3, kind: "pop" }],
-  },
-  {
-    id: "p-langsam", group: "pierre", name: "Langsamste / schnellste", shade: "t", len: 2,
-    fields: [{ key: "art", label: "Langsamste oder Schnellste" }, { key: "zeit", label: "Zeit (mm:ss)" }, { key: "runde", label: "Runde" }],
-    prefill: (d) => {
-      const laps = d.pierre.laps;
-      const slow = laps.reduce<StravaLap | null>((m, l) => (!m || l.elapsed > m.elapsed ? l : m), null);
-      return { art: "Langsamste", zeit: slow ? mmss(slow.elapsed) : "58:41", runde: String(slow?.lap ?? 22) };
-    },
-    draw: (e, v) => {
-      const [m, s] = v.zeit.split(":").map(Number);
-      const rest = 3600 - (m * 60 + s);
-      const sub = rest >= 0 && rest < 600 ? `Runde ${v.runde} · ${rest < 120 ? `${rest} Sekunden` : `${Math.round(rest / 60)} Minuten`} vor der Glocke` : `Runde ${v.runde}`;
-      bigTop(e, `${v.art} Runde bisher`, v.zeit, sub);
-    },
-    cues: () => [...numCues(), { at: 1.3, kind: "pop" }],
-  },
-  {
-    id: "p-stuhl", group: "pierre", name: "Zeit im Stuhl", shade: "b", len: 1.6,
-    fields: [{ key: "runde", label: "Vor Runde" }, { key: "zeit", label: "Pause (mm:ss)" }],
-    prefill: (d) => {
-      const l = lastLap(d);
-      return { runde: String(lapNo(d) + 1), zeit: l ? mmss(Math.max(0, 3600 - l.elapsed)) : "6:40" };
-    },
-    draw: (e, v) => bigBottom(e, `Im Stuhl vor Runde ${v.runde}`, v.zeit, "min"),
-    cues: numCues,
-  },
-  {
-    id: "p-uhrzeit", group: "pierre", name: "Uhrzeit", shade: "t", len: 1.6,
-    fields: [{ key: "runde", label: "Runde" }, { key: "zeit", label: "Uhrzeit" }],
-    prefill: (d) => {
-      const r = lapNo(d) + 1;
-      return { runde: String(r), zeit: hhmm(START_HOUR + r - 1) };
-    },
-    draw: (e, v) => bigTop(e, `Runde ${v.runde} startet`, v.zeit),
-    cues: () => [{ at: 0.15, kind: "whoosh" }, { at: 0.5, kind: "bell" }],
-  },
-  {
-    id: "p-km", group: "pierre", name: "Kilometer", shade: "b", len: 1.6,
-    fields: [{ key: "km", label: "km" }],
-    prefill: (d) => ({ km: kmStr(lapNo(d) || 1, "de") }),
-    draw: (e, v) => bigBottom(e, "Seit Samstag, 14 Uhr", v.km, "km"),
-    cues: numCues,
-  },
-  {
-    id: "p-pulsvs", group: "pierre", name: "Puls Strecke / Stuhl", shade: "b", len: 2,
-    fields: [{ key: "strecke", label: "Puls Strecke" }, { key: "stuhl", label: "Puls Stuhl" }],
-    prefill: (d) => ({ strecke: String(lastLap(d)?.maxHr ?? ""), stuhl: "" }),
-    draw: (e, v) => {
-      const { ctx, t, f } = e;
-      const rows: [string, string, string][] = [["auf der Strecke", v.strecke, "#fff"], ["im Stuhl", v.stuhl, ORANGE]];
-      rows.forEach(([lab, num, col], i) => {
-        if (!num) return;
-        const base = H - 300 - (1 - i) * 340;
-        const q = ease(t, 0.3 + i * 0.5, 1);
-        text(ctx, lab, 72, base - 232, { font: I(f, 700, 38), alpha: ease(t, 0.1 + i * 0.5, 0.4) * 0.9 });
-        text(ctx, countStr(num, q), 66, base, { font: I(f, 900, 260), color: col, alpha: ease(t, 0.3 + i * 0.5, 0.3), spacing: -15 });
-        const w = measure(ctx, num, I(f, 900, 260), -15);
-        text(ctx, "bpm", 66 + w + 16, base, { font: I(f, 700, 56), alpha: ease(t, 1 + i * 0.5, 0.4) });
-      });
-    },
-    cues: () => [...ticks(0.3, 1, 8), ...ticks(0.8, 1, 8), { at: 1.8, kind: "pop" }],
-  },
-  {
-    id: "p-kcal", group: "pierre", name: "Kalorien", shade: "b", len: 1.6,
-    fields: [{ key: "kcal", label: "kcal" }],
-    prefill: (d) => ({ kcal: String(d.pierre.kcal ?? "") }),
-    draw: (e, v) => bigBottom(e, "Eine Runde", v.kcal, "kcal"),
-    cues: numCues,
-  },
-  {
-    id: "p-temp", group: "pierre", name: "Temperatur", shade: "b", len: 1.6,
-    fields: [{ key: "zeit", label: "Uhrzeit" }, { key: "runde", label: "Runde" }, { key: "grad", label: "Grad" }],
-    prefill: (d) => {
-      const now = new Date();
-      return {
-        zeit: `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
-        runde: String(lapNo(d) + 1),
-        grad: d.pierre.temp === null ? "" : String(Math.round(d.pierre.temp)),
-      };
-    },
-    draw: (e, v) => bigBottom(e, `${v.zeit} · Runde ${v.runde}`, `${v.grad}°`),
-    cues: numCues,
-  },
-  {
-    id: "p-nacht", group: "pierre", name: "Nacht überstanden", shade: "t", len: 2,
-    fields: [{ key: "nacht", label: "Nacht" }, { key: "label", label: "Zeile oben" }],
-    prefill: () => ({ nacht: "1", label: "Sonntag, Sonnenaufgang" }),
-    draw: (e, v) => bigTop(e, v.label, `Nacht ${v.nacht}`, "überstanden", 240),
-    cues: () => [{ at: 0.15, kind: "whoosh" }, { at: 0.6, kind: "pop" }, { at: 1.3, kind: "pop" }],
-  },
-  {
-    id: "p-letzte", group: "pierre", name: "Letzte Runde", shade: "tb", len: 2,
-    fields: [{ key: "runde", label: "Runden" }, { key: "km", label: "km" }, { key: "zeit", label: "Gesamtzeit" }],
-    prefill: (d) => {
-      const n = lapNo(d) || 1;
-      const sec = d.pierre.laps.length ? (n - 1) * 3600 + lastLap(d)!.elapsed : n * 3600;
-      return { runde: String(n), km: kmStr(n, "de"), zeit: `${Math.floor(sec / 3600)} h ${Math.floor((sec % 3600) / 60)} min` };
-    },
-    draw: (e, v) => bigTop(e, "Letzte Runde", v.runde, `${v.km} km · ${v.zeit}`),
-    cues: () => [{ at: 0.15, kind: "bell" }, ...ticks(0.3, 1.1, 12), { at: 1.4, kind: "pop" }],
-  },
-];
-
 /* ---------- Team ---------- */
 
-const L = (lang: Lang, de: string, en: string) => (lang === "de" ? de : en);
-const standing = (d: Data) => d.team.runners.filter((r) => !r.out);
+export const L = (lang: Lang, de: string, en: string) => (lang === "de" ? de : en);
+export const standing = (d: Data) => d.team.runners.filter((r) => !r.out);
 const byLaps = (d: Data) => [...d.team.runners].sort((a, b) => b.laps - a.laps || Number(a.out) - Number(b.out));
 const findRunner = (d: Data, last: string) => d.team.runners.find((r) => r.last === last) ?? d.team.runners[0];
 
@@ -464,7 +271,7 @@ const T: Format[] = [
     prefill: (d) => ({ runde: String(d.team.lap), noch: String(standing(d).length) }),
     draw: (e, v, d) => {
       const { ctx, t, f, lang } = e;
-      const base = H - 300;
+      const base = SAFE_B;
       const cs = 64;
       const gap = 22;
       const n = d.team.runners.length || 15;
@@ -510,7 +317,7 @@ const T: Format[] = [
       const { ctx, t, f, lang } = e;
       const r = findRunner(d, v.wer);
       const n = Number(v.runden) || 0;
-      const base = H - 300;
+      const base = SAFE_B;
       const stats: [string, string][] = [
         [String(n), L(lang, "Runden", "Loops")],
         [kmStr(n, lang), "km"],
@@ -558,7 +365,7 @@ const T: Format[] = [
       const b = findRunner(d, v.b);
       const pw = 400;
       const ph = 520;
-      const y = H - 280 - 120 - ph;
+      const y = SAFE_B - 50 - 120 - ph;
       const pa = ease(t, 0.1, 0.7);
       const pb = ease(t, 0.35, 0.7);
       ctx.save();
@@ -570,7 +377,7 @@ const T: Format[] = [
       ctx.restore();
       text(ctx, a?.first ?? "", 70 + pw / 2 - (1 - pa) * 600, y + ph + 76, { font: A(f, 800, 62), align: "center" });
       text(ctx, b?.first ?? "", W - 70 - pw / 2 + (1 - pb) * 600, y + ph + 76, { font: A(f, 800, 62), align: "center" });
-      text(ctx, L(lang, `Zwei übrig. Runde ${v.runde}.`, `Two left. Loop ${v.runde}.`), W / 2, H - 230, { font: A(f, 700, 48), align: "center", alpha: ease(t, 1.1, 0.5) });
+      text(ctx, L(lang, `Zwei übrig. Runde ${v.runde}.`, `Two left. Loop ${v.runde}.`), W / 2, SAFE_B, { font: A(f, 700, 48), align: "center", alpha: ease(t, 1.1, 0.5) });
     },
     cues: () => [{ at: 0.1, kind: "whoosh" }, { at: 0.35, kind: "whoosh" }, { at: 1.1, kind: "pop" }],
   },
@@ -596,7 +403,7 @@ const T: Format[] = [
             : L(lang, `${diff} mehr als je zuvor.`, `${diff} more than ever before.`);
       const p = ease(t, 0.1, 0.6);
       const ch = 330;
-      const y = H - 270 - ch + (1 - p) * 300;
+      const y = SAFE_B - ch + (1 - p) * 300;
       ctx.save();
       ctx.globalAlpha = clamp(p * 1.5);
       shadowCard(ctx, 50, y, W - 100, ch, 22, PAPER);
@@ -634,7 +441,7 @@ const T: Format[] = [
     },
     draw: (e, v) => {
       const { ctx, t, f, lang } = e;
-      const y = H - 300 - 150;
+      const y = SAFE_B - 150;
       const p = ease(t, 0.1, 0.5);
       const q = ease(t, 0.35, 0.6);
       const lw = 170;
@@ -660,7 +467,7 @@ const T: Format[] = [
     draw: (e, v) => {
       const { ctx, t, f, lang } = e;
       const n = Number(v.summe) || 0;
-      const base = H - 300;
+      const base = SAFE_B;
       const bw = W - 144;
       const q = ease(t, 0.3, 1.6);
       roundRect(ctx, 72, base - 80, bw, 28, 4);
@@ -700,7 +507,7 @@ const T: Format[] = [
         ctx.restore();
       });
       const n = standing(d).length;
-      text(ctx, L(lang, `${n} laufen. Runde ${v.runde}.`, `${n} still going. Loop ${v.runde}.`), 72, H - 300, { font: A(f, 800, 64), alpha: ease(t, 1.5, 0.5), spacing: -1 });
+      text(ctx, L(lang, `${n} laufen. Runde ${v.runde}.`, `${n} still going. Loop ${v.runde}.`), 72, SAFE_B, { font: A(f, 800, 64), alpha: ease(t, 1.5, 0.5), spacing: -1 });
     },
     cues: () => [...ticks(0.1, 0.9, 15).map((c) => ({ ...c, kind: "pop" as const })), { at: 1.3, kind: "whoosh" }],
   },
@@ -714,7 +521,7 @@ const T: Format[] = [
       const max = Math.max(1, ...top.map((r) => r.laps));
       const gap = 16;
       const bw = (W - 120 - gap * 4) / 5;
-      const base = H - 280;
+      const base = SAFE_B - 12;
       top.forEach((r, i) => {
         const q = ease(t, 0.2 + i * 0.12, 1);
         const h = (r.laps / max) * 900 * q;
@@ -735,28 +542,33 @@ const T: Format[] = [
   },
 ];
 
-export const FORMATS: Format[] = [...T, ...P];
+export const TEAM_FORMATS = T;
 
 /** Verlauf über dem Foto, damit die weisse Schrift trägt */
-export function drawShade(ctx: CanvasRenderingContext2D, s: Shade) {
-  if (s === "none") return;
+export function drawShade(ctx: CanvasRenderingContext2D, s: Shade, k = 1) {
+  if (s === "none" || k <= 0) return;
+  const a = (x: number) => `rgba(0,0,0,${Math.min(0.92, x * k).toFixed(3)})`;
   if (s === "all") {
-    ctx.fillStyle = "rgba(0,0,0,.45)";
+    ctx.fillStyle = a(0.45);
     ctx.fillRect(0, 0, W, H);
     return;
   }
   const g = ctx.createLinearGradient(0, 0, 0, H);
   if (s === "b") {
-    g.addColorStop(0.4, "rgba(0,0,0,0)");
-    g.addColorStop(1, "rgba(0,0,0,.72)");
+    g.addColorStop(0.4, a(0));
+    g.addColorStop(1, a(0.72));
   } else if (s === "t") {
-    g.addColorStop(0, "rgba(0,0,0,.65)");
-    g.addColorStop(0.55, "rgba(0,0,0,0)");
+    g.addColorStop(0, a(0.65));
+    g.addColorStop(0.55, a(0));
+  } else if (s === "m") {
+    g.addColorStop(0.18, a(0));
+    g.addColorStop(0.5, a(0.6));
+    g.addColorStop(0.82, a(0));
   } else {
-    g.addColorStop(0, "rgba(0,0,0,.55)");
-    g.addColorStop(0.35, "rgba(0,0,0,0)");
-    g.addColorStop(0.6, "rgba(0,0,0,0)");
-    g.addColorStop(1, "rgba(0,0,0,.72)");
+    g.addColorStop(0, a(0.55));
+    g.addColorStop(0.35, a(0));
+    g.addColorStop(0.6, a(0));
+    g.addColorStop(1, a(0.72));
   }
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
