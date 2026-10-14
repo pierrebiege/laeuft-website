@@ -23,3 +23,9 @@ alter table public.kalender_abstimmung enable row level security;
 -- 14.10.2026: Frage «mit Zahlen und Wochentagen oder ohne».
 alter table public.kalender_abstimmung add column if not exists daten text check (daten in ('mit','ohne'));
 --   select daten, count(*) from kalender_abstimmung group by daten;
+
+-- 14.10.2026: öffentliche Abstimmung via Instagram (E-Mail + Land, Rabattcode statt Gratiskalender).
+alter table public.kalender_abstimmung alter column strasse drop not null, alter column plz drop not null, alter column ort drop not null;
+alter table public.kalender_abstimmung add column if not exists vorname text, add column if not exists quelle text not null default 'freunde';
+--   select land, count(*) from kalender_abstimmung where quelle='instagram' group by land;
+--   Newsletter-Liste: select email, vorname, land from kalender_abstimmung where quelle='instagram';

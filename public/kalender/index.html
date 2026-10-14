@@ -77,60 +77,54 @@
   .variante span.titel { display: flex; gap: 8px; align-items: center; }
   .variante span.titel::before { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--grau); flex: none; }
   .variante:has(input:checked) span.titel::before { border: 5px solid var(--tinte); }
+  .laender { display: flex; flex-wrap: wrap; gap: 10px; }
+  .laender label { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; color: var(--tinte); border: 1px solid var(--linie); background: #fff; border-radius: 4px; padding: 10px 16px; cursor: pointer; }
+  .laender label:has(input:checked) { border-color: var(--tinte); }
+  .laender input { accent-color: var(--tinte); margin: 0; }
+  .einwilligung { font-family: var(--sans); font-size: 15px; color: var(--grau); margin: 4px 0 20px; max-width: 34em; }
+  button.weiter { font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--papier); background: var(--tinte); border: 0; border-radius: 4px; padding: 14px 24px; cursor: pointer; }
+  #bilder[hidden], .leiste[hidden] { display: none; }
+  .code { font-family: var(--sans); font-size: 28px; font-weight: 600; letter-spacing: .08em; border: 1px solid var(--tinte); border-radius: 4px; padding: 14px 20px; display: inline-block; margin: 8px 0 16px; background: #fff; }
 </style>
 </head>
 <body>
 <div id="seite">
 <header class="breit">
   <img class="marke" src="ergt-font-black-eps.svg" alt="ein richtig guter Tag">
-  <h1>Welche Bilder kommen in den Kalender 2027?</h1>
-  <p>Wähle deine 12 Lieblingsbilder. Als Dank schenke ich dir einen Kalender, sobald er gedruckt ist.</p>
+  <h1>Welche 12 Bilder kommen in den Kalender 2027?</h1>
+  <p>Ich habe 50 Bilder und Platz für 12. Wähl deine Favoriten, bis Freitag, 16. Oktober, 20 Uhr.</p>
+  <p>Als Dank bekommst du 10 % Rabatt auf den Kalender 2027 und die Postkarten im Shop einrichtiggutertag.ch, sobald sie erhältlich sind.</p>
 </header>
 
 <form id="form" novalidate>
-  <section class="breit">
+  <section class="breit" id="einstieg">
     <div class="schmal">
-      <h2>Dein Name</h2>
-      <div class="feld"><label for="name">Vor- und Nachname</label><input type="text" id="name" name="name" autocomplete="name" required></div>
+      <h2>Wohin dürfen wir dir deinen Code schicken?</h2>
+      <div class="feld"><label for="email">E-Mail</label><input type="email" id="email" name="email" autocomplete="email" required></div>
+      <div class="feld"><label>Wo wohnst du?</label>
+        <div class="laender">
+          <label><input type="radio" name="land" value="CH" required> Schweiz</label>
+          <label><input type="radio" name="land" value="DE"> Deutschland</label>
+          <label><input type="radio" name="land" value="AT"> Österreich</label>
+          <label><input type="radio" name="land" value="anderes"> anderes Land</label>
+        </div>
+      </div>
+      <div class="feld"><label for="vorname">Vorname, freiwillig</label><input type="text" id="vorname" name="vorname" autocomplete="given-name"></div>
+      <p class="einwilligung">Mit deiner Stimme bekommst du den Code und meinen Newsletter von ein richtig guter Tag. Abmelden geht jederzeit mit einem Klick. Weitergegeben wird deine Adresse nicht.</p>
+      <div class="versteckt" aria-hidden="true"><label for="webseite">Webseite</label><input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off"></div>
+      <button class="weiter" id="weiter" type="button">Weiter zu den Bildern</button>
+      <p class="meldung" id="meldung1" role="alert"></p>
     </div>
   </section>
 
-  <section class="breit">
+  <section class="breit" id="bilder" hidden>
     <h2>Deine 12 Favoriten</h2>
     <p class="hinweis">Tipp ein Bild an, um es zu wählen. Nochmals tippen nimmt es wieder raus.</p>
     <div class="raster" id="raster"></div>
+    <p class="meldung" id="meldung" role="alert"></p>
   </section>
 
-  <section class="breit" id="variante">
-    <h2>Mit Daten oder ohne?</h2>
-    <p class="hinweis">Soll der Kalender unten Zahlen und Wochentage haben, oder nur das Bild mit dem Logo?</p>
-    <div class="varianten">
-      <label class="variante"><input type="radio" name="daten" value="mit" required>
-        <div class="muster"><img class="foto" src="muster-mit.jpg" alt="Wandkalender Januar mit Zahlen und Wochentagen"></div>
-        <span class="titel">Mit Zahlen und Wochentagen</span></label>
-      <label class="variante"><input type="radio" name="daten" value="ohne">
-        <div class="muster"><img class="foto" src="muster-ohne.jpg" alt="Karte ohne Daten im Holzständer"></div>
-        <span class="titel">Ohne, nur Bild und Logo</span></label>
-    </div>
-  </section>
-
-  <section class="breit" id="adresse">
-    <div class="schmal">
-      <h2>Wohin dürfen wir deinen Kalender schicken?</h2>
-      <p class="hinweis">Die Adresse brauche ich nur für den Versand. Sie wird nicht weitergegeben.</p>
-      <div class="feld"><label for="strasse">Strasse und Nummer</label><input type="text" id="strasse" name="strasse" autocomplete="street-address" required></div>
-      <div class="feld zeile">
-        <div><label for="plz">PLZ</label><input type="text" id="plz" name="plz" inputmode="numeric" autocomplete="postal-code" required></div>
-        <div><label for="ort">Ort</label><input type="text" id="ort" name="ort" autocomplete="address-level2" required></div>
-      </div>
-      <div class="feld"><label for="land">Land</label><input type="text" id="land" name="land" value="Schweiz" autocomplete="country-name"></div>
-      <div class="feld"><label for="email">E-Mail, freiwillig, für die Versandbestätigung</label><input type="email" id="email" name="email" autocomplete="email"></div>
-      <div class="versteckt" aria-hidden="true"><label for="webseite">Webseite</label><input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off"></div>
-      <p class="meldung" id="meldung" role="alert"></p>
-    </div>
-  </section>
-
-  <div class="leiste">
+  <div class="leiste" id="leiste" hidden>
     <div class="breit">
       <span id="zaehler"><b>0</b> von 12 gewählt</span>
       <button class="los" id="senden" type="submit" disabled>Abstimmen</button>
@@ -138,11 +132,13 @@
   </div>
 </form>
 
-<footer class="breit">einrichtiggutertag.ch</footer>
+<footer class="breit">Pierre Biege · ein richtig guter Tag · einrichtiggutertag.ch</footer>
 </div>
 
 <script>
   const ANZAHL = 12;
+  const ENDE = new Date('2026-10-16T20:00:00+02:00');
+  const CODE = 'AUSWAHL10';
   const raster = document.getElementById('raster');
   const zaehler = document.getElementById('zaehler');
   const senden = document.getElementById('senden');
@@ -150,16 +146,41 @@
   const form = document.getElementById('form');
   const gewaehlt = new Set();
   const haken = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  function bereit() {
-    const f = form.elements;
-    return gewaehlt.size === ANZAHL && f.daten.value && f.name.value.trim() && f.strasse.value.trim() && f.plz.value.trim() && f.ort.value.trim();
+  function seiteErsetzen(titel, saetze, code) {
+    const seite = document.getElementById('seite');
+    seite.innerHTML = '<div class="breit danke"><img class="marke" src="ergt-font-black-eps.svg" alt="ein richtig guter Tag" style="width:92px;display:block;margin-bottom:40px"><h1></h1></div>';
+    const box = seite.querySelector('.danke');
+    box.querySelector('h1').textContent = titel;
+    saetze.forEach((t, i) => {
+      const el = document.createElement('p'); el.textContent = t; box.append(el);
+      if (code && i === 0) { const c = document.createElement('div'); c.className = 'code'; c.textContent = CODE; box.append(c); }
+    });
+    window.scrollTo(0, 0);
   }
+
+  if (Date.now() > ENDE) {
+    seiteErsetzen('Die Abstimmung ist vorbei.', ['Danke an alle, die mitgewählt haben. Welche 12 Bilder es in den Kalender 2027 geschafft haben, siehst du auf Instagram bei @pierrebiege und im Shop einrichtiggutertag.ch.']);
+  }
+
+  function bereit() { return gewaehlt.size === ANZAHL; }
   function aktualisieren() {
     zaehler.innerHTML = `<b>${gewaehlt.size}</b> von ${ANZAHL} gewählt`;
     raster.classList.toggle('voll', gewaehlt.size === ANZAHL);
     senden.disabled = !bereit();
   }
+
+  document.getElementById('weiter').addEventListener('click', () => {
+    const f = form.elements, m = document.getElementById('meldung1');
+    if (!EMAIL.test(f.email.value.trim())) { m.textContent = 'Bitte gib eine gültige E-Mail-Adresse ein.'; f.email.focus(); return; }
+    if (!f.land.value) { m.textContent = 'Bitte wähle dein Land.'; return; }
+    m.textContent = '';
+    document.getElementById('bilder').hidden = false;
+    document.getElementById('leiste').hidden = false;
+    document.getElementById('weiter').hidden = true;
+    document.getElementById('bilder').scrollIntoView({ behavior: 'smooth' });
+  });
 
   fetch('kandidaten.json').then((r) => r.json()).then((ids) => {
     // Reihenfolge mischen, damit die ersten Bilder nicht bevorzugt werden
@@ -182,7 +203,6 @@
     }
   });
 
-  form.addEventListener('input', aktualisieren);
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!bereit()) return;
@@ -191,18 +211,17 @@
     senden.textContent = 'Wird gesendet …';
     const daten = Object.fromEntries(new FormData(form));
     daten.bilder = [...gewaehlt];
+    daten.oeffentlich = true;
     try {
       const r = await fetch('/api/kalender/stimme', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(daten) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) throw new Error(j.fehler || 'Das hat nicht geklappt. Versuch es bitte nochmals.');
-      const name = daten.name.trim().split(/\s+/)[0];
-      const p = (t) => { const el = document.createElement('p'); el.textContent = t; return el; };
-      const seite = document.getElementById('seite');
-      seite.innerHTML = '<div class="breit danke"><img class="marke" src="ergt-font-black-eps.svg" alt="ein richtig guter Tag" style="width:92px;display:block;margin-bottom:40px"><h1></h1></div>';
-      const box = seite.querySelector('.danke');
-      box.querySelector('h1').textContent = `Danke, ${name}.`;
-      box.append(p('Deine Stimme ist gezählt und dein Kalender ist reserviert.'), p('Er kommt per Post, sobald er gedruckt ist, voraussichtlich Anfang Dezember.'));
-      window.scrollTo(0, 0);
+      const vorname = (daten.vorname || '').trim().split(/\s+/)[0];
+      seiteErsetzen(vorname ? `Danke, ${vorname}.` : 'Danke.', [
+        'Deine 12 Bilder sind gezählt. Dein Code:',
+        '10 % auf den Kalender 2027 und die Postkarten auf einrichtiggutertag.ch. Gültig bis 31. Dezember 2026, einmal pro Person.',
+        'Sobald die 12 Bilder feststehen und der Kalender im Shop ist, schicke ich dir den Code nochmals per Mail.',
+      ], true);
     } catch (err) {
       meldung.textContent = err.message;
       senden.textContent = 'Abstimmen';

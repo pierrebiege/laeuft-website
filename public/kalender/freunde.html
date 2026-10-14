@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<base href="/kalender/">
+<title>Kalender 2027 · ein richtig guter Tag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Instrument+Sans:wght@400..600&display=swap">
+<style>
+  /* Helles Papier, Bilder im Kalenderformat mit der Wortmarke wie gedruckt */
+  :root {
+    --papier: #FAF8F3;
+    --tinte: #1F1D1A;
+    --grau: #5F584F;
+    --linie: #DDD4C7;
+    --glut: #C9573A;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Instrument Sans', Arial, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papier); color: var(--tinte); font-family: var(--serif); font-size: 20px; line-height: 1.5; }
+  .breit { max-width: 1120px; margin-inline: auto; padding-inline: 16px; }
+  .schmal { max-width: 640px; }
+  header { padding-block: 56px 40px; }
+  header .marke { width: 92px; display: block; margin-bottom: 40px; }
+  h1 { font-weight: 500; font-size: clamp(38px, 7vw, 60px); line-height: 1.04; margin: 0 0 18px; letter-spacing: -0.5px; text-wrap: balance; max-width: 15em; }
+  header p { margin: 0 0 10px; font-size: 21px; max-width: 34em; }
+  h2 { font-weight: 500; font-size: 32px; line-height: 1.15; margin: 0 0 6px; }
+  .hinweis { font-family: var(--sans); font-size: 15px; color: var(--grau); margin: 0 0 20px; }
+  section { padding-block: 32px; border-top: 1px solid var(--linie); }
+  label { display: block; font-family: var(--sans); font-size: 15px; color: var(--grau); margin-bottom: 6px; }
+  input[type=text], input[type=email] { width: 100%; font: inherit; font-size: 19px; color: var(--tinte); background: #fff; border: 1px solid var(--linie); border-radius: 4px; padding: 12px 14px; }
+  .zeile { display: grid; grid-template-columns: 120px 1fr; gap: 12px; }
+  .feld { margin-bottom: 18px; }
+  input:focus-visible, button:focus-visible, .bild:focus-visible { outline: 2px solid var(--glut); outline-offset: 3px; }
+
+  .raster { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (min-width: 640px) { .raster { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+  @media (min-width: 960px) { .raster { grid-template-columns: repeat(4, 1fr); } }
+  .bild { position: relative; display: block; width: 100%; padding: 0; border: 0; background: #E9E4DA; cursor: pointer; aspect-ratio: 297 / 420; overflow: hidden; border-radius: 2px; }
+  .bild img.foto { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .15s; }
+  .bild img.wort { position: absolute; left: 50%; top: 48.8%; width: 45.4%; transform: translate(-50%, -50%); pointer-events: none; }
+  .bild::after { content: ''; position: absolute; inset: 0; border: 4px solid transparent; transition: border-color .15s; }
+  .bild[aria-pressed=true]::after { border-color: var(--papier); box-shadow: inset 0 0 0 6px var(--tinte); }
+  .bild .haken { position: absolute; right: 10px; top: 10px; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.18); display: grid; place-items: center; }
+  .bild[aria-pressed=true] .haken { background: var(--tinte); border-color: var(--tinte); }
+  .bild .haken svg { width: 16px; height: 16px; opacity: 0; }
+  .bild[aria-pressed=true] .haken svg { opacity: 1; }
+  .raster.voll .bild[aria-pressed=false] img.foto { opacity: .45; }
+
+  .leiste { position: sticky; bottom: 0; background: rgba(250,248,243,.96); border-top: 1px solid var(--linie); padding-block: 14px; z-index: 5; }
+  .leiste .breit { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-family: var(--sans); font-size: 16px; }
+  .leiste b { font-weight: 600; }
+  button.los { font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--papier); background: var(--tinte); border: 0; border-radius: 4px; padding: 14px 24px; cursor: pointer; }
+  button.los[disabled] { opacity: .45; cursor: default; }
+  .meldung { font-family: var(--sans); font-size: 16px; color: var(--glut); min-height: 1.5em; margin: 12px 0 0; }
+  .versteckt { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .danke { padding-block: 80px 120px; }
+  .danke h1 { margin-bottom: 20px; }
+  .danke p { font-size: 21px; max-width: 32em; margin: 0 0 12px; }
+  footer { font-family: var(--sans); font-size: 14px; color: var(--grau); padding-block: 40px 120px; }
+  .varianten { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 520px; }
+  .variante { display: block; cursor: pointer; font-family: var(--sans); font-size: 16px; }
+  .variante input { position: absolute; opacity: 0; }
+  .variante .muster { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 2px; background: #E9E4DA; margin-bottom: 10px; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .15s; }
+  .variante .muster img.foto { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .variante .muster img.wort { position: absolute; left: 50%; top: 48.8%; width: 45.4%; transform: translate(-50%, -50%); }
+  .variante .tage { position: absolute; left: 5%; right: 5%; bottom: 4%; display: flex; justify-content: space-between; color: #fff; font-size: 5.6px; line-height: 1.3; text-align: center; }
+  .variante .verlauf { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(rgba(10,12,14,0), rgba(10,12,14,.6)); }
+  .variante .tage b { font-weight: 700; }
+  .variante:has(input:checked) .muster { outline-color: var(--tinte); }
+  .variante:has(input:focus-visible) .muster { outline-color: var(--glut); }
+  .variante span.titel { display: flex; gap: 8px; align-items: center; }
+  .variante span.titel::before { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--grau); flex: none; }
+  .variante:has(input:checked) span.titel::before { border: 5px solid var(--tinte); }
+</style>
+</head>
+<body>
+<div id="seite">
+<header class="breit">
+  <img class="marke" src="ergt-font-black-eps.svg" alt="ein richtig guter Tag">
+  <h1>Welche Bilder kommen in den Kalender 2027?</h1>
+  <p>Wähle deine 12 Lieblingsbilder. Als Dank schenke ich dir einen Kalender, sobald er gedruckt ist.</p>
+</header>
+
+<form id="form" novalidate>
+  <section class="breit">
+    <div class="schmal">
+      <h2>Dein Name</h2>
+      <div class="feld"><label for="name">Vor- und Nachname</label><input type="text" id="name" name="name" autocomplete="name" required></div>
+    </div>
+  </section>
+
+  <section class="breit">
+    <h2>Deine 12 Favoriten</h2>
+    <p class="hinweis">Tipp ein Bild an, um es zu wählen. Nochmals tippen nimmt es wieder raus.</p>
+    <div class="raster" id="raster"></div>
+  </section>
+
+  <section class="breit" id="variante">
+    <h2>Mit Daten oder ohne?</h2>
+    <p class="hinweis">Soll der Kalender unten Zahlen und Wochentage haben, oder nur das Bild mit dem Logo?</p>
+    <div class="varianten">
+      <label class="variante"><input type="radio" name="daten" value="mit" required>
+        <div class="muster"><img class="foto" src="muster-mit.jpg" alt="Wandkalender Januar mit Zahlen und Wochentagen"></div>
+        <span class="titel">Mit Zahlen und Wochentagen</span></label>
+      <label class="variante"><input type="radio" name="daten" value="ohne">
+        <div class="muster"><img class="foto" src="muster-ohne.jpg" alt="Karte ohne Daten im Holzständer"></div>
+        <span class="titel">Ohne, nur Bild und Logo</span></label>
+    </div>
+  </section>
+
+  <section class="breit" id="adresse">
+    <div class="schmal">
+      <h2>Wohin dürfen wir deinen Kalender schicken?</h2>
+      <p class="hinweis">Die Adresse brauche ich nur für den Versand. Sie wird nicht weitergegeben.</p>
+      <div class="feld"><label for="strasse">Strasse und Nummer</label><input type="text" id="strasse" name="strasse" autocomplete="street-address" required></div>
+      <div class="feld zeile">
+        <div><label for="plz">PLZ</label><input type="text" id="plz" name="plz" inputmode="numeric" autocomplete="postal-code" required></div>
+        <div><label for="ort">Ort</label><input type="text" id="ort" name="ort" autocomplete="address-level2" required></div>
+      </div>
+      <div class="feld"><label for="land">Land</label><input type="text" id="land" name="land" value="Schweiz" autocomplete="country-name"></div>
+      <div class="feld"><label for="email">E-Mail, freiwillig, für die Versandbestätigung</label><input type="email" id="email" name="email" autocomplete="email"></div>
+      <div class="versteckt" aria-hidden="true"><label for="webseite">Webseite</label><input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off"></div>
+      <p class="meldung" id="meldung" role="alert"></p>
+    </div>
+  </section>
+
+  <div class="leiste">
+    <div class="breit">
+      <span id="zaehler"><b>0</b> von 12 gewählt</span>
+      <button class="los" id="senden" type="submit" disabled>Abstimmen</button>
+    </div>
+  </div>
+</form>
+
+<footer class="breit">einrichtiggutertag.ch</footer>
+</div>
+
+<script>
+  const ANZAHL = 12;
+  const raster = document.getElementById('raster');
+  const zaehler = document.getElementById('zaehler');
+  const senden = document.getElementById('senden');
+  const meldung = document.getElementById('meldung');
+  const form = document.getElementById('form');
+  const gewaehlt = new Set();
+  const haken = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+
+  function bereit() {
+    const f = form.elements;
+    return gewaehlt.size === ANZAHL && f.daten.value && f.name.value.trim() && f.strasse.value.trim() && f.plz.value.trim() && f.ort.value.trim();
+  }
+  function aktualisieren() {
+    zaehler.innerHTML = `<b>${gewaehlt.size}</b> von ${ANZAHL} gewählt`;
+    raster.classList.toggle('voll', gewaehlt.size === ANZAHL);
+    senden.disabled = !bereit();
+  }
+
+  fetch('kandidaten.json').then((r) => r.json()).then((ids) => {
+    // Reihenfolge mischen, damit die ersten Bilder nicht bevorzugt werden
+    for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+    for (const id of ids) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'bild';
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', 'Bild ' + id);
+      b.innerHTML = `<img class="foto" src="bilder/${id}.jpg" alt="" loading="lazy"><img class="wort" src="ergt-font-white-eps.svg" alt=""><span class="haken">${haken}</span>`;
+      b.addEventListener('click', () => {
+        if (gewaehlt.has(id)) gewaehlt.delete(id);
+        else if (gewaehlt.size < ANZAHL) gewaehlt.add(id);
+        else return;
+        b.setAttribute('aria-pressed', String(gewaehlt.has(id)));
+        aktualisieren();
+      });
+      raster.appendChild(b);
+    }
+  });
+
+  form.addEventListener('input', aktualisieren);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!bereit()) return;
+    meldung.textContent = '';
+    senden.disabled = true;
+    senden.textContent = 'Wird gesendet …';
+    const daten = Object.fromEntries(new FormData(form));
+    daten.bilder = [...gewaehlt];
+    try {
+      const r = await fetch('/api/kalender/stimme', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(daten) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.fehler || 'Das hat nicht geklappt. Versuch es bitte nochmals.');
+      const name = daten.name.trim().split(/\s+/)[0];
+      const p = (t) => { const el = document.createElement('p'); el.textContent = t; return el; };
+      const seite = document.getElementById('seite');
+      seite.innerHTML = '<div class="breit danke"><img class="marke" src="ergt-font-black-eps.svg" alt="ein richtig guter Tag" style="width:92px;display:block;margin-bottom:40px"><h1></h1></div>';
+      const box = seite.querySelector('.danke');
+      box.querySelector('h1').textContent = `Danke, ${name}.`;
+      box.append(p('Deine Stimme ist gezählt und dein Kalender ist reserviert.'), p('Er kommt per Post, sobald er gedruckt ist, voraussichtlich Anfang Dezember.'));
+      window.scrollTo(0, 0);
+    } catch (err) {
+      meldung.textContent = err.message;
+      senden.textContent = 'Abstimmen';
+      senden.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

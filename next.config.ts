@@ -33,6 +33,8 @@ const nextConfig: NextConfig = {
         { source: "/graatzug", destination: "/graatzug/index.html" },
         // Kalender 2027: Bildabstimmung, statisch unter public/kalender/ (setzt <base href="/kalender/">).
         { source: "/kalender", destination: "/kalender/index.html" },
+        // Freundeskreis (Gratiskalender, mit Adresse): alter Link für die ersten 10
+        { source: "/kalender/freunde", destination: "/kalender/freunde.html" },
         // Themenseiten: /graatzug/<slug> → public/graatzug/<slug>/index.html
         { source: "/graatzug/:slug([a-z0-9-]+)", destination: "/graatzug/:slug/index.html" },
         // graatzug.ch: «/» ist die Startseite, /<slug> die Themenseiten. Dateien
