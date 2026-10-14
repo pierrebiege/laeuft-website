@@ -3,7 +3,16 @@ import PageHead from "@/app/backyard/_components/PageHead";
 import Reveal from "@/app/backyard/_components/Reveal";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import Rail from "@/app/backyard/_components/Rail";
+import Link from "next/link";
+import Instagram from "@/app/backyard/_components/Instagram";
 import { TEAM, RESERVE, STAFF, pastResults } from "@/app/backyard/_data/event";
+import { PEOPLE_PHOTOS, PROFILES, STAFF_PROFILES } from "@/app/backyard/_data/people";
+
+/** Profil-Slug einer Person aus der Organisation: Nachname klein, wenn es ein Profil gibt. */
+function staffSlug(name: string) {
+  const last = name.split(" ").pop()!.toLowerCase();
+  return STAFF_PROFILES[last] || PROFILES[last] ? last : null;
+}
 
 export const metadata: Metadata = {
   title: "Squad",
@@ -68,7 +77,7 @@ export default function SquadPage() {
                       {String(a.pos).padStart(2, "0")}
                     </span>
                     <span className="text-[15px] font-medium uppercase tracking-tight">
-                      {a.first} {a.name}
+                      {a.photo ? <Link href={`/squad/${a.photo}`} className="underline-offset-4 hover:underline">{a.first} {a.name}</Link> : `${a.first} ${a.name}`}
                       {a.role && <span className="stamp ml-3">{a.role}</span>}
                     </span>
                     <span className="stamp">{a.status === "silver" ? "Silver Ticket" : "At Large"}</span>
@@ -131,10 +140,26 @@ export default function SquadPage() {
               <span className="stamp">Race organisation</span>
             </div>
             <div className="mt-10 grid border-t sm:grid-cols-2 lg:grid-cols-4 rule">
-              {STAFF.map((s) => (
+              {STAFF.map((s) => {
+                const slug = staffSlug(s.name);
+                return (
                 <div key={s.name} className="border-b py-7 lg:border-r lg:px-6 lg:first:pl-0 lg:last:border-r-0 rule">
+                  {slug && (
+                    <Link href={`/squad/${slug}`} className="mb-5 block aspect-[4/5] overflow-hidden border rule">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`${PEOPLE_PHOTOS}/${slug}/1.jpg`}
+                        alt={s.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                        style={{ filter: "grayscale(1) contrast(1.06)", objectPosition: "50% 30%" }}
+                      />
+                    </Link>
+                  )}
                   <p className="stamp mb-3">{s.role}</p>
-                  <p className="text-lg font-semibold uppercase tracking-tight">{s.name}</p>
+                  <p className="text-lg font-semibold uppercase tracking-tight">
+                    {slug ? <Link href={`/squad/${slug}`}>{s.name} →</Link> : s.name}
+                  </p>
                   <ul className="mt-4 space-y-1.5">
                     {s.does.map((d) => (
                       <li key={d} className="text-sm" style={{ color: "var(--byd-mute)" }}>
@@ -143,8 +168,10 @@ export default function SquadPage() {
                     ))}
                   </ul>
                 </div>
-              ))}
+                );
+              })}
             </div>
+            <Instagram className="mt-16" />
           </Reveal>
         </div>
       </section>

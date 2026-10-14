@@ -41,6 +41,11 @@ export default function Footer() {
                   Big&rsquo;s ↗
                 </a>
               )}
+              {i === 0 && (
+                <a href="https://www.instagram.com/swissbackyardultra/" target="_blank" rel="noreferrer" className="stamp">
+                  Instagram ↗
+                </a>
+              )}
             </div>
           ))}
         </div>

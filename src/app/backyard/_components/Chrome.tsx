@@ -61,6 +61,9 @@ export default function Chrome() {
                 {l.label}
               </Link>
             ))}
+            <a href="https://www.instagram.com/swissbackyardultra/" target="_blank" rel="noreferrer" className="stamp">
+              Instagram ↗
+            </a>
           </div>
 
           {/* Unter sm wandert die Uhr ins Menü – sonst schiebt sie den
@@ -104,6 +107,15 @@ export default function Chrome() {
                 {l.label}
               </Link>
             ))}
+            <a
+              href="https://www.instagram.com/swissbackyardultra/"
+              target="_blank"
+              rel="noreferrer"
+              className="display block border-b py-3 text-2xl"
+              style={{ borderColor: "var(--byd-rule)" }}
+            >
+              Instagram ↗
+            </a>
             {/* Die Uhr, die unter sm aus der Leiste genommen ist. */}
             <Link href="/live" className="mt-4 flex items-center gap-2.5 sm:hidden">
               <span

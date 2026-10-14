@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PHOTO_BASE, type Athlete } from "@/app/backyard/_data/event";
 
 /**
@@ -14,7 +15,11 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
   const beyond = a.pb > a.qual;
 
   return (
-    <article className="flex h-full flex-col border-l rule" style={{ opacity: a.status === "reserve" ? 0.55 : 1 }}>
+    <article className="group relative flex h-full flex-col border-l rule" style={{ opacity: a.status === "reserve" ? 0.55 : 1 }}>
+      {/* Die ganze Karte führt aufs Profil. */}
+      {a.photo && (
+        <Link href={`/squad/${a.photo}`} className="absolute inset-0 z-10" aria-label={`${a.first} ${a.name}`} />
+      )}
       <div
         className="relative overflow-hidden"
         style={{
@@ -29,7 +34,7 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
           <img
             src={src}
             alt={`${a.first} ${a.name}`}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             style={{ filter: "grayscale(1) contrast(1.06)", objectPosition: "50% 28%" }}
             loading="lazy"
           />

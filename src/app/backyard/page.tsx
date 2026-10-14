@@ -9,6 +9,7 @@ import OnPaper from "@/app/backyard/_components/OnPaper";
 import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import Photo from "@/app/backyard/_components/Photo";
+import Instagram from "@/app/backyard/_components/Instagram";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
 
 /**
@@ -278,7 +279,7 @@ function Squad() {
           The number on each card is the runner&rsquo;s best loop count between 16 August
           2024 and 15 August 2026 — that is what selects the team. Two got in by
           winning a qualifying race outright, a Silver Ticket. The other thirteen came
-          off the At Large list, ranked by that number.
+          off the At Large list, ranked by that number. Tap a card for the story behind it.
         </p>
       </Reveal>
 
@@ -305,6 +306,10 @@ function Squad() {
         <Link href="/squad" className="stamp mt-14 inline-block underline underline-offset-4">
           Full squad, the table and who runs the race →
         </Link>
+      </Reveal>
+
+      <Reveal>
+        <Instagram className="mt-14" />
       </Reveal>
     </Section>
   );
