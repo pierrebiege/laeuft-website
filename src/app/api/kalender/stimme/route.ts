@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     plz: sauber(koerper.plz, 12),
     ort: sauber(koerper.ort, 120),
     land: sauber(koerper.land, 60) || "Schweiz",
+    daten: ["mit", "ohne"].includes(sauber(koerper.daten, 8)) ? sauber(koerper.daten, 8) : null,
     bilder,
   };
   if (bilder.length !== ANZAHL)

@@ -19,3 +19,7 @@ alter table public.kalender_abstimmung enable row level security;
 --   select b, count(*) from kalender_abstimmung, unnest(bilder) b group by b order by 2 desc;
 -- Versandliste:
 --   select name, strasse, plz, ort, land, email from kalender_abstimmung order by erstellt_am;
+
+-- 14.10.2026: Frage «mit Zahlen und Wochentagen oder ohne».
+alter table public.kalender_abstimmung add column if not exists daten text check (daten in ('mit','ohne'));
+--   select daten, count(*) from kalender_abstimmung group by daten;

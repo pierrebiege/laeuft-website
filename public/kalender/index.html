@@ -63,6 +63,20 @@
   .danke h1 { margin-bottom: 20px; }
   .danke p { font-size: 21px; max-width: 32em; margin: 0 0 12px; }
   footer { font-family: var(--sans); font-size: 14px; color: var(--grau); padding-block: 40px 120px; }
+  .varianten { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 520px; }
+  .variante { display: block; cursor: pointer; font-family: var(--sans); font-size: 16px; }
+  .variante input { position: absolute; opacity: 0; }
+  .variante .muster { position: relative; aspect-ratio: 297 / 420; overflow: hidden; border-radius: 2px; background: #E9E4DA; margin-bottom: 10px; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .15s; }
+  .variante .muster img.foto { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .variante .muster img.wort { position: absolute; left: 50%; top: 48.8%; width: 45.4%; transform: translate(-50%, -50%); }
+  .variante .tage { position: absolute; left: 5%; right: 5%; bottom: 4%; display: flex; justify-content: space-between; color: #fff; font-size: 5.6px; line-height: 1.3; text-align: center; }
+  .variante .verlauf { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(rgba(10,12,14,0), rgba(10,12,14,.6)); }
+  .variante .tage b { font-weight: 700; }
+  .variante:has(input:checked) .muster { outline-color: var(--tinte); }
+  .variante:has(input:focus-visible) .muster { outline-color: var(--glut); }
+  .variante span.titel { display: flex; gap: 8px; align-items: center; }
+  .variante span.titel::before { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--grau); flex: none; }
+  .variante:has(input:checked) span.titel::before { border: 5px solid var(--tinte); }
 </style>
 </head>
 <body>
@@ -85,6 +99,19 @@
     <h2>Deine 12 Favoriten</h2>
     <p class="hinweis">Tipp ein Bild an, um es zu wählen. Nochmals tippen nimmt es wieder raus.</p>
     <div class="raster" id="raster"></div>
+  </section>
+
+  <section class="breit" id="variante">
+    <h2>Mit Daten oder ohne?</h2>
+    <p class="hinweis">Soll der Kalender unten Zahlen und Wochentage haben, oder nur das Bild mit dem Logo?</p>
+    <div class="varianten">
+      <label class="variante"><input type="radio" name="daten" value="mit" required>
+        <div class="muster"><img class="foto" src="bilder/n027.jpg" alt=""><img class="wort" src="ergt-font-white-eps.svg" alt=""><div class="verlauf"></div><div class="tage" id="tage"></div></div>
+        <span class="titel">Mit Zahlen und Wochentagen</span></label>
+      <label class="variante"><input type="radio" name="daten" value="ohne">
+        <div class="muster"><img class="foto" src="bilder/n027.jpg" alt=""><img class="wort" src="ergt-font-white-eps.svg" alt=""></div>
+        <span class="titel">Ohne, nur Bild und Logo</span></label>
+    </div>
   </section>
 
   <section class="breit" id="adresse">
@@ -126,7 +153,7 @@
 
   function bereit() {
     const f = form.elements;
-    return gewaehlt.size === ANZAHL && f.name.value.trim() && f.strasse.value.trim() && f.plz.value.trim() && f.ort.value.trim();
+    return gewaehlt.size === ANZAHL && f.daten.value && f.name.value.trim() && f.strasse.value.trim() && f.plz.value.trim() && f.ort.value.trim();
   }
   function aktualisieren() {
     zaehler.innerHTML = `<b>${gewaehlt.size}</b> von ${ANZAHL} gewählt`;
@@ -155,6 +182,12 @@
     }
   });
 
+  {
+    const wt = ['M','D','M','D','F','S','S'];
+    let h = '';
+    for (let t = 1; t <= 31; t++) { const w = (new Date(2027, 0, t).getDay() + 6) % 7; const z = `${wt[w]}<br>${t}`; h += `<span>${w >= 5 ? '<b>' + z + '</b>' : z}</span>`; }
+    document.getElementById('tage').innerHTML = h;
+  }
   form.addEventListener('input', aktualisieren);
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
