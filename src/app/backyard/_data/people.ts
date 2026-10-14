@@ -37,10 +37,11 @@ export const PROFILES: Record<string, Profile> = {
     photos: [[1320, 1178], [1067, 1600], [1320, 1284], [1220, 1600], [1320, 1298], [1241, 1600]],
   },
   tenchio: {
-    lead: "In August he finished the Ticino 500: 514 km and 40,000 metres of climbing through the mountains of Ticino.",
+    lead: "Swiss backyard record holder: 62 loops, 415.8 km, at Fregene in Italy in 2023.",
     story: [
+      "In August he finished the Ticino 500: 514 km and 40,000 metres of climbing through the mountains of Ticino.",
       "At kilometre 456, in Bigorio, he wrote that his feet hurt, but there was plenty of determination and he wanted to reach Roveredo. He did. Race director Aaron Rezzonico was waiting at the finish.",
-      "He holds the Swiss backyard record: 62 loops, 415.8 km, at Fregene in Italy in 2023. At the 2024 team championship he ran 58 loops, 388.9 km.",
+      "At the 2024 team championship he ran 58 loops, 388.9 km.",
     ],
     quote: "Dolore ai piedi, ma tanta determinazione e voglia di arrivare a Roveredo.",
     instagram: "matteotenchio",
