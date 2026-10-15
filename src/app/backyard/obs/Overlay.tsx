@@ -202,7 +202,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
       {part === "bar" && (
       <div className="absolute bottom-[56px] left-[56px] flex flex-col">
         <Tag>Team Switzerland · Baar</Tag>
-        <div className="flex divide-x divide-white/20" style={{ background: INK }}>
+        <div className="flex divide-x divide-white/20 overflow-hidden rounded-[14px] rounded-tl-none" style={{ background: INK }}>
           {v.before ? (
             <>
               <Cell k="Start in" v={clock(startAt)} />
@@ -231,15 +231,15 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
       {/* Oben rechts: alle Namen */}
       {part === "plus" && (
       <div
-        className="absolute right-[56px] top-[56px] w-[460px] transition-[opacity,transform] duration-700"
+        className="absolute right-[56px] top-[56px] w-[420px] transition-[opacity,transform] duration-700"
         style={{ opacity: v.list ? 1 : 0, transform: v.list ? "none" : "translateX(40px)" }}
       >
-        <Tag>{v.before ? "The Swiss team" : v.over ? "Final" : "Swiss team"}</Tag>
-        <ol style={{ background: INK }} className="py-2">
+        <Tag wide>{v.before ? "The Swiss team" : v.over ? "Final" : "Swiss team"}</Tag>
+        <ol style={{ background: INK }} className="rounded-b-[14px] py-2">
           {[...v.rows]
             .sort((a, b) => Number(a.out) - Number(b.out) || (b.laps ?? 0) - (a.laps ?? 0))
             .map((r) => (
-              <li key={r.key} className="flex items-baseline justify-between px-6 py-[7px] text-[24px] font-semibold">
+              <li key={r.key} className="flex items-baseline justify-between px-6 py-[4px] text-[22px] font-semibold">
                 <span className={r.out ? "text-white/35 line-through decoration-2" : "text-white"}>{r.name}</span>
                 <span className={`tabular-nums ${r.out ? "text-white/35" : "text-white/60"}`}>
                   {r.out || v.over ? r.laps : v.before ? "" : "in"}
@@ -254,7 +254,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
       {part === "plus" && v.banner && v.banner.length > 0 && (
         <div key={v.banner.map((r) => r.key).join()} className="absolute left-[56px] top-[56px] flex flex-col" style={{ animation: "byd-in .5s ease-out" }}>
           <Tag>Out</Tag>
-          <div className="px-9 py-6" style={{ background: INK }}>
+          <div className="rounded-[14px] rounded-tl-none px-9 py-6" style={{ background: INK }}>
             {v.banner.slice(0, 4).map((r) => (
               <div key={r.key} className="py-1">
                 <div className="text-[52px] font-extrabold leading-none tracking-[-0.02em] text-white">{r.name}</div>
@@ -294,10 +294,10 @@ function Cell({ k, v, unit, accent }: { k: string; v: string; unit?: string; acc
 }
 
 /** Roter Kopf mit Kreuz, gleich für alle drei Teile. */
-function Tag({ children }: { children: React.ReactNode }) {
+function Tag({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
   return (
-    <div className="flex items-center gap-3 self-start px-5 py-3" style={{ background: RED }}>
-      <span className="relative grid h-[22px] w-[22px] place-items-center bg-white">
+    <div className={`flex items-center gap-3 rounded-t-[14px] px-5 py-3 ${wide ? "" : "self-start"}`} style={{ background: RED }}>
+      <span className="relative grid h-[22px] w-[22px] place-items-center rounded-[4px] bg-white">
         <span className="absolute h-[14px] w-[4px]" style={{ background: RED }} />
         <span className="absolute h-[4px] w-[14px]" style={{ background: RED }} />
       </span>
