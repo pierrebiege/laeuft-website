@@ -12,7 +12,8 @@ import { PROFILES } from "@/app/backyard/_data/people";
  *
  *  - unten links, immer: Runde, im Rennen, nächste Glocke
  *  - oben rechts, 4 min vor bis 1 min nach jeder Glocke: alle Namen;
- *    vor dem Start und um :10, :25, :40 je 20 s eine Läuferkarte
+ *    vor dem Start alle 20 s eine Läuferkarte, im Rennen 2–4 pro Stunde
+ *    (je weniger im Rennen, desto öfter), reihum unter denen, die noch laufen
  *  - oben links, 30 s: wer gerade ausgeschieden ist; sonst um :02 ein
  *    Meilenstein (100 km, 24 h …)
  *  - rechts über der Leiste, 12 s: Grüsse aus dem Feed der Website, frühestens
@@ -51,6 +52,27 @@ const MILESTONES: Record<number, string> = {
 };
 
 type Cheer = { id: string; author: string; body: string; at: number };
+
+/**
+ * Wie oft eine Karte kommt. Bei 15 Läufern 4 pro Stunde (jede Person etwa
+ * alle 4 h), bei 2–3 drei, am Schluss zwei. Durchgezählt wird über das ganze
+ * Rennen, so kommt reihum jede Person dran, ohne dass etwas gespeichert wird.
+ */
+const cardsPerHour = (n: number) => (n >= 4 ? 4 : n >= 2 ? 3 : 2);
+const slotsFor = (k: number) => Array.from({ length: k }, (_, i) => 6 + i * (44 / k));
+
+/** Spitznamen, die in Grüssen vorkommen. Schlüssel klein geschrieben. */
+const NICK: Record<string, string> = { isi: "Röthlisberger", jogi: "Desteffani", joerg: "Desteffani", jörg: "Desteffani", nico: "Lehmann", dani: "Schwitter", sebi: "Kopp", seb: "Kopp", francois: "Gervaix" };
+
+/** Für wen ist der Gruss? Vorname, Rufname oder Spitzname als ganzes Wort. */
+function addressee(body: string): string | null {
+  const words = body.toLowerCase().normalize("NFC").split(/[^\p{L}]+/u);
+  for (const a of TEAM) {
+    const keys = [a.first.toLowerCase(), (CALL[a.name] ?? "").toLowerCase(), ...Object.keys(NICK).filter((k) => NICK[k] === a.name)];
+    if (keys.some((k) => k && words.includes(k))) return CALL[a.name] ?? a.first;
+  }
+  return null;
+}
 type Card = { key: string; name: string; photo: string; qual: number; lead: string };
 
 const CARDS: Card[] = TEAM.filter((a) => a.photo).map((a) => {
@@ -273,11 +295,13 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
   v.list = !v.before && (v.over || test || corral);
   // Läuferkarten: vor dem Start alle 20 s die nächste, im Rennen um :10, :25, :40
   const min = demo ? (inLap / HOUR) * 60 : inLap / 60_000;
-  const slot = [10, 25, 40].findIndex((m) => min >= m && min < m + (demo ? 6 : 1 / 3));
+  // Mehr Karten pro Stunde, je weniger noch laufen; gleichmässig zwischen :06 und :50
   const inRows = v.rows.filter((r) => !r.out).map((r) => r.key);
   const inCards = CARDS.filter((c) => inRows.includes(c.key) || !feed);
+  const perHour = cardsPerHour(inCards.length);
+  const slot = slotsFor(perHour).findIndex((m) => min >= m && min < m + (demo ? 6 : 1 / 3));
   if (v.before) v.card = CARDS[Math.floor(now / 20_000) % CARDS.length];
-  else if (!v.over && !test && slot >= 0 && inCards.length) v.card = inCards[(lap * 3 + slot) % inCards.length];
+  else if (!v.over && !test && slot >= 0 && inCards.length) v.card = inCards[((lap - 1) * perHour + slot) % inCards.length];
   // Meilenstein zwei Minuten nach der Glocke, 30 s lang, wenn gerade kein Out läuft
   if (!v.before && !v.over && !test && min >= 2 && min < (demo ? 8 : 2.5)) v.milestone = MILESTONES[lap - 1] ?? null;
   if (show) {
@@ -298,7 +322,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
     if (show === "card") v = { ...base, toBell: 50 * 60_000, card: CARDS[4] };
     if (show === "milestone") v = { ...base, lap: 25, toBell: 57 * 60_000 + 40_000, milestone: MILESTONES[24] };
     if (show === "cheer")
-      v = { ...base, toBell: 37 * 60_000 + 5_000, cheer: { id: "x", author: "Anna", body: "Hopp Schwiiz! Ihr seid unglaublich, jede Runde ein Fest.", at: 0 } };
+      v = { ...base, toBell: 37 * 60_000 + 5_000, cheer: { id: "x", author: "Anna", body: "Hopp Isi! Jede Runde ein Fest, wir sind bei dir.", at: 0 } };
     if (show === "race") v = base;
     if (show === "list") v = { ...base, toBell: 2 * 60_000 + 41_000, list: true };
     if (show === "out") v = { ...base, toBell: 59 * 60_000 + 48_000, banner: f.rows.filter((r) => r.out && r.laps === 30) };
@@ -402,7 +426,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
       {/* Unten rechts: Grüsse */}
       {part === "plus" && v.cheer && (
         <div key={v.cheer.id} className="absolute bottom-[290px] right-[56px] w-[420px]" style={{ animation: "byd-in-r .6s ease-out" }}>
-          <Tag wide>Message for the team</Tag>
+          <Tag wide>{addressee(v.cheer.body) ? `Message for ${addressee(v.cheer.body)}` : "Message for the team"}</Tag>
           <div className="rounded-b-[14px] px-6 py-5" style={{ background: INK }}>
             <p className="text-[26px] font-semibold leading-snug text-white">{v.cheer.body}</p>
             <p className="mt-3 text-[18px] font-semibold uppercase tracking-[0.08em] text-white/60">{v.cheer.author}</p>
