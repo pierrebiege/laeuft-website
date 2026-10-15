@@ -58,7 +58,8 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
   const [params, setParams] = useState<URLSearchParams | null>(null);
   const [feed, setFeed] = useState<Feed | null>(null);
   const [banner, setBanner] = useState<Row[] | null>(null);
-  const t0 = useRef(0);
+  const [temp, setTemp] = useState<number | null>(null);
+  const [t0, setT0] = useState(0);
   const prevOut = useRef<Set<string> | null>(null);
   const queue = useRef<Row[][]>([]);
 
@@ -66,10 +67,11 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
   const demo = params?.get("demo") === "1";
   const test = params?.get("year") === "2024";
   const HOUR = demo ? 40_000 : 3_600_000;
-  const START = demo ? t0.current - 28.5 * HOUR : new Date(EVENT.startISO).getTime();
+  const START = demo ? t0 - 28.5 * HOUR : new Date(EVENT.startISO).getTime();
 
   useEffect(() => {
-    t0.current = Date.now();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setT0(Date.now());
     setParams(new URLSearchParams(window.location.search));
     setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 250);
@@ -111,6 +113,28 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
     };
   }, [params, demo, test, show]);
 
+  // Temperatur in Baar alle 10 min (Open-Meteo, ohne Schlüssel). Fehlt sie, fällt das Feld weg.
+  useEffect(() => {
+    if (!params || show) return;
+    let stop = false;
+    const load = async () => {
+      try {
+        const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=47.195&longitude=8.526&current=temperature_2m");
+        const d = await r.json();
+        const t = d?.current?.temperature_2m;
+        if (!stop && typeof t === "number") setTemp(Math.round(t));
+      } catch {
+        /* ohne Temperatur */
+      }
+    };
+    load();
+    const t = setInterval(load, 600_000);
+    return () => {
+      stop = true;
+      clearInterval(t);
+    };
+  }, [params, show]);
+
   // Demo: Feed aus der Uhr
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -128,7 +152,6 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
 
   useEffect(() => {
     if (banner || !queue.current.length) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBanner(queue.current.shift()!);
   }, [banner, now]);
 
@@ -165,13 +188,13 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
     }
   }
 
+  // Laufzeit seit dem Start, auch im Zeitraffer in echten Stunden
+  const raceTime = Math.max(0, (v.lap - 1 + (1 - v.toBell / HOUR)) * 3_600_000);
+  const tempShown = show ? 11 : temp;
   const left = params.has("left") ? Number(params.get("left")) : v.rows.filter((r) => !r.out).length;
   const last = v.rows.find((r) => !r.out);
   const startAt = show === "before" ? 25 * 60_000 + 30_000 : START - now;
 
-  const label = "text-[22px] font-semibold uppercase tracking-[0.08em] text-white/70";
-  const big = "mt-2 text-[104px] font-extrabold leading-[0.85] tracking-[-0.03em] tabular-nums text-white";
-  const cell = "flex flex-col justify-between px-9 py-7";
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ fontFamily: "var(--font-archivo), system-ui, sans-serif" }}>
@@ -181,34 +204,24 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
         <Tag>Team Switzerland · Baar</Tag>
         <div className="flex divide-x divide-white/20" style={{ background: INK }}>
           {v.before ? (
-            <div className={cell}>
-              <span className={label}>Start in</span>
-              <span className={big}>{clock(startAt)}</span>
-            </div>
+            <>
+              <Cell k="Start in" v={clock(startAt)} />
+              <Cell k="Baar" v={tempShown === null ? "–" : `${tempShown}°`} />
+            </>
           ) : v.over && last ? (
-            <div className={cell}>
-              <span className={label}>Last one standing · {last.laps} loops</span>
-              <span className={big}>{last.name}</span>
-            </div>
+            <>
+              <Cell k="Last one standing" v={last.name} />
+              <Cell k="Loops" v={String(last.laps)} />
+              <Cell k="Distance" v={km(last.laps ?? 0)} unit="km" />
+            </>
           ) : (
             <>
-              <div className={cell}>
-                <span className={label}>Loop</span>
-                <span className={big}>{v.lap}</span>
-              </div>
-              <div className={cell}>
-                <span className={label}>Still running</span>
-                <span className={big}>
-                  {left}
-                  <span className="text-[52px] text-white/50"> / {EVENT.teamSize}</span>
-                </span>
-              </div>
-              {!test && (
-                <div className={cell}>
-                  <span className={label}>Next bell</span>
-                  <span className={big}>{clock(v.toBell)}</span>
-                </div>
-              )}
+              <Cell k="Loop" v={String(v.lap)} />
+              <Cell k="Distance" v={km(v.lap)} unit="km" />
+              <Cell k="Race time" v={clock(raceTime)} />
+              {!test && <Cell k="Next bell" v={clock(v.toBell)} accent />}
+              <Cell k="Still running" v={String(left)} unit={`/ ${EVENT.teamSize}`} />
+              {tempShown !== null && <Cell k="Baar" v={`${tempShown}°`} />}
             </>
           )}
         </div>
@@ -259,6 +272,23 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
         </div>
       )}
       <style>{`@keyframes byd-in{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}`}</style>
+    </div>
+  );
+}
+
+const km = (laps: number) => (laps * KM).toFixed(1);
+
+/** Ein Feld der Leiste: kleines Etikett, grosse Zahl. */
+function Cell({ k, v, unit, accent }: { k: string; v: string; unit?: string; accent?: boolean }) {
+  return (
+    <div className="flex flex-col justify-between px-8 py-5">
+      <span className="text-[18px] font-semibold uppercase tracking-[0.08em]" style={{ color: accent ? "#ff4d55" : "rgba(255,255,255,0.7)" }}>
+        {k}
+      </span>
+      <span className="mt-2 whitespace-nowrap text-[64px] font-extrabold leading-[0.9] tracking-[-0.02em] tabular-nums text-white">
+        {v}
+        {unit && <span className="ml-2 text-[30px] text-white/50">{unit}</span>}
+      </span>
     </div>
   );
 }
