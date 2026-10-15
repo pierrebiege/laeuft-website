@@ -10,11 +10,7 @@ export const metadata: Metadata = {
  * Einblendung für den Livestream (OBS → Quelle «Browser», 1920 × 1080).
  * Hintergrund durchsichtig, Kopf- und Fusszeile der Seite ausgeblendet.
  *
- * Parameter:
- *   ?year=2024       Testlauf mit den Zahlen von 2024
- *   ?left=12         Läufer im Rennen von Hand setzen (falls der Feed fehlt)
- *   ?lap=23          Runde von Hand setzen
- *   ?pos=right       Block unten rechts statt unten links
+ * Zweite Ebene mit Namen und Ausgeschieden: /obs/plus. Parameter siehe Overlay.tsx.
  */
 export default function ObsPage() {
   return (
@@ -23,7 +19,7 @@ export default function ObsPage() {
         html, body, .byd { background: transparent !important; }
         .byd > header, .byd > footer, .byd > nav { display: none !important; }
       `}</style>
-      <Overlay />
+      <Overlay part="bar" />
     </>
   );
 }
