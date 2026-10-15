@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { EVENT, TEAM } from "@/app/backyard/_data/event";
+import { EVENT, PHOTO_BASE, TEAM } from "@/app/backyard/_data/event";
+import { PROFILES } from "@/app/backyard/_data/people";
 
 /**
  * Zwei Ebenen für OBS, die von selbst die Ansicht wechseln. Niemand klickt.
@@ -10,15 +11,19 @@ import { EVENT, TEAM } from "@/app/backyard/_data/event";
  * Drei Teile, jeder in seiner Ecke, nichts überdeckt sich:
  *
  *  - unten links, immer: Runde, im Rennen, nächste Glocke
- *  - oben rechts, 4 min vor bis 1 min nach jeder Glocke: alle Namen
- *  - oben links, 15 s: wer gerade ausgeschieden ist
+ *  - oben rechts, 4 min vor bis 1 min nach jeder Glocke: alle Namen;
+ *    vor dem Start und um :10, :25, :40 je 20 s eine Läuferkarte
+ *  - oben links, 30 s: wer gerade ausgeschieden ist; sonst um :02 ein
+ *    Meilenstein (100 km, 24 h …)
+ *  - rechts über der Leiste, 12 s: Grüsse aus dem Feed der Website, frühestens
+ *    3 min nach dem Absenden (Zeit zum Löschen), höchstens einer pro Minute
  *
  * Ausgeschieden ist nur, wen die Zeitnahme als DNF führt. Wir raten nie
  * aus Rundenzahlen, solange der Feed einen Status mitliefert – wer um
  * 59:50 ins Ziel kommt, ist drin, bis der Zeitnehmer etwas anderes sagt.
  *
  * Parameter: ?demo=1 Zeitraffer (1 Runde = 40 s), ?year=2024 Schlussliste
- * 2024, ?show=before|race|list|out|final eine Ansicht fest (für Vorschauen).
+ * 2024, ?show=before|race|list|card|out|milestone|cheer|final eine Ansicht fest.
  */
 
 type Row = { key: string; name: string; laps: number | null; out: boolean };
@@ -29,7 +34,35 @@ const CALL: Record<string, string> = { Gervaix: "François", Desteffani: "Jogi" 
 const nameOf = (first: string, last: string) => `${CALL[last] ?? first} ${last}`;
 const TEAM_ROWS: Row[] = TEAM.map((a) => ({ key: a.name, name: nameOf(a.first, a.name), laps: null, out: false }));
 const KM = 6.706;
-const BANNER_MS = 15_000;
+/** Teamrunden der Schweiz 2024, offizielle Wertung Big's. */
+const TEAM_2024 = 501;
+const BANNER_MS = 30_000;
+const CHEER_MS = 12_000;
+const CHEER_GAP = 60_000;
+const CHEER_DELAY = 3 * 60_000;
+/** Nach so vielen Runden eine Einblendung. */
+const MILESTONES: Record<number, string> = {
+  10: "10 loops · 67 km",
+  15: "15 loops · 100 km",
+  24: "24 hours · 100 miles",
+  30: "30 loops · 201 km",
+  36: "36 hours",
+  48: "48 hours",
+};
+
+type Cheer = { id: string; author: string; body: string; at: number };
+type Card = { key: string; name: string; photo: string; qual: number; lead: string };
+
+const CARDS: Card[] = TEAM.filter((a) => a.photo).map((a) => {
+  const p = PROFILES[a.photo!];
+  return {
+    key: a.name,
+    name: nameOf(a.first, a.name),
+    photo: `${PHOTO_BASE}/${a.photo}.jpg`,
+    qual: a.qual,
+    lead: p?.lead ?? "",
+  };
+});
 
 const RED = "#d8000e";
 const INK = "rgba(11,11,11,0.88)";
@@ -62,6 +95,10 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
   const [t0, setT0] = useState(0);
   const prevOut = useRef<Set<string> | null>(null);
   const queue = useRef<Row[][]>([]);
+  const [cheer, setCheer] = useState<Cheer | null>(null);
+  const cheers = useRef<Cheer[]>([]);
+  const seen = useRef<Set<string> | null>(null);
+  const lastCheer = useRef(0);
 
   const show = params?.get("show") ?? null;
   const demo = params?.get("demo") === "1";
@@ -135,6 +172,62 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
     };
   }, [params, show]);
 
+  // Grüsse von der Website alle 30 s. Beim ersten Laden gilt alles älter
+  // als 30 min als gesehen, sonst liefe eine Stunde Nachrichten nach.
+  useEffect(() => {
+    if (!params || demo || show || part !== "plus") return;
+    let stop = false;
+    const load = async () => {
+      try {
+        const r = await fetch("/api/backyard/feed", { cache: "no-store" });
+        const d = await r.json();
+        if (stop || !Array.isArray(d.posts)) return;
+        const posts: Cheer[] = d.posts
+          .filter((x: { kind: string }) => x.kind === "cheer")
+          .map((x: { id: string; author: string; body: string; created_at: string }) => ({
+            id: x.id,
+            author: x.author,
+            body: x.body,
+            at: new Date(x.created_at).getTime(),
+          }));
+        const live = new Set(posts.map((x) => x.id));
+        // Gelöschte fliegen auch aus der Warteschlange
+        cheers.current = cheers.current.filter((x) => live.has(x.id));
+        if (!seen.current) seen.current = new Set(posts.filter((x) => Date.now() - x.at > 30 * 60_000).map((x) => x.id));
+        for (const x of posts.sort((a, b) => a.at - b.at)) {
+          if (seen.current.has(x.id)) continue;
+          seen.current.add(x.id);
+          cheers.current.push(x);
+        }
+      } catch {
+        /* ohne Grüsse */
+      }
+    };
+    load();
+    const t = setInterval(load, 30_000);
+    return () => {
+      stop = true;
+      clearInterval(t);
+    };
+  }, [params, demo, show, part]);
+
+  useEffect(() => {
+    if (cheer || !now || now - lastCheer.current < CHEER_GAP) return;
+    // Um die Glocke steht rechts die Namensliste: dann wartet der Gruss
+    const il = (((now - START) % HOUR) + HOUR) % HOUR;
+    if (now >= START && (HOUR - il < 4.5 * 60_000 || il < 1.5 * 60_000)) return;
+    const i = cheers.current.findIndex((x) => now - x.at >= CHEER_DELAY);
+    if (i < 0) return;
+    lastCheer.current = now;
+    setCheer(cheers.current.splice(i, 1)[0]);
+  }, [cheer, now, START, HOUR]);
+
+  useEffect(() => {
+    if (!cheer) return;
+    const t = setTimeout(() => setCheer(null), CHEER_MS);
+    return () => clearTimeout(t);
+  }, [cheer]);
+
   // Demo: Feed aus der Uhr
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -172,13 +265,40 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
     over: Boolean(feed?.over) && !(now < START && !test),
     list: false,
     banner,
+    card: null as Card | null,
+    milestone: null as string | null,
+    cheer: cheer as Cheer | null,
   };
   const corral = demo ? HOUR - inLap < HOUR * 0.35 : HOUR - inLap < 4 * 60_000 || inLap < 60_000;
-  v.list = v.before || v.over || test || corral;
+  v.list = !v.before && (v.over || test || corral);
+  // Läuferkarten: vor dem Start alle 20 s die nächste, im Rennen um :10, :25, :40
+  const min = demo ? (inLap / HOUR) * 60 : inLap / 60_000;
+  const slot = [10, 25, 40].findIndex((m) => min >= m && min < m + (demo ? 6 : 1 / 3));
+  const inRows = v.rows.filter((r) => !r.out).map((r) => r.key);
+  const inCards = CARDS.filter((c) => inRows.includes(c.key) || !feed);
+  if (v.before) v.card = CARDS[Math.floor(now / 20_000) % CARDS.length];
+  else if (!v.over && !test && slot >= 0 && inCards.length) v.card = inCards[(lap * 3 + slot) % inCards.length];
+  // Meilenstein zwei Minuten nach der Glocke, 30 s lang, wenn gerade kein Out läuft
+  if (!v.before && !v.over && !test && min >= 2 && min < (demo ? 8 : 2.5)) v.milestone = MILESTONES[lap - 1] ?? null;
   if (show) {
     const f = fakeFeed(32, show === "final");
-    const base = { before: false, lap: 32, toBell: 23 * 60_000 + 14_000, rows: f.rows, over: false, list: false, banner: null as Row[] | null };
-    if (show === "before") v = { ...base, before: true, toBell: 0, rows: TEAM_ROWS, list: true };
+    const base = {
+      before: false,
+      lap: 32,
+      toBell: 23 * 60_000 + 14_000,
+      rows: f.rows,
+      over: false,
+      list: false,
+      banner: null as Row[] | null,
+      card: null as Card | null,
+      milestone: null as string | null,
+      cheer: null as Cheer | null,
+    };
+    if (show === "before") v = { ...base, before: true, toBell: 0, rows: TEAM_ROWS, card: CARDS[1] };
+    if (show === "card") v = { ...base, toBell: 50 * 60_000, card: CARDS[4] };
+    if (show === "milestone") v = { ...base, lap: 25, toBell: 57 * 60_000 + 40_000, milestone: MILESTONES[24] };
+    if (show === "cheer")
+      v = { ...base, toBell: 37 * 60_000 + 5_000, cheer: { id: "x", author: "Anna", body: "Hopp Schwiiz! Ihr seid unglaublich, jede Runde ein Fest.", at: 0 } };
     if (show === "race") v = base;
     if (show === "list") v = { ...base, toBell: 2 * 60_000 + 41_000, list: true };
     if (show === "out") v = { ...base, toBell: 59 * 60_000 + 48_000, banner: f.rows.filter((r) => r.out && r.laps === 30) };
@@ -193,6 +313,8 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
   const tempShown = show ? 11 : temp;
   const left = params.has("left") ? Number(params.get("left")) : v.rows.filter((r) => !r.out).length;
   const last = v.rows.find((r) => !r.out);
+  // Teamrunden: aus der Zeitnahme, sonst fertige Runden mal Läufer im Rennen
+  const teamLoops = feed && !show ? v.rows.reduce((t, r) => t + (r.laps ?? 0), 0) : Math.max(0, v.lap - 1) * left;
   const startAt = show === "before" ? 25 * 60_000 + 30_000 : START - now;
 
 
@@ -221,6 +343,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
               <Cell k="Race time" v={clock(raceTime)} />
               {!test && <Cell k="Next bell" v={clock(v.toBell)} accent />}
               <Cell k="Still running" v={String(left)} unit={`/ ${EVENT.teamSize}`} />
+              <Cell k="Team loops" v={String(teamLoops)} unit={`2024: ${TEAM_2024}`} />
               {tempShown !== null && <Cell k="Baar" v={`${tempShown}°`} />}
             </>
           )}
@@ -250,6 +373,43 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
       </div>
       )}
 
+      {/* Oben rechts: Läuferkarte */}
+      {part === "plus" && v.card && !v.list && (
+        <div key={v.card.key} className="absolute right-[56px] top-[56px] w-[420px]" style={{ animation: "byd-in-r .6s ease-out" }}>
+          <Tag wide>{v.before ? "Meet the team" : "Still running"}</Tag>
+          <div className="overflow-hidden rounded-b-[14px]" style={{ background: INK }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={v.card.photo} alt="" className="block h-[260px] w-full object-cover" style={{ objectPosition: "50% 30%" }} />
+            <div className="px-6 pb-6 pt-5">
+              <div className="text-[40px] font-extrabold leading-none tracking-[-0.02em] text-white">{v.card.name}</div>
+              <div className="mt-2 text-[18px] font-semibold uppercase tracking-[0.08em] text-white/60">Qualified with {v.card.qual} loops</div>
+              <p className="mt-3 text-[20px] leading-snug text-white/85">{v.card.lead}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Oben links: Meilenstein (nur wenn kein Out läuft) */}
+      {part === "plus" && v.milestone && !(v.banner && v.banner.length) && (
+        <div className="absolute left-[56px] top-[56px] flex flex-col" style={{ animation: "byd-in .5s ease-out" }}>
+          <Tag>Team Switzerland</Tag>
+          <div className="rounded-[14px] rounded-tl-none px-9 py-6" style={{ background: INK }}>
+            <div className="text-[56px] font-extrabold leading-none tracking-[-0.02em] text-white">{v.milestone}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Unten rechts: Grüsse */}
+      {part === "plus" && v.cheer && (
+        <div key={v.cheer.id} className="absolute bottom-[290px] right-[56px] w-[420px]" style={{ animation: "byd-in-r .6s ease-out" }}>
+          <Tag wide>Message for the team</Tag>
+          <div className="rounded-b-[14px] px-6 py-5" style={{ background: INK }}>
+            <p className="text-[26px] font-semibold leading-snug text-white">{v.cheer.body}</p>
+            <p className="mt-3 text-[18px] font-semibold uppercase tracking-[0.08em] text-white/60">{v.cheer.author}</p>
+          </div>
+        </div>
+      )}
+
       {/* Oben links: ausgeschieden */}
       {part === "plus" && v.banner && v.banner.length > 0 && (
         <div key={v.banner.map((r) => r.key).join()} className="absolute left-[56px] top-[56px] flex flex-col" style={{ animation: "byd-in .5s ease-out" }}>
@@ -271,7 +431,7 @@ export default function Overlay({ part }: { part: "bar" | "plus" }) {
           </div>
         </div>
       )}
-      <style>{`@keyframes byd-in{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@keyframes byd-in{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}@keyframes byd-in-r{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}`}</style>
     </div>
   );
 }
@@ -281,13 +441,13 @@ const km = (laps: number) => (laps * KM).toFixed(1);
 /** Ein Feld der Leiste: kleines Etikett, grosse Zahl. */
 function Cell({ k, v, unit, accent }: { k: string; v: string; unit?: string; accent?: boolean }) {
   return (
-    <div className="flex flex-col justify-between px-8 py-5">
+    <div className="flex flex-col justify-between px-6 py-5">
       <span className="text-[18px] font-semibold uppercase tracking-[0.08em]" style={{ color: accent ? "#ff4d55" : "rgba(255,255,255,0.7)" }}>
         {k}
       </span>
-      <span className="mt-2 whitespace-nowrap text-[64px] font-extrabold leading-[0.9] tracking-[-0.02em] tabular-nums text-white">
+      <span className="mt-2 whitespace-nowrap text-[58px] font-extrabold leading-[0.9] tracking-[-0.02em] tabular-nums text-white">
         {v}
-        {unit && <span className="ml-2 text-[30px] text-white/50">{unit}</span>}
+        {unit && <span className="ml-2 text-[24px] text-white/50">{unit}</span>}
       </span>
     </div>
   );
