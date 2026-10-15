@@ -75,7 +75,8 @@ export async function getConfig(eventId: string, revalidate = 300): Promise<RRSo
     const cfg = await rr<RRConfig>(`/${eventId}/RRPublish/data/config?page=results&noVisitor=1`, revalidate);
     return { ...cfg, page: "results" };
   } catch {
-    for (const page of ["live", "results"]) {
+    // Der Zeitnehmer benennt den Reiter selbst, darum mehrere Namen probieren
+    for (const page of ["live", "results", "result", "ergebnisse", "ranking", "leaderboard"]) {
       try {
         const cfg = await rr<RRConfig>(`/${eventId}/${page}/config?lang=de`, revalidate);
         if (cfg?.key && cfg.lists?.length) return { ...cfg, page };
