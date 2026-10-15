@@ -3,7 +3,7 @@ import PostForm from "@/app/backyard/_components/PostForm";
 
 export const metadata: Metadata = {
   title: "Send them a message",
-  description: "Write to the fifteen runners of Team Switzerland during the Backyard Ultra World Team Championship. Your message goes onto the live page and gets read out at the tent.",
+  description: "Write to the fifteen runners of Team Switzerland during the Backyard Ultra World Team Championship. Your message goes onto the live page, gets read out at the tent and may be shown in the livestream.",
 };
 
 export default function PostPage() {
@@ -16,6 +16,9 @@ export default function PostPage() {
           Fifteen people are going round the same loop for as long as they can. Your
           message lands on the live page and gets read out at the tent, which at four
           in the morning is worth more than you think.
+        </p>
+        <p className="mt-4 text-[15px] font-semibold leading-relaxed">
+          Messages, together with your name, may also be shown in the livestream.
         </p>
         <p className="mt-4 text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
           Keep it short. Jokes welcome — nothing at anyone&rsquo;s expense.

@@ -97,6 +97,11 @@ export default function PostForm() {
         <span className="stamp tnum">{MAX - body.length}</span>
         {error && <span className="stamp" style={{ color: "var(--byd-accent)" }}>{error}</span>}
       </div>
+      {!key && (
+        <p className="stamp mt-6" style={{ color: "var(--byd-mute)" }}>
+          Shown on the live page and possibly in the livestream, with your name.
+        </p>
+      )}
 
       <button
         type="submit"

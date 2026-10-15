@@ -99,7 +99,7 @@ export default function LiveFeed() {
 
       {posts.length === 0 ? (
         <p className="py-8 text-[15px] leading-relaxed" style={{ color: "var(--byd-mute)" }}>
-          Nothing yet. Be the first — it gets read out at the tent.
+          Nothing yet. Be the first. It gets read out at the tent and may be shown in the livestream.
         </p>
       ) : (
         <ol>
