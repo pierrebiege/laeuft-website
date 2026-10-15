@@ -158,7 +158,7 @@ export default function SquadPage() {
                   )}
                   <p className="stamp mb-3">{s.role}</p>
                   <p className="text-lg font-semibold uppercase tracking-tight">
-                    {slug ? <Link href={`/squad/${slug}`}>{s.name} →</Link> : s.name}
+                    {slug ? <Link href={`/squad/${slug}`}>{s.name}</Link> : s.name}
                   </p>
                   <ul className="mt-4 space-y-1.5">
                     {s.does.map((d) => (
@@ -167,6 +167,11 @@ export default function SquadPage() {
                       </li>
                     ))}
                   </ul>
+                  {slug && (
+                    <Link href={`/squad/${slug}`} className="stamp mt-5 inline-block underline underline-offset-4" style={{ color: "var(--byd-fg)" }}>
+                      Read more →
+                    </Link>
+                  )}
                 </div>
                 );
               })}

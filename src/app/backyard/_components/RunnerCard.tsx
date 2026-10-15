@@ -83,6 +83,11 @@ export default function RunnerCard({ a, compact = false }: { a: Athlete; compact
             </div>
           </div>
         </div>
+        {a.photo && (
+          <p className="stamp mt-4 underline underline-offset-4 decoration-1 group-hover:decoration-2" style={{ color: "var(--byd-fg)" }}>
+            Read more →
+          </p>
+        )}
       </div>
     </article>
   );
