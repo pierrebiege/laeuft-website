@@ -13,6 +13,7 @@ export const LOOP_M = 6706;
  */
 export const API_BASE = "/api/backyard";
 export const FEED_API = `${API_BASE}/feed`;
+export const STREAM_API = `${API_BASE}/stream`;
 
 export const EVENT = {
   name: "Backyard Ultra World Team Championship",

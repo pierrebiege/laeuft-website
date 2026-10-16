@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LiveBoard from "@/app/backyard/_components/LiveBoard";
+import LiveStream from "@/app/backyard/_components/LiveStream";
 import LiveFeed from "@/app/backyard/_components/LiveFeed";
 import PageHead from "@/app/backyard/_components/PageHead";
 
@@ -19,6 +20,7 @@ export default function LivePage() {
       />
       <section data-hour="nacht" data-stamp="Live" className="px-5 pb-28">
         <div className="mx-auto max-w-[76rem]">
+          <LiveStream className="mb-20" />
           <LiveBoard />
 
           {/* Was die Leute vor Ort schreiben, direkt neben dem Rundenstand. */}

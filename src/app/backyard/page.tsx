@@ -10,6 +10,7 @@ import Partners from "@/app/backyard/_components/Partners";
 import RunnerCard from "@/app/backyard/_components/RunnerCard";
 import Photo from "@/app/backyard/_components/Photo";
 import Instagram from "@/app/backyard/_components/Instagram";
+import LiveStream from "@/app/backyard/_components/LiveStream";
 import { EVENT, LOOP_M, TEAM, RESERVE, HISTORY, COURSE, RACE_DAY } from "@/app/backyard/_data/event";
 
 /**
@@ -26,6 +27,12 @@ export default function Home() {
   return (
     <>
       <Hero />
+      {/* Erscheint nur, wenn die Regie einen Stream eingestellt hat (/regie). */}
+      <section data-hour="tag" className="px-5">
+        <div className="mx-auto max-w-[76rem]">
+          <LiveStream className="pb-20" />
+        </div>
+      </section>
       <Format />
       <Valley />
       <Squad />
@@ -418,9 +425,7 @@ function RaceDay() {
             Loop counts on this page come straight from the timing system in Baar and
             refresh every thirty seconds. Both boards already run on the real 2024 data,
             so you can see now what they will do on the day.
-            {RACE_DAY.streamAnnounced && !RACE_DAY.youtube
-              ? " A livestream has been announced; the link goes here as soon as it exists."
-              : ""}
+            {" "}The livestream runs at the top of this page and on the live page.
           </p>
           <div className="mt-8 border-t rule">
             <RaceLink href="/live" label="Live scoring" note="Team Switzerland, loop by loop" />
@@ -428,9 +433,7 @@ function RaceDay() {
             {RACE_DAY.timing && (
               <RaceLink href={RACE_DAY.timing} label="Official timing" note="race|result, Baar 2026" external />
             )}
-            {RACE_DAY.youtube && (
-              <RaceLink href={RACE_DAY.youtube} label="Livestream" note="YouTube" external />
-            )}
+            <RaceLink href="/live#stream" label="Livestream" note="Embedded on the live page" />
             <RaceLink href={RACE_DAY.bigs} label="Big&rsquo;s roster" note="All national teams" external />
           </div>
         </Reveal>
