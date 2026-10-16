@@ -27,12 +27,6 @@ export default function Home() {
   return (
     <>
       <Hero />
-      {/* Erscheint nur, wenn die Regie einen Stream eingestellt hat (/regie). */}
-      <section data-hour="tag" className="px-5">
-        <div className="mx-auto max-w-[76rem]">
-          <LiveStream className="pb-20" />
-        </div>
-      </section>
       <Format />
       <Valley />
       <Squad />
@@ -49,58 +43,68 @@ export default function Home() {
   );
 }
 
+/**
+ * Rennwochenende: der Stream steht ganz oben, rechts als Fenster (auf dem
+ * Handy zuerst). Den Link stellt die Regie über /regie ein; ohne Stream
+ * erscheint wieder die Uhr.
+ */
 function Hero() {
   return (
     <section
       data-hour="tag"
       data-stamp="Team Switzerland"
-      className="flex min-h-dvh flex-col justify-between px-5 pb-8 pt-20"
+      className="flex flex-col justify-between px-5 pb-8 pt-20 lg:min-h-dvh"
     >
-      <div className="mx-auto grid w-full max-w-[76rem] flex-1 items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-        <div>
-          <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-b pb-4 rule">
-            <span className="stamp">Backyard Ultra</span>
-            <span className="stamp">World Team Championship</span>
-            <span className="stamp ml-auto">Baar ZG</span>
-          </div>
-
-          <h1 className="display text-[2.05rem] leading-[0.92] sm:text-[3.6rem] lg:text-[4.8rem]">
-            <span style={{ color: "var(--byd-accent)" }}>Last one standing.</span>
-            <br />
-            One loop.
-            <br />
-            Every hour.
-          </h1>
-
-          <p className="mt-6 max-w-md text-sm leading-relaxed sm:mt-8 sm:text-[15px]" style={{ color: "var(--byd-mute)" }}>
-            {TEAM.length} runners for Switzerland, {LOOP_M} metres, every hour. Not in the
-            corral at the bell and you are out. Loop not finished inside sixty
-            minutes and you are out. The country with the most completed loops wins.
-          </p>
-
-          <div className="mt-7 grid max-w-md grid-cols-2 gap-px sm:mt-9 sm:inline-grid">
-            <Link
-              href="/live"
-              className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:px-6 sm:text-[13px]"
-              style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
-            >
-              Live scoring
-            </Link>
-            <Link
-              href="/squad"
-              className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:px-6 sm:text-[13px] rule"
-            >
-              The squad
-            </Link>
-          </div>
+      <div className="mx-auto grid w-full max-w-[76rem] flex-1 items-center gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+        <div className="lg:order-last">
+          <LiveStream hero fallback={<div className="flex justify-center"><Dial startISO={EVENT.startISO} size={340} /></div>} />
         </div>
 
-        <div className="flex justify-center lg:justify-end">
-          <Dial startISO={EVENT.startISO} size={340} />
+        <div>
+          <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-b pb-4 rule">
+            <span className="stamp">Backyard Ultra</span>
+            <span className="stamp">World Team Championship</span>
+          </div>
+
+          <h1 className="display text-[2.05rem] leading-[0.92] sm:text-[3.2rem] lg:text-[3.6rem]">
+            <span style={{ color: "var(--byd-accent)" }}>Last one standing.</span>
+            <br />
+            Live from Baar.
+          </h1>
+
+          <dl className="mt-6 grid max-w-md grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm sm:text-[15px]">
+            <dt className="stamp pt-[3px]">Start</dt>
+            <dd>Saturday 17 October, 14:00</dd>
+            <dt className="stamp pt-[3px]">Place</dt>
+            <dd>Vereinshaus SV Baar ZG</dd>
+            <dt className="stamp pt-[3px]">Runners</dt>
+            <dd>{TEAM.length} for Switzerland, {LOOP_M} m every hour</dd>
+          </dl>
+
+          <p className="mt-5 max-w-md text-sm leading-relaxed sm:text-[15px]" style={{ color: "var(--byd-mute)" }}>
+            Not back in the corral at the bell and you are out. The country with the most
+            completed loops wins. It can take two or three days.
+          </p>
+
+          <div className="mt-7 grid max-w-md grid-cols-2 gap-px">
+            <Link
+              href="/live"
+              className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:text-[13px]"
+              style={{ background: "var(--byd-accent)", color: "#fff", borderColor: "var(--byd-accent)" }}
+            >
+              Live results
+            </Link>
+            <Link
+              href="/post"
+              className="border px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] sm:text-[13px] rule"
+            >
+              Write to the team
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-[76rem] items-baseline justify-between border-t pt-4 rule">
+      <div className="mx-auto mt-10 flex w-full max-w-[76rem] items-baseline justify-between border-t pt-4 rule">
         <span className="stamp">Sat 17 October 2026</span>
         <span className="stamp hidden sm:block">Vereinshaus SV Baar</span>
         <span className="stamp">Free to watch</span>

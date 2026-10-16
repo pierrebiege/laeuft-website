@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { STREAM_API } from "@/app/backyard/_data/event";
 import { youtubeWatch } from "@/app/backyard/_lib/stream";
 
@@ -10,8 +10,19 @@ import { youtubeWatch } from "@/app/backyard/_lib/stream";
  * Regie ihn (neuer Stream nach einem Abbruch), wechselt das Bild ohne Neuladen.
  * Ohne Link zeigt die Komponente nichts.
  */
-export default function LiveStream({ className = "" }: { className?: string }) {
-  const [embed, setEmbed] = useState<string | null>(null);
+export default function LiveStream({
+  className = "",
+  hero = false,
+  fallback = null,
+}: {
+  className?: string;
+  /** Startseite: abgerundetes Fenster ohne Kopfzeile, Platzhalter während des Ladens. */
+  hero?: boolean;
+  /** Was ohne eingestellten Stream erscheint. */
+  fallback?: ReactNode;
+}) {
+  // undefined = lädt noch, null = kein Stream eingestellt.
+  const [embed, setEmbed] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
     let alive = true;
@@ -35,6 +46,34 @@ export default function LiveStream({ className = "" }: { className?: string }) {
       document.removeEventListener("visibilitychange", load);
     };
   }, []);
+
+  if (hero) {
+    if (embed === null) return <>{fallback}</>;
+    return (
+      <div id="stream" className={className}>
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl" style={{ background: "#000" }}>
+          {embed && (
+            <iframe
+              key={embed}
+              src={embed}
+              title="Livestream Team Switzerland"
+              className="absolute inset-0 h-full w-full"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+          )}
+        </div>
+        {embed && (
+          <div className="mt-3 flex items-baseline justify-between gap-4">
+            <span className="stamp">Livestream · Baar ZG</span>
+            <a href={youtubeWatch(embed)} target="_blank" rel="noopener noreferrer" className="stamp underline underline-offset-4">
+              Open on YouTube
+            </a>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (!embed) return null;
 
