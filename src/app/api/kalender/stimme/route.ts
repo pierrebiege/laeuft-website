@@ -8,7 +8,7 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 const TABELLE = "kalender_abstimmung";
 const ANZAHL = 12;
-const ENDE = Date.parse("2026-10-16T20:00:00+02:00");
+const ENDE = Date.parse("2026-10-21T20:00:00+02:00");
 const LAENDER = ["CH", "DE", "AT", "anderes"];
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
