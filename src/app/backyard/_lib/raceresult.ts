@@ -18,6 +18,8 @@ export type RRConfig = {
   contests: Record<string, string>;
   lists: { Name: string; Live?: number }[];
   EventOver?: boolean;
+  TabConfig?: { Lists?: { Name: string; Live?: number }[] };
+  Tab?: { Config?: { Lists?: { Name: string; Live?: number }[] } };
 };
 
 export type Runner = {
@@ -79,7 +81,9 @@ export async function getConfig(eventId: string, revalidate = 300): Promise<RRSo
     for (const page of ["live", "results", "result", "ergebnisse", "ranking", "leaderboard"]) {
       try {
         const cfg = await rr<RRConfig>(`/${eventId}/${page}/config?lang=de`, revalidate);
-        if (cfg?.key && cfg.lists?.length) return { ...cfg, page };
+        // Neue Reiter führen die Listen unter TabConfig.Lists statt lists
+        const lists = cfg?.lists?.length ? cfg.lists : (cfg?.TabConfig?.Lists ?? cfg?.Tab?.Config?.Lists ?? []);
+        if (cfg?.key && lists.length) return { ...cfg, lists, page };
       } catch {
         /* nächsten Reiter versuchen */
       }
@@ -108,6 +112,7 @@ export function pickList(cfg: RRConfig): string | null {
 type RawList = {
   list: { Fields?: { Label: string }[]; DataFields?: string[] };
   data: Record<string, unknown[][]> | unknown[][];
+  DataFields?: string[];
 };
 
 const idx = (labels: string[], re: RegExp) => labels.findIndex((l) => re.test(l));
@@ -227,7 +232,7 @@ export async function fetchNation(
   const raw = await rr<RawList>(`/${n.eventId}/${cfg.page}/list?${qs}`, revalidate);
 
   const labels = (raw.list?.Fields ?? []).map((f) => f.Label);
-  const fields = raw.list?.DataFields ?? [];
+  const fields = raw.DataFields ?? raw.list?.DataFields ?? [];
   const useDF = fields.some((f) => /NumberOfYards|AnzeigeName/i.test(f));
   const groups = Array.isArray(raw.data) ? { all: raw.data } : (raw.data ?? {});
   // Gruppen können verschachtelt sein (Wettbewerb → Kategorie → Zeilen)
