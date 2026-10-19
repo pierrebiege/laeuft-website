@@ -47,7 +47,24 @@ export type Data = {
     /** gewählte Runde (Standard: die letzte fertige) */
     sel: number;
     config: LogConfig;
+    /** Für wen die Läufer-Vorlagen gerade laufen */
+    who: Who;
   };
+};
+/**
+ * Gewählte Person im Läufer-Reiter. `full`: Pierre mit Vollzugang, also mit
+ * Handlog, Strava und Wetter. Alle anderen nur mit race|result.
+ */
+export type Who = {
+  slug: string;
+  first: string;
+  last: string;
+  full: boolean;
+  pb: number;
+  laps: number;
+  status: "in" | "out" | "winner";
+  rank: number;
+  of: number;
 };
 export type Vals = Record<string, string>;
 export type Fonts = { inter: string; archivo: string; mono: string };
@@ -75,6 +92,8 @@ export type Format = {
   prefill: (d: Data, o: Vals) => Vals;
   draw: (e: Env, v: Vals, d: Data, o: Vals) => void;
   cues: (v: Vals, o: Vals) => Cue[];
+  /** Läufer-Vorlage, die mit race|result allein auskommt (für alle Läufer) */
+  rr?: boolean;
 };
 
 /* ---------- Hilfen ---------- */

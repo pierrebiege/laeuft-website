@@ -18,6 +18,18 @@ export type LapManual = Partial<Record<LogKey, string>>;
 export type LapRow = Record<LogKey, string> & { lap: number; src: Partial<Record<LogKey, Source>> };
 
 export type RrLap = { lap: number; lap_time: string | null; status: string | null };
+
+/**
+ * Mitgeschriebene race|result-Runden bereinigen: Nach dem ersten «out» hat
+ * die Zeitnahme bei einzelnen Läufern noch kurz eine angefangene Runde
+ * gezeigt und danach wieder korrigiert (Kopp, Röthlisberger, Pestoni,
+ * Schneckenburger 2026). Alles nach dem ersten «out» fällt weg.
+ */
+export function trimRr(rows: RrLap[]): RrLap[] {
+  const sorted = [...rows].sort((a, b) => a.lap - b.lap);
+  const out = sorted.findIndex((r) => r.status === "out");
+  return out === -1 ? sorted : sorted.slice(0, out + 1);
+}
 export type StravaLapIn = { start: string; elapsed: number; avgHr: number | null; kcal?: number | null };
 
 /** Eigene Marken und Kilometer-Meilensteine, gepflegt im Studio */

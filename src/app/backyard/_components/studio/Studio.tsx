@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { API_BASE, TEAM } from "@/app/backyard/_data/event";
-import { buildLog, lastDone, lapClock, LOG_KEYS, testRace, type LogConfig, type LogKey, type Mark, type Milestone } from "@/app/backyard/_lib/studio-log";
+import { buildLog, DEFAULT_CONFIG, lastDone, lapClock, LOG_KEYS, PIERRE, testRace, type LogConfig, type LogKey, type Mark, type Milestone, type RrLap } from "@/app/backyard/_lib/studio-log";
 import { FORMATS } from "./catalog";
-import { cover, drawShade, H, W, type Data, type Format, type Fonts, type Lang, type StravaLap, type TeamRunner, type Vals } from "./formats";
+import { cover, drawShade, H, W, type Data, type Format, type Fonts, type Lang, type StravaLap, type TeamRunner, type Vals, type Who } from "./formats";
+import { HAND_CHOICES } from "./pierre";
 import { record, saveFile } from "./media";
 import { useLog } from "./useLog";
 
@@ -19,6 +20,8 @@ import { useLog } from "./useLog";
 type Media = { kind: "image"; el: HTMLImageElement } | { kind: "video"; el: HTMLVideoElement; url: string } | null;
 type LiveRunner = { first: string; last: string; laps: number; status: "in" | "out" | "winner" | null };
 type Live = { currentLap: number; runners: LiveRunner[] };
+/** aus /api/backyard/runner-laps */
+type RosterRunner = { slug: string; first: string; last: string; pb: number; laps: number; status: Who["status"]; rank: number; photo: string; rr: RrLap[] };
 type Strava = { laps: StravaLap[]; last: { kcal: number | null; latlng: [number, number][]; hr: number[] } | null };
 
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
@@ -99,6 +102,14 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
   const [manual, setManual] = useState<Record<string, { laps?: number; out?: boolean }>>({});
   const [showTeam, setShowTeam] = useState(false);
 
+  // Läufer: alle 15 aus race|result, Standard Pierre (Vollzugang) bzw. Teamsieger
+  const [roster, setRoster] = useState<RosterRunner[]>([]);
+  const [rosterMsg, setRosterMsg] = useState("Lade Rundenzeiten …");
+  const [runner, setRunner] = useState<string | null>(access === "all" ? PIERRE : null);
+  const slug = runner ?? roster[0]?.slug ?? PIERRE;
+  const full = access === "all" && slug === PIERRE;
+  const cur = roster.find((r) => r.slug === slug);
+
   // Pierre-Daten
   const [strava, setStrava] = useState<Strava | null>(null);
   const [stravaMsg, setStravaMsg] = useState("");
@@ -110,17 +121,23 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
   const [showLog, setShowLog] = useState(true);
   const [showList, setShowList] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
-  const logApi = useLog(k, pTest ? "test" : "live", access === "all");
+  const logApi = useLog(k, pTest && full ? "test" : "live", full);
 
-  const fmt = FORMATS.find((f) => f.id === fid) ?? FORMATS[0];
-  const list = FORMATS.filter((f) => f.group === group);
-  const o = useMemo<Vals>(() => ({ ...optDefaults(fmt), ...allOpts[fmt.id] }), [fmt, allOpts]);
+  const list = FORMATS.filter((f) => f.group === group && (group === "team" || full || f.rr));
+  const fmt = list.find((f) => f.id === fid) ?? list[0] ?? FORMATS[0];
+  const o = useMemo<Vals>(() => {
+    const v = { ...optDefaults(fmt), ...allOpts[fmt.id] };
+    // Auswahlen aus Pierres Handlog gibt es bei den anderen nicht
+    if (!full) for (const x of fmt.opts ?? []) if (HAND_CHOICES.has(v[x.key])) v[x.key] = HAND_CHOICES.has(x.def) ? "off" : x.def;
+    return v;
+  }, [fmt, allOpts, full]);
 
   /* Oberfläche und Schalter überleben Neuladen und Tab-Wechsel */
   useEffect(() => {
-    const ui = readJson<{ group?: "team" | "pierre"; fid?: string; pTest?: boolean; lang?: Lang }>(UI_KEY);
+    const ui = readJson<{ group?: "team" | "pierre"; fid?: string; pTest?: boolean; lang?: Lang; runner?: string }>(UI_KEY);
     if (ui) {
-      const g = ui.group === "pierre" && access === "all" ? "pierre" : "team";
+      const g = ui.group === "pierre" ? "pierre" : "team";
+      if (ui.runner) setRunner(ui.runner);
       setGroup(g);
       if (ui.fid && FORMATS.some((f) => f.id === ui.fid && f.group === g)) setFid(ui.fid);
       else setFid(FORMATS.find((f) => f.group === g)!.id);
@@ -131,8 +148,8 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
     setReady(true);
   }, [access]);
   useEffect(() => {
-    if (ready) writeJson(UI_KEY, { group, fid, pTest, lang });
-  }, [ready, group, fid, pTest, lang]);
+    if (ready) writeJson(UI_KEY, { group, fid, pTest, lang, runner });
+  }, [ready, group, fid, pTest, lang, runner]);
   useEffect(() => {
     if (ready) writeJson(OPTS_KEY, allOpts);
   }, [ready, allOpts]);
@@ -182,6 +199,29 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
       clearInterval(iv);
     };
   }, [test]);
+
+  /* Rundenzeiten aller Läufer (race|result), team- und all-Schlüssel */
+  useEffect(() => {
+    let stop = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`${API_BASE}/runner-laps?k=${encodeURIComponent(k)}`, { cache: "no-store" });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error ?? "Fehler");
+        if (stop) return;
+        setRoster(j.runners ?? []);
+        setRosterMsg("");
+      } catch {
+        if (!stop) setRosterMsg("Rundenzeiten nicht erreichbar. Felder lassen sich von Hand füllen.");
+      }
+    };
+    load();
+    const iv = setInterval(load, 60_000);
+    return () => {
+      stop = true;
+      clearInterval(iv);
+    };
+  }, [k]);
 
   /* Strava, nur mit Vollzugang */
   const loadStrava = useCallback(async () => {
@@ -259,32 +299,51 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
   /* Pierres Runden-Log */
   const testRows = useMemo(() => testRace(), []);
   const log = useMemo(
-    () => buildLog({ rr: logApi.rr, strava: strava?.laps ?? [], temps, manual: logApi.manual, test: pTest ? testRows : undefined }),
-    [logApi.rr, logApi.manual, strava, temps, pTest, testRows],
+    () =>
+      full
+        ? buildLog({ rr: logApi.rr, strava: strava?.laps ?? [], temps, manual: logApi.manual, test: pTest ? testRows : undefined })
+        : buildLog({ rr: cur?.rr ?? [], strava: [], temps: {}, manual: {} }),
+    [full, cur, logApi.rr, logApi.manual, strava, temps, pTest, testRows],
   );
   const latest = lastDone(log);
   const maxLap = Math.max(latest + 1, log.length, 1);
   const sel = Math.max(1, Math.min(selLap ?? latest, maxLap));
   const selRow = log.find((r) => r.lap === sel);
 
+  const who: Who = useMemo(() => {
+    const a = TEAM.find((x) => x.photo === slug);
+    return {
+      slug,
+      first: cur?.first ?? a?.first ?? "",
+      last: cur?.last ?? a?.name ?? "",
+      full,
+      pb: cur?.pb ?? a?.pb ?? 0,
+      laps: cur?.laps ?? latest,
+      status: cur?.status ?? "in",
+      rank: cur?.rank ?? 0,
+      of: roster.length || TEAM.length,
+    };
+  }, [slug, cur, full, latest, roster.length]);
+
   const data: Data = useMemo(() => {
-    const rr = live?.runners.find((x) => norm(x.last) === "biege");
+    const rr = live?.runners.find((x) => norm(x.last) === norm(who.last));
     return {
       lang,
       team,
       pierre: {
-        laps: strava?.laps ?? [],
-        kcal: strava?.last?.kcal ?? null,
-        latlng: strava?.last?.latlng ?? [],
-        hr: strava?.last?.hr ?? [],
-        temp,
+        laps: full ? (strava?.laps ?? []) : [],
+        kcal: full ? (strava?.last?.kcal ?? null) : null,
+        latlng: full ? (strava?.last?.latlng ?? []) : [],
+        hr: full ? (strava?.last?.hr ?? []) : [],
+        temp: full ? temp : null,
         rrLaps: test ? 0 : (rr?.laps ?? 0),
         log,
         sel,
-        config: logApi.config,
+        config: full ? logApi.config : DEFAULT_CONFIG,
+        who,
       },
     };
-  }, [lang, team, strava, temp, live, test, log, sel, logApi.config]);
+  }, [lang, team, strava, temp, live, test, log, sel, logApi.config, full, who]);
 
   /* Felder: automatisch aus den Daten, von Hand Getipptes gewinnt */
   const auto = useMemo(() => fmt.prefill(data, o), [fmt, data, o]);
@@ -330,14 +389,14 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
         if (media?.kind === "video" && media.el.videoWidth) cover(ctx, media.el, 0, 0, W, H, fx, fy, z, media.el.videoWidth, media.el.videoHeight);
         else if (media?.kind === "image") cover(ctx, media.el, 0, 0, W, H, fx, fy, z);
         else {
-          const d = img(DEFAULT_BG[fmt.group]);
+          const d = img(fmt.group === "pierre" && !full && cur ? cur.photo : DEFAULT_BG[fmt.group]);
           if (d) cover(ctx, d, 0, 0, W, H, fx, fy, z);
         }
         drawShade(ctx, shade, shadeK);
       }
       fmt.draw({ ctx, t, f: fonts, img, lang }, vals, data, o);
     },
-    [media, fx, fy, zoom, fmt, fonts, img, lang, vals, data, o, shade, shadeK],
+    [media, fx, fy, zoom, fmt, fonts, img, lang, vals, data, o, shade, shadeK, full, cur],
   );
 
   /* Vorschau in Schleife */
@@ -431,34 +490,60 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
 
   const runnerOptions = team.runners.map((r) => ({ v: r.last, l: `${r.first} ${r.last}` }));
   const fields = fieldsOf(fmt, o);
-  const opts = (fmt.opts ?? []).filter((x) => !x.when || x.when(o));
+  const opts = (fmt.opts ?? [])
+    .filter((x) => !x.when || x.when(o))
+    .map((x) => (full || !x.choices ? x : { ...x, choices: x.choices.filter(([v]) => !HAND_CHOICES.has(v)) }));
+  const pickRunner = (s: string) => {
+    setRunner(s);
+    setSelLap(null);
+    setTouched({});
+    t0.current = performance.now();
+    setResult(null);
+  };
   const lapChoices = Array.from({ length: maxLap }, (_, i) => i + 1);
 
   return (
     <div ref={root} className="studio">
       <header className="st-head">
         <h1>Studio</h1>
-        {access === "all" && (
-          <div className="st-tabs">
-            {(["team", "pierre"] as const).map((g) => (
-              <button
-                key={g}
-                className={group === g ? "on" : ""}
-                onClick={() => {
-                  setGroup(g);
-                  pickFormat(FORMATS.find((f) => f.group === g)!);
-                }}
-              >
-                {g === "team" ? "Team" : "Pierre"}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="st-tabs">
+          {(["team", "pierre"] as const).map((g) => (
+            <button
+              key={g}
+              className={group === g ? "on" : ""}
+              onClick={() => {
+                setGroup(g);
+                pickFormat(FORMATS.find((f) => f.group === g)!);
+              }}
+            >
+              {g === "team" ? "Team" : "Läufer"}
+            </button>
+          ))}
+        </div>
       </header>
 
+      {group === "pierre" && (
+        <div className="st-lap">
+          <select value={slug} onChange={(e) => pickRunner(e.target.value)} aria-label="Läufer">
+            {(roster.length ? roster : TEAM.filter((a) => a.photo).map((a) => ({ slug: a.photo!, first: a.first, last: a.name, laps: 0, status: "in" as const }))).map((r) => (
+              <option key={r.slug} value={r.slug}>
+                {r.first} {r.last}
+                {r.laps ? ` · ${r.laps} Runden${r.status === "winner" ? " · Sieger" : ""}` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <p className="st-msg">
-        {group === "team" ? liveMsg : pTest ? "Testrennen: 36 Runden, erfunden. Änderungen landen im Test-Log." : stravaMsg}
-        {group === "pierre" && !pTest && (
+        {group === "team"
+          ? liveMsg
+          : !full
+            ? rosterMsg || `${who.first} ${who.last}: ${who.laps} Runden laut race|result${who.status === "out" ? ", danach ausgeschieden" : ""}. Strava, Puls, Naps und Wetter gibt es nur bei Pierre.`
+            : pTest
+              ? "Testrennen: 36 Runden, erfunden. Änderungen landen im Test-Log."
+              : stravaMsg}
+        {group === "pierre" && full && !pTest && (
           <button className="st-link" onClick={loadStrava}>
             neu laden
           </button>
@@ -491,8 +576,8 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
 
       <div className="st-formats">
         {list.map((f) => (
-          <button key={f.id} className={f.id === fid ? "on" : ""} onClick={() => pickFormat(f)}>
-            {f.name}
+          <button key={f.id} className={f.id === fmt.id ? "on" : ""} onClick={() => pickFormat(f)}>
+            {!full && f.id === "p-marken" ? "Bestleistung" : f.name}
           </button>
         ))}
       </div>
@@ -659,7 +744,27 @@ export default function Studio({ access, k }: { access: "team" | "all"; k: strin
         </section>
       )}
 
-      {group === "pierre" && (
+      {group === "pierre" && !full && (
+        <section className="st-team">
+          <button className="st-link st-h" onClick={() => setShowList((s) => !s)}>
+            {showList ? "Übersicht ausblenden" : `Übersicht aller ${log.length} Runden`}
+          </button>
+          {showList && (
+            <div className="st-loglist">
+              {log.map((r) => (
+                <button key={r.lap} className={r.lap === sel ? "on" : ""} onClick={() => pickLap(r.lap === latest ? null : r.lap)}>
+                  <b>R{r.lap}</b>
+                  <span>{r.zeit || "–"}</span>
+                  <span>{r.status === "out" ? "raus" : ""}</span>
+                  <span />
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {group === "pierre" && full && (
         <section className="st-team">
           <div className="st-loghead">
             <button className="st-link st-h" onClick={() => setShowLog((s) => !s)}>

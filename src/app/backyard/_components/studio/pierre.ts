@@ -8,6 +8,11 @@
  *
  * Alle Zahlen kommen aus dem Runden-Log bis zur gewählten Runde
  * (d.pierre.log, d.pierre.sel). Jedes Feld lässt sich überschreiben.
+ *
+ * Seit 19.10.2026 laufen die Vorlagen mit `rr: true` für alle 15 im Team
+ * (d.pierre.who). Sie brauchen nur race|result; bei allen ausser Pierre
+ * steht der Name über dem Block. Strava, Puls, kcal, Wetter und Naps
+ * bleiben Pierre mit Vollzugang vorbehalten.
  */
 
 import {
@@ -20,6 +25,10 @@ import { isNight, lapClock, LOOP_KM, mmss, NIGHTS, numOf, secOf, type LapRow, ty
 
 const rowOf = (d: Data, lap = d.pierre.sel) => d.pierre.log.find((r) => r.lap === lap);
 const sel = (d: Data) => d.pierre.sel;
+/** Name über dem Block, bei Pierre (eigener Kanal) leer */
+const nameOf = (d: Data) => (d.pierre.who.full ? "" : `${d.pierre.who.first} ${d.pierre.who.last}`);
+/** Auswahlen, die Pierres Handlog brauchen; bei allen anderen ausgeblendet */
+export const HAND_CHOICES = new Set(["naps"]);
 const km = (laps: number) => (laps * LOOP_KM).toFixed(1).replace(".", ",");
 const sum = (xs: (number | null)[]) => xs.reduce<number>((s, x) => s + (x ?? 0), 0);
 const done = (d: Data) => d.pierre.log.filter((r) => r.lap <= sel(d) && r.status !== "out");
@@ -286,7 +295,7 @@ function teamDots(e: Env, d: Data, y: number) {
     const cy = y + dd / 2 + 4;
     const q = ease(t, 0.4 + i * 0.05, 0.3);
     if (q <= 0) return;
-    const me = r.last === "Biege";
+    const me = r.last === d.pierre.who.last;
     const col = me ? ORANGE : "#fff";
     ctx.beginPath();
     if (r.out) {
@@ -299,7 +308,7 @@ function teamDots(e: Env, d: Data, y: number) {
       ctx.fillStyle = col;
       ctx.fill();
     }
-    if (me) text(ctx, "ich", x, cy + dd / 2 + 40, { font: I(f, 700, 26), align: "center", color: ORANGE, alpha: q });
+    if (me) text(ctx, d.pierre.who.full ? "ich" : d.pierre.who.first, x, cy + dd / 2 + 40, { font: I(f, 700, 26), align: "center", color: ORANGE, alpha: q });
   });
 }
 
@@ -411,6 +420,12 @@ function block(e: Env, d: Data, v: Vals, o: Vals, lay: Layout, view: View) {
   const a = ease(t, 0.15, 0.5);
   const n = ease(t, 0.3, 1.1);
 
+  const name = (v.name ?? "").trim();
+  if (name) {
+    let ns = 46;
+    while (ns > 28 && measure(ctx, name, I(f, 800, ns)) > BW) ns -= 2;
+    parts.push({ h: 52, draw: (y) => text(ctx, name, x, y + ns - (1 - a) * 20, { font: I(f, 800, ns), align: al, color: ORANGE, alpha: a }) });
+  }
   if (showTop) parts.push({ h: 46, draw: (y) => text(ctx, v.top, x, y + 38 - (1 - a) * 20, { font: I(f, 700, 38), align: al, alpha: a * 0.9 }) });
   const numRow = (s: string, u: string, sz: number, col: string, at: number) => (y: number) => {
     const us = Math.max(28, Math.round(sz * (sz === size ? 0.18 : 0.2)));
@@ -458,7 +473,9 @@ const graphicOpt = (choices: [string, string][], def = "off"): Opt => ({ key: "g
 const barN: Opt = { key: "barN", label: "Anzahl Runden", def: "5", choices: ["3", "4", "5", "6", "7", "8", "9", "10"].map((x) => [x, x]), when: (o) => o.graphic === "last" };
 const barNums = (def: string): Opt => ({ key: "barNums", label: "Zahlen über den Balken", def, when: (o) => o.graphic === "last" });
 
+const NAME_FIELD: Field = { key: "name", label: "Name (leer = ohne)" };
 const BASE_FIELDS = (numLabel: string, o: Vals, extra: Field[] = []): Field[] => [
+  NAME_FIELD,
   { key: "top", label: "Zeile oben" },
   { key: "num", label: numLabel },
   { key: "unit", label: "Einheit" },
@@ -491,6 +508,7 @@ function std(def: {
   prefill: (d: Data, o: Vals) => Vals;
   graphic?: (d: Data, o: Vals, v: Vals) => Graphic | null;
   cues?: (v: Vals, o: Vals) => Cue[];
+  rr?: boolean;
 }): Format {
   return {
     id: def.id,
@@ -501,7 +519,8 @@ function std(def: {
     len: def.len ?? 1.8,
     opts: [...(def.opts ?? []), POS, SHADE],
     fields: (o) => BASE_FIELDS(def.numLabel, o, def.extraFields),
-    prefill: def.prefill,
+    prefill: (d, o) => ({ name: nameOf(d), ...def.prefill(d, o) }),
+    rr: def.rr,
     draw: (e, v, d, o) => block(e, d, v, o, def.layout, { graphic: def.graphic?.(d, o, v) ?? null }),
     cues: (v, o) => [...(def.cues ?? numCues)(v, o), ...gCues(o)],
   };
@@ -514,6 +533,7 @@ const lastBars = (key: keyof typeof SERIES) => (d: Data, o: Vals): Graphic | nul
 
 export const PIERRE_FORMATS: Format[] = [
   std({
+    rr: true,
     id: "p-runde", name: "Runde", shade: "b", numLabel: "Runde",
     layout: { align: "left", anchor: "bottom", size: 420 },
     opts: [showTop(), showBottom("0"), second(), graphicOpt([["dots", "Punkte pro Runde"]])],
@@ -521,6 +541,7 @@ export const PIERRE_FORMATS: Format[] = [
     graphic: (d, o) => (o.graphic === "dots" && sel(d) ? { kind: "dots" } : null),
   }),
   std({
+    rr: true,
     id: "p-gefinished", name: "Runde gefinished", shade: "t", numLabel: "Zeit (mm:ss)",
     layout: { align: "center", anchor: "top", size: 300 },
     opts: [
@@ -544,7 +565,9 @@ export const PIERRE_FORMATS: Format[] = [
   {
     id: "p-ring", group: "pierre", name: "Rundenzeit Ring", shade: "t", shadeFor: shadeFor("t", "top"), len: 2.4,
     opts: [showTop(), showBottom("0"), { key: "ringB", label: "Zweite Zahl", def: "diff", choices: [["diff", "Differenz zur Vorrunde"], ["pause", "Pause bis zur Glocke"]] }, POS, SHADE],
+    rr: true,
     fields: [
+      NAME_FIELD,
       { key: "top", label: "Zeile oben" }, { key: "num", label: "Grosse Zeile" },
       { key: "r1label", label: "Text weiss" }, { key: "r1num", label: "Zeit gelaufen (mm:ss)" },
       { key: "s2label", label: "Text orange" }, { key: "s2num", label: "Zahl orange" },
@@ -558,7 +581,7 @@ export const PIERRE_FORMATS: Format[] = [
         o.ringB === "pause"
           ? ["Pause bis zur Glocke", s === null ? "" : mmss(Math.max(0, 3600 - s))]
           : [`zu Runde ${sel(d) - 1}`, s !== null && prev !== null ? diffStr(s - prev) : ""];
-      return { top: "", num: `Runde ${sel(d)}`, unit: "", r1label: "gelaufen", r1num: r?.zeit ?? "", s2label: b[0], s2num: b[1], bottom: "" };
+      return { name: nameOf(d), top: "", num: `Runde ${sel(d)}`, unit: "", r1label: "gelaufen", r1num: r?.zeit ?? "", s2label: b[0], s2num: b[1], bottom: "" };
     },
     draw: (e, v, d, o) =>
       block(e, d, { ...v, unit: "" }, { ...o, second: "0" }, { align: "left", anchor: "top", size: 200 }, {
@@ -637,6 +660,7 @@ export const PIERRE_FORMATS: Format[] = [
     cues: () => [...ticks(0.4, 1.2, 12), { at: 1.7, kind: "pop" }, { at: 2.3, kind: "pop" }],
   },
   std({
+    rr: true,
     id: "p-langsam", name: "Langsamste / schnellste", shade: "t", numLabel: "Zeit (mm:ss)", len: 2,
     layout: { align: "center", anchor: "top", size: 300 },
     opts: [
@@ -660,16 +684,18 @@ export const PIERRE_FORMATS: Format[] = [
     cues: () => [...numCues(), { at: 1.3, kind: "pop" }],
   }),
   std({
+    rr: true,
     id: "p-stuhl", name: "Zeit im Stuhl", shade: "b", numLabel: "Pause (mm:ss)",
     layout: { align: "left", anchor: "bottom", size: 330 },
     opts: [showTop(), showBottom("0"), second(), graphicOpt([["last", "Balken letzte Runden"]]), barN, barNums("1")],
     prefill: (d) => {
       const p = pauseOf(rowOf(d));
-      return { top: `Pause vor Runde ${sel(d) + 1}`, num: p === null ? "" : mmss(p), unit: "min", bottom: "", s2label: "Puls im Stuhl", s2num: rowOf(d)?.pulsStuhl ?? "", s2unit: "bpm" };
+      return { top: `Pause vor Runde ${sel(d) + 1}`, num: p === null ? "" : mmss(p), unit: "min", bottom: "", s2label: d.pierre.who.full ? "Puls im Stuhl" : "", s2num: rowOf(d)?.pulsStuhl ?? "", s2unit: d.pierre.who.full ? "bpm" : "" };
     },
     graphic: lastBars("pause"),
   }),
   std({
+    rr: true,
     id: "p-uhrzeit", name: "Uhrzeit", shade: "t", numLabel: "Uhrzeit",
     layout: { align: "center", anchor: "top", size: 300 },
     opts: [showTop(), showBottom("0"), second()],
@@ -677,6 +703,7 @@ export const PIERRE_FORMATS: Format[] = [
     cues: () => [{ at: 0.15, kind: "whoosh" }, { at: 0.5, kind: "bell" }],
   }),
   std({
+    rr: true,
     id: "p-km", name: "Kilometer", shade: "b", numLabel: "km",
     layout: { align: "left", anchor: "bottom", size: 330 },
     opts: [showTop(), showBottom("0"), second(), graphicOpt([["miles", "Meilensteine"]])],
@@ -733,12 +760,13 @@ export const PIERRE_FORMATS: Format[] = [
     graphic: lastBars("temp"),
   }),
   std({
+    rr: true,
     id: "p-nacht", name: "Nacht überstanden", shade: "t", numLabel: "Grosse Zeile", len: 2,
     layout: { align: "center", anchor: "top", size: 240 },
     opts: [showTop(), showBottom("1"), second(), graphicOpt([["naps", "Nap-Minuten pro Nachtrunde"]])],
     prefill: (d) => ({ top: "Sonntag, Sonnenaufgang", num: `Nacht ${sel(d) > 42 ? 2 : 1}`, unit: "", bottom: "überstanden", s2label: "", s2num: "", s2unit: "" }),
     graphic: (d, o, v) => {
-      if (o.graphic !== "naps") return null;
+      if (o.graphic !== "naps" || !d.pierre.who.full) return null;
       const k = /2/.test(v.num ?? "") ? 2 : 1;
       const [a, b] = NIGHTS[k];
       const laps = d.pierre.log.filter((r) => r.lap >= a && r.lap <= Math.min(b, sel(d)));
@@ -747,6 +775,7 @@ export const PIERRE_FORMATS: Format[] = [
     cues: () => [{ at: 0.15, kind: "whoosh" }, { at: 0.6, kind: "pop" }, { at: 1.3, kind: "pop" }],
   }),
   std({
+    rr: true,
     id: "p-letzte", name: "Letzte Runde", shade: "tb", numLabel: "Runden", len: 2,
     layout: { align: "center", anchor: "top", size: 300 },
     opts: [showTop(), showBottom("1"), second(), graphicOpt([["all", "Balken über alle Runden"]])],
@@ -788,10 +817,16 @@ export const PIERRE_FORMATS: Format[] = [
     },
   }),
   std({
+    rr: true,
     id: "p-marken", name: "Eigene Marken", shade: "b", numLabel: "Runden",
     layout: { align: "left", anchor: "bottom", size: 300 },
     opts: [showTop(), showBottom("1"), second(), graphicOpt([["all", "Balken über alle Runden"]], "all")],
     prefill: (d) => {
+      const w = d.pierre.who;
+      if (!w.full) {
+        const beat = w.pb > 0 && sel(d) > w.pb;
+        return { top: beat ? "Neue Bestleistung" : "Runde", num: String(sel(d)), unit: "Runden", bottom: beat ? `bisher ${w.pb} Runden` : "", s2label: "", s2num: "", s2unit: "" };
+      }
       const passed = [...d.pierre.config.marks].filter((m) => m.laps > 0 && sel(d) > m.laps).sort((a, b) => b.laps - a.laps);
       const m = passed[0];
       return {
@@ -804,11 +839,29 @@ export const PIERRE_FORMATS: Format[] = [
     },
     graphic: (d, o) => {
       if (o.graphic !== "all") return null;
+      const w = d.pierre.who;
+      if (!w.full) return { kind: "all", hl: sel(d), marks: w.pb > 0 && sel(d) > w.pb ? [{ name: "bisher", laps: w.pb }] : [] };
       const marks = d.pierre.config.marks.filter((m) => m.laps > 0 && sel(d) > m.laps).sort((a, b) => a.laps - b.laps);
       return { kind: "all", hl: sel(d), marks };
     },
   }),
   std({
+    rr: true,
+    id: "p-endstand", name: "Endstand", shade: "b", numLabel: "Runden", len: 2,
+    layout: { align: "left", anchor: "bottom", size: 330 },
+    opts: [showTop(), showBottom("1"), second(), graphicOpt([["all", "Balken über alle Runden"]])],
+    prefill: (d) => {
+      const w = d.pierre.who;
+      const n = w.laps;
+      const top = w.status === "winner" ? "Teamsieger" : w.status === "out" ? "Ausgeschieden nach" : "Noch im Rennen nach";
+      const bottom = `Platz ${w.rank} von ${w.of} im Team · ${km(n)} km`;
+      return { top, num: String(n), unit: n === 1 ? "Runde" : "Runden", bottom, s2label: "", s2num: "", s2unit: "" };
+    },
+    graphic: (d, o) => (o.graphic === "all" ? { kind: "all", hl: d.pierre.who.laps } : null),
+    cues: () => [{ at: 0.15, kind: "bell" }, ...ticks(0.3, 1.1, 12), { at: 1.4, kind: "pop" }],
+  }),
+  std({
+    rr: true,
     id: "p-team", name: "Team-Punkte", shade: "b", numLabel: "Laufen noch",
     layout: { align: "left", anchor: "bottom", size: 300 },
     opts: [showTop(), showBottom("1"), second(), graphicOpt([["teamdots", "15 Punkte"]], "teamdots")],
@@ -819,6 +872,7 @@ export const PIERRE_FORMATS: Format[] = [
     graphic: (_d, o) => (o.graphic === "teamdots" ? { kind: "teamdots" } : null),
   }),
   std({
+    rr: true,
     id: "p-teamverlauf", name: "Team-Verlauf", shade: "b", numLabel: "Laufen noch",
     layout: { align: "left", anchor: "bottom", size: 260 },
     opts: [showTop(), showBottom("0"), second(), graphicOpt([["teamhist", "Balken je 6 Stunden"]], "teamhist")],
@@ -829,6 +883,7 @@ export const PIERRE_FORMATS: Format[] = [
     graphic: (_d, o) => (o.graphic === "teamhist" ? { kind: "teamhist" } : null),
   }),
   std({
+    rr: true,
     id: "p-frei", name: "Freitext", shade: "b", numLabel: "Grosse Zeile",
     layout: { align: "left", anchor: "bottom", size: 200 },
     opts: [showTop(), showBottom("1"), second()],

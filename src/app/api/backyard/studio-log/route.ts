@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { studioAccess } from "@/app/backyard/_lib/studio-access";
-import { LOG_KEYS, PIERRE, type LapManual } from "@/app/backyard/_lib/studio-log";
+import { LOG_KEYS, PIERRE, trimRr, type LapManual, type RrLap } from "@/app/backyard/_lib/studio-log";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       : Promise.resolve({ data: [], error: null }),
   ]);
   if (log.error || rr.error) return NextResponse.json({ error: (log.error ?? rr.error)!.message }, { status: 500 });
-  return NextResponse.json({ manual: log.data, rr: rr.data }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json({ manual: log.data, rr: trimRr((rr.data ?? []) as RrLap[]) },{ headers: { "Cache-Control": "no-store" } });
 }
 
 /** Ein Eintrag: { run, lap, manual } ersetzt die Handwerte dieser Runde */
