@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
+  Film,
   FileText,
   Users,
   Receipt,
@@ -58,6 +59,7 @@ export default function AdminShell({
     { href: "/admin/exercises", label: "Übungen", icon: Library, roles: ["admin"] as Role[] },
     { href: "/admin/content", label: "Content", icon: Video, roles: ["admin"] as Role[] },
     { href: "/admin/youtube", label: "YouTube", icon: Youtube, roles: ["admin", "manager"] as Role[] },
+    { href: "/admin/parkour", label: "Parkour-Doku", icon: Film, roles: ["admin"] as Role[] },
     { href: "/admin/praesentationen", label: "Präsentationen", icon: Presentation, roles: ["admin", "manager"] as Role[] },
     { href: "/admin/instagram", label: "Instagram", icon: BarChart3, roles: ["admin"] as Role[] },
   ];
