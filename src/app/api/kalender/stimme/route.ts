@@ -38,6 +38,24 @@ export async function POST(request: NextRequest) {
     : [];
   const oeffentlich = koerper.oeffentlich === true;
 
+  // Finale Runde (laeuft.ch/kalender/final, 23.10.2026): ein paar Vertraute wählen
+  // pro offenem Monat ein Bild. Gleicher Name überschreibt die eigene Wahl.
+  if (koerper.final === true) {
+    const name = sauber(koerper.name, 80);
+    const wahl = bilder.filter((b) => /^(juni|juli|august)-/.test(b));
+    if (!name) return NextResponse.json({ ok: false, fehler: "Bitte gib deinen Namen ein." }, { status: 400 });
+    if (wahl.length !== 3) return NextResponse.json({ ok: false, fehler: "Bitte wähle für jeden Monat ein Bild." }, { status: 400 });
+    const adresse_key = createHash("sha256").update("final:" + norm(name)).digest("hex").slice(0, 24);
+    const { error } = await supabaseAdmin
+      .from(TABELLE)
+      .upsert({ quelle: "final", name, bilder: wahl, land: "Schweiz", adresse_key }, { onConflict: "adresse_key" });
+    if (error) {
+      console.error("[kalender/stimme final]", error);
+      return NextResponse.json({ ok: false, fehler: "Speichern hat nicht geklappt. Versuch es bitte nochmals." }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   // Öffentliche Abstimmung (Instagram): bis Fr 16.10.2026, 20 Uhr
   if (oeffentlich && Date.now() > ENDE)
     return NextResponse.json({ ok: false, fehler: "Die Abstimmung ist vorbei. Danke fürs Vorbeischauen." }, { status: 410 });

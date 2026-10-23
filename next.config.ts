@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
         { source: "/kalender", destination: "/kalender/index.html" },
         // Freundeskreis (Gratiskalender, mit Adresse): alter Link für die ersten 10
         { source: "/kalender/freunde", destination: "/kalender/freunde.html" },
+        // Finale Runde 23.10.: offene Monate (Juni, Juli, August) mit ein paar Vertrauten
+        { source: "/kalender/final", destination: "/kalender/final/index.html" },
         // Themenseiten: /graatzug/<slug> → public/graatzug/<slug>/index.html
         { source: "/graatzug/:slug([a-z0-9-]+)", destination: "/graatzug/:slug/index.html" },
         // graatzug.ch: «/» ist die Startseite, /<slug> die Themenseiten. Dateien

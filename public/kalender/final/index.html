@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<base href="/kalender/final/">
+<title>Kalender 2027 · die letzten drei Monate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Instrument+Sans:wght@400..600&display=swap">
+<style>
+  /* Finale Runde 23.10.2026: pro offenem Monat ein Bild wählen, Karten seitlich wischen */
+  :root {
+    --papier: #FAF8F3;
+    --tinte: #1F1D1A;
+    --grau: #5F584F;
+    --linie: #DDD4C7;
+    --glut: #C9573A;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Instrument Sans', Arial, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papier); color: var(--tinte); font-family: var(--serif); font-size: 20px; line-height: 1.5; }
+  .breit { max-width: 1120px; margin-inline: auto; padding-inline: 16px; }
+  header { padding-block: 48px 24px; }
+  header .marke { width: 84px; display: block; margin-bottom: 32px; }
+  h1 { font-weight: 500; font-size: clamp(36px, 7vw, 56px); line-height: 1.04; margin: 0 0 16px; letter-spacing: -0.5px; text-wrap: balance; max-width: 15em; }
+  header p { margin: 0 0 10px; font-size: 21px; max-width: 34em; }
+  h2 { font-weight: 500; font-size: 32px; line-height: 1.15; margin: 0 0 4px; }
+  .hinweis { font-family: var(--sans); font-size: 15px; color: var(--grau); margin: 0 0 16px; }
+  section { padding-block: 28px; border-top: 1px solid var(--linie); }
+
+  .spur { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 16px 12px; margin-inline: -16px; scrollbar-width: none; }
+  .spur::-webkit-scrollbar { display: none; }
+  .karte { flex: 0 0 72%; max-width: 300px; scroll-snap-align: center; }
+  @media (min-width: 760px) { .karte { flex-basis: 23%; } }
+  .bild { position: relative; display: block; width: 100%; padding: 10px; border: 0; background: #fff; cursor: pointer; aspect-ratio: 297 / 420; box-shadow: 0 1px 4px rgba(0,0,0,.12); border-radius: 2px; }
+  .bild img.foto { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bild img.wort { position: absolute; left: 50%; top: 48.8%; width: 41%; transform: translate(-50%, -50%); pointer-events: none; }
+  .bild[aria-pressed=true] { box-shadow: 0 0 0 3px var(--tinte); }
+  .karte p { font-family: var(--sans); font-size: 14px; color: var(--grau); margin: 10px 2px 0; display: flex; justify-content: space-between; gap: 8px; }
+  .karte p b { color: var(--tinte); font-weight: 600; }
+  .karte .gewaehlt { visibility: hidden; color: var(--tinte); font-weight: 600; }
+  .bild[aria-pressed=true] + p .gewaehlt { visibility: visible; }
+
+  label { display: block; font-family: var(--sans); font-size: 15px; color: var(--grau); margin-bottom: 6px; }
+  input[type=text] { width: 100%; max-width: 420px; font: inherit; font-size: 19px; color: var(--tinte); background: #fff; border: 1px solid var(--linie); border-radius: 4px; padding: 12px 14px; }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--glut); outline-offset: 3px; }
+  button.los { margin-top: 18px; font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--papier); background: var(--tinte); border: 0; border-radius: 4px; padding: 14px 24px; cursor: pointer; }
+  button.los[disabled] { opacity: .45; cursor: default; }
+  .stand { font-family: var(--sans); font-size: 15px; color: var(--grau); margin: 14px 0 0; }
+  .meldung { font-family: var(--sans); font-size: 16px; color: var(--glut); min-height: 1.5em; margin: 12px 0 0; }
+  .danke { padding-block: 64px; }
+  .danke h1 { margin-bottom: 12px; }
+  .honig { position: absolute; left: -9999px; }
+  footer { padding-block: 40px 56px; font-family: var(--sans); font-size: 14px; color: var(--grau); }
+</style>
+</head>
+<body>
+<main id="seite">
+  <header class="breit">
+    <img class="marke" src="/kalender/ergt-font-black-eps.svg" alt="ein richtig guter Tag">
+    <h1>Kalender 2027: die letzten drei Monate</h1>
+    <p>Neun Monate stehen. Für Juni, Juli und August bin ich mir noch nicht sicher. Der Kalender soll ein ganzes Jahr hängen und gut tun, nicht nur schön sein.</p>
+    <p>Wisch durch die Bilder und tipp pro Monat das an, das du dir an der Wand wünschst.</p>
+  </header>
+
+  <form id="formular" class="breit" novalidate>
+    <div id="monate"></div>
+
+    <section>
+      <h2>Wer wählt?</h2>
+      <p class="hinweis">Nur dein Vorname, damit ich weiss, von wem die Wahl kommt.</p>
+      <label for="name">Vorname</label>
+      <input type="text" id="name" name="name" autocomplete="given-name" maxlength="80">
+      <input class="honig" type="text" name="webseite" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div><button class="los" type="submit" disabled>Wahl abschicken</button></div>
+      <p class="stand" id="stand">Noch 3 Monate offen.</p>
+      <p class="meldung" id="meldung" role="status"></p>
+    </section>
+  </form>
+</main>
+<footer class="breit">ein richtig guter Tag · Pierre Biege · einrichtiggutertag.ch</footer>
+
+<script>
+  const MONATE = [
+    { id: 'juni', name: 'Juni', bilder: [
+      ['juni-5828', 'Abendhimmel über den Bergen'],
+      ['juni-5293', 'Glühende Wolken'],
+      ['juni-0801', 'Nacht mit rotem Horizont'],
+      ['juni-0798', 'Himmel in Rot'] ] },
+    { id: 'juli', name: 'Juli', bilder: [
+      ['juli-7686', 'Sonne auf dem Grat'],
+      ['juli-7233-2', 'Quellwolken über grünem Grat'],
+      ['juli-1590', 'Schönwetterwolken'] ] },
+    { id: 'august', name: 'August', bilder: [
+      ['august-0080', 'Abendhimmel über den Bäumen'],
+      ['august-1324', 'Blauer Himmel, sonnige Felsen'],
+      ['august-5189', 'Wolkenfeuer'],
+      ['august-8770', 'Sommerabend am See'] ] },
+  ];
+  const wahl = {};
+  const box = document.getElementById('monate');
+  const knopf = document.querySelector('button.los');
+  const stand = document.getElementById('stand');
+  const meldung = document.getElementById('meldung');
+  const name = document.getElementById('name');
+
+  for (const m of MONATE) {
+    const s = document.createElement('section');
+    s.innerHTML = `<h2>${m.name}</h2><p class="hinweis">${m.bilder.length} Bilder, seitlich wischen.</p><div class="spur" role="group" aria-label="${m.name}"></div>`;
+    const spur = s.querySelector('.spur');
+    m.bilder.forEach(([id, text], i) => {
+      const k = document.createElement('div');
+      k.className = 'karte';
+      k.innerHTML = `<button type="button" class="bild" aria-pressed="false" aria-label="${m.name}, Bild ${i + 1}: ${text}">
+          <img class="foto" src="bilder/${id}.jpg" alt="" loading="${i < 2 ? 'eager' : 'lazy'}">
+          <img class="wort" src="/kalender/ergt-font-white-eps.svg" alt="">
+        </button>
+        <p><span><b>${i + 1}</b> · ${text}</span><span class="gewaehlt">gewählt</span></p>`;
+      k.querySelector('button').addEventListener('click', () => {
+        wahl[m.id] = id;
+        spur.querySelectorAll('.bild').forEach((b) => b.setAttribute('aria-pressed', String(b === k.querySelector('button'))));
+        aktualisieren();
+      });
+      spur.append(k);
+    });
+    box.append(s);
+  }
+
+  function aktualisieren() {
+    const offen = MONATE.filter((m) => !wahl[m.id]).map((m) => m.name);
+    stand.textContent = offen.length ? `Noch offen: ${offen.join(', ')}.` : 'Alle drei Monate gewählt.';
+    knopf.disabled = offen.length > 0 || !name.value.trim();
+  }
+  name.addEventListener('input', aktualisieren);
+
+  document.getElementById('formular').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (knopf.disabled) return;
+    knopf.disabled = true;
+    meldung.textContent = '';
+    try {
+      const r = await fetch('/api/kalender/stimme', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ final: true, name: name.value.trim(), bilder: MONATE.map((m) => wahl[m.id]), webseite: e.target.webseite.value }),
+      });
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.fehler || 'Das hat nicht geklappt.');
+      document.getElementById('seite').innerHTML = `<div class="breit danke"><img class="marke" src="/kalender/ergt-font-black-eps.svg" alt="ein richtig guter Tag" style="width:84px;margin-bottom:32px"><h1>Danke, ${name.value.trim().replace(/[<>&"]/g, '')}.</h1><p>Deine Wahl ist bei mir. Wenn du es dir anders überlegst, öffne die Seite nochmals und wähl mit dem gleichen Namen neu.</p></div>`;
+      window.scrollTo(0, 0);
+    } catch (err) {
+      meldung.textContent = err.message;
+      aktualisieren();
+    }
+  });
+</script>
+</body>
+</html>
