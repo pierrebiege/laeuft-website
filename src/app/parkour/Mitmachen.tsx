@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { TEXTE, type Art, type Sprache } from "./texte";
+import { ZUSATZ } from "./texte-zusatz";
+import { Kante, SPRUNG } from "./Bewegung";
 import { dateiErlaubt } from "./dateitypen";
 
 /* Die drei Wege mitzumachen, in einem Formular.
@@ -51,6 +54,8 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
   const t = TEXTE[sprache];
   const m = t.mitmachen;
   const f = m.felder;
+  const zm = ZUSATZ[sprache].mitmachen;
+  const ruhig = useReducedMotion();
   const [art, setArt] = useState<Art>("video");
   const [name, setName] = useState("");
   const [gruppe, setGruppe] = useState("");
@@ -217,9 +222,7 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
   return (
     <section id="mitmachen" ref={abschnitt} className="pk-mit" aria-labelledby="pk-mit-titel">
       <div className="pk-rahmen">
-        <h2 id="pk-mit-titel" className="pk-h2">
-          {m.titel}
-        </h2>
+        <Kante id="pk-mit-titel" zeilen={[m.titel]} className="pk-h2 pk-h2-riesig" />
         <p className="pk-mit-intro">{m.intro}</p>
 
         <div className="pk-wege" role="tablist" aria-label={m.titel}>
@@ -237,6 +240,14 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
                 history.replaceState(null, "", `#${a}`);
               }}
             >
+              {art === a && (
+                <motion.span
+                  layoutId={ruhig ? undefined : "pk-weg-marke"}
+                  className="pk-weg-marke"
+                  transition={{ duration: 0.45, ease: SPRUNG }}
+                  aria-hidden="true"
+                />
+              )}
               <span className="pk-weg-titel">{m.wege[a].titel}</span>
               <span className="pk-weg-text">{m.wege[a].text}</span>
             </button>
@@ -254,7 +265,7 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
           </div>
         ) : (
           <div className="pk-mit-raster">
-            <div className="pk-mit-kontext">
+            <div className="pk-mit-kontext" key={art}>
               {art === "video" && (
                 <>
                   <h3 className="pk-h3">{m.video.fragenTitel}</h3>
@@ -427,24 +438,33 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
 
               <fieldset className="pk-gruppe">
                 <legend className="pk-label pk-label-gross">{f.ueberDich}</legend>
+                <p className="pk-hilfe pk-schnell">{zm.schnell}</p>
                 <div className="pk-zwei">
                   <label className="pk-feld">
-                    <span className="pk-label">{f.name}</span>
+                    <span className="pk-label">
+                      {f.name} <span className="pk-pflicht">{zm.pflicht}</span>
+                    </span>
                     <input
                       value={name}
                       maxLength={120}
                       autoComplete="name"
+                      enterKeyHint="next"
                       required
                       onChange={(e) => setName(e.target.value)}
                     />
                   </label>
                   <label className="pk-feld">
-                    <span className="pk-label">{f.kontakt}</span>
+                    <span className="pk-label">
+                      {f.kontakt} <span className="pk-pflicht">{zm.pflicht}</span>
+                    </span>
                     <input
                       value={kontakt}
                       maxLength={160}
                       autoComplete="email"
                       autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      enterKeyHint="next"
                       required
                       onChange={(e) => setKontakt(e.target.value)}
                     />
@@ -492,7 +512,7 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
               )}
 
               <div className="pk-senden">
-                <button type="submit" className="pk-knopf" disabled={sendet}>
+                <button type="submit" className="pk-knopf pk-knopf-senden" disabled={sendet}>
                   {sendet ? m.sendet : m.senden}
                 </button>
                 {sendet && (

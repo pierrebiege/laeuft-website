@@ -3,9 +3,11 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { KANTONE, KARTE_BREITE, KARTE_HOEHE, LAND, ORTE, SEEN } from "../karte-daten";
 import { TEXTE, type Sprache } from "../texte";
+import { titelZeilen } from "../titel";
+import { ZUSATZ } from "../texte-zusatz";
 
-/* Vorschaubild für WhatsApp & Co.: Titel links, die Schweiz mit allen
-   belegten Orten rechts. Schriften liegen als TTF neben dieser Datei,
+/* Vorschaubild für WhatsApp & Co.: riesiger Titel, der ins Bildfenster
+   mit der Karte hineinragt, darunter «Die Doku» und die Adresse. Schriften liegen als TTF neben dieser Datei,
    weil der Bildgenerator beim Bauen keinen Netzzugriff hat. */
 
 export const OG_GROESSE = { width: 1200, height: 630 };
@@ -18,8 +20,11 @@ export async function ogBild(sprache: Sprache) {
     readFile(join(ORDNER, "archivo-condensed-800.ttf")),
     readFile(join(ORDNER, "archivo-500.ttf")),
   ]);
-  const kartenBreite = 640;
+  const kartenBreite = 900;
   const kartenHoehe = Math.round((kartenBreite * KARTE_HOEHE) / KARTE_BREITE);
+
+  const zeilen = titelZeilen(t.hero.titel.join(" "));
+  const gross = sprache === "de" ? 196 : 176;
 
   return new ImageResponse(
     (
@@ -31,59 +36,92 @@ export async function ogBild(sprache: Sprache) {
           background: "#f3f2ee",
           position: "relative",
           fontFamily: "Normal",
+          overflow: "hidden",
         }}
       >
-        <svg
-          width={kartenBreite}
-          height={kartenHoehe}
-          viewBox={`0 0 ${KARTE_BREITE} ${KARTE_HOEHE}`}
-          style={{ position: "absolute", right: -40, top: 150 }}
-        >
-          <path d={LAND} fill="#e6e4de" />
-          <path d={KANTONE} fill="none" stroke="#cfccc4" strokeWidth={1.4} />
-          <path d={SEEN} fill="#f3f2ee" />
-          <path d={LAND} fill="none" stroke="#1b1b1a" strokeWidth={2} />
-          {ORTE.map((o) => (
-            <circle key={o.name} cx={o.x} cy={o.y} r={9} fill="#e0431e" />
-          ))}
-        </svg>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "64px 0 0 72px",
-            width: 760,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              fontFamily: "Schmal",
-              fontSize: sprache === "de" ? 118 : 100,
-              lineHeight: 0.92,
-              letterSpacing: -2,
-              color: "#1b1b1a",
-            }}
-          >
-            <span>{t.hero.titel[0]}</span>
-            <span style={{ paddingLeft: 80 }}>{t.hero.titel[1]}</span>
-          </div>
-          <div style={{ display: "flex", marginTop: 40, fontSize: 30, lineHeight: 1.3, color: "#4b4a46", width: 560 }}>
-            {t.meta.ogZeile}
-          </div>
-        </div>
+        {/* Bildfenster rechts, randlos, mit allen belegten Orten */}
         <div
           style={{
             position: "absolute",
-            left: 72,
-            bottom: 54,
+            right: 0,
+            top: 40,
+            width: 520,
+            height: 550,
             display: "flex",
-            fontSize: 24,
+            background: "#ffffff",
+            overflow: "hidden",
+          }}
+        >
+          <svg
+            width={kartenBreite}
+            height={kartenHoehe}
+            viewBox={`0 0 ${KARTE_BREITE} ${KARTE_HOEHE}`}
+            style={{ position: "absolute", left: -150, top: 0 }}
+          >
+            <path d={LAND} fill="#e6e4de" />
+            <path d={KANTONE} fill="none" stroke="#ffffff" strokeWidth={1.6} />
+            <path d={SEEN} fill="#ffffff" />
+            <path d={LAND} fill="none" stroke="#1b1b1a" strokeWidth={2} />
+            {ORTE.map((o) => (
+              <circle key={o.name} cx={o.x} cy={o.y} r={10} fill="#e0431e" />
+            ))}
+          </svg>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "baseline",
+              padding: "12px 20px 14px 24px",
+              background: "#ffffff",
+            }}
+          >
+            <span style={{ fontFamily: "Schmal", fontSize: 64, lineHeight: 1, color: "#1b1b1a" }}>2026</span>
+            <span style={{ marginLeft: 14, fontSize: 24, color: "#e0431e" }}>
+              {ZUSATZ[sprache].karte.orte(ORTE.length)}
+            </span>
+          </div>
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 60,
+            top: 34,
+            display: "flex",
+            flexDirection: "column",
+            fontFamily: "Schmal",
+            fontSize: gross,
+            lineHeight: 0.84,
+            letterSpacing: -5,
             color: "#1b1b1a",
           }}
         >
-          {`laeuft.ch${t.pfad}`}
+          {zeilen.map((z, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", paddingLeft: i * 70 }}>
+              {z.klein ? (
+                <span style={{ fontFamily: "Normal", fontSize: 40, letterSpacing: 0, marginTop: 22, marginRight: 14 }}>
+                  {z.klein}
+                </span>
+              ) : null}
+              <span>{z.gross}</span>
+            </div>
+          ))}
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 64,
+            bottom: 44,
+            display: "flex",
+            flexDirection: "column",
+            width: 560,
+          }}
+        >
+          <div style={{ display: "flex", fontSize: 30, lineHeight: 1.25, color: "#1b1b1a" }}>{t.hero.arbeitstitel}</div>
+          <div style={{ display: "flex", marginTop: 14, fontSize: 22, color: "#5d5b56" }}>{`laeuft.ch${t.pfad}`}</div>
         </div>
       </div>
     ),

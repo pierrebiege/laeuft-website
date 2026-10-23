@@ -2,7 +2,8 @@ import { KANTONE, KARTE_BREITE, KARTE_HOEHE, LAND, ORTE, SEEN } from "./karte-da
 
 /* Die Schweiz als feine Linienzeichnung, darauf die belegten Orte.
    `jahr` bestimmt, welche Punkte sichtbar sind; Punkte aus genau diesem Jahr
-   werden hervorgehoben und beschriftet. Ohne `jahr` sind alle Punkte da. */
+   werden hervorgehoben, mit einem Ring, der einmal aufgeht, und beschriftet.
+   Ohne `jahr` sind alle Punkte da. */
 
 type Props = {
   jahr?: number;
@@ -11,32 +12,59 @@ type Props = {
   className?: string;
   titel?: string;
   hervorheben?: boolean;
+  /* Füllt den Rahmen statt hineinzupassen (Bildausschnitt). */
+  zuschnitt?: boolean;
+  /* Sichtbarer Ausschnitt [x, y, breite, höhe] in Kartenkoordinaten. */
+  ausschnitt?: [number, number, number, number];
+  /* Verzögerung in Sekunden pro Punkt, abhängig vom Jahr (Hero). */
+  verzoegerung?: (jahr: number) => number;
+  /* Nur diese Orte zeigen, gross und beschriftet (Initiatoren). */
+  nur?: string[];
 };
 
-export default function KarteSvg({ jahr = 2026, ortsnamen = {}, beschriften = true, className, titel, hervorheben = true }: Props) {
-  const sichtbar = ORTE.filter((o) => o.jahr <= jahr);
-  const neu = hervorheben ? sichtbar.filter((o) => o.jahr === jahr) : [];
+export default function KarteSvg({
+  jahr = 2026,
+  ortsnamen = {},
+  beschriften = true,
+  className,
+  titel,
+  hervorheben = true,
+  zuschnitt = false,
+  ausschnitt,
+  verzoegerung,
+  nur,
+}: Props) {
+  const sichtbar = nur ? ORTE.filter((o) => nur.includes(o.name)) : ORTE.filter((o) => o.jahr <= jahr);
+  const neu = nur ? sichtbar : hervorheben ? sichtbar.filter((o) => o.jahr === jahr) : [];
+  const box = ausschnitt ?? [0, 0, KARTE_BREITE, KARTE_HOEHE];
   return (
     <svg
-      viewBox={`0 0 ${KARTE_BREITE} ${KARTE_HOEHE}`}
+      viewBox={box.join(" ")}
       className={className}
       role="img"
       aria-label={titel}
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio={zuschnitt ? "xMidYMid slice" : "xMidYMid meet"}
     >
       <path d={LAND} className="pk-k-land" />
       <path d={KANTONE} className="pk-k-kantone" />
       <path d={SEEN} className="pk-k-seen" />
       <path d={LAND} className="pk-k-rand" />
-      {sichtbar.map((o) => (
-        <circle
-          key={o.name}
-          cx={o.x}
-          cy={o.y}
-          r={hervorheben && o.jahr === jahr ? 9 : 6.5}
-          className={hervorheben && o.jahr === jahr ? "pk-k-punkt pk-k-punkt-neu" : "pk-k-punkt"}
-        />
-      ))}
+      {hervorheben &&
+        !nur &&
+        neu.map((o) => <circle key={`r-${o.name}-${jahr}`} cx={o.x} cy={o.y} r={9} className="pk-k-ring" />)}
+      {sichtbar.map((o) => {
+        const gross = nur || (hervorheben && o.jahr === jahr);
+        return (
+          <circle
+            key={o.name}
+            cx={o.x}
+            cy={o.y}
+            r={nur ? 8 : gross ? 9 : 6.5}
+            className={gross ? "pk-k-punkt pk-k-punkt-neu" : "pk-k-punkt"}
+            style={verzoegerung ? { animationDelay: `${verzoegerung(o.jahr).toFixed(2)}s` } : undefined}
+          />
+        );
+      })}
       {beschriften &&
         beschriftungen(neu, ortsnamen).map((b) => (
           <text key={`t-${b.name}`} x={b.x} y={b.y} textAnchor={b.anker} className="pk-k-name">
