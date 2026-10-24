@@ -1,9 +1,9 @@
-/* Alle Texte der Projektseite laeuft.ch/parkour, Deutsch und Französisch.
+/* Alle Texte der Projektseite laeuft.ch/parkour, Deutsch, Französisch und Englisch.
    Grundlage: ~/Documents/parkour-doku (DOSSIER.md, AUFRUF-CHAT-ENTWURF.md).
    Regel: keine Jahreszahl und kein Ort, die nicht im DOSSIER belegt sind,
    nichts aus dem Abschnitt «Widersprüche», keine Wertung über Organisationen. */
 
-export type Sprache = "de" | "fr";
+export type Sprache = "de" | "fr" | "en";
 
 export const KONTAKT_MAIL = "pierre@natural-athletics.ch";
 export const SEITEN_URL = "https://laeuft.ch/parkour";
@@ -51,6 +51,7 @@ export type Texte = {
   mitmachen: {
     titel: string;
     intro: string;
+    perMail: string;
     wege: Record<Art, { titel: string; text: string }>;
     video: { fragenTitel: string; fragen: string[]; tippsTitel: string; tipps: string[] };
     material: { titel: string; text: string; offline: string; offlineHilfe: string };
@@ -206,6 +207,7 @@ const de: Texte = {
   mitmachen: {
     titel: "Mach mit.",
     intro: "Such dir aus, was passt. Was du schickst, sehen nur wir zwei.",
+    perMail: "Lieber per Mail? Schick alles an",
     wege: {
       video: {
         titel: "Video-Statement",
@@ -444,6 +446,7 @@ const fr: Texte = {
   mitmachen: {
     titel: "Participe.",
     intro: "Choisis ce qui te va. Ce que tu envoies, on est les deux seuls à le voir.",
+    perMail: "Tu préfères par e-mail ? Envoie tout à",
     wege: {
       video: {
         titel: "Témoignage vidéo",
@@ -582,4 +585,238 @@ const fr: Texte = {
   },
 };
 
-export const TEXTE: Record<Sprache, Texte> = { de, fr };
+const en: Texte = {
+  htmlLang: "en",
+  pfad: "/parkour/en",
+  andererPfad: "/parkour",
+  meta: {
+    titel: "Parkour in Switzerland. A documentary.",
+    beschreibung:
+      "A documentary by Ramon Siegenthaler and Pierre Biege about the pioneers of the Swiss parkour scene and how parkour has changed since 2000. We’re looking for your story and your old videos.",
+    ogTitel: "Be part of the documentary «Parkour in Switzerland»",
+    ogZeile:
+      "From the first jumps in Münsingen to the Swiss Olympic vote. Ramon Siegenthaler and Pierre Biege are looking for your story and your old footage.",
+  },
+  nav: { projekt: "Project", karte: "Map", film: "The film", mitmachen: "Take part", wir: "Who we are" },
+  hero: {
+    titel: ["Parkour", "in Switzerland"],
+    arbeitstitel: "A documentary by Ramon Siegenthaler and Pierre Biege. Working title «Who owns parkour?»",
+    satz: "About the pioneers of the Swiss scene and how parkour has changed since 2000. For that, we need your story and your old videos.",
+    ctaGeschichte: "Tell your story",
+    ctaMaterial: "Send old footage",
+  },
+  worum: {
+    titel: "Every crew belongs in it.",
+    regionen: ["German-speaking", "Romandie", "Ticino", "Valais", "Grisons"],
+    text1:
+      "The main character is the scene itself, not an organisation and not a single person. We hear from the pioneers who are now over 40, the crews that disappeared long ago, and the kids who started in the gym.",
+    text2:
+      "We tell the story from the first jumps around 2000 to 20 November 2026. That day, Swiss Olympic votes on admitting the federation. And we ask: what is left of parkour once it becomes a sport?",
+  },
+  karte: {
+    epochen: [
+      {
+        von: 2000,
+        bis: 2004,
+        text: "Around 2000, in Münsingen, Roger sees a short clip from France on ARTE and goes out with Ramon. In 2001 the film «Yamakasi» comes out. Teenagers jump over walls and railings. No club, often not even a word for it. Hardly any videos from those years survive. If you were there, tell us.",
+      },
+      {
+        von: 2005,
+        bis: 2009,
+        text: "People meet up on forums to train and film each other. The videos end up on YouTube. On 15 August 2009, Basel hosts the «First Swiss Jam».",
+      },
+      {
+        von: 2010,
+        bis: 2016,
+        text: "Crews become clubs. In Lucerne, the scene builds its own park. In Basel, traceurs raise money in 2014 for an indoor hall, the Parkour Palast. It never gets built.",
+      },
+      {
+        von: 2017,
+        bis: 2022,
+        text: "In 2017 the international gymnastics federation wants parkour as one of its disciplines. In 2018 the scene founds its own federation. In 2020 the Swiss government adds parkour to Jugend+Sport.",
+      },
+      {
+        von: 2023,
+        bis: 2026,
+        text: "Young athletes travel to competitions. Those who started around 2000 are now over 40. On 20 November 2026, Swiss Olympic votes on admitting the federation.",
+      },
+    ],
+    legende:
+      "A dot appears in the year of the first trace we can prove, such as a video, a newspaper article or someone who was there. In most places it started earlier.",
+    ende: "The map has gaps. Where did you train, and since when?",
+    endeKnopf: "Tell us",
+    keinePunkte: "No trace yet",
+    ortsnamen: {
+      Genf: "Geneva",
+      Zürich: "Zurich",
+      Luzern: "Lucerne",
+      Tessin: "Ticino",
+      Oberwallis: "Upper Valais",
+      Freiburg: "Fribourg",
+      Neuenburg: "Neuchâtel",
+    },
+    zeitachse: "Timeline 2000 to 2026",
+  },
+  film: {
+    titel: "The film.",
+    text: "A documentary built from interviews, the scene’s own archive and animation, told in order from 2000 to November 2026. It starts in Münsingen. After that, parkour appears in many places at once, often without people knowing about each other.",
+    eckdaten: [
+      ["Length", "About 75 minutes, also as a four-part series"],
+      ["Languages", "German, French and Italian in the original, with subtitles"],
+      ["Filming starts", "November 2026"],
+      ["Premiere", "Aiming for early 2028, then screenings in the cities on the map"],
+      ["Production", "We’re looking for a Swiss production company as a partner"],
+    ],
+    regelnTitel: "Our rules",
+    regeln: [
+      "Every year and every place has a source. Anything we can’t prove doesn’t go into the film as fact.",
+      "When someone talks about themselves, the screen says «according to …».",
+      "When two people remember things differently, we show both versions. No voice-over decides.",
+      "Whoever supports the film has no say over its content.",
+    ],
+  },
+  generationen: {
+    titel: "Ten questions for everyone.",
+    text: "Someone who started around 2000 gets the same ten questions as someone who started in a gym last year. Same wording, same framing. In the film we cut the answers side by side, and at the end everyone shows the first move they ever learned. We want your real view, even if you see parkour differently today than back then.",
+  },
+  mitmachen: {
+    titel: "Take part.",
+    intro: "Pick whatever suits you. Only the two of us see what you send.",
+    perMail: "Prefer email? Send everything to",
+    wege: {
+      video: {
+        titel: "Video statement",
+        text: "Set up your phone and answer our questions.",
+      },
+      material: {
+        titel: "Old footage",
+        text: "Videos, photos and flyers up to around 2015. Shaky is fine.",
+      },
+      hinweis: {
+        titel: "Tip",
+        text: "A group is missing or a year is wrong? Tell us.",
+      },
+    },
+    video: {
+      fragenTitel: "Ten questions",
+      fragen: [
+        "When and where did you first see parkour? What exactly was it?",
+        "Where was your first spot? Does it still exist?",
+        "Who did you start with? What are they doing today?",
+        "What is parkour to you? In one sentence.",
+        "What makes parkour different from other sports?",
+        "Does competition belong in parkour?",
+        "What do you know about the people who came before you? Or what do you think of those who came after?",
+        "What has parkour cost you? And what has it given you?",
+        "Where should parkour in Switzerland be in 20 years?",
+        "Finally: show us the first move you ever learned.",
+      ],
+      tippsTitel: "How to record it",
+      tipps: [
+        "Hold your phone sideways.",
+        "Find a quiet place without wind or traffic.",
+        "Stay close to the phone and listen to a short test first.",
+        "At the start, say your name, where you train and since when.",
+        "1 to 2 minutes per question. You don’t have to answer them all.",
+        "One video per question or all in one go, whatever works for you.",
+      ],
+    },
+    material: {
+      titel: "What we’re looking for",
+      text: "Anything up to around 2015. Phone videos or MiniDV tapes, shaky is fine. Photos, jam flyers, forum screenshots, old websites, newspaper clippings.",
+      offline: "My footage is still on an old hard drive or MiniDV tape. Get in touch.",
+      offlineHilfe: "We’ll pick it up or digitise it. You get everything back.",
+    },
+    hinweis: {
+      titel: "Your tip",
+      label: "Your tip",
+      platzhalter: "Which group is missing? Which year is wrong?",
+      fragenTitel: "If you like, answer these too. All optional.",
+      fragen: [
+        { schluessel: "wettkampf", frage: "Does competition belong in parkour?" },
+        { schluessel: "wer_gebracht", frage: "Who got you into parkour?" },
+        { schluessel: "zukunft", frage: "Where should parkour in Switzerland be in 20 years?" },
+      ],
+    },
+    felder: {
+      ueberDich: "About you",
+      name: "Name",
+      gruppe: "Group / place",
+      jahre: "Year(s)",
+      jahrePlatzhalter: "e.g. 2006–2012",
+      kontakt: "Email or Instagram",
+      kontaktHilfe: "So we can get back to you.",
+      zuSehen: "Who can be seen?",
+      zuSehenPlatzhalter: "Names or group, as far as you know",
+      beschreibungVideo: "Anything to add?",
+      beschreibungMaterial: "What’s on it?",
+      link: "Link (WeTransfer, Google Drive, YouTube, Dropbox)",
+      linkHilfe: "If the files are too big or already online.",
+      dateien: "Files",
+      dateienWaehlen: "Choose files",
+      dateienZiehen: "or drop them here",
+      dateienHilfe: (maxMb) => `Video, photo or PDF, up to ${maxMb} MB per file. Please send bigger files as a link.`,
+      zuGross: (maxMb) => `Larger than ${maxMb} MB. Please send it as a link.`,
+      typFalsch: "Video, photo or PDF only.",
+      entfernen: "Remove",
+    },
+    einverstaendnis: {
+      material: "Yes, you may use this material for the documentary and to promote it (trailer, social media).",
+      punkte: [
+        "You credit me as the author.",
+        "Everyone who can be seen agrees. Otherwise you ask them before showing anything.",
+        "The original stays with me.",
+      ],
+      unter18: "Under 18? Talk to your parents first.",
+      hinweis: "Yes, you may use my tip for research. Quote me only after asking.",
+    },
+    senden: "Send",
+    sendet: "Sending …",
+    laedt: (n, total) => `Uploading file ${n} of ${total}`,
+    danke: {
+      titel: "Received. Thank you.",
+      text: "We’ll look at everything and get in touch if we have questions.",
+      nochmal: "Send something else",
+      teilweise: "Not all files made it. Please send the missing ones again or as a link.",
+    },
+    fehler: {
+      name: "Please enter your name.",
+      kontakt: "Please enter an email address or your Instagram name.",
+      einverstaendnis: "Please confirm your consent.",
+      leerVideo: "Please upload a video or send a link.",
+      leerMaterial: "Please upload something, send a link or tell us where the material is.",
+      leerHinweis: "Please write your tip.",
+      allgemein: `That didn’t work. Try again or write to ${KONTAKT_MAIL}.`,
+      upload: (name) => `«${name}» could not be uploaded.`,
+      zuViele: "Too many attempts in a short time. Please try again later.",
+    },
+  },
+  wir: {
+    titel: "Who we are",
+    ramon:
+      "Ramon has been training in Münsingen since 2000, where he co-founded PKM, Parkour Münsingen. He has been coaching since 2006. In 2026 he founded Black Panther Athletics.",
+    pierre:
+      "Pierre started in Valais in 2006. In 2011 he made the Parkourwallis showreel with Patrick Hunziker. Today he runs Natural Athletics in Upper Valais and films, edits and animates himself.",
+    offenlegung:
+      "We’re part of this story ourselves. That’s why we ask everyone the same questions, interview each other and have sensitive chapters checked by someone who wasn’t involved.",
+    fotoFolgt: "Photo coming",
+  },
+  teilen: {
+    titel: "Pass it on",
+    text: "Know people who used to jump and aren’t in any group chat anymore? Send them the link. We still have little from Romandie and Ticino, and women from the early years are missing from almost every source.",
+    knopf: "Share on WhatsApp",
+    nachricht:
+      "Hey, Ramon and Pierre are making a documentary about parkour in Switzerland and are looking for stories and old footage. Take part: https://laeuft.ch/parkour/en",
+  },
+  partner: {
+    titel: "Partners and funders",
+    text: "We’re making this documentary independently and are looking for a Swiss production company as a partner. Municipalities, foundations and brands that want to support us can contact Pierre. Whoever gives money has no say over the content. From the scene, we don’t want money, we want material.",
+  },
+  fuss: {
+    datenschutz: `What you send here is stored privately in the EU. Only Ramon and Pierre can see it, and we use it only for the documentary. To have something deleted, write to ${KONTAKT_MAIL}.`,
+    impressum: "Imprint",
+    arbeitstitel: "«Parkour in Switzerland», a documentary by Ramon Siegenthaler and Pierre Biege.",
+  },
+};
+
+export const TEXTE: Record<Sprache, Texte> = { de, fr, en };

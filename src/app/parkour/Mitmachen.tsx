@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { TEXTE, type Art, type Sprache } from "./texte";
+import { KONTAKT_MAIL, TEXTE, type Art, type Sprache } from "./texte";
 import { ZUSATZ } from "./texte-zusatz";
 import { Kante, SPRUNG } from "./Bewegung";
 import { dateiErlaubt } from "./dateitypen";
@@ -223,7 +223,13 @@ export default function Mitmachen({ sprache, maxMb }: { sprache: Sprache; maxMb:
     <section id="mitmachen" ref={abschnitt} className="pk-mit" aria-labelledby="pk-mit-titel">
       <div className="pk-rahmen">
         <Kante id="pk-mit-titel" zeilen={[m.titel]} className="pk-h2 pk-h2-riesig" />
-        <p className="pk-mit-intro">{m.intro}</p>
+        <p className="pk-mit-intro">
+          {m.intro} {m.perMail}{" "}
+          <a className="pk-mail" href={`mailto:${KONTAKT_MAIL}`}>
+            {KONTAKT_MAIL}
+          </a>
+          .
+        </p>
 
         <div className="pk-wege" role="tablist" aria-label={m.titel}>
           {ARTEN.map((a) => (

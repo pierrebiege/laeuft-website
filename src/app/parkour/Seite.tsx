@@ -21,6 +21,12 @@ const MAX_MB = Number(process.env.PARKOUR_MAX_MB) || 50;
 const HERO_VIDEO: string | undefined = undefined;
 const HERO_POSTER: string | undefined = undefined;
 
+const SPRACHEN: [Sprache, string][] = [
+  ["de", "/parkour"],
+  ["fr", "/parkour/fr"],
+  ["en", "/parkour/en"],
+];
+
 export default function Seite({ sprache }: { sprache: Sprache }) {
   const t = TEXTE[sprache];
   const z = ZUSATZ[sprache];
@@ -50,20 +56,16 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             </a>
             <a href="#mitmachen">{t.nav.mitmachen}</a>
             <span className="pk-sprachen">
-              {sprache === "de" ? (
-                <>
-                  <span aria-current="page">DE</span>
-                  <Link href={t.andererPfad} hrefLang="fr" lang="fr">
-                    FR
+              {SPRACHEN.map(([code, pfad]) =>
+                code === sprache ? (
+                  <span key={code} aria-current="page">
+                    {code.toUpperCase()}
+                  </span>
+                ) : (
+                  <Link key={code} href={pfad} hrefLang={code} lang={code}>
+                    {code.toUpperCase()}
                   </Link>
-                </>
-              ) : (
-                <>
-                  <Link href={t.andererPfad} hrefLang="de" lang="de">
-                    DE
-                  </Link>
-                  <span aria-current="page">FR</span>
-                </>
+                ),
               )}
             </span>
           </nav>

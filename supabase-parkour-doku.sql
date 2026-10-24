@@ -8,7 +8,7 @@ create table if not exists public.parkour_beitraege (
   id                uuid primary key default gen_random_uuid(),
   erstellt_am       timestamptz not null default now(),
   art               text not null check (art in ('video', 'material', 'hinweis')),
-  sprache           text not null default 'de' check (sprache in ('de', 'fr')),
+  sprache           text not null default 'de' check (sprache in ('de', 'fr', 'en')),
   name              text not null,
   kontakt           text not null,          -- E-Mail oder Instagram
   gruppe_ort        text,

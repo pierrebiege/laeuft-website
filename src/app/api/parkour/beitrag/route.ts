@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
 
   const art = sauber(k.art, 20);
   if (art !== "video" && art !== "material" && art !== "hinweis") return fehler("Unbekannte Art.");
-  const sprache = sauber(k.sprache, 2) === "fr" ? "fr" : "de";
+  const spracheRoh = sauber(k.sprache, 2);
+  const sprache = spracheRoh === "fr" || spracheRoh === "en" ? spracheRoh : "de";
 
   const name = sauber(k.name, 120);
   const kontakt = sauber(k.kontakt, 160);
@@ -63,7 +64,9 @@ export async function POST(request: NextRequest) {
 
   const link = sauber(k.link, 1000);
   if (link && !/^https?:\/\//i.test(link) && !/^[\w.-]+\.[a-z]{2,}\//i.test(link)) {
-    return fehler(sprache === "fr" ? "Le lien ne semble pas correct." : "Der Link sieht nicht richtig aus.");
+    return fehler(
+      { de: "Der Link sieht nicht richtig aus.", fr: "Le lien ne semble pas correct.", en: "The link doesn’t look right." }[sprache],
+    );
   }
   const offline = art === "material" && k.offline_material === true;
   const hinweis = art === "hinweis" ? sauber(k.hinweis, 6000) : "";

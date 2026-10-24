@@ -2292,3 +2292,14 @@
     margin: 36px var(--rand) 0 calc(var(--rand) + 8vw);
   }
 }
+
+/* Lange Titelwörter (z. B. «Switzerland») kleiner, damit nichts abgeschnitten wird. */
+.pk-h1.pk-h1-lang {
+  font-size: clamp(72px, 11.2vw, 200px);
+}
+
+@media (max-width: 760px) {
+  .pk-h1.pk-h1-lang {
+    font-size: 16.5vw;
+  }
+}

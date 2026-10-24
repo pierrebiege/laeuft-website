@@ -19,11 +19,12 @@ export function metadaten(sprache: Sprache): Metadata {
     description: t.meta.beschreibung,
     alternates: {
       canonical: t.pfad,
-      languages: { "de-CH": "/parkour", "fr-CH": "/parkour/fr" },
+      /* Für die Suche ist Englisch die Hauptfassung (x-default). */
+      languages: { "de-CH": "/parkour", "fr-CH": "/parkour/fr", en: "/parkour/en", "x-default": "/parkour/en" },
     },
     openGraph: {
       type: "website",
-      locale: sprache === "de" ? "de_CH" : "fr_CH",
+      locale: { de: "de_CH", fr: "fr_CH", en: "en_GB" }[sprache],
       url: t.pfad,
       siteName: t.meta.titel,
       title: t.meta.ogTitel,

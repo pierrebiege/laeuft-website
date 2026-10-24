@@ -82,7 +82,9 @@ export default function Hero({ zeilen, unter, bildLabel, sprache, videoSrc, vide
       )}
 
       <div className="pk-rahmen pk-hero-innen">
-        <h1 className="pk-h1" aria-label={zeilen.map((z) => (z.klein ? `${z.klein} ${z.gross}` : z.gross)).join(" ")}>
+        <h1
+          className={`pk-h1${Math.max(...zeilen.map((z) => z.gross.length)) > 9 ? " pk-h1-lang" : ""}`}
+          aria-label={zeilen.map((z) => (z.klein ? `${z.klein} ${z.gross}` : z.gross)).join(" ")}>
           {zeilen.map((z, i) => (
             <motion.span
               key={i}
