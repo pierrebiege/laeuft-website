@@ -142,7 +142,7 @@ const de: Texte = {
       {
         von: 2000,
         bis: 2004,
-        text: "Ein paar Sekunden Fernsehen, 2001 dann der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
+        text: "2000 sieht Roger in Münsingen eine Doku im Fernsehen und geht mit Ramon raus. 2001 kommt der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
       },
       {
         von: 2005,
@@ -166,7 +166,7 @@ const de: Texte = {
       },
     ],
     legende:
-      "Ein Punkt erscheint im Jahr der ersten Spur, die wir belegen können, etwa ein Video oder ein Zeitungsbericht. An den meisten Orten hat es früher angefangen.",
+      "Ein Punkt erscheint im Jahr der ersten Spur, die wir belegen können, etwa ein Video, ein Zeitungsbericht oder jemand, der dabei war. An den meisten Orten hat es früher angefangen.",
     ende: "Die Karte hat Lücken. Wo hast du trainiert, und seit wann?",
     endeKnopf: "Sag es uns",
     keinePunkte: "Noch keine Spur",
@@ -175,7 +175,7 @@ const de: Texte = {
   },
   generationen: {
     titel: "Dieselben Fragen an alle.",
-    text: "Wer um 2000 angefangen hat, bekommt dieselben neun Fragen wie jemand, der letztes Jahr in der Halle angefangen hat. Im Film schneiden wir die Antworten nebeneinander.",
+    text: "Wer um 2000 angefangen hat, bekommt dieselben neun Fragen wie jemand, der letztes Jahr in der Halle angefangen hat. Im Film schneiden wir die Antworten nebeneinander. Wir brauchen deine echte Sicht. Wenn du heute anders über Parkour denkst als damals, ist das kein Problem. Erzähl uns beides.",
   },
   mitmachen: {
     titel: "Mach mit.",
@@ -346,7 +346,7 @@ const fr: Texte = {
       {
         von: 2000,
         bis: 2004,
-        text: "Quelques secondes à la télé, puis le film « Yamakasi » en 2001. Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
+        text: "En 2000, à Münsingen, Roger voit un documentaire à la télé et sort s’entraîner avec Ramon. En 2001 sort le film « Yamakasi ». Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
       },
       {
         von: 2005,
@@ -370,7 +370,7 @@ const fr: Texte = {
       },
     ],
     legende:
-      "Un point apparaît l’année de la première trace qu’on peut prouver, par exemple une vidéo ou un article de journal. Dans la plupart des endroits, ça a commencé plus tôt.",
+      "Un point apparaît l’année de la première trace qu’on peut prouver, par exemple une vidéo, un article de journal ou quelqu’un qui y était. Dans la plupart des endroits, ça a commencé plus tôt.",
     ende: "La carte a des trous. Tu t’entraînais où, et depuis quand ?",
     endeKnopf: "Dis-nous",
     keinePunkte: "Encore aucune trace",
@@ -392,7 +392,7 @@ const fr: Texte = {
   },
   generationen: {
     titel: "Les mêmes questions pour tout le monde.",
-    text: "Celui qui a commencé vers 2000 reçoit les neuf mêmes questions que celle qui a commencé l’an dernier en salle. Dans le film, on met les réponses côte à côte.",
+    text: "Celui qui a commencé vers 2000 reçoit les neuf mêmes questions que celle qui a commencé l’an dernier en salle. Dans le film, on met les réponses côte à côte. On a besoin de ton vrai regard. Si tu vois le parkour autrement aujourd’hui qu’à l’époque, aucun problème. Raconte-nous les deux.",
   },
   mitmachen: {
     titel: "Participe.",

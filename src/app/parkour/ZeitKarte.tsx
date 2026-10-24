@@ -115,7 +115,7 @@ export default function ZeitKarte({ sprache }: { sprache: Sprache }) {
           </p>
           <p className="pk-zeit-zahl">
             <span className="pk-zeit-anzahl">{z.karte.orte(anzahl)}</span>
-            <span className="pk-zeit-orte">{neu.length ? `+ ${neu.join(", ")}` : jahr < 2005 ? t.karte.keinePunkte : " "}</span>
+            <span className="pk-zeit-orte">{neu.length ? `+ ${neu.join(", ")}` : anzahl === 0 ? t.karte.keinePunkte : " "}</span>
           </p>
           {ruhig ? (
             t.karte.epochen.map((e) => (

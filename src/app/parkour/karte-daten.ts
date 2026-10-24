@@ -8,7 +8,7 @@ export const SEEN = "M604.1,156.4L602.6,156.0L600.8,151.0L594.3,142.9L595.0,140.
 export type Ort = { name: string; jahr: number; x: number; y: number };
 // Jeder Ort mit dem Beleg aus DOSSIER.md (Zeitleiste/Gruppen-Tabelle). Jahr = frühester belegter Nachweis.
 export const ORTE: Ort[] = [
-  { name: "Münsingen", jahr: 2005, x: 354.1, y: 300.8 }, // pkm.ch im Netz ab 14.04.2005 (DOSSIER Zeitleiste, Gruppen Bern)
+  { name: "Münsingen", jahr: 2000, x: 354.1, y: 300.8 }, // Ramon (Zeitzeuge, via Pierre 24.10.2026): 2000 sieht Roger die TV-Doku, geht mit Ramon raus; pkm.ch ab 14.04.2005
   { name: "Basel", jahr: 2005, x: 360.0, y: 80.6 }, // parkour.ch-Kreis Münsingen/Basel ab 2005 (DOSSIER Kern 2, Gruppen Basel)
   { name: "Zürich", jahr: 2007, x: 569.5, y: 139.0 }, // YouTube «Le Parkour Zürich» 25.08.2007
   { name: "Tessin", jahr: 2007, x: 675.4, y: 518.5 }, // tio.ch 25.04.2014: Praxis im Tessin seit 2007 (Punkt bei Bellinzona)
