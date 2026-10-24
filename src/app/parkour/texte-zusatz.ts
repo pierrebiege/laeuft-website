@@ -39,8 +39,8 @@ export const ZUSATZ: Record<Sprache, Zusatz> = {
       pflicht: "Pflicht",
     },
     doku: {
-      tvKasten: "Münsingen, um 2000",
-      tvZeile: "Ein paar Sekunden auf ARTE: Einer springt über ein Geländer. Roger geht raus und probiert es.",
+      tvKasten: "Wo alles anfängt",
+      tvZeile: "Wann hast du zum ersten Mal Parkour gesehen? Für die einen waren es ein paar Sekunden im Fernsehen, für andere ein Video auf dem Handy.",
       kapitelTitel: "Der Film in Kapiteln",
       kapitel: [
         { nummer: "Prolog", jahre: "heute", titel: "Zwei Generationen", text: "Einer über 40 und eine Jugendliche springen dieselbe Linie. Dann die erste Frage." },
@@ -74,8 +74,8 @@ export const ZUSATZ: Record<Sprache, Zusatz> = {
       pflicht: "Obligatoire",
     },
     doku: {
-      tvKasten: "Münsingen, vers 2000",
-      tvZeile: "Quelques secondes sur ARTE : quelqu’un saute par-dessus une barrière. Roger sort et essaie.",
+      tvKasten: "Là où tout commence",
+      tvZeile: "Quand as-tu vu du parkour pour la première fois ? Pour certains, quelques secondes à la télé, pour d’autres une vidéo sur le natel.",
       kapitelTitel: "Le film en chapitres",
       kapitel: [
         { nummer: "Prologue", jahre: "aujourd’hui", titel: "Deux générations", text: "Un quadragénaire et une ado sautent la même ligne. Puis la première question." },
@@ -109,8 +109,8 @@ export const ZUSATZ: Record<Sprache, Zusatz> = {
       pflicht: "Required",
     },
     doku: {
-      tvKasten: "Münsingen, around 2000",
-      tvZeile: "A few seconds on ARTE: someone jumps over a railing. Roger goes outside and tries it.",
+      tvKasten: "Where it starts",
+      tvZeile: "When did you first see parkour? For some it was a few seconds on TV, for others a video on their phone.",
       kapitelTitel: "The film in chapters",
       kapitel: [
         { nummer: "Prologue", jahre: "today", titel: "Two generations", text: "Someone over 40 and a teenager jump the same line. Then the first question." },

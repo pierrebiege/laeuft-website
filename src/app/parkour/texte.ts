@@ -151,7 +151,7 @@ const de: Texte = {
       {
         von: 2000,
         bis: 2004,
-        text: "Um 2000 sieht Roger in Münsingen auf ARTE einen kurzen Beitrag aus Frankreich und geht mit Ramon raus. 2001 kommt der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
+        text: "Um 2000 sieht Roger Widmer in Münsingen einen kurzen Beitrag auf ARTE und fängt mit Ramon an zu trainieren. 2001 kommt der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
       },
       {
         von: 2005,
@@ -377,7 +377,7 @@ const fr: Texte = {
       {
         von: 2000,
         bis: 2004,
-        text: "Vers 2000, à Münsingen, Roger voit sur ARTE un court sujet venu de France et sort s’entraîner avec Ramon. En 2001 sort le film « Yamakasi ». Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
+        text: "Vers 2000, à Münsingen, Roger Widmer voit un court sujet sur ARTE et commence à s’entraîner avec Ramon. En 2001 sort le film « Yamakasi ». Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
       },
       {
         von: 2005,
@@ -618,7 +618,7 @@ const en: Texte = {
       {
         von: 2000,
         bis: 2004,
-        text: "Around 2000, in Münsingen, Roger sees a short clip from France on ARTE and goes out with Ramon. In 2001 the film «Yamakasi» comes out. Teenagers jump over walls and railings. No club, often not even a word for it. Hardly any videos from those years survive. If you were there, tell us.",
+        text: "Around 2000, in Münsingen, Roger Widmer sees a short clip on ARTE and starts training with Ramon. In 2001 the film «Yamakasi» comes out. Teenagers jump over walls and railings. No club, often not even a word for it. Hardly any videos from those years survive. If you were there, tell us.",
       },
       {
         von: 2005,
