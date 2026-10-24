@@ -1651,7 +1651,7 @@
   scroll-margin-top: 0;
 }
 
-/* Pierre gross links, Ramon versetzt rechts daneben: wie zwei Absätze. */
+/* Ramon gross links, Pierre kleiner und versetzt rechts daneben. */
 .pk-wir-raster {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
@@ -1664,7 +1664,7 @@
   margin: 0;
 }
 
-.pk-person-ramon {
+.pk-person-zwei {
   margin-top: clamp(80px, 16vw, 260px);
 }
 
@@ -1764,7 +1764,7 @@
   .pk-foto-gross {
     margin-right: 0;
   }
-  .pk-person-ramon {
+  .pk-person-zwei {
     margin: 0 0 0 14vw;
   }
   .pk-offen {

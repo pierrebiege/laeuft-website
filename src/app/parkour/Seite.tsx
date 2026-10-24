@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import KarteSvg from "./KarteSvg";
 import ZeitKarte from "./ZeitKarte";
 import Mitmachen from "./Mitmachen";
 import Hero from "./Hero";
@@ -210,41 +209,36 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           <div className="pk-rahmen">
             <Kante zeilen={[t.wir.titel]} className="pk-h2" />
             <div className="pk-wir-raster">
-              <Auftritt als="figure" className="pk-person pk-person-pierre">
+              <Auftritt als="figure" className="pk-person">
                 <div className="pk-foto pk-foto-gross">
+                  <span className="pk-foto-tusche" aria-hidden="true" />
+                  <Image
+                    src="/parkour/ramon-siegenthaler.jpg"
+                    alt="Ramon Siegenthaler"
+                    fill
+                    sizes="(max-width: 760px) 100vw, 58vw"
+                    style={{ objectFit: "cover", objectPosition: "50% 30%" }}
+                  />
+                </div>
+                <figcaption>
+                  <span className="pk-person-name">Ramon Siegenthaler</span>
+                  <span className="pk-person-text">{t.wir.ramon}</span>
+                </figcaption>
+              </Auftritt>
+              <Auftritt als="figure" className="pk-person pk-person-zwei" verzoegerung={0.15}>
+                <div className="pk-foto">
                   <span className="pk-foto-tusche" aria-hidden="true" />
                   <Image
                     src="/parkour/pierre-biege.jpg"
                     alt="Pierre Biege"
                     fill
-                    sizes="(max-width: 760px) 100vw, 58vw"
+                    sizes="(max-width: 760px) 86vw, 40vw"
                     style={{ objectFit: "cover", objectPosition: "50% 40%" }}
                   />
                 </div>
                 <figcaption>
                   <span className="pk-person-name">Pierre Biege</span>
                   <span className="pk-person-text">{t.wir.pierre}</span>
-                </figcaption>
-              </Auftritt>
-              <Auftritt als="figure" className="pk-person pk-person-ramon" verzoegerung={0.15}>
-                <div className="pk-foto pk-foto-karte">
-                  <span className="pk-foto-tusche" aria-hidden="true" />
-                  <span className="pk-foto-name" aria-hidden="true">
-                    Ramon
-                  </span>
-                  <KarteSvg
-                    nur={["Münsingen"]}
-                    ortsnamen={{ Münsingen: z.wir.ort.ramon }}
-                    ausschnitt={[150, 160, 420, 300]}
-                    zuschnitt
-                    className="pk-foto-svg"
-                    titel={z.wir.ort.ramon}
-                  />
-                  <span className="pk-foto-folgt">{t.wir.fotoFolgt}</span>
-                </div>
-                <figcaption>
-                  <span className="pk-person-name">Ramon Siegenthaler</span>
-                  <span className="pk-person-text">{t.wir.ramon}</span>
                 </figcaption>
               </Auftritt>
             </div>
