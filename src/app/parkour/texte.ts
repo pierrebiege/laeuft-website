@@ -122,11 +122,12 @@ const de: Texte = {
   pfad: "/parkour",
   andererPfad: "/parkour/fr",
   meta: {
-    titel: "Parkour in der Schweiz. Die Doku.",
+    titel: "Parkour in der Schweiz. Ein Dokumentarfilm.",
     beschreibung:
       "Ein Dokumentarfilm von Ramon Siegenthaler und Pierre Biege über die Pioniere der Schweizer Parkour-Szene und darüber, wie sich Parkour seit 2000 entwickelt hat. Wir suchen deine Geschichte und deine alten Videos.",
-    ogTitel: "Parkour in der Schweiz. Die Doku.",
-    ogZeile: "Wir machen einen Film über die Szene. Dafür brauchen wir deine Geschichte und deine alten Videos.",
+    ogTitel: "Mach mit bei der Doku «Parkour in der Schweiz»",
+    ogZeile:
+      "Von den ersten Sprüngen in Münsingen bis zur Abstimmung bei Swiss Olympic. Ramon Siegenthaler und Pierre Biege suchen deine Geschichte und dein altes Material.",
   },
   nav: { projekt: "Projekt", karte: "Karte", film: "Der Film", mitmachen: "Mitmachen", wir: "Wer wir sind" },
   hero: {
@@ -328,7 +329,7 @@ const de: Texte = {
     text: "Kennst du Leute, die früher gesprungen sind und heute in keinem Chat mehr sind? Schick ihnen den Link. Aus der Romandie und dem Tessin haben wir noch wenig, und Frauen aus den ersten Jahren fehlen in fast allen Quellen.",
     knopf: "Per WhatsApp teilen",
     nachricht:
-      "Hey, Ramon und Pierre machen eine Doku über Parkour in der Schweiz. Sie suchen alte Videos und Geschichten von früher: https://laeuft.ch/parkour",
+      "Hey, Ramon und Pierre machen eine Doku über Parkour in der Schweiz und suchen Geschichten und altes Material von früher. Mach mit: https://laeuft.ch/parkour",
   },
   partner: {
     titel: "Partner und Förderer",
@@ -346,11 +347,12 @@ const fr: Texte = {
   pfad: "/parkour/fr",
   andererPfad: "/parkour",
   meta: {
-    titel: "Le parkour en Suisse. Le documentaire.",
+    titel: "Le parkour en Suisse. Un documentaire.",
     beschreibung:
       "Un documentaire de Ramon Siegenthaler et Pierre Biege sur les pionniers de la scène suisse du parkour et sur la façon dont le parkour a évolué depuis 2000. On cherche ton histoire et tes vieilles vidéos.",
-    ogTitel: "Le parkour en Suisse. Le documentaire.",
-    ogZeile: "On fait un film sur la scène. Pour ça, il nous faut ton histoire et tes vieilles vidéos.",
+    ogTitel: "Participe au documentaire « Le parkour en Suisse »",
+    ogZeile:
+      "Des premiers sauts à Münsingen au vote de Swiss Olympic. Ramon Siegenthaler et Pierre Biege cherchent ton histoire et tes vieilles images.",
   },
   nav: { projekt: "Le projet", karte: "Carte", film: "Le film", mitmachen: "Participer", wir: "Qui on est" },
   hero: {
@@ -567,7 +569,7 @@ const fr: Texte = {
     text: "Tu connais des gens qui sautaient à l’époque et qui ne sont plus dans aucun groupe ? Envoie-leur le lien. De Romandie et du Tessin, on a encore peu de choses, et les femmes des premières années manquent dans presque toutes les sources.",
     knopf: "Partager sur WhatsApp",
     nachricht:
-      "Salut, Ramon et Pierre font un documentaire sur le parkour en Suisse. Ils cherchent des vieilles vidéos et des histoires de l’époque : https://laeuft.ch/parkour/fr",
+      "Salut, Ramon et Pierre font un documentaire sur le parkour en Suisse et cherchent des histoires et des vieilles images de l’époque. Participe : https://laeuft.ch/parkour/fr",
   },
   partner: {
     titel: "Partenaires et soutiens",
