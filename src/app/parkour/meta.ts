@@ -25,7 +25,7 @@ export function metadaten(sprache: Sprache): Metadata {
       type: "website",
       locale: sprache === "de" ? "de_CH" : "fr_CH",
       url: t.pfad,
-      siteName: "laeuft.ch",
+      siteName: t.meta.titel,
       title: t.meta.ogTitel,
       description: t.meta.ogZeile,
       images: [bild],

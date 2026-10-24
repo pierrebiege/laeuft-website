@@ -5,7 +5,7 @@
 
 export type Sprache = "de" | "fr";
 
-export const KONTAKT_MAIL = "pierre@laeuft.ch";
+export const KONTAKT_MAIL = "pierre@natural-athletics.ch";
 export const SEITEN_URL = "https://laeuft.ch/parkour";
 
 export type Art = "video" | "material" | "hinweis";

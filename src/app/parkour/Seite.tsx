@@ -265,8 +265,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           <p>{t.fuss.arbeitstitel}</p>
           <p className="pk-fuss-links">
             <a href={`mailto:${KONTAKT_MAIL}`}>{KONTAKT_MAIL}</a>
-            <a href="/impressum">{t.fuss.impressum}</a>
-            <span>laeuft.ch</span>
+            <a href="https://www.natural-athletics.ch/impressum">{t.fuss.impressum}</a>
+            <a href="https://www.natural-athletics.ch">natural-athletics.ch</a>
           </p>
         </div>
       </footer>
