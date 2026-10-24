@@ -25,7 +25,7 @@ export const ORTE: Ort[] = [
   { name: "Vernier", jahr: 2010, x: 29.7, y: 511.4 }, // Genève Traceurs Crew, Actu Vernier 04/2010
   { name: "Zofingen", jahr: 2010, x: 438.7, y: 167.6 }, // YouTube Freerunning Zofingen 14.04.2010
   { name: "Luzern", jahr: 2011, x: 518.5, y: 244.0 }, // Parkour Luzern 2010/2011 (W12) -> spätestens 2011
-  { name: "Oberwallis", jahr: 2011, x: 447.9, y: 479.7 }, // Parkourwallis-Showreel 26.08.2011 (Punkt bei Brig)
+  { name: "Oberwallis", jahr: 2006, x: 447.9, y: 479.7 }, // Pierre (Zeitzeuge, 24.10.2026): 2006 mit Freunden in Albinen angefangen, Visp ab 2009; Parkourwallis-Showreel 26.08.2011 (Punkt bei Brig)
   { name: "Biel", jahr: 2011, x: 285.1, y: 216.1 }, // BEWELUM, Videos ab 2011
   { name: "St. Gallen", jahr: 2014, x: 753.2, y: 123.9 }, // Parkour Family St. Gallen, ≤2014
   { name: "Sion", jahr: 2014, x: 309.7, y: 506.3 }, // Parkour Valais Sion–Sierre, ≤2014
