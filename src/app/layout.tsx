@@ -20,12 +20,12 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Läuft. | Websites, AI-Integration & digitale Systeme",
-  description: "Moderne Websites, KI-Integration und digitale Systeme für Schweizer Unternehmen. Wir optimieren Prozesse, automatisieren Workflows und bringen dein Business auf das nächste Level.",
-  keywords: ["Webdesign", "AI-Integration", "KI", "digitale Systeme", "Automatisierung", "Schweiz", "Wallis", "Websites", "Chatbot", "CRM"],
+  title: "Läuft. | Pierre Biege baut Apps und Websites",
+  description: "Eigene Apps, Konzept-Websites und Plattformen für Gemeinden. Gebaut von Pierre Biege mit KI-Agenten, in Albinen im Wallis.",
+  keywords: ["Apps", "Websites", "Agentic Coding", "KI-Agenten", "Gemeinde-Website", "Wallis", "Albinen", "Pierre Biege"],
   openGraph: {
-    title: "Läuft. | Websites, AI-Integration & digitale Systeme",
-    description: "Moderne Websites, KI-Integration und digitale Systeme für Schweizer Unternehmen. Prozesse optimieren, Workflows automatisieren.",
+    title: "Läuft. | Pierre Biege baut Apps und Websites",
+    description: "Eigene Apps, Konzept-Websites und Plattformen für Gemeinden. Gebaut mit KI-Agenten, in Albinen im Wallis.",
     locale: "de_CH",
     type: "website",
   },
