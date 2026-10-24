@@ -5,6 +5,7 @@ import ZeitKarte from "./ZeitKarte";
 import Mitmachen from "./Mitmachen";
 import Hero from "./Hero";
 import { Auftritt, Kante, Zaehler } from "./Bewegung";
+import { FernsehMoment, Kapitelband, SchnittAnSchnitt, Sprunglinie, Tusche } from "./Doku";
 import { ORTE } from "./karte-daten";
 import { KONTAKT_MAIL, TEXTE, type Sprache } from "./texte";
 import { ZUSATZ } from "./texte-zusatz";
@@ -29,6 +30,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
 
   return (
     <div className="pk" lang={t.htmlLang}>
+      <Tusche />
       <header className="pk-kopf">
         <div className="pk-rahmen pk-kopf-innen">
           <a href="#oben" className="pk-marke">
@@ -40,6 +42,9 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             </a>
             <a href="#karte" className="pk-nav-weit">
               {t.nav.karte}
+            </a>
+            <a href="#film" className="pk-nav-weit">
+              {t.nav.film}
             </a>
             <a href="#wir" className="pk-nav-weit">
               {t.nav.wir}
@@ -73,6 +78,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           sprache={sprache}
           videoSrc={HERO_VIDEO}
           videoPoster={HERO_POSTER}
+          moment={<FernsehMoment kasten={z.doku.tvKasten} zeile={z.doku.tvZeile} />}
           unter={
             <div className="pk-hero-text">
               <p className="pk-arbeitstitel">{t.hero.arbeitstitel}</p>
@@ -88,6 +94,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             </div>
           }
         />
+
+        <Sprunglinie art="gelaender" />
 
         <section id="projekt" className="pk-worum">
           <div className="pk-rahmen">
@@ -122,6 +130,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           </div>
         </section>
 
+        <Sprunglinie art="mauer" spiegeln />
+
         <ZeitKarte sprache={sprache} />
 
         <section className="pk-karte-ende">
@@ -133,6 +143,38 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           </div>
         </section>
 
+        <Sprunglinie art="luecke" />
+
+        <section id="film" className="pk-film">
+          <div className="pk-rahmen">
+            <div className="pk-film-kopf">
+              <Kante zeilen={[t.film.titel]} className="pk-h2" />
+              <Auftritt als="p" className="pk-film-text">
+                {t.film.text}
+              </Auftritt>
+            </div>
+            <h3 className="pk-h3 pk-kap-ueber">{z.doku.kapitelTitel}</h3>
+            <Kapitelband kapitel={z.doku.kapitel} />
+            <h3 className="pk-h3 pk-eck-ueber">{z.doku.eckTitel}</h3>
+            <dl className="pk-eck">
+              {t.film.eckdaten.map(([k, v], i) => (
+                <Auftritt key={k} className="pk-eck-zeile" verzoegerung={i * 0.05}>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </Auftritt>
+              ))}
+            </dl>
+            <div className="pk-regeln">
+              <h3 className="pk-h3">{t.film.regelnTitel}</h3>
+              <ul>
+                {t.film.regeln.map((regel) => (
+                  <li key={regel}>{regel}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <section className="pk-gen">
           <div className="pk-rahmen pk-gen-innen">
             <Kante zeilen={[t.generationen.titel]} className="pk-h2" />
@@ -140,7 +182,17 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
               {t.generationen.text}
             </Auftritt>
           </div>
+          <div className="pk-rahmen">
+            <SchnittAnSchnitt
+              frage={z.doku.sasFrage}
+              links={z.doku.sasLinks}
+              rechts={z.doku.sasRechts}
+              schnitt={z.doku.sasSchnitt}
+            />
+          </div>
         </section>
+
+        <Sprunglinie art="stufen" spiegeln />
 
         <Mitmachen sprache={sprache} maxMb={MAX_MB} />
 
@@ -160,6 +212,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             <div className="pk-wir-raster">
               <Auftritt als="figure" className="pk-person pk-person-pierre">
                 <div className="pk-foto pk-foto-gross">
+                  <span className="pk-foto-tusche" aria-hidden="true" />
                   <Image
                     src="/parkour/pierre-biege.jpg"
                     alt="Pierre Biege"
@@ -175,6 +228,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
               </Auftritt>
               <Auftritt als="figure" className="pk-person pk-person-ramon" verzoegerung={0.15}>
                 <div className="pk-foto pk-foto-karte">
+                  <span className="pk-foto-tusche" aria-hidden="true" />
                   <span className="pk-foto-name" aria-hidden="true">
                     Ramon
                   </span>

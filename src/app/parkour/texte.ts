@@ -17,7 +17,7 @@ export type Texte = {
   pfad: string;
   andererPfad: string;
   meta: { titel: string; beschreibung: string; ogTitel: string; ogZeile: string };
-  nav: { projekt: string; karte: string; mitmachen: string; wir: string };
+  nav: { projekt: string; karte: string; film: string; mitmachen: string; wir: string };
   hero: {
     titel: [string, string];
     arbeitstitel: string;
@@ -39,6 +39,13 @@ export type Texte = {
     keinePunkte: string;
     ortsnamen: Record<string, string>;
     zeitachse: string;
+  };
+  film: {
+    titel: string;
+    text: string;
+    eckdaten: [string, string][];
+    regelnTitel: string;
+    regeln: string[];
   };
   generationen: { titel: string; text: string };
   mitmachen: {
@@ -117,15 +124,15 @@ const de: Texte = {
   meta: {
     titel: "Parkour in der Schweiz. Die Doku.",
     beschreibung:
-      "Ramon Siegenthaler und Pierre Biege machen eine Doku über Parkour in der Schweiz, von den ersten Sprüngen um 2000 bis heute. Wir suchen deine Geschichte und deine alten Videos.",
+      "Ein Dokumentarfilm von Ramon Siegenthaler und Pierre Biege über die Pioniere der Schweizer Parkour-Szene und darüber, wie sich Parkour seit 2000 entwickelt hat. Wir suchen deine Geschichte und deine alten Videos.",
     ogTitel: "Parkour in der Schweiz. Die Doku.",
     ogZeile: "Wir machen einen Film über die Szene. Dafür brauchen wir deine Geschichte und deine alten Videos.",
   },
-  nav: { projekt: "Projekt", karte: "Karte", mitmachen: "Mitmachen", wir: "Wer wir sind" },
+  nav: { projekt: "Projekt", karte: "Karte", film: "Der Film", mitmachen: "Mitmachen", wir: "Wer wir sind" },
   hero: {
     titel: ["Parkour", "in der Schweiz"],
-    arbeitstitel: "Die Doku. Von Ramon Siegenthaler und Pierre Biege.",
-    satz: "Wir machen einen Film über die Leute, die hier seit gut 25 Jahren über Mauern springen. Dafür brauchen wir deine Geschichte und deine alten Videos.",
+    arbeitstitel: "Ein Dokumentarfilm von Ramon Siegenthaler und Pierre Biege. Arbeitstitel «Wem gehört Parkour?»",
+    satz: "Über die Pioniere der Schweizer Szene und darüber, wie sich Parkour seit 2000 entwickelt hat. Dafür brauchen wir deine Geschichte und deine alten Videos.",
     ctaGeschichte: "Deine Geschichte erzählen",
     ctaMaterial: "Altes Material schicken",
   },
@@ -133,16 +140,16 @@ const de: Texte = {
     titel: "Jede Crew gehört rein.",
     regionen: ["Deutschschweiz", "Romandie", "Tessin", "Wallis", "Graubünden"],
     text1:
-      "Die grossen Vereine gehören rein. Die Crew aus drei Leuten, die es längst nicht mehr gibt, auch. Wir erzählen von den ersten Sprüngen um 2000 bis zum 20. November 2026. An dem Tag stimmt Swiss Olympic über die Aufnahme des Verbands ab.",
+      "Die Hauptfigur ist die Szene selbst, nicht eine Organisation und nicht eine einzelne Person. Zu Wort kommen die Pioniere, die heute über 40 sind, die Crews, die es längst nicht mehr gibt, und die Jungen, die in der Halle angefangen haben.",
     text2:
-      "Das letzte Wort hat bei uns niemand. Wenn sich zwei an dieselbe Sache verschieden erinnern, kommen beide Versionen in den Film.",
+      "Wir erzählen von den ersten Sprüngen um 2000 bis zum 20. November 2026. An dem Tag stimmt Swiss Olympic über die Aufnahme des Verbands ab. Und wir fragen: Was bleibt von Parkour, wenn es Sport wird?",
   },
   karte: {
     epochen: [
       {
         von: 2000,
         bis: 2004,
-        text: "2000 sieht Roger in Münsingen eine Doku im Fernsehen und geht mit Ramon raus. 2001 kommt der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
+        text: "Um 2000 sieht Roger in Münsingen auf ARTE einen kurzen Beitrag aus Frankreich und geht mit Ramon raus. 2001 kommt der Film «Yamakasi». Jugendliche springen über Mauern und Geländer. Einen Verein gibt es nicht, oft nicht mal ein Wort dafür. Aus diesen Jahren sind kaum Videos übrig. Wenn du dabei warst, erzähl es uns.",
       },
       {
         von: 2005,
@@ -173,9 +180,27 @@ const de: Texte = {
     ortsnamen: {},
     zeitachse: "Zeitachse 2000 bis 2026",
   },
+  film: {
+    titel: "Der Film.",
+    text: "Ein Dokumentarfilm aus Interviews, dem Archiv der Szene und Animation, chronologisch von 2000 bis November 2026. Am Anfang steht Münsingen. Danach entsteht Parkour an vielen Orten gleichzeitig, oft ohne dass man voneinander weiss.",
+    eckdaten: [
+      ["Länge", "Rund 75 Minuten, auch als Serie in vier Folgen"],
+      ["Sprachen", "Deutsch, Französisch und Italienisch im Original, mit Untertiteln"],
+      ["Drehbeginn", "November 2026"],
+      ["Premiere", "Ziel ist Anfang 2028, danach Vorführungen in den Städten der Karte"],
+      ["Produktion", "Wir suchen eine Schweizer Produktionsfirma als Partner"],
+    ],
+    regelnTitel: "Unsere Regeln",
+    regeln: [
+      "Jede Jahreszahl und jeder Ort hat einen Beleg. Was nicht belegt ist, kommt nicht als Fakt in den Film.",
+      "Wer etwas über sich selbst sagt, bekommt im Bild ein «laut …».",
+      "Erinnern sich zwei verschieden, zeigen wir beide Versionen. Kein Off-Kommentar entscheidet.",
+      "Wer den Film unterstützt, redet beim Inhalt nicht mit.",
+    ],
+  },
   generationen: {
-    titel: "Dieselben Fragen an alle.",
-    text: "Wer um 2000 angefangen hat, bekommt dieselben neun Fragen wie jemand, der letztes Jahr in der Halle angefangen hat. Im Film schneiden wir die Antworten nebeneinander. Wir brauchen deine echte Sicht. Wenn du heute anders über Parkour denkst als damals, ist das kein Problem. Erzähl uns beides.",
+    titel: "Zehn Fragen an alle.",
+    text: "Wer um 2000 angefangen hat, bekommt dieselben zehn Fragen wie jemand, der letztes Jahr in der Halle angefangen hat. Gleicher Wortlaut, gleicher Bildausschnitt. Im Film schneiden wir die Antworten nebeneinander, und am Schluss zeigt jede Person die erste Bewegung, die sie gelernt hat. Wir brauchen deine echte Sicht, auch wenn du heute anders über Parkour denkst als damals.",
   },
   mitmachen: {
     titel: "Mach mit.",
@@ -195,12 +220,13 @@ const de: Texte = {
       },
     },
     video: {
-      fragenTitel: "Neun Fragen",
+      fragenTitel: "Zehn Fragen",
       fragen: [
         "Wann und wo hast du zum ersten Mal Parkour gesehen? Was genau war es?",
         "Wo war dein erster Spot? Gibt es ihn noch?",
         "Mit wem hast du angefangen? Was machen die Leute heute?",
         "Was ist Parkour für dich? In einem Satz.",
+        "Was unterscheidet Parkour von anderen Sportarten?",
         "Gehört Wettkampf zu Parkour?",
         "Was weisst du über die, die vor dir da waren? Oder was denkst du über die, die nach dir kamen?",
         "Was hat dich Parkour gekostet? Und was hat es dir gegeben?",
@@ -290,22 +316,23 @@ const de: Texte = {
   wir: {
     titel: "Wer wir sind",
     ramon:
-      "Ramon trainiert seit Anfang der 2000er-Jahre. Heute führt er in Münsingen Black Panther Athletics.",
-    pierre: "Pierre hat 2006 im Wallis angefangen. Heute führt er im Oberwallis Natural Athletics.",
+      "Ramon trainiert seit 2000 in Münsingen und hat dort PKM, Parkour Münsingen, mitgegründet. Seit 2006 leitet er Trainings. 2026 hat er Black Panther Athletics gegründet.",
+    pierre:
+      "Pierre hat 2006 im Wallis angefangen, 2011 entstand mit Patrick Hunziker das Showreel von Parkourwallis. Heute führt er Natural Athletics im Oberwallis und dreht, schneidet und animiert selbst.",
     offenlegung:
-      "Wir sind selbst Teil dieser Geschichte. Viele von euch kennen wir von Jams und vom Training. Deshalb stellen wir jeder Gruppe, die wir finden, dieselben Fragen.",
+      "Wir sind selbst Teil dieser Geschichte. Darum stellen wir allen dieselben Fragen, interviewen uns gegenseitig und lassen heikle Kapitel von jemandem gegenlesen, der nicht dabei war.",
     fotoFolgt: "Foto folgt",
   },
   teilen: {
     titel: "Weitersagen",
-    text: "Kennst du Leute, die früher gesprungen sind und heute in keinem Chat mehr sind? Schick ihnen den Link. Aus der Romandie und dem Tessin haben wir noch wenig.",
+    text: "Kennst du Leute, die früher gesprungen sind und heute in keinem Chat mehr sind? Schick ihnen den Link. Aus der Romandie und dem Tessin haben wir noch wenig, und Frauen aus den ersten Jahren fehlen in fast allen Quellen.",
     knopf: "Per WhatsApp teilen",
     nachricht:
       "Hey, Ramon und Pierre machen eine Doku über Parkour in der Schweiz. Sie suchen alte Videos und Geschichten von früher: https://laeuft.ch/parkour",
   },
   partner: {
     titel: "Partner und Förderer",
-    text: "Wir machen die Doku unabhängig. Gemeinden, Stiftungen und Marken, die uns unterstützen wollen, melden sich bei Pierre. Wer Geld gibt, redet beim Inhalt nicht mit.",
+    text: "Wir machen die Doku unabhängig und suchen eine Schweizer Produktionsfirma als Partner. Gemeinden, Stiftungen und Marken, die uns unterstützen wollen, melden sich bei Pierre. Wer Geld gibt, redet beim Inhalt nicht mit. Von der Szene wollen wir kein Geld, sondern Material.",
   },
   fuss: {
     datenschutz: `Was du hier schickst, liegt in einem privaten Speicher in der EU. Sehen können es nur Ramon und Pierre, und wir nutzen es nur für die Doku. Willst du etwas löschen lassen, schreib an ${KONTAKT_MAIL}.`,
@@ -321,15 +348,15 @@ const fr: Texte = {
   meta: {
     titel: "Le parkour en Suisse. Le documentaire.",
     beschreibung:
-      "Ramon Siegenthaler et Pierre Biege font un documentaire sur le parkour en Suisse, des premiers sauts vers 2000 à aujourd’hui. On cherche ton histoire et tes vieilles vidéos.",
+      "Un documentaire de Ramon Siegenthaler et Pierre Biege sur les pionniers de la scène suisse du parkour et sur la façon dont le parkour a évolué depuis 2000. On cherche ton histoire et tes vieilles vidéos.",
     ogTitel: "Le parkour en Suisse. Le documentaire.",
     ogZeile: "On fait un film sur la scène. Pour ça, il nous faut ton histoire et tes vieilles vidéos.",
   },
-  nav: { projekt: "Le projet", karte: "Carte", mitmachen: "Participer", wir: "Qui on est" },
+  nav: { projekt: "Le projet", karte: "Carte", film: "Le film", mitmachen: "Participer", wir: "Qui on est" },
   hero: {
     titel: ["Le parkour", "en Suisse"],
-    arbeitstitel: "Le documentaire. Par Ramon Siegenthaler et Pierre Biege.",
-    satz: "On fait un film sur les gens qui sautent les murs d’ici depuis plus de 25 ans. Pour ça, il nous faut ton histoire et tes vieilles vidéos.",
+    arbeitstitel: "Un documentaire de Ramon Siegenthaler et Pierre Biege. Titre de travail « À qui appartient le parkour ? »",
+    satz: "Sur les pionniers de la scène suisse et sur la façon dont le parkour a évolué depuis 2000. Pour ça, il nous faut ton histoire et tes vieilles vidéos.",
     ctaGeschichte: "Raconter ton histoire",
     ctaMaterial: "Envoyer du vieux matos",
   },
@@ -337,16 +364,16 @@ const fr: Texte = {
     titel: "Chaque crew a sa place.",
     regionen: ["Suisse alémanique", "Romandie", "Tessin", "Valais", "Grisons"],
     text1:
-      "Les grosses associations sont dedans. La crew de trois potes qui n’existe plus depuis longtemps aussi. On raconte tout, des premiers sauts vers 2000 jusqu’au 20 novembre 2026. Ce jour-là, Swiss Olympic vote sur l’admission de la fédération.",
+      "Le personnage principal, c’est la scène elle-même, pas une organisation ni une seule personne. On donne la parole aux pionniers qui ont aujourd’hui passé la quarantaine, aux crews qui n’existent plus depuis longtemps et aux jeunes qui ont commencé en salle.",
     text2:
-      "Chez nous, personne n’a le dernier mot. Quand deux personnes se souviennent autrement de la même chose, les deux versions vont dans le film.",
+      "On raconte tout, des premiers sauts vers 2000 jusqu’au 20 novembre 2026. Ce jour-là, Swiss Olympic vote sur l’admission de la fédération. Et on pose la question : que reste-t-il du parkour quand il devient un sport ?",
   },
   karte: {
     epochen: [
       {
         von: 2000,
         bis: 2004,
-        text: "En 2000, à Münsingen, Roger voit un documentaire à la télé et sort s’entraîner avec Ramon. En 2001 sort le film « Yamakasi ». Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
+        text: "Vers 2000, à Münsingen, Roger voit sur ARTE un court sujet venu de France et sort s’entraîner avec Ramon. En 2001 sort le film « Yamakasi ». Des jeunes sautent par-dessus les murs et les barrières. Pas d’association, souvent même pas de mot pour ça. De ces années-là, il ne reste presque rien en vidéo. Si tu y étais, raconte-nous.",
       },
       {
         von: 2005,
@@ -390,9 +417,27 @@ const fr: Texte = {
     },
     zeitachse: "Ligne du temps de 2000 à 2026",
   },
+  film: {
+    titel: "Le film.",
+    text: "Un documentaire fait d’interviews, des archives de la scène et d’animation, raconté dans l’ordre de 2000 à novembre 2026. Au début, il y a Münsingen. Ensuite, le parkour naît à plein d’endroits en même temps, souvent sans qu’on sache les uns des autres.",
+    eckdaten: [
+      ["Durée", "Environ 75 minutes, aussi en série de quatre épisodes"],
+      ["Langues", "Allemand, français et italien en version originale, avec sous-titres"],
+      ["Début du tournage", "Novembre 2026"],
+      ["Première", "Objectif début 2028, puis des projections dans les villes de la carte"],
+      ["Production", "On cherche une société de production suisse comme partenaire"],
+    ],
+    regelnTitel: "Nos règles",
+    regeln: [
+      "Chaque année et chaque lieu a une source. Ce qui n’est pas prouvé n’entre pas dans le film comme un fait.",
+      "Quand quelqu’un parle de lui-même, on l’indique à l’écran par un « selon … ».",
+      "Quand deux personnes se souviennent autrement, on montre les deux versions. Aucune voix off ne tranche.",
+      "Qui soutient le film n’a pas son mot à dire sur le contenu.",
+    ],
+  },
   generationen: {
-    titel: "Les mêmes questions pour tout le monde.",
-    text: "Celui qui a commencé vers 2000 reçoit les neuf mêmes questions que celle qui a commencé l’an dernier en salle. Dans le film, on met les réponses côte à côte. On a besoin de ton vrai regard. Si tu vois le parkour autrement aujourd’hui qu’à l’époque, aucun problème. Raconte-nous les deux.",
+    titel: "Dix questions pour tout le monde.",
+    text: "Celui qui a commencé vers 2000 reçoit les dix mêmes questions que celle qui a commencé l’an dernier en salle. Même formulation, même cadrage. Dans le film, on met les réponses côte à côte, et à la fin chaque personne montre le premier mouvement qu’elle a appris. On a besoin de ton vrai regard, même si tu vois le parkour autrement aujourd’hui qu’à l’époque.",
   },
   mitmachen: {
     titel: "Participe.",
@@ -412,12 +457,13 @@ const fr: Texte = {
       },
     },
     video: {
-      fragenTitel: "Neuf questions",
+      fragenTitel: "Dix questions",
       fragen: [
         "Quand et où as-tu vu du parkour pour la première fois ? C’était quoi, exactement ?",
         "C’était où, ton premier spot ? Il existe encore ?",
         "Avec qui tu as commencé ? Qu’est-ce qu’ils font aujourd’hui ?",
         "C’est quoi, le parkour, pour toi ? En une phrase.",
+        "Qu’est-ce qui distingue le parkour des autres sports ?",
         "La compétition, ça fait partie du parkour ?",
         "Qu’est-ce que tu sais de ceux qui étaient là avant toi ? Ou qu’est-ce que tu penses de ceux qui sont arrivés après ?",
         "Qu’est-ce que le parkour t’a coûté ? Et qu’est-ce qu’il t’a donné ?",
@@ -508,22 +554,24 @@ const fr: Texte = {
   },
   wir: {
     titel: "Qui on est",
-    ramon: "Ramon s’entraîne depuis le début des années 2000. Aujourd’hui, il dirige Black Panther Athletics à Münsingen.",
-    pierre: "Pierre a commencé en 2006 en Valais. Aujourd’hui, il dirige Natural Athletics dans le Haut-Valais.",
+    ramon:
+      "Ramon s’entraîne depuis 2000 à Münsingen, où il a cofondé PKM, Parkour Münsingen. Il donne des entraînements depuis 2006. En 2026, il a fondé Black Panther Athletics.",
+    pierre:
+      "Pierre a commencé en 2006 en Valais. En 2011, il a tourné avec Patrick Hunziker le showreel de Parkourwallis. Aujourd’hui, il dirige Natural Athletics dans le Haut-Valais et filme, monte et anime lui-même.",
     offenlegung:
-      "On fait nous-mêmes partie de cette histoire. Beaucoup d’entre vous, on vous connaît des jams et de l’entraînement. C’est pour ça qu’on pose les mêmes questions à chaque groupe qu’on trouve.",
+      "On fait nous-mêmes partie de cette histoire. C’est pour ça qu’on pose les mêmes questions à tout le monde, qu’on s’interviewe l’un l’autre et qu’on fait relire les chapitres sensibles par quelqu’un qui n’y était pas.",
     fotoFolgt: "Photo à venir",
   },
   teilen: {
     titel: "Fais tourner",
-    text: "Tu connais des gens qui sautaient à l’époque et qui ne sont plus dans aucun groupe ? Envoie-leur le lien. De Romandie et du Tessin, on a encore peu de choses.",
+    text: "Tu connais des gens qui sautaient à l’époque et qui ne sont plus dans aucun groupe ? Envoie-leur le lien. De Romandie et du Tessin, on a encore peu de choses, et les femmes des premières années manquent dans presque toutes les sources.",
     knopf: "Partager sur WhatsApp",
     nachricht:
       "Salut, Ramon et Pierre font un documentaire sur le parkour en Suisse. Ils cherchent des vieilles vidéos et des histoires de l’époque : https://laeuft.ch/parkour/fr",
   },
   partner: {
     titel: "Partenaires et soutiens",
-    text: "On fait ce documentaire en indépendants. Les communes, fondations et marques qui veulent nous soutenir écrivent à Pierre. Qui met de l’argent n’a pas son mot à dire sur le contenu.",
+    text: "On fait ce documentaire en indépendants et on cherche une société de production suisse comme partenaire. Les communes, fondations et marques qui veulent nous soutenir écrivent à Pierre. Qui met de l’argent n’a pas son mot à dire sur le contenu. De la scène, on ne veut pas d’argent, mais du matériel.",
   },
   fuss: {
     datenschutz: `Ce que tu envoies ici est stocké dans un espace privé dans l’UE. Seuls Ramon et Pierre y ont accès, et on l’utilise uniquement pour le documentaire. Pour faire supprimer quelque chose, écris à ${KONTAKT_MAIL}.`,

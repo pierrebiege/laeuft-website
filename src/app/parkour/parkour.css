@@ -945,6 +945,88 @@
   gap: 28px;
 }
 
+/* ---------- Der Film ---------- */
+
+.pk-film {
+  padding: clamp(96px, 13vw, 180px) 0 clamp(24px, 4vw, 48px);
+}
+
+.pk-film-kopf {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: clamp(24px, 5vw, 80px);
+  align-items: end;
+}
+
+.pk-film-text {
+  margin: 0;
+  font-size: clamp(18px, 1.5vw, 21px);
+}
+
+.pk-eck {
+  margin: clamp(48px, 7vw, 96px) 0 0;
+  border-top: 3px solid var(--tinte);
+}
+
+.pk-eck-zeile {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 8px clamp(24px, 4vw, 56px);
+  padding: 18px 0;
+  border-bottom: 1px solid var(--linie);
+}
+
+.pk-eck dt {
+  font-weight: 800;
+  font-variation-settings: var(--schmal);
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.1;
+}
+
+.pk-eck dd {
+  margin: 0;
+  font-size: clamp(17px, 1.4vw, 20px);
+}
+
+.pk-regeln {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 16px clamp(24px, 4vw, 56px);
+  margin-top: clamp(48px, 6vw, 80px);
+}
+
+.pk-regeln ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+  font-size: clamp(17px, 1.4vw, 20px);
+}
+
+.pk-regeln li {
+  padding-left: 22px;
+  position: relative;
+}
+
+.pk-regeln li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 9px;
+  height: 9px;
+  background: var(--signal);
+}
+
+@media (max-width: 760px) {
+  .pk-film-kopf,
+  .pk-eck-zeile,
+  .pk-regeln {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Generationen ---------- */
 
 .pk-gen {
@@ -1754,4 +1836,459 @@
 
 .pk-fuss-links a {
   text-underline-offset: 3px;
+}
+
+/* ---------- Doku-Ebene: Tusche, Panels, Kästen ---------- */
+
+@keyframes pk-kochen {
+  0% { filter: url(#pk-tusche-1); }
+  33% { filter: url(#pk-tusche-2); }
+  66% { filter: url(#pk-tusche-3); }
+}
+
+.pk-panel {
+  --s: clamp(10px, 1.6vw, 22px);
+  position: relative;
+  display: block;
+}
+
+.pk-panel-tusche {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  filter: url(#pk-tusche-1);
+  pointer-events: none;
+}
+
+.pk-panel-form {
+  position: absolute;
+  inset: -3px;
+  background: var(--tinte);
+  clip-path: polygon(var(--s) 0, 100% 0, calc(100% - var(--s)) 100%, 0 100%);
+}
+
+.pk-panel-bild {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  overflow: hidden;
+  background: var(--weiss);
+  clip-path: polygon(var(--s) 0, 100% 0, calc(100% - var(--s)) 100%, 0 100%);
+}
+
+.pk-panel:hover .pk-panel-tusche,
+.pk-panel:hover .pk-panel-kasten::before {
+  animation: pk-kochen 0.36s steps(1) infinite;
+}
+
+.pk-kasten {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 12px 8px;
+  font-family: var(--pk-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.25;
+  color: var(--tinte);
+}
+
+.pk-kasten::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--papier);
+  border: 2.5px solid var(--tinte);
+  filter: url(#pk-tusche-2);
+}
+
+.pk-kasten strong {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.pk-kasten small {
+  font-size: 12px;
+  color: var(--grau);
+}
+
+.pk-panel-kasten {
+  position: absolute;
+  z-index: 2;
+  top: -14px;
+  left: calc(var(--s) + 12px);
+  max-width: calc(100% - 2 * var(--s) - 24px);
+}
+
+/* Getuschter Rahmen um bestehende Bildfenster (Karte, Fotos). */
+.pk-hero-tusche,
+.pk-foto-tusche {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 3px solid var(--tinte);
+  filter: url(#pk-tusche-2);
+  pointer-events: none;
+}
+
+/* ---------- Sprunglinien ---------- */
+
+.pk-sl {
+  width: 100%;
+  max-width: var(--breite);
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 56px) var(--rand) 0;
+}
+
+.pk-sl svg {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.pk-sl-spiegeln svg {
+  transform: scaleX(-1);
+}
+
+.pk-sl-tusche {
+  filter: url(#pk-tusche-fein);
+}
+
+.pk-sl-tusche path,
+.pk-sl-hindernis path {
+  fill: none;
+  stroke: var(--tinte);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pk-sl-tusche .pk-sl-duenn {
+  stroke-width: 2;
+}
+
+.pk-sl-tusche .pk-sl-boden {
+  stroke-width: 2;
+  stroke: var(--leise);
+}
+
+.pk-sl-tusche .pk-sl-marke {
+  stroke: var(--signal);
+  stroke-width: 3;
+}
+
+.pk-sl-bogen {
+  fill: none;
+  stroke: var(--tinte);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  filter: url(#pk-tusche-fein);
+}
+
+.pk-sl-punkt {
+  fill: var(--signal);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ---------- Der Moment im Fernsehen (Hero) ---------- */
+
+.pk-hero-moment {
+  position: absolute;
+  z-index: 4;
+  right: clamp(16px, 2.6vw, 44px);
+  bottom: clamp(36px, 7vh, 84px);
+  width: clamp(250px, 23vw, 350px);
+}
+
+.pk-tv {
+  margin: 0;
+}
+
+.pk-tv-panel .pk-panel-bild {
+  background: #ebe9e3;
+}
+
+.pk-tv-panel .pk-panel-tusche {
+  animation: pk-kochen 0.6s steps(1) infinite;
+}
+
+.pk-tv-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pk-tv-tusche {
+  filter: url(#pk-tusche-fein);
+}
+
+.pk-tv-tusche path {
+  fill: none;
+  stroke: var(--tinte);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.pk-tv-tusche .pk-tv-duenn {
+  stroke-width: 2.5;
+  stroke: var(--grau);
+}
+
+.pk-tv-bahn {
+  fill: none;
+  stroke: var(--tinte);
+  stroke-width: 2.5;
+  stroke-dasharray: 3 9;
+  stroke-linecap: round;
+}
+
+.pk-tv-punkt {
+  fill: var(--signal);
+}
+
+.pk-tv-punkt-still {
+  display: none;
+}
+
+.pk-tv-tc {
+  font-family: var(--pk-mono), ui-monospace, monospace;
+  font-size: 17px;
+  fill: var(--grau);
+}
+
+.pk-tv-zeile {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  background: var(--papier);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-tv-punkt-lauf {
+    display: none;
+  }
+  .pk-tv-punkt-still {
+    display: inline;
+  }
+  .pk-tv-panel .pk-panel-tusche,
+  .pk-panel:hover .pk-panel-tusche,
+  .pk-panel:hover .pk-panel-kasten::before {
+    animation: none;
+  }
+}
+
+/* ---------- Kapitelband ---------- */
+
+.pk-kap-ueber {
+  margin-top: clamp(64px, 8vw, 112px);
+}
+
+.pk-kap {
+  list-style: none;
+  margin: 34px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 14px;
+}
+
+.pk-kap-eintrag {
+  display: flex;
+}
+
+.pk-kap-panel {
+  flex: 1;
+}
+
+.pk-kap-inhalt {
+  min-height: 100%;
+  padding: 40px calc(var(--s) + 16px) 26px;
+}
+
+.pk-kap-titel {
+  margin: 0 0 10px;
+  font-weight: 800;
+  font-variation-settings: var(--schmal);
+  font-size: clamp(25px, 2.2vw, 32px);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.pk-kap-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--grau);
+}
+
+.pk-kap-ton-1 .pk-panel-bild {
+  background: var(--beton);
+}
+
+.pk-kap-ton-2 .pk-panel-bild {
+  background: #ebe9e3;
+}
+
+.pk-eck-ueber {
+  margin-top: clamp(64px, 8vw, 112px);
+}
+
+.pk-eck-ueber + .pk-eck {
+  margin-top: 18px;
+}
+
+@media (max-width: 1080px) {
+  .pk-kap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pk-kap {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 80%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-left: calc(-1 * var(--rand));
+    margin-right: calc(-1 * var(--rand));
+    padding: 18px var(--rand) 8px;
+    scrollbar-width: none;
+  }
+  .pk-kap::-webkit-scrollbar {
+    display: none;
+  }
+  .pk-kap-eintrag {
+    scroll-snap-align: start;
+  }
+}
+
+/* ---------- Schnitt an Schnitt ---------- */
+
+.pk-sas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-areas: "alt schnitt neu";
+  align-items: center;
+  gap: clamp(10px, 2vw, 28px);
+  margin-top: clamp(48px, 7vw, 96px);
+}
+
+.pk-sas-alt {
+  grid-area: alt;
+}
+
+.pk-sas-neu {
+  grid-area: neu;
+}
+
+.pk-sas-bild {
+  margin: 0;
+}
+
+.pk-sas-alt .pk-panel-bild {
+  background: var(--beton);
+}
+
+.pk-sas-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pk-sas-raster path {
+  stroke: var(--linie);
+  stroke-width: 1.5;
+}
+
+.pk-sas-ecken path {
+  fill: none;
+  stroke: var(--tinte);
+  stroke-width: 3;
+}
+
+.pk-sas-punkt {
+  fill: var(--signal);
+}
+
+.pk-blase {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--s) + 6%);
+  top: 12%;
+  max-width: 62%;
+  padding: 16px 22px 18px;
+  font-size: clamp(14px, 1.3vw, 18px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.pk-blase::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--weiss);
+  border: 2.5px solid var(--tinte);
+  border-radius: 46% 54% 48% 52% / 50% 44% 56% 50%;
+  filter: url(#pk-tusche-3);
+}
+
+.pk-blase p {
+  margin: 0;
+}
+
+.pk-sas-bild figcaption {
+  margin-top: 14px;
+  font-family: var(--pk-mono), ui-monospace, monospace;
+  font-size: 14px;
+  color: var(--grau);
+}
+
+.pk-sas-schnitt {
+  grid-area: schnitt;
+  font-family: var(--pk-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--signal);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding: 12px 0;
+  border-left: 2px solid var(--signal);
+  padding-left: 8px;
+}
+
+@media (max-width: 640px) {
+  .pk-sas {
+    grid-template-columns: 1fr;
+    grid-template-areas: "alt" "schnitt" "neu";
+  }
+  .pk-sas-schnitt {
+    writing-mode: horizontal-tb;
+    transform: none;
+    border-left: 0;
+    border-top: 2px solid var(--signal);
+    padding: 8px 0 0;
+    justify-self: start;
+  }
+  .pk-blase {
+    max-width: 70%;
+  }
+}
+
+@media (max-width: 760px) {
+  .pk-hero-moment {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    order: 4;
+    width: auto;
+    margin: 36px var(--rand) 0 calc(var(--rand) + 8vw);
+  }
 }
