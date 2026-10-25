@@ -8,7 +8,7 @@ export const SEEN = "M604.1,156.4L602.6,156.0L600.8,151.0L594.3,142.9L595.0,140.
 export type Ort = { name: string; jahr: number; x: number; y: number };
 // Jeder Ort mit dem Beleg aus DOSSIER.md (Zeitleiste/Gruppen-Tabelle). Jahr = frühester belegter Nachweis.
 export const ORTE: Ort[] = [
-  { name: "Münsingen", jahr: 2005, x: 354.1, y: 300.8 }, // pkm.ch im Netz ab 14.04.2005 (DOSSIER Zeitleiste, Gruppen Bern)
+  { name: "Münsingen", jahr: 2000, x: 354.1, y: 300.8 }, // Ramon (Zeitzeuge, via Pierre 24.10.2026): 2000 sieht Roger die TV-Doku, geht mit Ramon raus; pkm.ch ab 14.04.2005
   { name: "Basel", jahr: 2005, x: 360.0, y: 80.6 }, // parkour.ch-Kreis Münsingen/Basel ab 2005 (DOSSIER Kern 2, Gruppen Basel)
   { name: "Zürich", jahr: 2007, x: 569.5, y: 139.0 }, // YouTube «Le Parkour Zürich» 25.08.2007
   { name: "Tessin", jahr: 2007, x: 675.4, y: 518.5 }, // tio.ch 25.04.2014: Praxis im Tessin seit 2007 (Punkt bei Bellinzona)
@@ -25,7 +25,7 @@ export const ORTE: Ort[] = [
   { name: "Vernier", jahr: 2010, x: 29.7, y: 511.4 }, // Genève Traceurs Crew, Actu Vernier 04/2010
   { name: "Zofingen", jahr: 2010, x: 438.7, y: 167.6 }, // YouTube Freerunning Zofingen 14.04.2010
   { name: "Luzern", jahr: 2011, x: 518.5, y: 244.0 }, // Parkour Luzern 2010/2011 (W12) -> spätestens 2011
-  { name: "Oberwallis", jahr: 2011, x: 447.9, y: 479.7 }, // Parkourwallis-Showreel 26.08.2011 (Punkt bei Brig)
+  { name: "Oberwallis", jahr: 2009, x: 447.9, y: 479.7 }, // Pierre (Zeitzeuge, 24.10.2026): Visp ab 2009, Parkourwallis vermutlich um 2009 (Gründungsjahr Verein noch prüfen); Pierre selbst 2006 in Albinen; Showreel 26.08.2011 (Punkt bei Brig)
   { name: "Biel", jahr: 2011, x: 285.1, y: 216.1 }, // BEWELUM, Videos ab 2011
   { name: "St. Gallen", jahr: 2014, x: 753.2, y: 123.9 }, // Parkour Family St. Gallen, ≤2014
   { name: "Sion", jahr: 2014, x: 309.7, y: 506.3 }, // Parkour Valais Sion–Sierre, ≤2014

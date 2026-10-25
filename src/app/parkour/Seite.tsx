@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import KarteSvg from "./KarteSvg";
 import ZeitKarte from "./ZeitKarte";
 import Mitmachen from "./Mitmachen";
 import Hero from "./Hero";
 import { Auftritt, Kante, Zaehler } from "./Bewegung";
+import { FernsehMoment, Kapitelband, SchnittAnSchnitt, Sprunglinie, Tusche } from "./Doku";
 import { ORTE } from "./karte-daten";
 import { KONTAKT_MAIL, TEXTE, type Sprache } from "./texte";
 import { ZUSATZ } from "./texte-zusatz";
@@ -21,6 +21,12 @@ const MAX_MB = Number(process.env.PARKOUR_MAX_MB) || 50;
 const HERO_VIDEO: string | undefined = undefined;
 const HERO_POSTER: string | undefined = undefined;
 
+const SPRACHEN: [Sprache, string][] = [
+  ["de", "/parkour"],
+  ["fr", "/parkour/fr"],
+  ["en", "/parkour/en"],
+];
+
 export default function Seite({ sprache }: { sprache: Sprache }) {
   const t = TEXTE[sprache];
   const z = ZUSATZ[sprache];
@@ -29,6 +35,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
 
   return (
     <div className="pk" lang={t.htmlLang}>
+      <Tusche />
       <header className="pk-kopf">
         <div className="pk-rahmen pk-kopf-innen">
           <a href="#oben" className="pk-marke">
@@ -41,25 +48,24 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             <a href="#karte" className="pk-nav-weit">
               {t.nav.karte}
             </a>
+            <a href="#film" className="pk-nav-weit">
+              {t.nav.film}
+            </a>
             <a href="#wir" className="pk-nav-weit">
               {t.nav.wir}
             </a>
             <a href="#mitmachen">{t.nav.mitmachen}</a>
             <span className="pk-sprachen">
-              {sprache === "de" ? (
-                <>
-                  <span aria-current="page">DE</span>
-                  <Link href={t.andererPfad} hrefLang="fr" lang="fr">
-                    FR
+              {SPRACHEN.map(([code, pfad]) =>
+                code === sprache ? (
+                  <span key={code} aria-current="page">
+                    {code.toUpperCase()}
+                  </span>
+                ) : (
+                  <Link key={code} href={pfad} hrefLang={code} lang={code}>
+                    {code.toUpperCase()}
                   </Link>
-                </>
-              ) : (
-                <>
-                  <Link href={t.andererPfad} hrefLang="de" lang="de">
-                    DE
-                  </Link>
-                  <span aria-current="page">FR</span>
-                </>
+                ),
               )}
             </span>
           </nav>
@@ -73,6 +79,7 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           sprache={sprache}
           videoSrc={HERO_VIDEO}
           videoPoster={HERO_POSTER}
+          moment={<FernsehMoment kasten={z.doku.tvKasten} zeile={z.doku.tvZeile} />}
           unter={
             <div className="pk-hero-text">
               <p className="pk-arbeitstitel">{t.hero.arbeitstitel}</p>
@@ -88,6 +95,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
             </div>
           }
         />
+
+        <Sprunglinie art="gelaender" />
 
         <section id="projekt" className="pk-worum">
           <div className="pk-rahmen">
@@ -122,6 +131,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           </div>
         </section>
 
+        <Sprunglinie art="mauer" spiegeln />
+
         <ZeitKarte sprache={sprache} />
 
         <section className="pk-karte-ende">
@@ -133,6 +144,38 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           </div>
         </section>
 
+        <Sprunglinie art="luecke" />
+
+        <section id="film" className="pk-film">
+          <div className="pk-rahmen">
+            <div className="pk-film-kopf">
+              <Kante zeilen={[t.film.titel]} className="pk-h2" />
+              <Auftritt als="p" className="pk-film-text">
+                {t.film.text}
+              </Auftritt>
+            </div>
+            <h3 className="pk-h3 pk-kap-ueber">{z.doku.kapitelTitel}</h3>
+            <Kapitelband kapitel={z.doku.kapitel} />
+            <h3 className="pk-h3 pk-eck-ueber">{z.doku.eckTitel}</h3>
+            <dl className="pk-eck">
+              {t.film.eckdaten.map(([k, v], i) => (
+                <Auftritt key={k} className="pk-eck-zeile" verzoegerung={i * 0.05}>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </Auftritt>
+              ))}
+            </dl>
+            <div className="pk-regeln">
+              <h3 className="pk-h3">{t.film.regelnTitel}</h3>
+              <ul>
+                {t.film.regeln.map((regel) => (
+                  <li key={regel}>{regel}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <section className="pk-gen">
           <div className="pk-rahmen pk-gen-innen">
             <Kante zeilen={[t.generationen.titel]} className="pk-h2" />
@@ -140,7 +183,17 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
               {t.generationen.text}
             </Auftritt>
           </div>
+          <div className="pk-rahmen">
+            <SchnittAnSchnitt
+              frage={z.doku.sasFrage}
+              links={z.doku.sasLinks}
+              rechts={z.doku.sasRechts}
+              schnitt={z.doku.sasSchnitt}
+            />
+          </div>
         </section>
+
+        <Sprunglinie art="stufen" spiegeln />
 
         <Mitmachen sprache={sprache} maxMb={MAX_MB} />
 
@@ -158,39 +211,36 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           <div className="pk-rahmen">
             <Kante zeilen={[t.wir.titel]} className="pk-h2" />
             <div className="pk-wir-raster">
-              <Auftritt als="figure" className="pk-person pk-person-pierre">
+              <Auftritt als="figure" className="pk-person">
                 <div className="pk-foto pk-foto-gross">
+                  <span className="pk-foto-tusche" aria-hidden="true" />
+                  <Image
+                    src="/parkour/ramon-siegenthaler.jpg"
+                    alt="Ramon Siegenthaler"
+                    fill
+                    sizes="(max-width: 760px) 100vw, 58vw"
+                    style={{ objectFit: "cover", objectPosition: "50% 30%" }}
+                  />
+                </div>
+                <figcaption>
+                  <span className="pk-person-name">Ramon Siegenthaler</span>
+                  <span className="pk-person-text">{t.wir.ramon}</span>
+                </figcaption>
+              </Auftritt>
+              <Auftritt als="figure" className="pk-person pk-person-zwei" verzoegerung={0.15}>
+                <div className="pk-foto">
+                  <span className="pk-foto-tusche" aria-hidden="true" />
                   <Image
                     src="/parkour/pierre-biege.jpg"
                     alt="Pierre Biege"
                     fill
-                    sizes="(max-width: 760px) 100vw, 58vw"
+                    sizes="(max-width: 760px) 86vw, 40vw"
                     style={{ objectFit: "cover", objectPosition: "50% 40%" }}
                   />
                 </div>
                 <figcaption>
                   <span className="pk-person-name">Pierre Biege</span>
                   <span className="pk-person-text">{t.wir.pierre}</span>
-                </figcaption>
-              </Auftritt>
-              <Auftritt als="figure" className="pk-person pk-person-ramon" verzoegerung={0.15}>
-                <div className="pk-foto pk-foto-karte">
-                  <span className="pk-foto-name" aria-hidden="true">
-                    Ramon
-                  </span>
-                  <KarteSvg
-                    nur={["Münsingen"]}
-                    ortsnamen={{ Münsingen: z.wir.ort.ramon }}
-                    ausschnitt={[150, 160, 420, 300]}
-                    zuschnitt
-                    className="pk-foto-svg"
-                    titel={z.wir.ort.ramon}
-                  />
-                  <span className="pk-foto-folgt">{t.wir.fotoFolgt}</span>
-                </div>
-                <figcaption>
-                  <span className="pk-person-name">Ramon Siegenthaler</span>
-                  <span className="pk-person-text">{t.wir.ramon}</span>
                 </figcaption>
               </Auftritt>
             </div>
@@ -217,8 +267,8 @@ export default function Seite({ sprache }: { sprache: Sprache }) {
           <p>{t.fuss.arbeitstitel}</p>
           <p className="pk-fuss-links">
             <a href={`mailto:${KONTAKT_MAIL}`}>{KONTAKT_MAIL}</a>
-            <a href="/impressum">{t.fuss.impressum}</a>
-            <span>laeuft.ch</span>
+            <a href="https://www.natural-athletics.ch/impressum">{t.fuss.impressum}</a>
+            <a href="https://www.natural-athletics.ch">natural-athletics.ch</a>
           </p>
         </div>
       </footer>

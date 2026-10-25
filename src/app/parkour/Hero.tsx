@@ -27,9 +27,10 @@ type Props = {
   sprache: Sprache;
   videoSrc?: string;
   videoPoster?: string;
+  moment?: React.ReactNode;
 };
 
-export default function Hero({ zeilen, unter, bildLabel, sprache, videoSrc, videoPoster }: Props) {
+export default function Hero({ zeilen, unter, bildLabel, sprache, videoSrc, videoPoster, moment }: Props) {
   const orteText = ZUSATZ[sprache].karte.orte;
   const ruhig = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
@@ -66,10 +67,24 @@ export default function Hero({ zeilen, unter, bildLabel, sprache, videoSrc, vide
           )}
         </motion.div>
         {!videoSrc && <JahrLauf ruhig={!!ruhig} orteText={orteText} />}
+        <span className="pk-hero-tusche" aria-hidden="true" />
       </motion.div>
 
+      {moment && (
+        <motion.div
+          className="pk-hero-moment"
+          initial={ruhig ? false : { opacity: 0, y: 40, rotate: -2 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 0.9, ease: SPRUNG, delay: 0.9 }}
+        >
+          {moment}
+        </motion.div>
+      )}
+
       <div className="pk-rahmen pk-hero-innen">
-        <h1 className="pk-h1" aria-label={zeilen.map((z) => (z.klein ? `${z.klein} ${z.gross}` : z.gross)).join(" ")}>
+        <h1
+          className={`pk-h1${Math.max(...zeilen.map((z) => z.gross.length)) > 9 ? " pk-h1-lang" : ""}`}
+          aria-label={zeilen.map((z) => (z.klein ? `${z.klein} ${z.gross}` : z.gross)).join(" ")}>
           {zeilen.map((z, i) => (
             <motion.span
               key={i}
