@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type Folie =
   | { bild: StaticImageData; alt: string; ganz?: boolean }
@@ -11,17 +11,26 @@ const TAKT = 4500;
 
 export function BilderWechsel({ folien, prio = false }: { folien: Folie[]; prio?: boolean }) {
   const [aktiv, setAktiv] = useState(0);
-  const [pause, setPause] = useState(false);
+  const [sichtbar, setSichtbar] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Läuft nur, solange das Bild im Blick ist
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const o = new IntersectionObserver(([e]) => setSichtbar(e.isIntersecting), { threshold: 0.6 });
+    o.observe(el);
+    return () => o.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (folien.length < 2 || pause) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (folien.length < 2 || !sichtbar) return;
     const t = setTimeout(() => setAktiv((a) => (a + 1) % folien.length), TAKT);
     return () => clearTimeout(t);
-  }, [aktiv, pause, folien.length]);
+  }, [aktiv, sichtbar, folien.length]);
 
   return (
-    <div onMouseEnter={() => setPause(true)} onMouseLeave={() => setPause(false)}>
+    <div ref={ref}>
       <button
         type="button"
         aria-label="Nächstes Bild"
@@ -32,7 +41,7 @@ export function BilderWechsel({ folien, prio = false }: { folien: Folie[]; prio?
           <div
             key={i}
             aria-hidden={i !== aktiv}
-            className={`absolute inset-0 transition-opacity duration-700 ${i === aktiv ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${i === aktiv ? "opacity-100" : "opacity-0"}`}
           >
             {"bild" in f ? (
               <Image
