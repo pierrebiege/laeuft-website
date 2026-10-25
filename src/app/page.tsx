@@ -2,10 +2,10 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { BilderWechsel, type Folie } from "../components/startseite/bilder-wechsel";
 import ergtShop from "../../public/arbeiten/ergt-shop.webp";
-import ergtEinband from "../../public/arbeiten/ergt-einband.webp";
-import ergtStart from "../../public/arbeiten/ergt-v8-10.webp";
-import ergtWoche from "../../public/arbeiten/ergt-v8-11.webp";
-import ergtAnkommen from "../../public/arbeiten/ergt-v8-45.webp";
+import ergtSchwebend from "../../public/arbeiten/ergt-buch-schwebend.webp";
+import ergtTisch from "../../public/arbeiten/ergt-buch-tisch.webp";
+import ergtStudio from "../../public/arbeiten/ergt-buch-studio.webp";
+import ergtAlpen from "../../public/arbeiten/ergt-buch-alpen.webp";
 import weile from "../../public/arbeiten/weile.webp";
 import weileApp1 from "../../public/arbeiten/weile-app-1.webp";
 import weileApp2 from "../../public/arbeiten/weile-app-2.webp";
@@ -48,11 +48,11 @@ const projekte: Projekt[] = [
     url: "https://einrichtiggutertag.ch",
     link: "einrichtiggutertag.ch",
     folien: [
+      { bild: ergtSchwebend, alt: "Journal mit schwarzem Deckel, Höhenlinien und offenem Rücken (Visualisierung)" },
+      { bild: ergtTisch, alt: "Journal aufgeschlagen auf dem Tisch: Übersicht der 182 Tage (Visualisierung)" },
+      { bild: ergtStudio, alt: "Journal aufgeschlagen bei Woche 2, daneben geschlossen (Visualisierung)" },
+      { bild: ergtAlpen, alt: "Journal auf einer Holzbank in den Bergen: Tag 91 (Visualisierung)" },
       { bild: ergtShop, alt: "Shop einrichtiggutertag.ch mit dem Kalender 2027" },
-      { bild: ergtEinband, alt: "Einband des Journals in Apricot", ganz: true },
-      { bild: ergtWoche, alt: "Journal: Doppelseite einer Woche", ganz: true },
-      { bild: ergtStart, alt: "Journal: Farbseite und Kapitel Klein anfangen", ganz: true },
-      { bild: ergtAnkommen, alt: "Journal: Farbseite und Kapitel Ankommen", ganz: true },
     ],
   },
   {
